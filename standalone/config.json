@@ -1,0 +1,26 @@
+{
+  "theme": "light",
+  "accent": "#4A90D9",
+  "title": "SeaWhy AI",
+  "topbarTitle": "SeaWhy AI",
+  "welcomeTitle": "SeaWhy AI",
+  "welcomeSub": "像鲸鱼在信息海洋中深潜，寻找问题背后的Why",
+  "welcomeIcon": "🐋",
+  "footerHint": "🐋 SeaWhy AI · 深潜信息海洋 · 网页由ccy制作",
+  "model": "deepseek-v4-flash",
+  "temperature": 0.7,
+  "maxTokens": 4096,
+  "systemPrompt": "",
+  "quickPrompts": [
+    "解释一下量子计算的基本原理",
+    "帮我写一段 Python 快速排序代码",
+    "推荐3本好看的科幻小说",
+    "帮我写一篇论文大纲"
+  ],
+  "userAvatar": "👤",
+  "userName": "你",
+  "aiAvatar": "🤖",
+  "aiName": "Swai",
+  "apiKey": "sk-6d616396f6e14e418a1954f920401b5e",
+  "showThinking": true
+}

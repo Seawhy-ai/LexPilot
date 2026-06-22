@@ -1,0 +1,1827 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#ffffff" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="LexPilot" />
+  <meta name="description" content="LexPilot · 法学生AI学习助手 — 基于法学实证研究的智能辅助工具" />
+  <link rel="apple-touch-icon" href="swai-avatar.jpg" />
+  <link rel="manifest" href="law-manifest.json" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>LexPilot · 法学生AI助手</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link id="hlTheme" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css" />
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100dvh;height:-webkit-fill-available;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei","Noto Serif SC",serif;background:var(--bg);color:var(--text);-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased;-webkit-user-select:none;user-select:none}
+    :root{
+      --bg:#fff;--nav-bg:#fff;--card-bg:#fff;--card-border:rgba(0,0,0,0.08);
+      --text:#111;--text2:#888;--input-bg:#f5f5f7;--input-border:rgba(0,0,0,0.1);
+      --ai-bubble:#fff;--user-bubble:#C5DFF8;--bubble-shadow:0 1px 4px rgba(0,0,0,0.06);
+      --invite-bg:#f8f9fa;--accent:#1a5276;--accent-light:rgba(26,82,118,0.08);
+      --modal-overlay:rgba(0,0,0,0.5);--toast-bg:#333;--toast-text:#fff;
+      --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
+    }
+    body.dark{
+      --bg:#111;--nav-bg:#1a1a1a;--card-bg:#1a1a1a;--card-border:#333;
+      --text:#e5e5e5;--text2:#999;--input-bg:#222;--input-border:#333;
+      --ai-bubble:#262626;--user-bubble:#054740;--bubble-shadow:none;
+      --invite-bg:#111;--accent:#5dade2;--accent-light:rgba(93,173,226,0.18);
+      --modal-overlay:rgba(0,0,0,0.75);--toast-bg:#444;--toast-text:#e5e5e5;
+    }
+    body{display:flex;flex-direction:column;background:var(--bg)}
+
+    /* ===== SCREENS ===== */
+    .screen{flex:1;display:none!important;flex-direction:column;overflow-y:auto;background:var(--invite-bg);-webkit-overflow-scrolling:touch}
+    .screen.show{display:flex!important}
+    #homeScreen{align-items:center;justify-content:center;padding:calc(40px + var(--safe-top)) 20px calc(40px + var(--safe-bottom));text-align:center;min-height:100dvh;min-height:-webkit-fill-available}
+    #homeScreen.hide{display:none!important}
+
+    /* ===== HOME SCREEN ===== */
+    #homeScreen .logo{margin-bottom:12px;display:flex;align-items:center;justify-content:center}
+    #homeScreen .logo .ico{color:var(--accent)}
+    #homeScreen h2{font-size:clamp(22px,5vw,28px);font-weight:800;margin-bottom:4px;letter-spacing:-0.5px}
+    #homeScreen .brand-tagline{font-size:clamp(12px,2.8vw,14px);color:var(--text2);margin-bottom:10px;line-height:1.6;max-width:300px;margin-left:auto;margin-right:auto;padding:0 8px}
+    #homeScreen .brand-tagline em{font-style:normal;color:var(--accent);font-weight:600}
+    #homeScreen .sub{font-size:12px;color:var(--text2);margin-bottom:14px}
+    .cta-btn{display:flex;align-items:center;justify-content:center;gap:4px;width:100%;max-width:320px;margin:0 auto 20px;padding:15px 24px;border:none;border-radius:16px;font-size:clamp(15px,3.5vw,17px);font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(135deg,#1a5276,#2980b9);box-shadow:0 4px 20px rgba(26,82,118,0.3);transition:all .15s;font-family:inherit;letter-spacing:.5px;min-height:50px}
+    .cta-btn:active{transform:scale(.97);opacity:.9}
+
+    /* ---- model cards ---- */
+    .model-cards{max-width:380px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:10px;padding:0 4px}
+    .model-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:18px;padding:15px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .15s;position:relative;overflow:visible;min-height:64px}
+    .model-card:active{background:var(--input-bg);transform:scale(.98)}
+    .mc-icon{width:48px;height:48px;border-radius:12px;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;background:var(--accent-light);color:var(--accent)}
+    .mc-icon svg{width:24px;height:24px}
+    .mc-info{flex:1;min-width:0;text-align:left}
+    .mc-name{font-size:clamp(14px,3.5vw,17px);font-weight:600;line-height:1.3}
+    .mc-desc{font-size:clamp(10px,2.5vw,12px);color:var(--text2);margin-top:2px;line-height:1.5}
+    .mc-arrow{font-size:18px;color:var(--text2);flex-shrink:0;font-weight:300}
+
+    /* ===== CHAT VIEW ===== */
+    #chatView{flex:1;display:none!important;flex-direction:column;overflow:hidden;overscroll-behavior:none;background:var(--bg)}
+    #chatView.show{display:flex!important}
+    .wx-nav{display:flex;align-items:center;padding:var(--safe-top) 8px 0;height:calc(48px + var(--safe-top));background:var(--nav-bg);flex-shrink:0;border-bottom:1px solid var(--card-border);min-height:48px;position:relative}
+    .wx-nav .back{position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--accent);cursor:pointer;padding:8px 4px;flex-shrink:0;white-space:nowrap;border:none;background:none;font-family:inherit;width:44px;display:flex;align-items:center;justify-content:center;z-index:1}
+    .wx-nav .title{flex:1;text-align:center;font-size:17px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 56px}
+    .wx-nav .nav-right{position:absolute;right:8px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:2px;z-index:1}
+    .wx-nav .right-btn{font-size:20px;color:var(--text);cursor:pointer;padding:8px;width:40px;text-align:center;flex-shrink:0;border:none;background:none;position:relative;display:flex;align-items:center;justify-content:center}
+
+    .settings-drop{position:absolute;top:42px;right:4px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:14px 16px;min-width:220px;z-index:100;box-shadow:0 8px 30px rgba(0,0,0,0.12);opacity:0;transform:translateY(-8px) scale(.95);pointer-events:none;transition:opacity .2s ease,transform .2s ease}
+    .settings-drop.show{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}
+    .settings-drop .s-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;font-size:13px;color:var(--text)}
+    .settings-drop .s-row:last-child{margin-bottom:0}
+    .settings-drop .s-label{font-size:12px;color:var(--text2);margin-bottom:6px}
+    .settings-drop .s-btn{padding:6px 14px;border:1px solid var(--card-border);border-radius:20px;background:var(--input-bg);color:var(--text);font-size:12px;cursor:pointer;font-family:inherit;transition:all .15s}
+    .settings-drop .s-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .settings-drop .s-btn.danger{color:#e74c3c;border-color:rgba(231,76,60,0.2)}
+    .settings-drop .s-input{width:100%;background:var(--input-bg);border:1px solid var(--card-border);color:var(--text);padding:8px 10px;border-radius:10px;font-size:12px;font-family:monospace;outline:none;margin-bottom:6px;transition:border-color .15s}
+    .settings-drop .s-input:focus{border-color:var(--accent)}
+
+    .chat-area{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:10px 10px;-webkit-overflow-scrolling:touch;background:var(--bg);touch-action:pan-y;-webkit-overflow-scrolling:touch}
+    .messages{display:flex;flex-direction:column;gap:4px;padding-bottom:8px}
+
+    .welcome{text-align:center;padding:40px 16px 24px}
+    .welcome .wicon{font-size:48px;margin-bottom:8px}
+    .welcome .wicon img{width:48px;height:48px;border-radius:50%;object-fit:cover}
+    .welcome h2{font-size:18px;font-weight:700;margin-bottom:4px}
+    .welcome .welcome-model-desc{font-size:12px;color:var(--text2);margin-bottom:8px;line-height:1.5}
+    .welcome .capability-row{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:0 0 18px}
+    .capability-chip{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:5px 10px;font-size:11px;color:var(--text2);white-space:nowrap}
+    .capability-chip.highlight{background:var(--accent-light);color:var(--accent);border-color:transparent;font-weight:500}
+    .welcome .section-label{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+    .quick-prompts{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:340px;margin:0 auto}
+    .quick-btn{background:var(--card-bg);border:1px solid var(--card-border);color:var(--text);padding:12px 10px;border-radius:12px;font-size:12px;cursor:pointer;text-align:left;transition:all .15s}
+    .quick-btn:active{background:var(--input-bg)}
+
+    .msg-time-divider{text-align:center;font-size:10px;color:var(--text2);padding:6px 0;opacity:.6}
+    .msg{display:flex;gap:8px;padding:0;opacity:0;transform:translateY(30px) scale(.7);transition:opacity .3s cubic-bezier(.34,1.56,.64,1),transform .3s cubic-bezier(.34,1.56,.64,1);will-change:transform,opacity}
+    .msg.show{opacity:1;transform:translateY(0) scale(1)}
+    .msg.user{flex-direction:row-reverse}
+    .msg-avatar{display:none}
+    .msg-avatar img{width:100%;height:100%;object-fit:cover}
+    .msg-body{max-width:85%;min-width:0;display:flex;flex-direction:column}
+    .msg{gap:0}
+    .msg.user .msg-body{align-items:flex-end}
+    .msg.ai .msg-body{align-items:flex-start}
+    .msg-content{font-size:16px;line-height:1.55;word-break:break-word;padding:11px 14px;border-radius:20px;position:relative}
+    .msg.ai .msg-content{background:var(--ai-bubble);border-radius:4px 20px 20px 20px;box-shadow:var(--bubble-shadow)}
+    .msg.user .msg-content{background:var(--user-bubble);border-radius:20px 4px 20px 20px}
+    .msg-content p{margin:0}.msg-content p+p{margin-top:4px}
+    .msg-content h1,.msg-content h2,.msg-content h3{font-weight:600;margin:10px 0 4px;color:var(--accent)}
+    .msg-content h1{font-size:1.2em}.msg-content h2{font-size:1.1em}.msg-content h3{font-size:1.05em}
+    .msg-content pre{background:rgba(0,0,0,0.06);border-radius:10px;padding:12px;overflow-x:auto;font-size:13px;margin:6px 0}
+    .msg-content code{font-family:"SF Mono","Fira Code",monospace;font-size:.9em}
+    .msg-content :not(pre)>code{background:rgba(0,0,0,0.06);padding:1px 5px;border-radius:4px}
+    .msg-content ul,.msg-content ol{padding-left:20px;margin:6px 0}.msg-content li{margin:2px 0}
+    .msg-content blockquote{border-left:3px solid var(--accent);padding-left:12px;margin:8px 0;color:var(--text2)}
+    .msg-content table{border-collapse:collapse;width:100%;margin:8px 0;font-size:13px}
+    .msg-content th,.msg-content td{border:1px solid var(--card-border);padding:5px 9px;text-align:left}
+    .msg-content th{background:var(--card-bg)}
+    .msg-content a{color:var(--accent);text-decoration:underline}
+    .msg-content strong{color:var(--accent)}
+    .msg-time{font-size:9px;color:var(--text2);margin-top:3px;opacity:.55}
+    .msg.user .msg-time{text-align:right}
+    .msg-actions{margin-top:4px;opacity:1;display:flex;gap:4px}
+    .btn-copy{background:var(--card-bg);border:1px solid var(--card-border);color:var(--text2);font-size:10px;cursor:pointer;padding:3px 10px;border-radius:12px;font-family:inherit;transition:all .15s}
+    .btn-copy:active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+    .typing-dots{display:flex;gap:5px;padding:8px 4px 8px 46px;align-items:center}
+    .typing-dots.no-avatar{padding-left:8px}
+    .typing-dots span{width:7px;height:7px;border-radius:50%;background:#aaa;opacity:.5;animation:bounce 1.2s infinite}
+    .typing-dots span:nth-child(2){animation-delay:.2s}.typing-dots span:nth-child(3){animation-delay:.4s}
+    @keyframes bounce{0%,60%,100%{transform:translateY(0);opacity:.5}30%{transform:translateY(-6px);opacity:1}}
+    .error{background:rgba(231,76,60,0.08);color:#e74c3c;padding:10px 14px;border-radius:14px;font-size:12px;margin:6px 0}
+
+    .input-tools{display:flex;gap:4px;flex-wrap:nowrap;margin-bottom:6px;align-items:center;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px}
+    .input-tools::-webkit-scrollbar{display:none}
+    .input-tool{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;gap:3px;padding:6px 4px;border:none;border-radius:14px;background:rgba(0,0,0,0.04);color:var(--text2);cursor:pointer;font-size:11px;font-family:inherit;white-space:nowrap;transition:all .15s}
+    .input-tool:active{transform:scale(.95)}
+    .input-tool.on{background:var(--accent);color:#fff}
+    .input-bar{flex-shrink:0;background:var(--nav-bg);border-top:1px solid var(--card-border);padding:8px 10px calc(8px + var(--safe-bottom));box-shadow:0 -4px 24px rgba(0,0,0,0.08)}
+    .input-row{display:flex;align-items:flex-end;gap:8px}
+    .input-field-wrap{flex:1;background:var(--input-bg);border:2px solid var(--input-border);border-radius:22px;padding:2px 14px;transition:border-color .2s}
+    .input-field-wrap:focus-within{border-color:var(--accent)}
+    .input-field{width:100%;background:transparent;border:none;outline:none;color:var(--text);font-size:15px;line-height:1.4;resize:none;max-height:100px;padding:7px 0;font-family:inherit}
+    .input-field::placeholder{color:#bbb}
+    .btn-send{width:42px;height:42px;border:none;border-radius:50%;background:var(--accent);color:#fff;font-size:18px;cursor:pointer;flex-shrink:0;transition:all .15s;display:flex;align-items:center;justify-content:center}
+    .btn-send:active{transform:scale(.9);opacity:.9}
+    .btn-send:disabled{background:#ccc}
+    .input-hint{text-align:center;font-size:10px;color:#bbb;margin-top:4px}
+
+    ::-webkit-scrollbar{width:0}
+    #homeScreen,.screen.show{animation:fadeInUp .35s ease}
+    #chatView{animation:fadeInUp .3s ease}
+    @keyframes fadeInUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+    /* ===== DATABASE VIEW ===== */
+    #dbView{flex:1;display:none!important;flex-direction:column;overflow:hidden;overscroll-behavior:none;background:var(--bg)}
+    #dbView.show{display:flex!important}
+    #dbView .wx-nav{border-bottom:1px solid var(--card-border)}
+    #dbView .db-body{flex:1;overflow-y:auto;padding:16px 18px;-webkit-overflow-scrolling:touch}
+    .db-header{text-align:center;padding:8px 0 16px}
+    .db-header h2{font-size:18px;font-weight:700;margin-bottom:4px}
+    .db-header p{font-size:12px;color:var(--text2)}
+    .db-search{display:flex;gap:8px;margin-bottom:12px}
+    .db-search input{flex:1;background:var(--input-bg);border:2px solid var(--input-border);border-radius:14px;padding:10px 14px;font-size:14px;font-family:inherit;color:var(--text);outline:none;transition:border-color .2s}
+    .db-search input:focus{border-color:var(--accent)}
+    .db-category{font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px;padding-top:12px;letter-spacing:.5px;display:flex;align-items:center;gap:6px}
+    .db-category:first-child{padding-top:0}
+    .law-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .15s}
+    .law-card:active{background:var(--input-bg);transform:scale(.98)}
+    .law-icon{width:40px;height:40px;border-radius:10px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;color:var(--accent);font-weight:700}
+    .law-info{flex:1;min-width:0}
+    .law-name{font-size:14px;font-weight:600;line-height:1.3;margin-bottom:2px}
+    .law-meta{font-size:11px;color:var(--text2);display:flex;gap:10px;flex-wrap:wrap}
+    .law-meta span{white-space:nowrap}
+    .law-dl{flex-shrink:0;padding:6px 12px;border-radius:14px;border:1px solid var(--accent);color:var(--accent);font-size:11px;font-weight:600;cursor:pointer;background:transparent;transition:all .15s;text-decoration:none;margin-left:4px}
+    .law-dl:active{background:var(--accent);color:#fff}
+    .law-view-btn{flex-shrink:0;padding:6px 12px;border-radius:14px;border:none;background:var(--accent);color:#fff;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;margin-left:4px}
+    .law-view-btn:active{opacity:.8;transform:scale(.95)}
+
+    /* ===== LAW READER VIEW ===== */
+    #lawReaderView{flex:1;display:none!important;flex-direction:column;overflow:hidden;background:var(--bg)}
+    #lawReaderView.show{display:flex!important}
+    #lawReaderView .lr-body{flex:1;overflow-y:auto;padding:16px 18px 30px;-webkit-overflow-scrolling:touch}
+    #lawReaderView .lr-search-wrap{display:flex;gap:6px;margin-bottom:14px;position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:5}
+    .lr-search-wrap input{flex:1;background:var(--input-bg);border:2px solid var(--input-border);border-radius:14px;padding:10px 14px;font-size:14px;font-family:inherit;color:var(--text);outline:none;transition:border-color .2s}
+    .lr-search-wrap input:focus{border-color:var(--accent)}
+    .lr-search-wrap button{padding:10px 16px;border:none;border-radius:14px;background:var(--accent);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s}
+    .lr-search-wrap button:active{opacity:.85}
+    .lr-search-info{font-size:11px;color:var(--text2);margin-bottom:12px}
+    .lr-content{font-size:14px;line-height:1.85;white-space:pre-wrap;word-break:break-word}
+    .lr-content .highlight{background:rgba(255,200,0,0.35);padding:1px 2px;border-radius:3px}
+    .lr-result-nav{display:flex;gap:6px;margin-bottom:10px;overflow-x:auto;flex-wrap:wrap}
+    .lr-result-nav button{padding:5px 12px;border:1px solid var(--card-border);border-radius:14px;background:var(--card-bg);color:var(--text);font-size:11px;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s}
+    .lr-result-nav button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+    /* ===== ABOUT VIEW ===== */
+    #aboutView{flex:1;display:none!important;flex-direction:column;overflow:hidden;overscroll-behavior:none;background:var(--bg)}
+    #aboutView.show{display:flex!important}
+    #aboutView .wx-nav{border-bottom:1px solid var(--card-border)}
+    #aboutView .about-body{flex:1;overflow-y:auto;padding:20px 18px 30px;-webkit-overflow-scrolling:touch;max-width:560px;margin:0 auto;width:100%}
+    .about-logo{width:64px;height:64px;border-radius:50%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:40px;background:var(--accent-light)}
+    .about-name{font-size:22px;font-weight:800;text-align:center;margin-bottom:2px}
+    .about-ver{font-size:12px;color:var(--text2);text-align:center;margin-bottom:12px}
+    .about-desc{font-size:13px;color:var(--text2);text-align:center;line-height:1.6;margin-bottom:20px}
+    .about-section{margin-bottom:16px}
+    .about-section h3{font-size:14px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+    .about-section p,.about-section li{font-size:12px;color:var(--text2);line-height:1.7}
+    .about-section ul{padding-left:16px;margin:4px 0}
+    .about-section li{margin-bottom:2px}
+    .about-credit{text-align:center;font-size:11px;color:var(--text2);padding:16px 0;border-top:1px solid var(--card-border);margin-top:20px}
+
+    .toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--toast-bg);color:var(--toast-text);padding:10px 20px;border-radius:20px;font-size:13px;z-index:300;animation:toastIn .3s ease,toastOut .3s ease 1.7s forwards;pointer-events:none;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,0.2)}
+    @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+    @keyframes toastOut{from{opacity:1}to{opacity:0}}
+
+    .modal-overlay{position:fixed;inset:0;background:var(--modal-overlay);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .2s ease}
+    .modal-overlay.hide{display:none!important}
+    .modal-box{background:var(--card-bg);border-radius:20px;padding:24px 20px;width:100%;max-width:360px;max-height:80vh;overflow-y:auto;box-shadow:0 12px 40px rgba(0,0,0,0.2);animation:zoomIn .2s ease}
+    .modal-box h3{font-size:17px;font-weight:700;margin-bottom:6px;text-align:center}
+    .modal-box .modal-sub{font-size:12px;color:var(--text2);text-align:center;margin-bottom:16px}
+    .modal-box .btn-row{display:flex;gap:8px;margin-top:12px}
+    .modal-box .btn-row button{flex:1;padding:10px;border:none;border-radius:14px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
+    .modal-box .btn-primary{background:var(--accent);color:#fff}
+    .modal-box .btn-secondary{background:var(--input-bg);color:var(--text);border:1px solid var(--card-border)}
+    .law-preview-text{background:var(--input-bg);border:1px solid var(--card-border);border-radius:12px;padding:14px;max-height:50vh;overflow-y:auto;font-size:13px;line-height:1.7;white-space:pre-wrap;word-break:break-word;margin:8px 0}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    @keyframes zoomIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+
+    /* ===== SVG ICONS ===== */
+    .ico{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1}
+    .ico svg{display:block}
+
+    /* ===== HELP MODAL ===== */
+    #helpModal .modal-box{max-width:420px}
+    .help-section{margin-bottom:14px;padding:12px 14px;background:var(--input-bg);border-radius:12px;border:1px solid var(--card-border)}
+    .help-section h4{font-size:13px;font-weight:700;margin-bottom:3px;display:flex;align-items:center;gap:6px}
+    .help-section h4 .ico svg{width:16px;height:16px}
+    .help-section p{font-size:11px;color:var(--text2);line-height:1.55;margin:0}
+    .help-section .help-example{font-size:10px;color:var(--accent);margin-top:4px;font-style:italic}
+        /* ===== QUIZ VIEW ===== */
+        #quizView{flex:1;display:none!important;flex-direction:column;overflow:hidden;overscroll-behavior:none;background:var(--bg)}
+        #quizView.show{display:flex!important}
+        #quizView .wx-nav{border-bottom:1px solid var(--card-border)}
+        #quizView .quiz-body{flex:1;overflow-y:auto;padding:16px 18px 30px;-webkit-overflow-scrolling:touch;max-width:600px;margin:0 auto;width:100%}
+        .quiz-header{text-align:center;padding:8px 0 16px}
+        .quiz-header h2{font-size:18px;font-weight:700;margin-bottom:4px}
+        .quiz-header p{font-size:12px;color:var(--text2)}
+        .quiz-stats{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
+        .quiz-stat{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:8px 14px;font-size:12px;text-align:center;min-width:70px}
+        .quiz-stat .qs-num{font-size:22px;font-weight:800;color:var(--accent);line-height:1.2}
+        .quiz-stat .qs-label{font-size:10px;color:var(--text2)}
+        .quiz-subject-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;justify-content:center}
+        .quiz-subject-filter button{padding:6px 13px;border:1px solid var(--card-border);border-radius:16px;background:var(--card-bg);color:var(--text);font-size:12px;cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap}
+        .quiz-subject-filter button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+        .quiz-subject-filter button:active{transform:scale(.95)}
+        .quiz-mode-bar{display:flex;gap:8px;margin-bottom:16px;justify-content:center}
+        .quiz-mode-btn{padding:8px 18px;border:2px solid var(--card-border);border-radius:16px;background:var(--card-bg);color:var(--text);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;flex:1;max-width:160px}
+        .quiz-mode-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+        .quiz-mode-btn:active{transform:scale(.96)}
+        .quiz-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:18px;padding:20px 18px;margin-bottom:14px;transition:all .2s}
+        .quiz-card.correct{border-color:#27ae60;background:rgba(39,174,96,0.05)}
+        .quiz-card.wrong{border-color:#e74c3c;background:rgba(231,76,60,0.05)}
+        .quiz-q-num{font-size:11px;color:var(--text2);margin-bottom:6px;font-weight:600;letter-spacing:.5px}
+        .quiz-q-text{font-size:15px;line-height:1.6;margin-bottom:14px;font-weight:500}
+        .quiz-options{display:flex;flex-direction:column;gap:8px}
+        .quiz-opt{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border:2px solid var(--card-border);border-radius:12px;cursor:pointer;transition:all .15s;font-size:14px;line-height:1.5;background:var(--bg)}
+        .quiz-opt:hover{border-color:var(--accent)}
+        .quiz-opt:active{transform:scale(.98)}
+        .quiz-opt.selected{border-color:var(--accent);background:var(--accent-light)}
+        .quiz-opt.correct-answer{border-color:#27ae60;background:rgba(39,174,96,0.08)}
+        .quiz-opt.wrong-answer{border-color:#e74c3c;background:rgba(231,76,60,0.08)}
+        .quiz-opt.disabled{pointer-events:none;opacity:.9}
+        .quiz-opt-prefix{font-weight:700;font-size:14px;color:var(--accent);flex-shrink:0;width:20px}
+        .quiz-opt.correct-answer .quiz-opt-prefix{color:#27ae60}
+        .quiz-opt.wrong-answer .quiz-opt-prefix{color:#e74c3c}
+        .quiz-explain{display:none;margin-top:12px;padding:12px 14px;background:var(--input-bg);border-radius:12px;font-size:13px;line-height:1.65;color:var(--text);border-left:3px solid var(--accent)}
+        .quiz-explain.show{display:block}
+        .quiz-explain strong{color:var(--accent)}
+        .quiz-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+        .quiz-btn{padding:8px 16px;border:none;border-radius:14px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
+        .quiz-btn.primary{background:var(--accent);color:#fff}
+        .quiz-btn.secondary{background:var(--input-bg);color:var(--text);border:1px solid var(--card-border)}
+        .quiz-btn:active{transform:scale(.95);opacity:.85}
+        .quiz-btn:disabled{opacity:.5;pointer-events:none}
+        .quiz-empty{text-align:center;padding:40px 20px;color:var(--text2)}
+        .quiz-empty svg{margin-bottom:12px;opacity:.4}
+        .quiz-empty p{font-size:13px;line-height:1.6}
+        .quiz-pagination{display:flex;gap:4px;flex-wrap:wrap;justify-content:center;margin-top:16px}
+        .quiz-page-dot{width:8px;height:8px;border-radius:50%;background:var(--card-border);transition:all .2s}
+        .quiz-page-dot.current{background:var(--accent);transform:scale(1.4)}
+        .quiz-page-dot.correct-dot{background:#27ae60}
+        .quiz-page-dot.wrong-dot{background:#e74c3c}
+        .quiz-result{text-align:center;padding:24px 18px}
+        .quiz-result .qr-score{font-size:48px;font-weight:800;color:var(--accent);line-height:1.2}
+        .quiz-result .qr-label{font-size:14px;color:var(--text2);margin-bottom:18px}
+        .quiz-progress-bar{width:100%;height:6px;background:var(--card-border);border-radius:3px;margin:10px 0 16px;overflow:hidden}
+        .quiz-progress-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .3s}
+
+        /* ===== DOC GEN VIEW ===== */
+        #docView{flex:1;display:none!important;flex-direction:column;overflow:hidden;overscroll-behavior:none;background:var(--bg)}
+        #docView.show{display:flex!important}
+        #docView .wx-nav{border-bottom:1px solid var(--card-border)}
+        #docView .doc-body{flex:1;overflow-y:auto;padding:16px 18px 30px;-webkit-overflow-scrolling:touch;max-width:650px;margin:0 auto;width:100%}
+        .doc-header{text-align:center;padding:8px 0 14px}
+        .doc-header h2{font-size:18px;font-weight:700;margin-bottom:4px}
+        .doc-header p{font-size:12px;color:var(--text2)}
+        .doc-type-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+        .doc-type-card{background:var(--card-bg);border:2px solid var(--card-border);border-radius:14px;padding:14px 12px;cursor:pointer;transition:all .15s;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px}
+        .doc-type-card:active{transform:scale(.96)}
+        .doc-type-card.selected{border-color:var(--accent);background:var(--accent-light)}
+        .doc-type-card .dt-icon{font-size:28px;line-height:1}
+        .doc-type-card .dt-name{font-size:13px;font-weight:600}
+        .doc-type-card .dt-desc{font-size:10px;color:var(--text2);line-height:1.4}
+        .doc-form{background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:18px;margin-bottom:14px}
+        .doc-form h3{font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+        .doc-field{margin-bottom:12px}
+        .doc-field:last-child{margin-bottom:0}
+        .doc-field label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:4px}
+        .doc-field input,.doc-field textarea,.doc-field select{width:100%;background:var(--input-bg);border:2px solid var(--input-border);border-radius:12px;padding:10px 14px;font-size:14px;font-family:inherit;color:var(--text);outline:none;transition:border-color .2s;resize:vertical}
+        .doc-field input:focus,.doc-field textarea:focus,.doc-field select:focus{border-color:var(--accent)}
+        .doc-field textarea{min-height:80px}
+        .doc-result{background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:18px;margin-bottom:14px;display:none}
+        .doc-result.show{display:block}
+        .doc-result h3{font-size:15px;font-weight:700;margin-bottom:8px}
+        .doc-result-content{background:var(--bg);border:1px solid var(--card-border);border-radius:12px;padding:16px;font-size:14px;line-height:1.85;white-space:pre-wrap;word-break:break-word;max-height:60vh;overflow-y:auto;font-family:"Noto Serif SC","PingFang SC",serif}
+        .doc-btn-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+        .doc-btn{padding:10px 18px;border:none;border-radius:14px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;display:flex;align-items:center;gap:4px}
+        .doc-btn.primary{background:var(--accent);color:#fff}
+        .doc-btn.secondary{background:var(--input-bg);color:var(--text);border:1px solid var(--card-border)}
+        .doc-btn:active{transform:scale(.95);opacity:.85}
+        .doc-btn:disabled{opacity:.5;pointer-events:none}
+        .doc-loading{text-align:center;padding:30px;color:var(--text2)}
+        .doc-loading .spinner{display:inline-block;width:32px;height:32px;border:3px solid var(--card-border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+        @keyframes spin{to{transform:rotate(360deg)}}
+  </style>
+</head>
+<body>
+
+<!-- ===== HOME SCREEN ===== -->
+<div class="screen show" id="homeScreen">
+  <div class="logo"><span class="ico" style="width:56px;height:56px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 L12 21"/><path d="M5 3 L5 21"/><path d="M19 3 L19 21"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="5" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/></svg></span></div>
+  <h2>LexPilot</h2>
+  <p class="brand-tagline">法学生<em>AI学习助手</em><br>基于法学实证研究优化</p>
+  <p class="sub">选择功能开始使用</p>
+
+  <button class="cta-btn" onclick="enterChat()">
+    <span class="ico" style="margin-right:6px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>开始法律咨询
+  </button>
+
+  <div class="model-cards">
+    <div class="model-card" onclick="showDatabase()">
+      <div class="mc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="14" y2="11"/></svg></div>
+      <div class="mc-info">
+        <div class="mc-name">法律数据库</div>
+        <div class="mc-desc">7部核心法律 · 全文检索 · 下载查阅</div>
+      </div>
+      <span class="mc-arrow">›</span>
+    </div>
+    <div class="model-card" onclick="showComingSoon('案例数据库')">
+      <div class="mc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+      <div class="mc-info">
+        <div class="mc-name">案例数据库</div>
+        <div class="mc-desc">经典判例 · 裁判要旨 · 类案检索</div>
+      </div>
+      <span class="mc-arrow">›</span>
+    </div>
+    <div class="model-card" onclick="showQuiz()">
+      <div class="mc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+      <div class="mc-info">
+        <div class="mc-name">学习题库</div>
+        <div class="mc-desc">法考真题 · 章节练习 · 错题回顾</div>
+      </div>
+      <span class="mc-arrow">›</span>
+    </div>
+    <div class="model-card" onclick="showDocGen()">
+      <div class="mc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+      <div class="mc-info">
+        <div class="mc-name">法律文书生成</div>
+        <div class="mc-desc">起诉状 · 答辩状 · 代理词 · 合同审查</div>
+      </div>
+      <span class="mc-arrow">›</span>
+    </div>
+    <div class="model-card" onclick="showAbout()">
+      <div class="mc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="0.5" fill="currentColor"/></svg></div>
+      <div class="mc-info">
+        <div class="mc-name">关于我们</div>
+        <div class="mc-desc">了解 LexPilot · 法学AI研究背景</div>
+      </div>
+      <span class="mc-arrow">›</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CHAT VIEW ===== -->
+<div id="chatView">
+  <div class="wx-nav">
+    <button class="back" onclick="goHome()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span class="title">LexPilot · 法律咨询</span>
+    <div class="nav-right">
+      <button class="right-btn" id="btnHelp" onclick="showHelp()" title="帮助">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </button>
+      <div class="right-btn" id="btnSettings" onclick="toggleSettings()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <div class="settings-drop" id="settingsDrop">
+        <div class="s-label">主题</div>
+        <div class="s-row">
+          <button class="s-btn active" onclick="setTheme('light',this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg> 浅色</button>
+          <button class="s-btn" onclick="setTheme('dark',this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg> 深色</button>
+        </div>
+        <div class="s-label" style="margin-top:8px">分析增强</div>
+        <div class="s-row" style="flex-wrap:wrap;gap:4px">
+          <button class="s-btn active" id="sDeep" onclick="toggleOptBtn('deep','sDeep')">深度</button>
+          <button class="s-btn" id="sMulti" onclick="toggleOptBtn('multi','sMulti')">多视角</button>
+          <button class="s-btn" id="sPractical" onclick="toggleOptBtn('practical','sPractical')">实务</button>
+          <button class="s-btn" id="sCompare" onclick="toggleOptBtn('compare','sCompare')">比较法</button>
+        </div>
+        <div class="s-row" style="margin-top:8px">
+          <button class="s-btn danger" onclick="clearHistory()">清空对话</button>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+  <main class="chat-area" id="chatArea">
+    <div class="messages" id="messages"></div>
+    <div class="typing-dots no-avatar" id="typing" style="display:none"><span></span><span></span><span></span></div>
+  </main>
+  <footer class="input-bar" id="inputBar">
+    <div class="input-tools" id="inputTools">
+      <button class="input-tool on" id="tDeep" onclick="toggleOptBtn('deep','tDeep')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> 深度</button>
+      <button class="input-tool" id="tMulti" onclick="toggleOptBtn('multi','tMulti')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> 多视角</button>
+      <button class="input-tool" id="tPractical" onclick="toggleOptBtn('practical','tPractical')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg> 实务</button>
+      <button class="input-tool" id="tCompare" onclick="toggleOptBtn('compare','tCompare')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> 比较法</button>
+    </div>
+    <div class="input-row">
+      <div class="input-field-wrap">
+        <textarea id="userInput" class="input-field" placeholder="输入法律问题…" rows="1"></textarea>
+      </div>
+      <button class="btn-send" id="btnSend"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2" fill="currentColor" stroke="none"/></svg></button>
+    </div>
+    <p class="input-hint">LexPilot · AI可能出错 · 请交叉验证 · 仅供学习辅助</p>
+  </footer>
+</div>
+
+<!-- ===== HELP MODAL ===== -->
+<div class="modal-overlay hide" id="helpModal">
+  <div class="modal-box">
+    <h3>分析增强功能说明</h3>
+    <p class="modal-sub">开启后，系统提示词会自动追加对应指令</p>
+    <div class="help-section">
+      <h4><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span> 深度分析</h4>
+      <p>对每个关键问题追问三层"为什么"，穿透法理底层。不满足于结论正确，要求AI展开学说对比和立法目的分析。</p>
+      <div class="help-example">例：不仅回答"合同有效"，还要分析有效要件、无效情形、可撤销事由的边界</div>
+    </div>
+    <div class="help-section">
+      <h4><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></span> 多视角分析</h4>
+      <p>从原告、被告、法官、立法者、学者五个立场分别切入，全面覆盖诉讼各方的论证逻辑。</p>
+      <div class="help-example">例：同一违约行为，分别分析守约方主张、违约方抗辩、法官裁判思路</div>
+    </div>
+    <div class="help-section">
+      <h4><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg></span> 实务指引</h4>
+      <p>补充证据收集清单、诉讼策略建议、类案检索关键词、文书写作要点。弥补AI"知道问题但不知道怎么解决"的短板。</p>
+      <div class="help-example">例：分析案件后，自动建议需要收集哪些证据、如何设计质证策略</div>
+    </div>
+    <div class="help-section">
+      <h4><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span> 比较法视野</h4>
+      <p>引入德国法、日本法、英美法等相关素材，避免分析局限于国内法。对法学科研和比较法论文尤其有用。</p>
+      <div class="help-example">例：分析正当防卫时，对比德国法"法秩序维护"理论与我国刑法第20条</div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="closeHelp()">知道了</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DATABASE VIEW ===== -->
+<div id="dbView">
+  <div class="wx-nav">
+    <button class="back" onclick="goHome()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span class="title">法律数据库</span>
+  </div>
+  <div class="db-body">
+    <div class="db-header">
+      <h2>核心法律法规</h2>
+      <p>共收录 7 部 · 全文可下载 · 仅供学习参考</p>
+    </div>
+    <div class="db-search">
+      <input type="text" id="dbSearch" placeholder="搜索法律名称…" oninput="filterLaws()" />
+    </div>
+    <div id="dbContent"></div>
+  </div>
+</div>
+
+<!-- ===== ABOUT VIEW ===== -->
+<div id="aboutView">
+  <div class="wx-nav">
+    <button class="back" onclick="goHome()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span class="title">关于我们</span>
+  </div>
+  <div class="about-body">
+    <div class="about-logo"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 L12 21"/><path d="M5 3 L5 21"/><path d="M19 3 L19 21"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="5" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/></svg></div>
+    <div class="about-name">LexPilot</div>
+    <div class="about-ver">v1.0 · 法学生AI学习助手</div>
+    <div class="about-desc">专为法学生打造的深度学习辅助工具<br>基于<strong>AI法律工具失效模式与规制路径研究</strong>（2026）优化</div>
+
+    <div class="about-section">
+      <h3><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="vertical-align:-4px;margin-right:4px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>研究背景</h3>
+      <p>LexPilot的系统提示词基于对DeepSeek和千问两款主流AI的实证测试结果进行优化。研究涵盖8类法律案例×2轮测试×4维测评，归纳出AI法律工具的10大通用失效模式：</p>
+      <ul style="margin-top:6px">
+        <li>F1 法条幻视 — 接受虚构法律为真实</li>
+        <li>F2 罪名定性降维 — 倾向选择更轻罪名</li>
+        <li>F3 量刑乐观偏差 — 系统性低估刑期</li>
+        <li>F4 浅度正确 — 结论正确但缺乏深度</li>
+        <li>F5 前提验证盲区 — 不验证用户前提</li>
+        <li>F6 引导性赤字 — 缺乏实务操作指导</li>
+        <li>F7 计算推理不一致 — 多步推理矛盾</li>
+        <li>F8 因果关系过度简化 — 线性简化复杂因果</li>
+        <li>F9 国际法视野缺失 — 局限于国内法</li>
+        <li>F10 用户差异化风险 — 不区分用户背景</li>
+      </ul>
+    </div>
+
+    <div class="about-section">
+      <h3><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="vertical-align:-4px;margin-right:4px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>使用须知</h3>
+      <p>LexPilot是法学学习辅助工具，不构成法律意见。AI输出可能存在错误，请始终保持批判性思维，交叉验证关键信息。实务操作请咨询执业律师。</p>
+    </div>
+
+    <div class="about-section">
+      <h3><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="vertical-align:-4px;margin-right:4px"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/></svg>数据来源</h3>
+      <p>法律数据库收录的法律文本来自公开渠道，仅供学习参考。如发现文本有误，请以全国人大官网公布的最新版本为准。</p>
+    </div>
+
+    <div class="about-credit">
+      研究参考：西南民族大学法学院 徐子涵团队 · 2026年5月<br>
+      LexPilot © 2026 · 网页由ccy制作
+    </div>
+  </div>
+</div>
+
+<!-- ===== QUIZ VIEW ===== -->
+<div id="quizView">
+  <div class="wx-nav">
+    <button class="back" onclick="goHome()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span class="title">学习题库</span>
+  </div>
+  <div class="quiz-body">
+    <div class="quiz-header">
+      <h2>法学学习题库</h2>
+      <p id="quizSubtitle">法考真题 · 章节练习 · 错题回顾</p>
+    </div>
+    <div class="quiz-stats" id="quizStats"></div>
+    <div class="quiz-subject-filter" id="quizSubjectFilter"></div>
+    <div class="quiz-mode-bar">
+      <button class="quiz-mode-btn active" id="modePractice" onclick="setQuizMode('practice')">📝 练习模式</button>
+      <button class="quiz-mode-btn" id="modeExam" onclick="setQuizMode('exam')">⏱ 考试模式</button>
+    </div>
+    <div class="quiz-progress-bar" id="quizProgress"><div class="quiz-progress-fill" id="quizProgressFill" style="width:0%"></div></div>
+    <div id="quizContent"></div>
+  </div>
+</div>
+
+<!-- ===== DOC GEN VIEW ===== -->
+<div id="docView">
+  <div class="wx-nav">
+    <button class="back" onclick="goHome()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span class="title">法律文书生成</span>
+  </div>
+  <div class="doc-body">
+    <div class="doc-header">
+      <h2>AI 法律文书生成</h2>
+      <p id="docSubtitle">选择文书类型，填写关键信息，一键生成</p>
+    </div>
+    <div class="doc-type-grid" id="docTypeGrid"></div>
+    <div id="docFormArea"></div>
+    <div id="docResultArea"></div>
+  </div>
+</div>
+
+<!-- ===== LAW READER VIEW ===== -->
+<div id="lawReaderView">
+  <div class="wx-nav">
+    <button class="back" onclick="closeLawReader()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span class="title" id="lrTitle">法律全文</span>
+  </div>
+  <div class="lr-body">
+    <div class="lr-search-wrap">
+      <input type="text" id="lrSearch" placeholder="输入关键词搜索法条…" oninput="searchInLaw()" />
+      <button onclick="searchInLaw()">搜索</button>
+    </div>
+    <div class="lr-search-info" id="lrInfo"></div>
+    <div class="lr-result-nav" id="lrNav"></div>
+    <div class="lr-content" id="lrContent">加载中…</div>
+  </div>
+</div>
+
+<!-- ===== LAW PREVIEW MODAL ===== -->
+<div class="modal-overlay hide" id="lawModal">
+  <div class="modal-box">
+    <h3 id="lawModalTitle">法律预览</h3>
+    <p class="modal-sub" id="lawModalMeta"></p>
+    <div class="law-preview-text" id="lawModalText">加载中…</div>
+    <div class="btn-row">
+      <button class="btn-secondary" onclick="closeLawModal()">关闭</button>
+      <button class="btn-primary" id="lawModalDownload">⬇ 下载全文</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" style="position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--toast-bg);color:var(--toast-text);padding:10px 20px;border-radius:20px;font-size:13px;z-index:300;opacity:0;pointer-events:none;transition:opacity .3s;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,0.2)"></div>
+
+<script>
+// ============================================================
+// LexPilot v1.0 — Full App Logic
+// ============================================================
+
+// ----- CONFIG -----
+var DEFAULTS = { apiKey: "sk-6d616396f6e14e418a1954f920401b5e", model: "deepseek-v4-flash" };
+var SETTINGS = {};
+try { var s = JSON.parse(localStorage.getItem("lexpilot-config") || "{}"); SETTINGS = Object.assign({}, DEFAULTS, s); } catch(e) { SETTINGS = Object.assign({}, DEFAULTS); }
+
+var userTheme = "light";
+try { userTheme = JSON.parse(localStorage.getItem("lexpilot-theme") || '"light"'); } catch(e) {}
+
+var options = { deep: true, multi: false, practical: false, compare: false };
+try { var o = JSON.parse(localStorage.getItem("lexpilot-opts") || "{}"); Object.keys(options).forEach(function(k){ if(k in o) options[k] = o[k]; }); } catch(e) {}
+
+function $(s){return document.querySelector(s)}
+
+// ============================================================
+// LAW DATABASE
+// ============================================================
+var LAWS = [
+  { name:"中华人民共和国民法典", file:"civil-code-2020.docx", date:"2021-01-01", cat:"民事", icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/></svg>', desc:"7编1260条 · 总则·物权·合同·人格权·婚姻家庭·继承·侵权" },
+  { name:"中华人民共和国刑法", file:"criminal-law-2020.docx", date:"2021-03-01", cat:"刑事", icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/></svg>', desc:"452条 — 总则+分则，含修正案(十一)" },
+  { name:"中华人民共和国民事诉讼法", file:"civil-procedure-law-2023.docx", date:"2024-01-01", cat:"程序", icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/></svg>', desc:"306条 — 含2023年修正案" },
+  { name:"中华人民共和国劳动合同法", file:"labor-contract-law-2012.docx", date:"2013-07-01", cat:"社会", icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/></svg>', desc:"98条 — 劳动合同订立、履行、解除" },
+  { name:"中华人民共和国安全生产法", file:"work-safety-law-2021.docx", date:"2021-09-01", cat:"行政", icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/></svg>', desc:"119条 — 2021修正版" },
+  { name:"中华人民共和国治安管理处罚法", file:"public-security-law-2025.docx", date:"2026-01-01", cat:"行政", icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/></svg>', desc:"119条 — 2025修订版" },
+  { name:"中华人民共和国危险化学品安全法", file:"hazardous-chemicals-safety-law-2025.docx", date:"2026-01-01", cat:"行政", icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/></svg>', desc:"新法 — 2025年通过" }
+];
+
+function showDatabase() {
+  hideAllViews();
+  document.getElementById("dbView").classList.add("show");
+  renderDatabase();
+}
+
+function renderDatabase(filter) {
+  var q = (filter || "").toLowerCase();
+  var filtered = LAWS.filter(function(l) {
+    return !q || l.name.indexOf(q) !== -1 || l.cat.indexOf(q) !== -1 || l.desc.indexOf(q) !== -1;
+  });
+  var cats = {};
+  filtered.forEach(function(l) {
+    if (!cats[l.cat]) cats[l.cat] = [];
+    cats[l.cat].push(l);
+  });
+
+  var h = "";
+  var catNames = { "民事":'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:3px"><path d="M12 3 L12 21"/><path d="M5 3 L5 21"/><path d="M19 3 L19 21"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="5" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/></svg>民事法律', "刑事":'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="vertical-align:-3px;margin-right:3px"><path d="M12 2 L12 22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>刑事法律', "程序":'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="vertical-align:-3px;margin-right:3px"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>程序法律', "社会":'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="vertical-align:-3px;margin-right:3px"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>社会法律', "行政":'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="vertical-align:-3px;margin-right:3px"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>行政法律' };
+  Object.keys(cats).forEach(function(cat) {
+    h += '<div class="db-category">' + (catNames[cat] || cat) + '</div>';
+    cats[cat].forEach(function(law) {
+      h += '<div class="law-card">' +
+        '<div class="law-icon" onclick="previewLaw(\'' + escAttr(law.file) + '\',\'' + escAttr(law.name) + '\')">' + law.icon + '</div>' +
+        '<div class="law-info" onclick="previewLaw(\'' + escAttr(law.file) + '\',\'' + escAttr(law.name) + '\')"><div class="law-name">' + escHtml(law.name) + '</div>' +
+        '<div class="law-meta"><span>生效：' + law.date + '</span><span>' + law.desc + '</span></div></div>' +
+        '<button class="law-view-btn" onclick="event.stopPropagation();openLawReader(\'' + escAttr(law.file) + '\',\'' + escAttr(law.name) + '\')">查看</button>' +
+        '<a class="law-dl" href="laws/' + encodeURI(law.file) + '" download onclick="event.stopPropagation()">下载</a>' +
+        '</div>';
+    });
+  });
+
+  if (!h) h = '<div style="text-align:center;padding:40px;color:var(--text2)">未找到匹配的法律法规</div>';
+  document.getElementById("dbContent").innerHTML = h;
+}
+
+function filterLaws() {
+  renderDatabase(document.getElementById("dbSearch").value);
+}
+
+function previewLaw(file, name) {
+  document.getElementById("lawModalTitle").textContent = name;
+  document.getElementById("lawModalMeta").textContent = "正在加载预览引擎…";
+  document.getElementById("lawModalText").textContent = "⏳ 正在加载文档预览…";
+  document.getElementById("lawModalDownload").onclick = function() {
+    var a = document.createElement("a");
+    a.href = "laws/" + encodeURI(file);
+    a.download = file;
+    a.click();
+  };
+  document.getElementById("lawModal").classList.remove("hide");
+
+  function doPreview() {
+    fetch("laws/" + encodeURI(file)).then(function(r) {
+      document.getElementById("lawModalMeta").textContent = "正在下载文档…";
+      return r.arrayBuffer();
+    }).then(function(buf) {
+      document.getElementById("lawModalMeta").textContent = "正在解析文本…";
+      return mammoth.extractRawText({ arrayBuffer: buf });
+    }).then(function(result) {
+      var text = (result.value || "").trim();
+      if (!text) throw new Error("empty");
+      var maxLen = 30000;
+      var truncated = text.length > maxLen;
+      document.getElementById("lawModalText").textContent = text.substring(0, maxLen);
+      document.getElementById("lawModalMeta").textContent = "全文预览" + (truncated ? "（前30000字，共约" + Math.round(text.length/1000) + "千字）" : "") + " · 点击下方按钮下载完整文档";
+    }).catch(function() {
+      document.getElementById("lawModalText").textContent = "无法在线预览此 .docx 文件。请点击下方「下载全文」按钮，下载后用 Word 或 WPS 打开查阅。";
+      document.getElementById("lawModalMeta").textContent = file;
+    });
+  }
+
+  if (typeof mammoth !== "undefined") {
+    doPreview();
+  } else {
+    loadScript("https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js", function(err) {
+      if (err) {
+        document.getElementById("lawModalText").textContent = "预览引擎加载失败。请点击下方「下载全文」按钮下载后查阅。";
+        document.getElementById("lawModalMeta").textContent = file;
+        return;
+      }
+      doPreview();
+    });
+  }
+}
+
+function closeLawModal() {
+  document.getElementById("lawModal").classList.add("hide");
+}
+// Close law modal on overlay click
+document.getElementById("lawModal").addEventListener("click", function(e) {
+  if (e.target === this) closeLawModal();
+});
+
+// ============================================================
+// LAW READER — full text with search
+// ============================================================
+var lawReaderText = "";
+var lawReaderName = "";
+
+function openLawReader(file, name) {
+  lawReaderName = name; lawReaderText = "";
+  document.getElementById("lrTitle").textContent = name;
+  document.getElementById("lrContent").textContent = "正在加载全文…";
+  document.getElementById("lrInfo").textContent = "";
+  document.getElementById("lrNav").innerHTML = "";
+  document.getElementById("lrSearch").value = "";
+  hideAllViews();
+  document.getElementById("lawReaderView").classList.add("show");
+
+  function doLoad() {
+    fetch("laws/" + encodeURI(file)).then(function(r) { return r.arrayBuffer(); }).then(function(buf) {
+      return mammoth.extractRawText({ arrayBuffer: buf });
+    }).then(function(result) {
+      lawReaderText = (result.value || "").trim();
+      if (!lawReaderText) throw new Error("empty");
+      document.getElementById("lrContent").textContent = lawReaderText;
+      document.getElementById("lrInfo").textContent = "全文共约 " + Math.round(lawReaderText.length/1000) + " 千字";
+    }).catch(function() {
+      document.getElementById("lrContent").textContent = "无法加载文本。请下载 .docx 文件后用 Word 查阅。";
+      document.getElementById("lrInfo").textContent = "";
+    });
+  }
+
+  if (typeof mammoth !== "undefined") { doLoad(); }
+  else {
+    loadScript("https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js", function(err) {
+      if (err) { document.getElementById("lrContent").textContent = "预览引擎加载失败，请下载后查阅。"; return; }
+      doLoad();
+    });
+  }
+}
+
+function closeLawReader() {
+  document.getElementById("lawReaderView").classList.remove("show");
+  showDatabase();
+}
+
+function searchInLaw() {
+  var q = document.getElementById("lrSearch").value.trim();
+  if (!q || !lawReaderText) return;
+  var paragraphs = lawReaderText.split(/\n{2,}/);
+  var results = [];
+  for (var i = 0; i < paragraphs.length; i++) {
+    if (paragraphs[i].indexOf(q) !== -1) results.push({ idx: i, text: paragraphs[i] });
+  }
+  if (results.length === 0) {
+    document.getElementById("lrInfo").textContent = "未找到包含「" + q + "」的段落";
+    document.getElementById("lrNav").innerHTML = "";
+    return;
+  }
+  document.getElementById("lrInfo").textContent = "找到 " + results.length + " 处匹配";
+
+  // Build nav
+  var navHtml = "";
+  for (var j = 0; j < Math.min(results.length, 20); j++) {
+    navHtml += '<button onclick="jumpToResult(' + results[j].idx + ')" id="lrNavBtn' + j + '">第' + (j+1) + '处</button>';
+  }
+  document.getElementById("lrNav").innerHTML = navHtml;
+
+  // Show first result
+  jumpToResult(results[0].idx);
+  // Highlight all in nav
+  setTimeout(function() {
+    var firstBtn = document.getElementById("lrNavBtn0");
+    if (firstBtn) firstBtn.classList.add("active");
+  }, 50);
+}
+
+function jumpToResult(idx) {
+  var paragraphs = lawReaderText.split(/\n{2,}/);
+  if (idx >= paragraphs.length) return;
+  var q = document.getElementById("lrSearch").value.trim();
+  var displayText = paragraphs.slice(Math.max(0, idx - 1), idx + 3).join("\n\n");
+  if (q) {
+    var re = new RegExp("(" + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ")", "gi");
+    displayText = displayText.replace(re, '<span class="highlight">$1</span>');
+  }
+  document.getElementById("lrContent").innerHTML = displayText.replace(/\n/g, "<br>");
+  // Update active nav
+  document.querySelectorAll("#lrNav button").forEach(function(b) { b.classList.remove("active"); });
+  for (var j = 0; j < 20; j++) {
+    var btn = document.getElementById("lrNavBtn" + j);
+    if (btn && btn.textContent.indexOf("第" + (j+1) + "处") !== -1) {
+      var results = [];
+      for (var i = 0; i < paragraphs.length; i++) {
+        if (paragraphs[i].indexOf(q) !== -1) results.push(i);
+      }
+      if (results[j] === idx) btn.classList.add("active");
+    }
+  }
+}
+
+// ============================================================
+// ABOUT
+// ============================================================
+function showAbout() {
+  hideAllViews();
+  document.getElementById("aboutView").classList.add("show");
+}
+
+// ============================================================
+// SCREEN MANAGEMENT
+// ============================================================
+function hideAllViews() {
+  ["homeScreen","chatView","dbView","aboutView","quizView","docView"].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.classList.remove("show");
+  });
+}
+
+function goHome() {
+  hideAllViews();
+  document.getElementById("homeScreen").classList.add("show");
+}
+
+function enterChat() {
+  hideAllViews();
+  document.getElementById("chatView").classList.add("show");
+  updateOptUI();
+  renderAllMessages();
+}
+
+// ============================================================
+// THEME
+// ============================================================
+function applyTheme() {
+  document.body.classList.toggle("dark", userTheme === "dark");
+  var hl = document.getElementById("hlTheme");
+  if (hl) hl.href = userTheme === "dark"
+    ? "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css"
+    : "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css";
+}
+function setTheme(theme, btn) {
+  userTheme = theme;
+  try { localStorage.setItem("lexpilot-theme", JSON.stringify(userTheme)); } catch(e) {}
+  applyTheme();
+  var btns = btn.parentElement.querySelectorAll(".s-btn");
+  for (var i = 0; i < btns.length; i++) btns[i].classList.remove("active");
+  btn.classList.add("active");
+}
+
+// ============================================================
+// SYSTEM PROMPT — 法学优化
+// ============================================================
+function buildSystemPrompt() {
+  var base = [
+    "你是 LexPilot，专为法学生设计的AI学习助手。",
+    "【核心身份】法学学习辅助工具，非执业律师。目标用户为法学院学生。帮助理解法律问题、培养法律思维，不构成法律意见。",
+    "",
+    "【十大失效模式 — 你必须主动规避】",
+    "F1 法条幻视：绝不引用不存在的法律。引用法条前确认其真实存在且现行有效。如可能已废止，必须标注。",
+    "F2 罪名定性降维：分析刑事案件时讨论所有可能适用的罪名（包括更重的），不默认最轻的。标注争议点。",
+    "F3 量刑乐观偏差：提供量刑参考时给出合理区间而非单一点估计。标注从重/从轻情节及权重大小。",
+    "F4 浅度正确：穿透到法理底层，分析替代法律理论，讨论不同学说。追问「为什么」。",
+    "F5 前提验证盲区：回答前验证用户问题中的前提是否成立。如用户使用了已废止的法律或错误概念，礼貌纠正。",
+    "F6 引导性赤字：不仅告诉用户「法律是什么」，还要告诉TA「接下来怎么办」——证据收集、诉讼策略、文书要点、类案检索方向。",
+    "F7 计算推理不一致：涉及金额计算时写清每一步公式、变量和依据。结论与示例必须自洽。",
+    "F8 因果关系过度简化：分析刑法因果关系时考虑多因一果、介入因素、不作为义务来源等复杂维度。",
+    "F9 国际法视野缺失：在相关案件中主动引入国际公约、比较法素材。",
+    "F10 用户差异化风险：以法学专业深度回答。实务操作问题标注「非专业人士请咨询执业律师」。",
+    "",
+    "【回答格式】",
+    "- Markdown 结构，层次分明",
+    "- 法条引用：「《XXX法》第X条：...(原文)」",
+    "- 争议标注：「[争议] A说/B说/C说...」",
+    "- 不确定性标注：「[置信度: 高/中/低] 基于...」",
+    "- 以「📋 延伸学习建议」收尾",
+    "用中文回答。保持专业、严谨、深度。"
+  ].join("\n");
+
+  var mods = [];
+  if (options.deep) mods.push("【深度模式】请进行多层次穿透式分析，追问三层「为什么」。");
+  if (options.multi) mods.push("【多视角】从原告、被告、法官、立法者、学者五个视角分别分析。");
+  if (options.practical) mods.push("【实务】提供证据收集、诉讼策略、文书要点、类案检索方向。");
+  if (options.compare) mods.push("【比较法】引入德国法、日本法、英美法等相关素材。");
+  if (mods.length > 0) base += "\n\n【当前增强模式】\n" + mods.join("\n");
+  return base;
+}
+
+// ============================================================
+// CHAT STATE
+// ============================================================
+var messages = [];
+var streaming = false;
+var abortController = null;
+var chatSessionId = 0;
+var MSG_KEY = "lexpilot-msgs";
+try { var m = localStorage.getItem(MSG_KEY); if (m) { var p = JSON.parse(m); if (Array.isArray(p)) messages = p; } } catch(e) {}
+function persist() { try { var c = messages.map(function(m){return {role:m.role, content:m.content, _time:m._time}}); localStorage.setItem(MSG_KEY, JSON.stringify(c)); } catch(e) {} }
+
+// ============================================================
+// CHAT RENDER
+// ============================================================
+var dom = {};
+function bindDom() {
+  dom.messages = $("#messages"); dom.chatArea = $("#chatArea"); dom.userInput = $("#userInput");
+  dom.btnSend = $("#btnSend"); dom.typing = $("#typing"); dom.inputBar = $("#inputBar");
+}
+
+function getTimeStr() { var d = new Date(); return ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2); }
+function fmtTime(ts) { var d = new Date(ts); return ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2); }
+
+function renderAllMessages() {
+  if (!dom.messages) bindDom();
+  dom.messages.innerHTML = "";
+  if (messages.length === 0) {
+    dom.messages.innerHTML = '<div class="welcome"><div class="wicon"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 L12 21"/><path d="M5 3 L5 21"/><path d="M19 3 L19 21"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="5" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/></svg></div><h2>LexPilot 法律咨询</h2><p class="welcome-model-desc">专为法学生打造的AI学习助手<br>深度分析 · 法条精准 · 多视角论证</p>' +
+      '<div class="capability-row"><span class="capability-chip highlight">案例分析</span><span class="capability-chip">法条检索</span><span class="capability-chip">论文辅导</span><span class="capability-chip">量刑参考</span><span class="capability-chip">实务指导</span><span class="capability-chip">比较法研究</span></div>' +
+      '<div class="section-label">试试这些</div><div class="quick-prompts" id="quickPrompts">' +
+      '<button class="quick-btn" onclick="sendMsg(\'分析民间借贷利息计算的法律规则：列出有效法条、LPR四倍规则演变、完整计算示例、标注争议点\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:3px"><path d="M12 3 L12 21"/><path d="M5 3 L5 21"/><path d="M19 3 L19 21"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>民间借贷利息计算</button>' +
+      '<button class="quick-btn" onclick="sendMsg(\'请分析正当防卫的认定要件，包括刑法第20条三款结构、时间判断标准学说争议、特殊防卫适用条件，并引入比较法视角\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="vertical-align:-2px;margin-right:3px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>正当防卫认定分析</button>' +
+      '<button class="quick-btn" onclick="sendMsg(\'请给出一个系统化的法学生案例分析框架，包括审查步骤、相关法条、常见陷阱和思维方法，涵盖刑事、民事、行政三类案件的异同\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="vertical-align:-2px;margin-right:3px"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>案例分析框架</button>' +
+      '<button class="quick-btn" onclick="sendMsg(\'请设计一篇关于人工智能法律责任的法学论文大纲，包括问题提出、文献综述、核心论点、章节结构和推荐参考文献\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="vertical-align:-2px;margin-right:3px"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/></svg>论文大纲思路</button>' +
+      '</div></div>';
+    dom.inputBar.style.display = ""; dom.typing.style.display = "none";
+    return;
+  }
+
+  dom.inputBar.style.display = "";
+  var h = "";
+  for (var i = 0; i < messages.length; i++) {
+    var msg = messages[i], role = msg.role === "assistant" ? "ai" : "user";
+    var avatar = role === "user" ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>' : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 L12 21"/><path d="M5 3 L5 21"/><path d="M19 3 L19 21"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="5" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/></svg>';
+    h += '<div class="msg ' + role + ' show no-avatar"><div class="msg-avatar">' + avatar + '</div>' +
+      '<div class="msg-body"><div class="msg-content">' + renderMD(msg.content) + '</div>' +
+      (msg._time ? '<div class="msg-time">' + fmtTime(msg._time) + '</div>' : '') +
+      '<div class="msg-actions"><button class="btn-copy" onclick="copyMsg(this)">复制</button></div></div></div>';
+  }
+  dom.messages.innerHTML = h;
+  hlAll(); scrollBottom();
+}
+
+function renderMsg(role, content) {
+  var w = dom.messages.querySelector(".welcome"); if (w) { w.remove(); dom.inputBar.style.display = ""; }
+  var avatar = role === "user" ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>' : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 L12 21"/><path d="M5 3 L5 21"/><path d="M19 3 L19 21"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="5" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/></svg>';
+  var div = document.createElement("div"); div.className = "msg " + role + " no-avatar";
+  div.innerHTML = '<div class="msg-avatar">' + avatar + '</div><div class="msg-body">' +
+    '<div class="msg-content">' + renderMD(content) + '</div>' +
+    '<div class="msg-time">' + getTimeStr() + '</div>' +
+    '<div class="msg-actions"><button class="btn-copy" onclick="copyMsg(this)">复制</button></div></div>';
+  dom.messages.appendChild(div); hlAll(); scrollBottom();
+  requestAnimationFrame(function() { requestAnimationFrame(function() { div.classList.add("show"); }); });
+}
+
+function renderMD(text) {
+  if (typeof marked === "undefined") return escHtml(text);
+  try { return marked.parse(text, { breaks: true, gfm: true }); } catch(e) { return escHtml(text); }
+}
+
+function hlAll() { if (typeof hljs !== "undefined") document.querySelectorAll("pre code").forEach(function(b) { hljs.highlightElement(b); }); }
+function scrollBottom() { requestAnimationFrame(function() { if (dom.chatArea) dom.chatArea.scrollTop = dom.chatArea.scrollHeight; }); }
+
+function copyMsg(btn) {
+  var t = btn.closest(".msg").querySelector(".msg-content").textContent;
+  navigator.clipboard.writeText(t).then(function() { btn.textContent = "已复制"; setTimeout(function() { btn.textContent = "复制"; }, 1500); }).catch(function() {});
+}
+
+function showError(msg) {
+  var d = document.createElement("div"); d.className = "error"; d.textContent = "⚠️ " + msg;
+  dom.messages.appendChild(d); scrollBottom();
+}
+
+// ============================================================
+// API
+// ============================================================
+function sendMsg(text) {
+  if (streaming) return;
+  text = text.trim(); if (!text) return;
+
+  var sessionId = ++chatSessionId;
+  streaming = true; dom.btnSend.disabled = true; dom.typing.style.display = "flex"; scrollBottom();
+
+  messages.push({ role: "user", content: text, _time: Date.now() });
+  renderMsg("user", text); persist();
+
+  var sysP = buildSystemPrompt();
+  var apiMsgs = [{ role: "system", content: sysP }];
+  for (var i = 0; i < messages.length; i++) {
+    apiMsgs.push({ role: messages[i].role === "assistant" ? "assistant" : "user", content: messages[i].content });
+  }
+
+  var msgDiv = document.createElement("div"); msgDiv.className = "msg ai no-avatar";
+  var contentDiv = document.createElement("div"); contentDiv.className = "msg-content"; contentDiv.textContent = " ";
+  msgDiv.innerHTML = '<div class="msg-avatar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 L12 21"/><path d="M5 3 L5 21"/><path d="M19 3 L19 21"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="5" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/></svg></div><div class="msg-body"></div>';
+  msgDiv.querySelector(".msg-body").appendChild(contentDiv);
+  dom.messages.appendChild(msgDiv); scrollBottom(); dom.typing.style.display = "none";
+  requestAnimationFrame(function() { requestAnimationFrame(function() { msgDiv.classList.add("show"); }); });
+
+  var fullContent = "", resolved = false;
+  abortController = new AbortController(); var signal = abortController.signal;
+
+  fetch("https://api.deepseek.com/v1/chat/completions", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: "Bearer " + SETTINGS.apiKey },
+    body: JSON.stringify({ model: SETTINGS.model, messages: apiMsgs, stream: true, temperature: 0.2, max_tokens: 8192 }),
+    signal: signal
+  }).then(function(resp) {
+    if (!resp.ok) return resp.text().then(function(t) { throw new Error("API " + resp.status + ": " + t.slice(0, 300)); });
+    var reader = resp.body.getReader(), decoder = new TextDecoder(), buf = "";
+    function pump() {
+      if (resolved || chatSessionId !== sessionId) return;
+      reader.read().then(function(result) {
+        if (resolved || chatSessionId !== sessionId) return;
+        if (result.done) {
+          resolved = true; abortController = null;
+          messages.push({ role: "assistant", content: fullContent || "（空响应）", _time: Date.now() }); persist();
+          contentDiv.innerHTML = renderMD(fullContent || "（空响应）"); hlAll();
+          var mt = document.createElement("div"); mt.className = "msg-time"; mt.textContent = getTimeStr();
+          var act = document.createElement("div"); act.className = "msg-actions"; act.innerHTML = '<button class="btn-copy" onclick="copyMsg(this)">复制</button>';
+          msgDiv.querySelector(".msg-body").appendChild(mt); msgDiv.querySelector(".msg-body").appendChild(act);
+          streaming = false; dom.btnSend.disabled = false; return;
+        }
+        buf += decoder.decode(result.value, { stream: true });
+        var lines = buf.split("\n"); buf = lines.pop() || "";
+        for (var i = 0; i < lines.length; i++) {
+          var s = lines[i].trim(); if (!s.startsWith("data:")) continue;
+          var data = s.slice(5).trim(); if (data === "[DONE]") continue;
+          try { var p = JSON.parse(data), d = (p.choices || [{}])[0].delta; if (!d) continue; var t = d.content || ""; if (t) { fullContent += t; contentDiv.textContent = fullContent; scrollBottom(); } } catch(e) {}
+        }
+        pump();
+      }).catch(function(e) {
+        if (resolved || chatSessionId !== sessionId) return; resolved = true; abortController = null;
+        if (fullContent) { messages.push({ role: "assistant", content: fullContent, _time: Date.now() }); persist(); contentDiv.innerHTML = renderMD(fullContent); hlAll(); }
+        else if (!(e && e.name === "AbortError")) { showError(e.message); msgDiv.remove(); }
+        streaming = false; dom.btnSend.disabled = false; dom.typing.style.display = "none";
+      });
+    }
+    pump();
+  }).catch(function(e) {
+    if (resolved || chatSessionId !== sessionId) return; resolved = true; abortController = null;
+    if (fullContent) { messages.push({ role: "assistant", content: fullContent, _time: Date.now() }); persist(); contentDiv.innerHTML = renderMD(fullContent); hlAll(); }
+    else if (!(e && e.name === "AbortError")) { showError(e.message); msgDiv.remove(); }
+    streaming = false; dom.btnSend.disabled = false; dom.typing.style.display = "none";
+  });
+}
+
+// ============================================================
+// SETTINGS & OPTIONS
+// ============================================================
+function toggleSettings() {
+  var drop = document.getElementById("settingsDrop");
+  if (!drop.classList.contains("show")) { updateOptUI(); }
+  drop.classList.toggle("show");
+  setTimeout(function() {
+    document.addEventListener("click", function close(e) {
+      if (!e.target.closest("#btnSettings") && !e.target.closest("#settingsDrop")) { drop.classList.remove("show"); document.removeEventListener("click", close); }
+    });
+  }, 10);
+}
+
+// ============================================================
+// HELP MODAL
+// ============================================================
+function showHelp() { document.getElementById("helpModal").classList.remove("hide"); }
+function closeHelp() { document.getElementById("helpModal").classList.add("hide"); }
+document.getElementById("helpModal").addEventListener("click", function(e) {
+  if (e.target === this) closeHelp();
+});
+
+function toggleOptBtn(key, id) {
+  options[key] = !options[key];
+  try { localStorage.setItem("lexpilot-opts", JSON.stringify(options)); } catch(e) {}
+  updateOptUI();
+  showToast((options[key] ? "✅ " : "❌ ") + document.getElementById(id).textContent.trim());
+}
+
+function updateOptUI() {
+  Object.keys(options).forEach(function(k) {
+    var tEl = document.getElementById("t" + k.charAt(0).toUpperCase() + k.slice(1));
+    var sEl = document.getElementById("s" + k.charAt(0).toUpperCase() + k.slice(1));
+    if (tEl) tEl.classList.toggle("on", options[k]);
+    if (sEl) { sEl.classList.toggle("active", options[k]); }
+  });
+}
+
+function clearHistory() {
+  if (!messages.length) return;
+  if (!confirm("确定清空当前对话记录吗？")) return;
+  messages.length = 0; persist(); renderAllMessages();
+  document.getElementById("settingsDrop").classList.remove("show");
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showComingSoon(feature) {
+  showToast(feature + ' — 开发中，敬请期待');
+}
+function showToast(msg) {
+  var t = document.getElementById("toast");
+  t.textContent = msg; t.style.opacity = "1";
+  clearTimeout(window._toastT);
+  window._toastT = setTimeout(function() { t.style.opacity = "0"; }, 2000);
+}
+
+// ============================================================
+// EVENTS
+// ============================================================
+function bindEvents() {
+  bindDom();
+  dom.btnSend.addEventListener("click", function() { var t = dom.userInput.value.trim(); if (!t || streaming) return; dom.userInput.value = ""; dom.userInput.style.height = "auto"; sendMsg(t); });
+  dom.userInput.addEventListener("keydown", function(e) { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); var t = dom.userInput.value.trim(); if (!t || streaming) return; dom.userInput.value = ""; dom.userInput.style.height = "auto"; sendMsg(t); } });
+  dom.userInput.addEventListener("input", function() { this.style.height = "auto"; this.style.height = Math.min(this.scrollHeight, 110) + "px"; });
+  dom.messages.addEventListener("click", function(e) { var btn = e.target.closest(".btn-copy"); if (btn) copyMsg(btn); });
+}
+
+// ============================================================
+// UTILS
+// ============================================================
+function escAttr(s) { return s.replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function escHtml(s) { var d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
+function loadScript(url, cb) { var s = document.createElement("script"); s.src = url; s.onload = function() { cb(null); }; s.onerror = function() { cb(new Error("load failed")); }; document.head.appendChild(s); }
+
+// ============================================================
+// INIT
+// ============================================================
+(function init() {
+  applyTheme();
+  bindEvents();
+  renderAllMessages();
+  renderDatabase();
+  // Register service worker for offline/PWA support
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js").catch(function(){});
+  }
+  // Show install prompt for PWA
+  window.addEventListener("beforeinstallprompt", function(e) {
+    e.preventDefault();
+    window._installPrompt = e;
+    var banner = document.createElement("div");
+    banner.id = "installBanner";
+    banner.style.cssText = "position:fixed;top:0;left:0;right:0;background:var(--accent);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;z-index:500;font-size:13px;font-weight:600;gap:8px;padding-top:calc(12px + env(safe-area-inset-top,0px))";
+    banner.innerHTML = '<span>📲 安装 LexPilot 到桌面</span><span style="display:flex;gap:6px;flex-shrink:0"><button onclick="installApp()" style="background:#fff;color:var(--accent);border:none;padding:6px 14px;border-radius:14px;font-weight:700;cursor:pointer;font-size:12px;font-family:inherit">安装</button><button onclick="this.parentElement.parentElement.remove()" style="background:transparent;border:none;color:#fff;cursor:pointer;font-size:16px;padding:2px 6px;font-family:inherit">×</button></span>';
+    document.body.prepend(banner);
+  });
+})();
+function installApp() {
+  if (window._installPrompt) {
+    window._installPrompt.prompt();
+    window._installPrompt.userChoice.then(function(r) {
+      var b = document.getElementById("installBanner");
+      if (b) b.remove();
+      window._installPrompt = null;
+    });
+  }
+}
+
+// ============================================================
+// QUIZ / STUDY QUESTION BANK
+// ============================================================
+var QUIZ_DATA = {
+  "刑法": [
+    {q:"为在社会上立功表现，A点火烧房子，在消防员来时又扑灭了火，烧毁了一些物品。A的行为构成什么罪？", opts:["放火罪","失火罪","故意毁坏财物罪","寻衅滋事罪"], ans:0, exp:"A点火烧房子的行为已经构成放火罪（既遂）。放火罪是危险犯，只要放火行为足以危害公共安全即构成既遂，事后扑灭火焰不影响定罪。"},
+    {q:"A与B都是吸毒者，A将毒品以购买价转让给B，A是否构成贩卖毒品罪？", opts:["构成，有偿转让即贩卖","不构成，平价转让无牟利","不构成，吸毒者之间转让属自用","构成非法持有毒品罪"], ans:0, exp:"吸毒者有偿转让毒品给他人并获取对价，属于贩卖毒品行为。即使以购买价转让，也构成贩卖毒品罪，因为其行为已进入流通环节并获取了对价。"},
+    {q:"为躲避公安部门的酒驾排查，开车向交警冲撞，构成什么罪？", opts:["妨害公务罪","故意杀人罪","以危险方法危害公共安全罪","袭警罪"], ans:0, exp:"行为人以暴力方法阻碍人民警察依法执行公务，构成妨害公务罪。不足以推定具有杀人故意，也未危害不特定多数人安全，故不构成故意杀人罪或以危险方法危害公共安全罪。"},
+    {q:"丙在厂区开车从A车间运货到B车间，喝了点酒，倒车时撞倒原料箱砸死了人。丙构成什么罪？", opts:["重大责任事故罪","交通肇事罪","过失致人死亡罪","危险驾驶罪"], ans:0, exp:"在生产、作业中违反有关安全管理规定，造成重大伤亡事故，构成重大责任事故罪。厂区内生产作业期间，不适用交通肇事罪。"},
+    {q:"网络服务提供者拒不履行信息网络安全管理义务，造成危害后果时，构成什么罪？", opts:["拒不履行信息网络安全管理义务罪","玩忽职守罪","帮助信息网络犯罪活动罪","非法经营罪"], ans:0, exp:"《刑法》第286条之一规定了拒不履行信息网络安全管理义务罪，网络服务提供者不履行安全管理义务，经监管部门责令改正而拒不改正，造成违法信息大量传播等后果的，构成本罪。"},
+    {q:"L从背后突然抢B的挎包，出租车司机X去追，快追上时L捡起砖头砸车窗，X打方向盘撞树受重伤。后警察在L身上搜到火药枪一把，L逃跑过程中撞倒行人A致失血过多死亡。如何定性L的行为？", opts:["抢夺罪、抢劫罪（转化）、过失致人死亡罪","抢劫罪、故意杀人罪","盗窃罪、故意伤害罪","抢夺罪、以危险方法危害公共安全罪"], ans:0, exp:"L先实施抢夺；在被追捕过程中使用暴力（捡砖头砸车窗）抗拒抓捕，依《刑法》第269条转化为抢劫罪；逃跑中撞倒行人致其死亡，另构成过失致人死亡罪。身上搜出火药枪可作为量刑情节。"},
+    {q:"摩托车未上锁，A将车开走并转卖。失主找到A，A不承认。A构成什么罪？", opts:["盗窃罪","侵占罪","诈骗罪","抢夺罪"], ans:0, exp:"A以非法占有为目的，秘密窃取他人摩托车并转卖，构成盗窃罪。摩托车虽未上锁，但仍属他人占有之物，不属于遗忘物或埋藏物，不构成侵占罪。"},
+    {q:"甲借摩托车给乙，乙没还，甲偷了回来。乙赔了4000元给甲，甲怕事情败露又将车以3000元卖给A。甲的行为构成什么罪？", opts:["诈骗罪","盗窃罪","盗窃罪和诈骗罪数罪并罚","侵占罪"], ans:0, exp:"甲偷回已借出的摩托车后，隐瞒真相接受乙的赔偿（4000元），又转卖获利（3000元），以非法占有为目的，虚构事实、隐瞒真相骗取他人财物，构成诈骗罪。"},
+    {q:"为了索要货款（债务），绑架他人并要求亲属还钱，应定什么罪？", opts:["非法拘禁罪","绑架罪","敲诈勒索罪","抢劫罪"], ans:0, exp:"根据《刑法》第238条第3款，为索取债务非法扣押、拘禁他人的，以非法拘禁罪定罪。这里'债务'包括合法债务和非法债务（如赌债）。索债目的区别于勒索财物的绑架罪。"},
+    {q:"绑架他人后，直接对被绑人要钱，被绑人给家里打电话说工程需要钱，行为人将钱取出。行为人应定什么罪？", opts:["抢劫罪","绑架罪","非法拘禁罪","敲诈勒索罪"], ans:0, exp:"行为人压制被害人反抗后当场索取财物，被害人以欺骗方式让家人打钱，这属于当场取得财物，符合抢劫罪'当场使用暴力、胁迫，当场取得财物'的特征，而非利用第三人担忧的绑架罪。"},
+    {q:"先参加并领导恐怖组织，后又具体实施了杀人等行为，应如何处理？", opts:["数罪并罚","从一重罪处罚","以组织、领导恐怖组织罪吸收","以故意杀人罪吸收"], ans:0, exp:"根据《刑法》第120条第2款，犯组织、领导、参加恐怖组织罪并实施杀人、爆炸、绑架等犯罪的，依照数罪并罚的规定处罚。"},
+    {q:"L伙同E潜入A家盗窃，被A发现后追赶到路上，L、E转身殴打A。对他们的行为如何定性？", opts:["事后抢劫罪（转化型抢劫）","盗窃罪和故意伤害罪并罚","抢劫罪","盗窃罪"], ans:0, exp:"根据《刑法》第269条，犯盗窃罪，为窝藏赃物、抗拒抓捕或者毁灭罪证而当场使用暴力或以暴力相威胁的，依照抢劫罪定罪处罚。这属于转化型抢劫。"},
+    {q:"伪证罪的犯罪主体不包括以下哪类人？", opts:["辩护人","证人","鉴定人","记录人"], ans:0, exp:"伪证罪的犯罪主体是刑事诉讼中的证人、鉴定人、记录人、翻译人。辩护人不属于伪证罪的犯罪主体（辩护人妨害作证另有规定——辩护人毁灭证据、伪造证据、妨害作证罪）。"},
+    {q:"行贿罪的主观方面要求行为人具有什么目的？", opts:["为谋取不正当利益","为谋取任何利益","为谋取非法利益","为谋取个人利益"], ans:0, exp:"行贿罪的主观方面要求行为人具有'为谋取不正当利益'的目的。如果是被勒索而给予财物、没有获得不正当利益的，不构成行贿。"},
+    {q:"洗钱罪的上游犯罪'所得及其产生的收益'，关于'钱'的具体指向，以下哪项正确？", opts:["包括犯罪所得及其收益的各种形态","仅指现金","仅指银行存款","仅指违法所得本金"], ans:0, exp:"洗钱罪的对象是犯罪所得及其产生的收益，包括各种形态——现金、存款、有价证券、实物等均可。洗钱就是将非法所得'洗白'为合法收入的过程。"},
+    {q:"下列哪些情形构成挪用公款罪？", opts:["个人使用+非法活动+数额较大","个人使用+营利活动+数额较大","个人使用+超过三个月未还+数额较大","以上情形均可构成"], ans:3, exp:"挪用公款罪的三种情形：(1)进行非法活动的；(2)数额较大、进行营利活动的；(3)数额较大、超过三个月未还的。三种情形均可构成挪用公款罪。"},
+    {q:"什么是间接受贿（斡旋受贿）？", opts:["国家工作人员利用职权或地位形成的便利条件，通过其他国家工作人员的职务行为为请托人谋取不正当利益","国家工作人员直接收受他人财物","国家工作人员的亲属代为收受财物","国有企业人员收受回扣"], ans:0, exp:"斡旋受贿（间接受贿），指国家工作人员利用本人职权或地位形成的便利条件，通过其他国家工作人员职务上的行为，为请托人谋取不正当利益，索要或收受请托人财物的行为。"},
+    {q:"危险驾驶罪包括哪些情形？", opts:["追逐竞驶、醉酒驾驶、超载超速、违规运输危化品","仅醉酒驾驶","仅追逐竞驶","醉酒驾驶和无证驾驶"], ans:0, exp:"《刑法》第133条之一规定，危险驾驶罪包括四种情形：追逐竞驶情节恶劣、醉酒驾驶机动车、从事校车或旅客运输严重超载超速、违反规定运输危险化学品危及公共安全。"},
+    {q:"如何区分故意杀人罪和故意伤害致死？", opts:["主观故意内容不同：杀人故意vs伤害故意","仅看死亡结果是否发生","仅看作案工具是否致命","仅看打击部位"], ans:0, exp:"区分关键在于主观故意内容——故意杀人罪具有剥夺他人生命的故意，故意伤害致死只有损害他人健康的故意但对死亡结果有过失。需综合考量作案工具、打击部位、打击力度、作案动机等客观因素推断主观故意。"},
+    {q:"敲诈勒索罪和抢劫罪的核心区别是什么？", opts:["暴力程度和实施方式：抢劫是当场暴力+当场取财，敲诈是威胁+将来取财或将来暴力","犯罪数额不同","犯罪对象不同","犯罪主体不同"], ans:0, exp:"两罪核心区别在客观方面：抢劫罪是当场使用暴力、胁迫+当场取得财物（两个'当场'）；敲诈勒索罪是通过威胁或要挟，可以是将来实施暴力+将来取得财物，或当场威胁+将来取财等。"},
+    {q:"贪污罪和挪用公款罪的核心区别是什么？", opts:["是否具有非法占有目的","犯罪主体不同","犯罪数额不同","是否利用职务便利"], ans:0, exp:"两罪核心区别在于主观目的：贪污罪具有非法占有公共财物的目的（永久占有），挪用公款罪只有暂时使用后归还的意图。如果挪用后潜逃、挥霍等表明无归还意图，可转化为贪污罪。"},
+    {q:"Z是某局局长被委派到某公司任董事长，其朋友Y请求Z为Y入股的公司帮忙，Z说可以但要股份。Y将30%股份转给Z（Z支付了对应资金）。后Z未经股东会和董事会同意将公司资金打入Y公司账户，Y公司破产无法归还500万。Z构成什么罪？", opts:["受贿罪和挪用公款罪","仅受贿罪","贪污罪","职务侵占罪"], ans:0, exp:"Z作为国家工作人员委派到公司从事公务，利用职务便利为Y谋利并收受股份（虽支付了对价但属权钱交易），构成受贿罪；同时未经合法程序将公司资金挪用给他人使用造成无法归还，构成挪用公款罪。国家工作人员受委派到公司从事公务的，以国家工作人员论。"},
+    {q:"L伙同E和F在某路段埋伏，对先后经过的多名路人持刀抢劫。属于抢劫罪的哪种情形？", opts:["多次抢劫的加重情形","持枪抢劫的加重情形","入户抢劫的加重情形","冒充军警人员抢劫的加重情形"], ans:0, exp:"对先后经过的'多名'路人进行抢劫，属于'多次抢劫'的加重情形。《刑法》第263条规定了八种抢劫罪加重情形，处十年以上有期徒刑、无期徒刑或者死刑。"},
+    {q:"冒充警察抢劫运钞车，属于抢劫罪的哪种加重情形？", opts:["冒充军警人员抢劫","持枪抢劫","抢劫银行","抢劫金融机构"], ans:0, exp:"冒充警察属于'冒充军警人员抢劫'，是抢劫罪的八种加重情形之一。同时抢劫运钞车也可能涉及'抢劫金融机构'的加重情形。"},
+    {q:"L为索要赌债绑架他人，砍了被害人一根手指寄给其妻子。如何定性？", opts:["非法拘禁罪（索债型）","绑架罪","故意伤害罪","非法拘禁罪和故意伤害罪"], ans:0, exp:"为索要赌债（非法债务）而扣押他人，符合《刑法》第238条第3款'为索取债务非法扣押、拘禁他人'的规定，以非法拘禁罪定罪。但砍手指的伤害行为如达到轻伤以上，应评估是否单独构成故意伤害罪。"},
+    {q:"关于高空抛物罪，以下说法正确的是？", opts:["从建筑物抛掷物品情节严重的构成犯罪","只有造成人员伤亡才构成犯罪","高空抛物一律构成犯罪","只适用民事责任不涉及刑事"], ans:0, exp:"《刑法》第291条之二规定，从建筑物或者其他高空抛掷物品，情节严重的，处一年以下有期徒刑、拘役或者管制，并处或者单处罚金。不要求造成实际损害结果，情节严重即可构成。"},
+    {q:"走私罪中，哪些情形应当数罪并罚？", opts:["以暴力、威胁方法抗拒缉私的","走私普通货物后又销售的","走私多种物品的","一次走私多种物品的"], ans:0, exp:"根据《刑法》第157条第2款，以暴力、威胁方法抗拒缉私的，以走私罪和妨害公务罪（或袭警罪）数罪并罚。这是走私罪中典型的数罪并罚情形。"},
+    {q:"绑架过程中杀害被绑架人但没拿到钱的，如何定性？", opts:["绑架罪（既遂）","故意杀人罪","绑架罪（未遂）","绑架罪和故意杀人罪并罚"], ans:0, exp:"绑架罪是行为犯，只要实施了绑架行为即构成既遂，是否取得赎金不影响既遂。杀害被绑架人的，依《刑法》第239条处无期徒刑或死刑，属绑架罪的加重情节，不另定故意杀人罪。"},
+    {q:"信用卡诈骗罪的行为方式不包括以下哪项？", opts:["使用信用卡正常透支消费","使用伪造的信用卡","冒用他人信用卡","恶意透支"], ans:0, exp:"信用卡诈骗罪的行为方式包括：使用伪造的信用卡、使用作废的信用卡、冒用他人信用卡、恶意透支。正常的信用卡透支消费并在规定期限内还款的不构成犯罪。"},
+    {q:"遗弃罪的犯罪对象是？", opts:["年老、年幼、患病或其他没有独立生活能力的人","任何人","仅限未成年人","仅限老年人"], ans:0, exp:"遗弃罪的对象是年老、年幼、患病或者其他没有独立生活能力的人。行为人负有扶养义务而拒绝扶养，情节恶劣的构成遗弃罪。"}
+  ],
+  "民法": [
+    {q:"《中华人民共和国民法典》共多少编、多少条？", opts:["7编1260条","5编1380条","8编1000条","6编1520条"], ans:0, exp:"民法典共7编1260条，包括总则、物权、合同、人格权、婚姻家庭、继承、侵权责任七编，于2021年1月1日起施行。"},
+    {q:"民法调整的法律关系是？", opts:["平等主体之间的人身关系和财产关系","国家与公民之间的行政关系","雇主与劳动者之间的劳动关系","国家与法人之间的管理关系"], ans:0, exp:"《民法典》第2条规定，民法调整平等主体的自然人、法人和非法人组织之间的人身关系和财产关系。"},
+    {q:"根据民法典，自然人的民事权利能力从何时开始？", opts:["出生时","年满8周岁","年满16周岁","年满18周岁"], ans:0, exp:"《民法典》第13条规定，自然人从出生时起到死亡时止，具有民事权利能力，依法享有民事权利，承担民事义务。"},
+    {q:"完全民事行为能力人的最低年龄是多少？", opts:["18周岁","16周岁","20周岁","14周岁"], ans:0, exp:"《民法典》第17-18条规定，18周岁以上的自然人为成年人，具有完全民事行为能力。16周岁以上以自己劳动收入为主要生活来源的，视为完全民事行为能力人。"},
+    {q:"限制民事行为能力人独立实施的哪种行为有效？", opts:["纯获利益的行为","购买大额商品的行为","签订劳动合同的行为","处分不动产的行为"], ans:0, exp:"《民法典》第145条规定，限制民事行为能力人实施的纯获利益的民事法律行为或者与其年龄、智力、精神健康状况相适应的民事法律行为有效。"},
+    {q:"诉讼时效的一般期间为多久？", opts:["3年","2年","1年","5年"], ans:0, exp:"《民法典》第188条规定，向人民法院请求保护民事权利的诉讼时效期间为三年。法律另有规定的，依照其规定。"},
+    {q:"以下哪种情形适用无过错责任原则？", opts:["饲养动物致人损害","一般侵权责任","医疗损害责任","物件损害责任"], ans:0, exp:"饲养动物致人损害适用无过错责任原则。《民法典》第1245条规定，饲养的动物造成他人损害的，动物饲养人或者管理人应当承担侵权责任。"},
+    {q:"民间借贷利率的最高保护标准是什么？", opts:["合同成立时一年期LPR的四倍","年利率24%","年利率36%","年利率15%"], ans:0, exp:"根据最高人民法院关于民间借贷的司法解释，民间借贷利率不得超过合同成立时一年期贷款市场报价利率（LPR）的四倍。"},
+    {q:"关于格式条款，以下说法正确的是？", opts:["提供格式条款一方需对免责条款进行提示说明","格式条款一律无效","消费者不能对格式条款提出异议","格式条款无需特别说明"], ans:0, exp:"《民法典》第496条规定，提供格式条款的一方应采取合理方式提示对方注意免除或减轻其责任等与对方有重大利害关系的条款，并按要求予以说明。"},
+    {q:"以下哪种不属于民法典规定的担保物权？", opts:["地上权","抵押权","质权","留置权"], ans:0, exp:"地上权属于用益物权（土地使用权），不属于担保物权。担保物权包括抵押权、质权和留置权三种。"},
+    {q:"甲乙签订房屋买卖合同后未办理过户登记，房屋所有权归谁？", opts:["仍归甲（出卖人）","归乙（买受人）","归国家","甲乙共有"], ans:0, exp:"根据《民法典》第209条，不动产物权的设立、变更、转让和消灭，经依法登记发生效力；未经登记，不发生效力。房屋买卖合同有效但未登记，所有权仍归出卖人甲，买受人乙仅享有债权请求权。"},
+    {q:"胎儿是否具有继承权？", opts:["胎儿享有继承权，娩出时为死体的权利自始不存在","胎儿无继承权","胎儿仅在出生后有继承权","需由法院判断"], ans:0, exp:"《民法典》第16条规定，涉及遗产继承、接受赠与等胎儿利益保护的，胎儿视为具有民事权利能力。但是胎儿娩出时为死体的，其民事权利能力自始不存在。"}
+  ],
+  "法理学": [
+    {q:"法律解释的狭义概念强调什么？", opts:["只有被授权的国家机关才能进行法律解释","任何人都可以解释法律","只有法官才能解释法律","只有全国人大才能解释法律"], ans:0, exp:"狭义的法律解释是国家活动，只有被授权的国家机关才能进行法律解释。一般人做的解释（学理解释）没有法律效力。"},
+    {q:"以下哪种不是法律解释的法定分类？", opts:["学理解释","立法解释","司法解释","行政解释"], ans:0, exp:"我国法律解释的正式分类包括：立法解释、司法解释、行政解释和监察解释。学理解释属于非正式解释，不具有法律效力。"},
+    {q:"司法解释只能由哪些机关作出？", opts:["最高人民法院和最高人民检察院","全国人大常委会","国务院","司法部"], ans:0, exp:"司法解释是指国家司法机关就具体应用法律规范的问题所作的解释。只有最高人民法院和最高人民检察院可作出司法解释。"},
+    {q:"文义解释（语义解释）的含义是什么？", opts:["通过说明法律条文的字面含义确定法律规范含义","根据立法者的原意进行解释","根据社会需要灵活解释","参考外国立法例进行解释"], ans:0, exp:"文义解释又称语义解释或文理解释，是通过说明法律条文的字面含义确定法律规范含义的解释方法。这是最基本的法律解释方法。"},
+    {q:"体系解释的基础是什么？", opts:["整个法律制度构成一个统一整体","每个法律条文独立存在","法律解释可以脱离法律体系","只需要看单一法条"], ans:0, exp:"体系解释的基础是：整个法律制度构成一个统一整体。没有一个法律规范是独立存在的，必须作为整体法律制度的部分要素来解释。"},
+    {q:"法治与人治的根本区别在于？", opts:["领导人或统治者的地位不同：法治中法律至高无上","国家大小不同","法律数量的多少","是否有成文法律"], ans:0, exp:"法治与人治的核心区别在于：法治中法律是至高无上的，领导人必须服从法律；人治中统治者具有超越法律的权力。"},
+    {q:"'有法制并不一定有法治'这句话的含义是什么？", opts:["法制是制度基础，法治还需要民主、人权等价值支撑","法制和法治是完全相同的概念","法治不需要法制作为基础","有法制就一定有法治"], ans:0, exp:"法制是静态的制度体系，法治是动态的治理原则和方式。法治以民主为前提，以保障人权和维护正义为根本价值。但有法制不一定有法治，没有法制则谈不上法治。"},
+    {q:"法律的生命在于什么？", opts:["实施","制定","修改","废止"], ans:0, exp:"法律的权威在于实施，法律的生命也在于实施。如果法律制定出来不实施，就是一纸空文。"},
+    {q:"科学立法的核心是什么？", opts:["尊重和体现客观规律","立法数量足够多","立法速度足够快","法律条文足够详细"], ans:0, exp:"科学立法的核心在于尊重和体现客观规律，坚持问题导向，使每一部法律法规都切实管用。"},
+    {q:"我国《立法法》规定的全国人大及其常委会立法程序主要包括几个阶段？", opts:["4个：法律案的提出、审议、表决、公布","3个：起草、表决、发布","2个：制定、实施","5个：提议、讨论、投票、签署、公布"], ans:0, exp:"全国人大及其常委会的立法程序主要分为四个阶段：法律案的提出、法律案的审议（实行三审制）、法律案的表决（过半数为通过，宪法修正案需三分之二以上多数）、法律的公布。"},
+    {q:"法与道德的主要区别不包括以下哪项？", opts:["两者都具有国家强制性","产生方式不同","表现形式不同","实现方式不同"], ans:0, exp:"法与道德的区别包括：产生方式不同（道德自发产生，法律通过特定程序）、表现形式不同（法律以成文方式，道德是风俗习惯）、实现方式不同（法律以国家强制力为后盾，道德靠内心信念和舆论）。两者不同之处在于道德无国家强制力。"},
+    {q:"法律适用的基本原则不包括？", opts:["效率优先原则","司法为民原则","依法独立行使职权原则","司法公正原则"], ans:0, exp:"法律适用的基本原则包括：司法为民原则、依法独立行使职权原则（专属人民法院和人民检察院）、司法平等原则、司法公正原则、司法公开原则。'效率优先'不是法律适用的基本原则。"},
+    {q:"中国特色社会主义法律体系分为几个法律部门？", opts:["9个","7个","5个","12个"], ans:0, exp:"中国特色社会主义法律体系可分为9个法律部门：宪法及其相关法、民法商法、行政法、经济法、环境资源法、社会法、军事法、刑法、诉讼与非诉讼程序法。"}
+  ],
+  "中国法制史": [
+    {q:"中国历史上最早的成文法典是哪一部？", opts:["《法经》（李悝）","《唐律疏议》","《秦律》","《汉九章律》"], ans:0, exp:"战国时期魏国李悝制定的《法经》是中国历史上第一部比较系统的成文法典，分为盗法、贼法、囚法、捕法、杂法、具法六篇。"},
+    {q:"《唐律疏议》在中国法制史上的地位是什么？", opts:["中华法系的代表性法典，对后世及东亚影响深远","中国最早的成文法典","清朝的代表性法典","民国时期的法典"], ans:0, exp:"《唐律疏议》是中华法系的代表性法典，体系完备、立法技术精湛，对后世中国以及日本、朝鲜、越南等东亚国家的法律制度产生了深远影响。"},
+    {q:"西周时期法律的重要原则'明德慎罚'的含义是？", opts:["崇尚德教，慎重使用刑罚","公开处罚，以儆效尤","以重刑威慑犯罪","法律面前人人平等"], ans:0, exp:"'明德慎罚'是西周时期的重要法律思想，强调以德教为先，慎重对待刑罚，不可滥施刑罚。这一原则对后世儒家法律思想产生了重要影响。"},
+    {q:"秦朝法制的最主要特点是什么？", opts:["严刑峻法，以法为教以吏为师","礼法并重","无为而治","德主刑辅"], ans:0, exp:"秦朝推行法家思想，以严刑峻法著称，实行'以法为教、以吏为师'的政策，法律严密且刑罚严酷。"},
+    {q:"汉代法律形式中，'比'是什么意思？", opts:["判例，可以作为断案依据的典型案例","制裁","比较","律条"], ans:0, exp:"汉代法律形式包括律、令、科、比。'比'指已经判决的典型案例，可以作为以后断案的参考依据，类似现代的判例法。"},
+    {q:"唐朝法律的主要形式中，'律'、'令'、'格'、'式'分别是什么？", opts:["律=刑法典, 令=行政法规, 格=修改补充, 式=实施细则","律=行政法规, 令=刑法典, 格=判例, 式=法典","律=习惯法, 令=皇帝命令, 格=格式, 式=格式","律=民法, 令=刑法, 格=诉讼, 式=程序"], ans:0, exp:"唐代法律形式：律是以刑事规范为主的稳定法典；令是关于国家组织制度的行政法规；格是皇帝发布的敕令的汇编，修改补充律令；式是各种行政法规的实施细则。"},
+    {q:"明朝法制中'重典治国'方针下的代表性立法是？", opts:["《大明律》和《明大诰》","《唐六典》","《宋刑统》","《大清律例》"], ans:0, exp:"明朝推行'重典治国'政策，代表性立法是《大明律》和《明大诰》。《明大诰》是朱元璋亲自编纂的判例集，刑罚远比《大明律》严酷。"},
+    {q:"清朝（1840年以前）法制的最主要特点是？", opts:["满汉分治，维护满洲贵族特权","法律面前人人平等","废除所有前朝法律","实行君主立宪"], ans:0, exp:"清前期法制强调满族统治者的特权地位，实行满汉分治政策，在刑罚、官职等方面对满人给予优待。"},
+    {q:"清末法制改革中'礼法之争'的核心是什么？", opts:["是否保留纲常礼教在刑法中的地位","是否采用陪审制度","是否废除死刑","是否实行普选"], ans:0, exp:"清末修律中'礼法之争'是法理派（沈家本等）与礼教派之间关于'无夫奸''子孙违犯教令'等条款是否应入刑的争论，核心是礼教伦理是否应体现在刑法条文中。"},
+    {q:"中国法制史中'五听'制度是指什么？", opts:["辞听、色听、气听、耳听、目听","五级审判制度","五种刑罚","五种刑具"], ans:0, exp:"'五听'是西周时期形成的审判方法：辞听（观察言辞）、色听（观察面色）、气听（观察呼吸）、耳听（观察听力反应）、目听（观察眼神）。这是最早的审判心理学应用。"}
+  ],
+  "法治思想": [
+    {q:"习近平法治思想的核心要义集中体现为？", opts:["十一个坚持","八个坚持","五个坚持","十三个坚持"], ans:0, exp:"习近平法治思想的核心要义集中体现为'十一个坚持'，系统阐述了新时代全面依法治国的政治方向、战略布局、重点任务等。"},
+    {q:"全面依法治国的总目标是什么？", opts:["建设中国特色社会主义法治体系，建设社会主义法治国家","完善法律体系","实现社会公平正义","建设法治政府"], ans:0, exp:"全面依法治国的总目标是建设中国特色社会主义法治体系，建设社会主义法治国家。这包括完备的法律规范体系、高效的法治实施体系等。"},
+    {q:"中国特色社会主义法治道路的核心要义不包括？", opts:["照搬西方法治模式","坚持党的领导","坚持中国特色社会主义制度","贯彻中国特色社会主义法治理论"], ans:0, exp:"中国特色社会主义法治道路的核心要义是坚持党的领导、坚持中国特色社会主义制度、贯彻中国特色社会主义法治理论。中国的法治道路必须立足中国国情，不能照搬西方模式。"},
+    {q:"全面依法治国的工作布局是？", opts:["坚持依法治国、依法执政、依法行政共同推进，坚持法治国家、法治政府、法治社会一体建设","仅完善立法","仅严格执法","仅公正司法"], ans:0, exp:"全面依法治国的工作布局是：坚持依法治国、依法执政、依法行政共同推进，坚持法治国家、法治政府、法治社会一体建设。"},
+    {q:"关于党的领导与法治的关系，以下哪项正确？", opts:["党的领导是社会主义法治最根本的保证，党必须在宪法法律范围内活动","法治可以脱离党的领导","党的领导可以超越法律","法律可以脱离政治"], ans:0, exp:"党的领导和社会主义法治是一致的。社会主义法治必须坚持党的领导，党的领导必须依靠社会主义法治。党领导人民制定宪法法律，党也必须在宪法法律范围内活动。"},
+    {q:"全面依法治国的'十六字方针'是什么？", opts:["科学立法、严格执法、公正司法、全民守法","有法可依、有法必依、执法必严、违法必究","依法治国、以德治国、依法行政、公正司法","依法治国、依法执政、依法行政、依法办事"], ans:0, exp:"全面依法治国的新十六字方针是：科学立法、严格执法、公正司法、全民守法。旧十六字方针'有法可依、有法必依、执法必严、违法必究'是十一届三中全会提出的。"},
+    {q:"'法治国家、法治政府、法治社会一体建设'中，法治政府建设的目标是什么？", opts:["职能科学、权责法定、执法严明、公开公正、廉洁高效、守法诚信","权力集中、效率优先","减少法律约束、灵活行政","以政策代替法律"], ans:0, exp:"法治政府建设的目标是职能科学、权责法定、执法严明、公开公正、廉洁高效、守法诚信。这体现了对行政权力运行的规范要求。"}
+  ],
+  "思想道德": [
+    {q:"社会主义核心价值观在国家层面的价值目标是什么？", opts:["富强、民主、文明、和谐","自由、平等、公正、法治","爱国、敬业、诚信、友善","创新、协调、绿色、开放"], ans:0, exp:"社会主义核心价值观：国家层面——富强、民主、文明、和谐；社会层面——自由、平等、公正、法治；个人层面——爱国、敬业、诚信、友善。"},
+    {q:"道德与法律的主要区别在于？", opts:["道德靠内心信念和社会舆论维持，法律靠国家强制力","道德和法律完全相同","道德比法律更容易实施","法律比道德更广泛"], ans:0, exp:"道德主要靠社会舆论、传统习俗和内心信念来维持，法律以国家强制力为后盾。道德调整的范围比法律更广泛。"},
+    {q:"社会主义道德建设的核心是什么？", opts:["为人民服务","集体主义","个人主义","爱国"], ans:0, exp:"社会主义道德建设的核心是为人民服务，原则是集体主义。"},
+    {q:"个人品德的形成主要依靠什么？", opts:["个人的自我修养和实践","完全依靠学校教育","只需法律制度约束","遗传因素"], ans:0, exp:"个人品德的形成主要依靠个人的自我修养和实践。通过不断的学习、反思、实践，培养良好的道德品质和行为习惯。"}
+  ]
+};
+
+var QUIZ_STATE = {
+  mode: "practice",
+  subject: "全部",
+  currentIndex: 0,
+  questions: [],
+  answers: {},
+  answered: {},
+  correct: {}
+};
+
+var QUIZ_PAGE_SIZE = 5;
+
+function showQuiz() {
+  hideAllViews();
+  document.getElementById("quizView").classList.add("show");
+  buildQuizSubjectFilter();
+  filterQuizQuestions();
+}
+
+function buildQuizSubjectFilter() {
+  var subjects = ["全部"];
+  for (var k in QUIZ_DATA) { if (QUIZ_DATA.hasOwnProperty(k) && QUIZ_DATA[k].length > 0) subjects.push(k); }
+  var h = "";
+  for (var i = 0; i < subjects.length; i++) {
+    var s = subjects[i];
+    h += '<button class="' + (QUIZ_STATE.subject === s ? "active" : "") + '" onclick="selectQuizSubject('' + escAttr(s) + '')">' + escHtml(s) + '</button>';
+  }
+  document.getElementById("quizSubjectFilter").innerHTML = h;
+  document.getElementById("quizSubtitle").textContent = QUIZ_STATE.subject === "全部" ? "全部科目 · 法考真题 · 章节练习" : QUIZ_STATE.subject + " · 共 " + (QUIZ_DATA[QUIZ_STATE.subject] ? QUIZ_DATA[QUIZ_STATE.subject].length : 0) + " 题";
+}
+
+function selectQuizSubject(subject) {
+  QUIZ_STATE.subject = subject;
+  QUIZ_STATE.currentIndex = 0;
+  QUIZ_STATE.answers = {};
+  QUIZ_STATE.answered = {};
+  QUIZ_STATE.correct = {};
+  buildQuizSubjectFilter();
+  filterQuizQuestions();
+}
+
+function filterQuizQuestions() {
+  var all = [];
+  if (QUIZ_STATE.subject === "全部") {
+    for (var k in QUIZ_DATA) {
+      if (QUIZ_DATA.hasOwnProperty(k)) {
+        for (var i = 0; i < QUIZ_DATA[k].length; i++) {
+          var q = QUIZ_DATA[k][i];
+          q._subject = k;
+          all.push(q);
+        }
+      }
+    }
+  } else {
+    var arr = QUIZ_DATA[QUIZ_STATE.subject] || [];
+    for (var i = 0; i < arr.length; i++) {
+      var q = arr[i];
+      q._subject = QUIZ_STATE.subject;
+      all.push(q);
+    }
+  }
+  for (var i = all.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = all[i]; all[i] = all[j]; all[j] = tmp;
+  }
+  QUIZ_STATE.questions = all;
+  QUIZ_STATE.currentIndex = 0;
+  QUIZ_STATE.answers = {};
+  QUIZ_STATE.answered = {};
+  QUIZ_STATE.correct = {};
+  renderQuizStats();
+  renderQuizPage();
+}
+
+function setQuizMode(mode) {
+  QUIZ_STATE.mode = mode;
+  document.getElementById("modePractice").classList.toggle("active", mode === "practice");
+  document.getElementById("modeExam").classList.toggle("active", mode === "exam");
+  QUIZ_STATE.currentIndex = 0;
+  QUIZ_STATE.answers = {};
+  QUIZ_STATE.answered = {};
+  QUIZ_STATE.correct = {};
+  filterQuizQuestions();
+}
+
+function renderQuizStats() {
+  var total = QUIZ_STATE.questions.length;
+  var answered = Object.keys(QUIZ_STATE.answered).length;
+  var correct = 0;
+  for (var k in QUIZ_STATE.correct) { if (QUIZ_STATE.correct[k]) correct++; }
+  var h = '<div class="quiz-stat"><div class="qs-num">' + total + '</div><div class="qs-label">总题数</div></div>';
+  h += '<div class="quiz-stat"><div class="qs-num">' + answered + '</div><div class="qs-label">已答</div></div>';
+  h += '<div class="quiz-stat"><div class="qs-num">' + correct + '</div><div class="qs-label">正确</div></div>';
+  if (answered > 0) {
+    h += '<div class="quiz-stat"><div class="qs-num">' + Math.round(correct/answered*100) + '%</div><div class="qs-label">正确率</div></div>';
+  }
+  document.getElementById("quizStats").innerHTML = h;
+  var pct = total > 0 ? Math.round(answered / total * 100) : 0;
+  document.getElementById("quizProgressFill").style.width = pct + "%";
+}
+
+function renderQuizPage() {
+  var total = QUIZ_STATE.questions.length;
+  if (total === 0) {
+    document.getElementById("quizContent").innerHTML = '<div class="quiz-empty"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><p>该科目暂无题目，请选择其他科目</p></div>';
+    return;
+  }
+
+  var startIdx = QUIZ_STATE.currentIndex;
+  var endIdx = Math.min(startIdx + QUIZ_PAGE_SIZE, total);
+  var h = "";
+
+  for (var i = startIdx; i < endIdx; i++) {
+    var q = QUIZ_STATE.questions[i];
+    var globalIdx = i;
+    var isAnswered = QUIZ_STATE.answered[globalIdx];
+    var isCorrect = QUIZ_STATE.correct[globalIdx];
+    var selected = QUIZ_STATE.answers[globalIdx];
+
+    var cardClass = "";
+    if (isAnswered && isCorrect) cardClass = " correct";
+    if (isAnswered && !isCorrect) cardClass = " wrong";
+
+    h += '<div class="quiz-card' + cardClass + '" id="quizCard' + globalIdx + '">';
+    h += '<div class="quiz-q-num">#' + (globalIdx + 1) + ' · ' + escHtml(q._subject || "") + (QUIZ_STATE.mode === "exam" ? ' · 考试模式' : '') + '</div>';
+    h += '<div class="quiz-q-text">' + escHtml(q.q) + '</div>';
+
+    if (q.opts && q.opts.length > 0) {
+      h += '<div class="quiz-options">';
+      var labels = ["A","B","C","D","E","F"];
+      for (var j = 0; j < q.opts.length; j++) {
+        var optClass = "";
+        if (isAnswered) optClass += " disabled";
+        if (isAnswered && selected === j && j === q.ans) optClass += " correct-answer";
+        if (isAnswered && selected === j && j !== q.ans) optClass += " wrong-answer";
+        if (isAnswered && j === q.ans && selected !== q.ans) optClass += " correct-answer";
+        if (!isAnswered && selected === j) optClass += " selected";
+        h += '<div class="quiz-opt' + optClass + '" onclick="selectAnswer(' + globalIdx + ',' + j + ')" id="opt' + globalIdx + '_' + j + '">';
+        h += '<span class="quiz-opt-prefix">' + labels[j] + '.</span>';
+        h += '<span>' + escHtml(q.opts[j]) + '</span>';
+        h += '</div>';
+      }
+      h += '</div>';
+    }
+
+    h += '<div class="quiz-explain' + (isAnswered ? ' show' : '') + '" id="explain' + globalIdx + '">';
+    if (isAnswered) {
+      h += (isCorrect ? '✅ <strong>回答正确！</strong>' : '❌ <strong>回答错误</strong>（正确答案：' + (q.opts ? (["A","B","C","D","E","F"][q.ans] + '. ' + q.opts[q.ans]) : "") + '）');
+    }
+    if (q.exp) {
+      h += '<br><br>📖 ' + escHtml(q.exp);
+    }
+    h += '</div>';
+
+    if (!isAnswered) {
+      h += '<div class="quiz-actions"><button class="quiz-btn primary" onclick="submitAnswer(' + globalIdx + ')">提交答案</button></div>';
+    }
+
+    h += '</div>';
+  }
+
+  if (total > QUIZ_PAGE_SIZE) {
+    h += '<div class="quiz-pagination">';
+    var totalPages = Math.ceil(total / QUIZ_PAGE_SIZE);
+    var curPage = Math.floor(QUIZ_STATE.currentIndex / QUIZ_PAGE_SIZE);
+    for (var p = 0; p < totalPages; p++) {
+      var dotClass = "quiz-page-dot";
+      if (p === curPage) dotClass += " current";
+      h += '<div class="' + dotClass + '" onclick="goToQuizPage(' + (p * QUIZ_PAGE_SIZE) + ')" style="cursor:pointer;width:10px;height:10px"></div>';
+    }
+    h += '</div>';
+  }
+
+  h += '<div class="quiz-actions" style="justify-content:center;margin-top:14px">';
+  if (startIdx > 0) {
+    h += '<button class="quiz-btn secondary" onclick="prevQuizPage()">◀ 上一页</button>';
+  }
+  if (endIdx < total) {
+    h += '<button class="quiz-btn secondary" onclick="nextQuizPage()">下一页 ▶</button>';
+  }
+  h += '<button class="quiz-btn secondary" onclick="filterQuizQuestions()">🔄 重新随机</button>';
+  h += '</div>';
+
+  var answered = Object.keys(QUIZ_STATE.answered).length;
+  if (answered >= total && total > 0) {
+    var correctCount = 0;
+    for (var k in QUIZ_STATE.correct) { if (QUIZ_STATE.correct[k]) correctCount++; }
+    h += '<div class="quiz-result"><div class="qr-score">' + correctCount + '/' + total + '</div>';
+    h += '<div class="qr-label">' + (correctCount/total >= 0.8 ? '🎉 太棒了！你掌握了扎实的法律知识！' : correctCount/total >= 0.6 ? '👍 不错！继续加油！' : '📚 还需努力，多看看法条和解析吧！') + '</div>';
+    h += '<button class="quiz-btn primary" onclick="filterQuizQuestions()">🔄 重新开始</button></div>';
+  }
+
+  document.getElementById("quizContent").innerHTML = h;
+  renderQuizStats();
+}
+
+function selectAnswer(qIdx, optIdx) {
+  if (QUIZ_STATE.answered[qIdx]) return;
+  QUIZ_STATE.answers[qIdx] = optIdx;
+  renderQuizPage();
+}
+
+function submitAnswer(qIdx) {
+  if (QUIZ_STATE.answered[qIdx]) return;
+  if (QUIZ_STATE.answers[qIdx] === undefined) {
+    showToast("请先选择一个选项");
+    return;
+  }
+  var q = QUIZ_STATE.questions[qIdx];
+  var isCorrect = QUIZ_STATE.answers[qIdx] === q.ans;
+  QUIZ_STATE.answered[qIdx] = true;
+  QUIZ_STATE.correct[qIdx] = isCorrect;
+  renderQuizPage();
+  setTimeout(function() {
+    var el = document.getElementById("explain" + qIdx);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, 100);
+}
+
+function prevQuizPage() {
+  QUIZ_STATE.currentIndex = Math.max(0, QUIZ_STATE.currentIndex - QUIZ_PAGE_SIZE);
+  renderQuizPage();
+}
+
+function nextQuizPage() {
+  var total = QUIZ_STATE.questions.length;
+  QUIZ_STATE.currentIndex = Math.min(total - 1, QUIZ_STATE.currentIndex + QUIZ_PAGE_SIZE);
+  renderQuizPage();
+}
+
+function goToQuizPage(idx) {
+  QUIZ_STATE.currentIndex = idx;
+  renderQuizPage();
+}
+
+
+// ============================================================
+// DOCUMENT GENERATION
+// ============================================================
+var DOC_TYPES = [
+  { id:"purchase", name:"买卖合同", icon:"📋", desc:"货物买卖 · 设备采购 · 商品销售", fields:[
+    {key:"buyer",label:"买方（甲方）",placeholder:"公司/个人全称",type:"text"},
+    {key:"seller",label:"卖方（乙方）",placeholder:"公司/个人全称",type:"text"},
+    {key:"goods",label:"标的物",placeholder:"货物名称、规格、型号",type:"text"},
+    {key:"quantity",label:"数量",placeholder:"如：100件",type:"text"},
+    {key:"price",label:"单价",placeholder:"如：500元/件",type:"text"},
+    {key:"total",label:"总价",placeholder:"如：50000元",type:"text"},
+    {key:"delivery",label:"交货地点与日期",placeholder:"如：北京市朝阳区XX路，2026年7月1日前",type:"text"},
+    {key:"payment",label:"付款方式",placeholder:"如：货到验收合格后30日内付全款",type:"text"},
+    {key:"breach",label:"违约责任",placeholder:"如：逾期每日按总价0.1%支付违约金",type:"text"},
+    {key:"extra",label:"其他约定（选填）",placeholder:"如：争议由甲方所在地法院管辖",type:"textarea"}
+  ]},
+  { id:"loan", name:"借款合同", icon:"💰", desc:"个人借贷 · 企业拆借 · 抵押借款", fields:[
+    {key:"lender",label:"出借人（甲方）",placeholder:"全称",type:"text"},
+    {key:"borrower",label:"借款人（乙方）",placeholder:"全称",type:"text"},
+    {key:"amount",label:"借款金额",placeholder:"如：人民币壹拾万元整（¥100,000）",type:"text"},
+    {key:"rate",label:"年利率",placeholder:"如：合同成立时一年期LPR的4倍以内",type:"text"},
+    {key:"term",label:"借款期限",placeholder:"如：自2026年7月1日至2027年6月30日",type:"text"},
+    {key:"method",label:"还款方式",placeholder:"如：到期一次性还本付息 / 按月等额本息",type:"text"},
+    {key:"guarantee",label:"担保方式（选填）",placeholder:"如：保证人XXX / 房产抵押",type:"text"},
+    {key:"extra",label:"其他约定（选填）",placeholder:"",type:"textarea"}
+  ]},
+  { id:"employment", name:"劳动合同", icon:"💼", desc:"固定期限 · 无固定期限 · 试用期", fields:[
+    {key:"employer",label:"用人单位（甲方）",placeholder:"公司全称",type:"text"},
+    {key:"employee",label:"劳动者（乙方）",placeholder:"姓名",type:"text"},
+    {key:"position",label:"工作岗位",placeholder:"如：软件工程师",type:"text"},
+    {key:"salary",label:"工资待遇",placeholder:"如：月薪8000元 + 绩效",type:"text"},
+    {key:"term",label:"合同期限",placeholder:"如：3年，试用期3个月",type:"text"},
+    {key:"location",label:"工作地点",placeholder:"如：北京市海淀区",type:"text"},
+    {key:"hours",label:"工时制度",placeholder:"如：标准工时制 / 综合计算工时制",type:"text"},
+    {key:"extra",label:"其他约定（选填）",placeholder:"如：保密协议、竞业限制等",type:"textarea"}
+  ]},
+  { id:"lease", name:"租赁合同", icon:"🏠", desc:"房屋租赁 · 设备租赁 · 车辆租赁", fields:[
+    {key:"lessor",label:"出租人（甲方）",placeholder:"全称",type:"text"},
+    {key:"lessee",label:"承租人（乙方）",placeholder:"全称",type:"text"},
+    {key:"property",label:"租赁物",placeholder:"如：位于XX市XX区XX路XX号的房屋（面积XX㎡）",type:"text"},
+    {key:"rent",label:"租金",placeholder:"如：每月3000元",type:"text"},
+    {key:"term",label:"租期",placeholder:"如：自2026年7月1日至2027年6月30日",type:"text"},
+    {key:"deposit",label:"押金（选填）",placeholder:"如：一个月租金",type:"text"},
+    {key:"purpose",label:"租赁用途",placeholder:"如：居住 / 办公 / 经营",type:"text"},
+    {key:"extra",label:"其他约定（选填）",placeholder:"如：不得转租、装修限制等",type:"textarea"}
+  ]},
+  { id:"complaint", name:"民事起诉状", icon:"⚖️", desc:"合同纠纷 · 侵权纠纷 · 婚姻家庭", fields:[
+    {key:"plaintiff",label:"原告",placeholder:"姓名/名称、性别、出生日期、身份证号、住址、联系电话",type:"textarea"},
+    {key:"defendant",label:"被告",placeholder:"姓名/名称、住址、联系电话",type:"textarea"},
+    {key:"cause",label:"案由",placeholder:"如：买卖合同纠纷 / 民间借贷纠纷 / 离婚纠纷",type:"text"},
+    {key:"claims",label:"诉讼请求",placeholder:"如：1.判令被告支付货款50000元及利息；2.诉讼费由被告承担",type:"textarea"},
+    {key:"facts",label:"事实与理由",placeholder:"详细描述纠纷经过、关键时间节点、已发生的交涉情况",type:"textarea"},
+    {key:"court",label:"管辖法院（选填）",placeholder:"如：北京市朝阳区人民法院",type:"text"}
+  ]},
+  { id:"answer", name:"民事答辩状", icon:"🛡️", desc:"应诉答辩 · 反驳主张 · 提出抗辩", fields:[
+    {key:"respondent",label:"答辩人",placeholder:"姓名/名称、住址、联系电话",type:"textarea"},
+    {key:"plaintiff2",label:"被答辩人（原告）",placeholder:"姓名/名称",type:"text"},
+    {key:"cause",label:"案由",placeholder:"如：买卖合同纠纷",type:"text"},
+    {key:"defense",label:"答辩意见",placeholder:"针对原告诉讼请求的逐一反驳意见及理由",type:"textarea"},
+    {key:"facts",label:"事实与理由",placeholder:"详细说明对原告主张的异议及依据",type:"textarea"}
+  ]},
+  { id:"appeal", name:"上诉状", icon:"📜", desc:"不服一审判决 · 二审程序", fields:[
+    {key:"appellant",label:"上诉人",placeholder:"一审原告/被告，基本信息",type:"textarea"},
+    {key:"appellee",label:"被上诉人",placeholder:"对方当事人信息",type:"textarea"},
+    {key:"case_info",label:"原审案件信息",placeholder:"如：XX人民法院(2026)X民初XX号民事判决",type:"text"},
+    {key:"appeal_claims",label:"上诉请求",placeholder:"如：1.撤销原判；2.改判驳回原告全部诉讼请求",type:"textarea"},
+    {key:"grounds",label:"上诉理由",placeholder:"详细说明一审判决认定事实错误、适用法律不当等理由",type:"textarea"}
+  ]},
+  { id:"agency", name:"代理词", icon:"🎤", desc:"庭审陈述 · 代理意见 · 辩论要点", fields:[
+    {key:"lawyer",label:"代理人",placeholder:"律师事务所名称 + 律师姓名",type:"text"},
+    {key:"client",label:"被代理人",placeholder:"当事人姓名/名称（原告/被告）",type:"text"},
+    {key:"case_info",label:"案件信息",placeholder:"如：XX诉XX买卖合同纠纷案",type:"text"},
+    {key:"position",label:"代理立场",placeholder:"如：支持原告诉讼请求 / 驳回原告起诉",type:"text"},
+    {key:"arguments",label:"主要论点",placeholder:"核心论证要点，每条一行",type:"textarea"},
+    {key:"evidence",label:"证据清单（选填）",placeholder:"列出关键证据及其证明目的",type:"textarea"}
+  ]}
+];
+
+var DOC_STATE = { selectedType: null, generating: false, result: "" };
+
+function showDocGen() {
+  hideAllViews();
+  document.getElementById("docView").classList.add("show");
+  DOC_STATE = { selectedType: null, generating: false, result: "" };
+  renderDocTypes();
+  document.getElementById("docFormArea").innerHTML = "";
+  document.getElementById("docResultArea").innerHTML = "";
+}
+
+function renderDocTypes() {
+  var h = "";
+  for (var i = 0; i < DOC_TYPES.length; i++) {
+    var t = DOC_TYPES[i];
+    var sel = DOC_STATE.selectedType && DOC_STATE.selectedType.id === t.id ? " selected" : "";
+    h += '<div class="doc-type-card' + sel + '" onclick="selectDocType(\'' + t.id + '\')">';
+    h += '<div class="dt-icon">' + t.icon + '</div>';
+    h += '<div class="dt-name">' + t.name + '</div>';
+    h += '<div class="dt-desc">' + t.desc + '</div>';
+    h += '</div>';
+  }
+  document.getElementById("docTypeGrid").innerHTML = h;
+}
+
+function selectDocType(id) {
+  var t = DOC_TYPES.find(function(d) { return d.id === id; });
+  if (!t) return;
+  DOC_STATE.selectedType = t;
+  DOC_STATE.result = "";
+  renderDocTypes();
+  renderDocForm();
+  document.getElementById("docResultArea").innerHTML = "";
+  document.getElementById("docSubtitle").textContent = t.name + " · 填写关键信息后一键生成";
+}
+
+function renderDocForm() {
+  var t = DOC_STATE.selectedType;
+  if (!t) return;
+  var h = '<div class="doc-form"><h3>' + t.icon + ' ' + t.name + '</h3>';
+  for (var i = 0; i < t.fields.length; i++) {
+    var f = t.fields[i];
+    h += '<div class="doc-field"><label>' + f.label + '</label>';
+    if (f.type === "textarea") {
+      h += '<textarea id="docField_' + f.key + '" placeholder="' + escAttr(f.placeholder) + '" rows="3"></textarea>';
+    } else {
+      h += '<input type="text" id="docField_' + f.key + '" placeholder="' + escAttr(f.placeholder) + '" />';
+    }
+    h += '</div>';
+  }
+  h += '<div class="doc-btn-row"><button class="doc-btn primary" onclick="generateDoc()">🤖 AI 生成文书</button>';
+  h += '<button class="doc-btn secondary" onclick="clearDocForm()">清空</button></div>';
+  h += '</div>';
+  document.getElementById("docFormArea").innerHTML = h;
+}
+
+function clearDocForm() {
+  var t = DOC_STATE.selectedType;
+  if (!t) return;
+  for (var i = 0; i < t.fields.length; i++) {
+    var el = document.getElementById("docField_" + t.fields[i].key);
+    if (el) el.value = "";
+  }
+}
+
+function generateDoc() {
+  if (DOC_STATE.generating) return;
+  var t = DOC_STATE.selectedType;
+  if (!t) { showToast("请先选择文书类型"); return; }
+
+  // Collect field values
+  var fields = {};
+  var hasContent = false;
+  for (var i = 0; i < t.fields.length; i++) {
+    var el = document.getElementById("docField_" + t.fields[i].key);
+    var val = el ? el.value.trim() : "";
+    fields[t.fields[i].key] = val;
+    if (val) hasContent = true;
+  }
+
+  if (!hasContent) { showToast("请至少填写一项关键信息"); return; }
+
+  DOC_STATE.generating = true;
+  document.getElementById("docResultArea").innerHTML = '<div class="doc-loading"><div class="spinner"></div><p style="margin-top:12px">正在生成 ' + t.name + '，请稍候…</p><p style="font-size:11px;color:var(--text2)">使用 DeepSeek Flash · 预计10-30秒</p></div>';
+  document.getElementById("docResultArea").scrollIntoView({ behavior: "smooth" });
+
+  // Build prompt
+  var promptParts = [];
+  promptParts.push("你是一位经验丰富的中国执业律师，请根据以下信息撰写一份完整、规范的法律文书。");
+  promptParts.push("");
+  promptParts.push("【文书类型】" + t.name);
+  promptParts.push("");
+  promptParts.push("【关键信息】");
+  for (var i = 0; i < t.fields.length; i++) {
+    var f = t.fields[i];
+    var val = fields[f.key];
+    promptParts.push("- " + f.label + "：" + (val || "（未提供）"));
+  }
+  promptParts.push("");
+  promptParts.push("【格式要求】");
+  promptParts.push("1. 使用中国法律文书的规范格式，包含标题、当事人信息、正文、落款");
+  promptParts.push("2. 引用相关法条时注明《XX法》第X条");
+  promptParts.push("3. 关键信息（金额、日期、人名等）用【】标出提醒核实");
+  promptParts.push("4. 涉及利息/违约金时写出具体计算方式");
+  promptParts.push("5. 合同类文书包含必备条款（标的、数量、价款、履行、违约、争议解决）");
+  promptParts.push("6. 诉讼文书按法院要求的格式撰写");
+  promptParts.push("7. 使用专业、严谨、精炼的法律语言");
+  promptParts.push("8. 文书末尾添加【律师提示】简要说明使用注意事项");
+  var prompt = promptParts.join("\n");
+
+  var apiMsgs = [
+    { role: "system", content: "你是一位经验丰富的中国执业律师，精通各类法律文书写作。请直接输出完整的法律文书内容，不要额外解释。" },
+    { role: "user", content: prompt }
+  ];
+
+  var fullContent = "";
+  var abortCtrl = new AbortController();
+
+  fetch("https://api.deepseek.com/v1/chat/completions", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: "Bearer " + SETTINGS.apiKey },
+    body: JSON.stringify({ model: SETTINGS.model, messages: apiMsgs, stream: true, temperature: 0.3, max_tokens: 4096 }),
+    signal: abortCtrl.signal
+  }).then(function(resp) {
+    if (!resp.ok) return resp.text().then(function(t) { throw new Error("API " + resp.status + ": " + t.slice(0, 300)); });
+    var reader = resp.body.getReader(), decoder = new TextDecoder(), buf = "";
+    function pump() {
+      reader.read().then(function(result) {
+        if (result.done) {
+          DOC_STATE.result = fullContent || "（生成失败：空响应）";
+          DOC_STATE.generating = false;
+          renderDocResult();
+          return;
+        }
+        buf += decoder.decode(result.value, { stream: true });
+        var lines = buf.split("\n"); buf = lines.pop() || "";
+        for (var i = 0; i < lines.length; i++) {
+          var s = lines[i].trim(); if (!s.startsWith("data:")) continue;
+          var data = s.slice(5).trim(); if (data === "[DONE]") continue;
+          try { var p = JSON.parse(data), d = (p.choices || [{}])[0].delta; if (!d) continue; var t = d.content || ""; if (t) { fullContent += t; DOC_STATE.result = fullContent; renderDocResultStream(); } } catch(e) {}
+        }
+        pump();
+      }).catch(function(e) {
+        if (DOC_STATE.result) {
+          DOC_STATE.generating = false;
+          renderDocResult();
+        } else {
+          DOC_STATE.generating = false;
+          document.getElementById("docResultArea").innerHTML = '<div class="doc-result show"><p style="color:#e74c3c">生成失败：' + escHtml(e.message) + '</p></div>';
+        }
+      });
+    }
+    pump();
+  }).catch(function(e) {
+    if (fullContent) {
+      DOC_STATE.result = fullContent;
+      DOC_STATE.generating = false;
+      renderDocResult();
+    } else if (!(e && e.name === "AbortError")) {
+      DOC_STATE.generating = false;
+      document.getElementById("docResultArea").innerHTML = '<div class="doc-result show"><p style="color:#e74c3c">请求失败：' + escHtml(e.message) + '</p></div>';
+    }
+  });
+
+  DOC_STATE._abortCtrl = abortCtrl;
+}
+
+function renderDocResultStream() {
+  var h = '<div class="doc-result show">';
+  h += '<h3>📄 ' + (DOC_STATE.selectedType ? DOC_STATE.selectedType.name : "生成结果") + '</h3>';
+  h += '<div class="doc-result-content" id="docResultContent">' + escHtml(DOC_STATE.result || "") + '<span class="cursor-blink" style="display:inline-block;width:2px;height:16px;background:var(--accent);animation:blink .8s infinite;vertical-align:text-bottom;margin-left:2px"> </span></div>';
+  h += '</div>';
+  document.getElementById("docResultArea").innerHTML = h;
+  document.getElementById("docResultArea").scrollIntoView({ behavior: "smooth" });
+}
+
+function renderDocResult() {
+  var h = '<div class="doc-result show">';
+  h += '<h3>📄 ' + (DOC_STATE.selectedType ? DOC_STATE.selectedType.name : "生成结果") + '</h3>';
+  h += '<div class="doc-result-content" id="docResultContent">' + escHtml(DOC_STATE.result || "（无内容）") + '</div>';
+  h += '<div class="doc-btn-row">';
+  h += '<button class="doc-btn primary" onclick="copyDocResult()">📋 复制全文</button>';
+  h += '<button class="doc-btn secondary" onclick="downloadDocResult()">💾 下载为TXT</button>';
+  h += '<button class="doc-btn secondary" onclick="regenerateDoc()">🔄 重新生成</button>';
+  h += '</div>';
+  h += '</div>';
+  document.getElementById("docResultArea").innerHTML = h;
+  document.getElementById("docResultArea").scrollIntoView({ behavior: "smooth" });
+}
+
+function copyDocResult() {
+  if (!DOC_STATE.result) return;
+  navigator.clipboard.writeText(DOC_STATE.result).then(function() {
+    showToast("✅ 已复制全文到剪贴板");
+  }).catch(function() {
+    showToast("复制失败，请手动选择文本");
+  });
+}
+
+function downloadDocResult() {
+  if (!DOC_STATE.result) return;
+  var t = DOC_STATE.selectedType;
+  var filename = (t ? t.name : "法律文书") + "_" + new Date().toISOString().slice(0,10) + ".txt";
+  var blob = new Blob([DOC_STATE.result], { type: "text/plain;charset=utf-8" });
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  showToast("✅ 已下载 " + filename);
+}
+
+function regenerateDoc() {
+  DOC_STATE.result = "";
+  generateDoc();
+}
+
+</script>
+</body>
+</html>

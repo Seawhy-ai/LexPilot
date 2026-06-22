@@ -1,0 +1,23 @@
+{
+  "name": "SeaWhy AI",
+  "short_name": "SeaWhy",
+  "description": "SeaWhy AI — 像鲸鱼一样在信息海洋中深潜，寻找问题背后的Why。多模型AI聊天平台。",
+  "start_url": "/ai-chat/",
+  "scope": "/ai-chat/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#4A90D9",
+  "background_color": "#f0f4f8",
+  "icons": [
+    {
+      "src": "swai-avatar.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "swai-avatar.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}
