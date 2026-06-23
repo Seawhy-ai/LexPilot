@@ -364,6 +364,19 @@
 .case-detail .cd-section{margin-bottom:16px}
 .case-detail .cd-section h5{font-size:13px;font-weight:600;color:var(--accent);margin-bottom:6px}
 .case-detail .cd-section p{font-size:13px;line-height:1.75;color:var(--text);margin:0;white-space:pre-wrap}
+
+.api-config{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:14px 16px;margin-bottom:16px}
+.api-config h5{font-size:13px;font-weight:600;margin:0 0 8px;color:var(--text);display:flex;align-items:center;gap:6px}
+.api-config .api-status{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500}
+.api-config .api-status.set{background:#d4edda;color:#155724}
+.api-config .api-status.unset{background:#fff3cd;color:#856404}
+.api-config input{width:100%;padding:10px 12px;border:1.5px solid var(--card-border);border-radius:12px;font-size:13px;font-family:monospace;background:var(--input-bg);color:var(--text);outline:none;margin-bottom:8px;transition:border-color .15s}
+.api-config input:focus{border-color:var(--accent)}
+.api-config .api-row{display:flex;gap:8px;align-items:center}
+.api-config .api-row select{flex:1;padding:10px 12px;border:1.5px solid var(--card-border);border-radius:12px;font-size:13px;font-family:inherit;background:var(--input-bg);color:var(--text);outline:none}
+.api-config .api-row button{padding:10px 18px;border:none;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;background:var(--accent);color:#fff;white-space:nowrap}
+.api-config .api-row button:active{opacity:.8}
+
 </style>
 </head>
 <body>
@@ -590,6 +603,20 @@
       </p>
     </div>
 
+
+    <div class="api-config">
+      <h5><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>API 配置</h5>
+      <p style="font-size:11px;color:var(--text2);margin-bottom:8px">配置DeepSeek API密钥以启用AI法律咨询功能。密钥仅存储在你的浏览器中。</p>
+      <input type="password" id="apiKeyInput" placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxx" />
+      <div class="api-row">
+        <select id="apiModelSelect">
+          <option value="deepseek-chat">DeepSeek Chat</option>
+          <option value="deepseek-v4-flash" selected>DeepSeek V4 Flash（推荐）</option>
+        </select>
+        <button onclick="saveApiConfig()">保存</button>
+      </div>
+      <div style="margin-top:6px;font-size:11px;color:var(--text2)" id="apiStatus"></div>
+    </div>
 
 <div class="about-credit">
       研究参考：西南民族大学法学院 徐子涵团队 · 2026年5月<br>
@@ -901,7 +928,7 @@ function jumpToResult(idx) {
 // ============================================================
 function showAbout() {
   hideAllViews();
-  document.getElementById("aboutView").classList.add("show");
+  document.getElementById("aboutView").classList.add("show");loadApiConfig();
 }
 
 // ============================================================
@@ -1200,6 +1227,38 @@ function switchCaseCat(idx){currentCaseCat=idx;renderCaseCategories();renderCase
 function renderCaseList(){var cat=CASE_DATA[currentCaseCat];var h='';for(var i=0;i<cat.cases.length;i++){var c=cat.cases[i];var t=c.t.replace(/^案例[一二三四五六七八九十\d]+[\s:：]*/,'').replace(/[:：]\s*$/,'');h+='<div class="case-card" onclick="openCaseDetail('+i+')"><div class="case-num">'+(i+1)+'</div><div class="case-info"><div class="case-title">'+escHtml(t)+'</div></div><div class="case-arrow">›</div></div>';}document.getElementById("caseList").innerHTML=h;}
 function openCaseDetail(idx){var c=CASE_DATA[currentCaseCat].cases[idx];var t=c.t.replace(/^案例[一二三四五六七八九十\d]+[\s:：]*/,'').replace(/[:：]\s*$/,'');document.getElementById("cdTitle").textContent=t;var h='';if(c.f)h+='<div class="cd-section"><h5>基本案情</h5><p>'+escHtml(c.f).replace(/\n/g,'<br>')+'</p></div>';if(c.p)h+='<div class="cd-section"><h5>裁判/处理</h5><p>'+escHtml(c.p).replace(/\n/g,'<br>')+'</p></div>';if(c.s)h+='<div class="cd-section"><h5>典型意义</h5><p>'+escHtml(c.s).replace(/\n/g,'<br>')+'</p></div>';document.getElementById("cdContent").innerHTML=h;document.getElementById("caseDetail").classList.add("show");document.getElementById("caseDetail").scrollTop=0;}
 function closeCaseDetail(){document.getElementById("caseDetail").classList.remove("show");}
+
+
+function saveApiConfig() {
+  var key = document.getElementById("apiKeyInput").value.trim();
+  var model = document.getElementById("apiModelSelect").value;
+  if (!key) { showToast("请输入API Key"); return; }
+  if (!key.startsWith("sk-")) { showToast("API Key格式不正确，应以sk-开头"); return; }
+  var config = { apiKey: key, model: model };
+  try { localStorage.setItem("lexpilot-config", JSON.stringify(config)); } catch(e) {}
+  SETTINGS.apiKey = key;
+  SETTINGS.model = model;
+  showApiStatus();
+  showToast("API配置已保存");
+}
+function loadApiConfig() {
+  try {
+    var s = JSON.parse(localStorage.getItem("lexpilot-config") || "{}");
+    if (s.apiKey) {
+      document.getElementById("apiKeyInput").value = s.apiKey;
+      document.getElementById("apiModelSelect").value = s.model || "deepseek-v4-flash";
+    }
+  } catch(e) {}
+  showApiStatus();
+}
+function showApiStatus() {
+  var el = document.getElementById("apiStatus");
+  if (SETTINGS.apiKey) {
+    el.innerHTML = '<span class="api-status set">已配置</span> ' + SETTINGS.model;
+  } else {
+    el.innerHTML = '<span class="api-status unset">未配置</span> 请设置API Key以启用AI问答';
+  }
+}
 
 function showComingSoon(feature) {
   showToast(feature + ' — 开发中，敬请期待');
