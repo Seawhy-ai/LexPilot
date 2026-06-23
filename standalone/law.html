@@ -1316,7 +1316,7 @@ function buildQuizSubjectFilter() {
   var h = "";
   for (var i = 0; i < subjects.length; i++) {
     var s = subjects[i];
-    h += '<button class="' + (QUIZ_STATE.subject === s ? "active" : "") + '" onclick="selectQuizSubject(\x27' + escAttr(s) + '\x27)">' + escHtml(s) + '</button>';
+    h += '<button class="' + (QUIZ_STATE.subject === s ? "active" : "") + '" onclick="selectQuizSubject('' + escAttr(s) + '')">' + escHtml(s) + '</button>';
   }
   document.getElementById("quizSubjectFilter").innerHTML = h;
   document.getElementById("quizSubtitle").textContent = QUIZ_STATE.subject === "全部" ? "全部科目 · 法考真题 · 章节练习" : QUIZ_STATE.subject + " · 共 " + (QUIZ_DATA[QUIZ_STATE.subject] ? QUIZ_DATA[QUIZ_STATE.subject].length : 0) + " 题";
