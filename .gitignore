@@ -1,5 +1,8 @@
-# API keys
+# ⚠️  API Keys — 绝对不能提交任何包含真实 Key 的文件！
 .env
+*.env
+!*.env.example
+standalone/config.json
 
 # Node modules
 node_modules/
