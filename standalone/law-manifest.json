@@ -1,9 +1,9 @@
 {
-  "name": "LexPilot · 法学生AI助手",
+  "name": "LexPilot v1.2 · 法学生AI助手",
   "short_name": "LexPilot",
   "description": "法学生AI学习助手 · 法律数据库 · 深度案例分析",
-  "start_url": "/ai-chat/law.html",
-  "scope": "/ai-chat/",
+  "start_url": "/LexPilot/standalone/law.html",
+  "scope": "/LexPilot/standalone/",
   "display": "standalone",
   "orientation": "portrait",
   "theme_color": "#1a5276",
