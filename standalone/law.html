@@ -606,9 +606,8 @@
 
     <div class="api-config">
       <h5><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>API 配置</h5>
-      <p style="font-size:11px;color:var(--text2);margin-bottom:8px">配置后端代理地址实现Key不暴露，或填写Key直连。数据仅存于你的浏览器。</p>
-      <input type="text" id="apiServerInput" placeholder="http://localhost:3000（后端地址，留空直连）" style="margin-bottom:4px" />
-      <input type="password" id="apiKeyInput" placeholder="sk-xxxxxxxx（直连模式需要）" />
+      <p style="font-size:11px;color:var(--text2);margin-bottom:8px">配置DeepSeek API密钥以启用AI法律咨询功能。密钥仅存储在你的浏览器中。</p>
+      <input type="password" id="apiKeyInput" placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxx" />
       <div class="api-row">
         <select id="apiModelSelect">
           <option value="deepseek-chat">DeepSeek Chat</option>
@@ -708,7 +707,7 @@
 // ============================================================
 
 // ----- CONFIG -----
-var DEFAULTS = { apiKey: "", model: "deepseek-v4-flash", serverUrl: "" };
+var DEFAULTS = { apiKey: "", model: "deepseek-v4-flash" };
 var SETTINGS = {};
 try { var s = JSON.parse(localStorage.getItem("lexpilot-config") || "{}"); SETTINGS = Object.assign({}, DEFAULTS, s); } catch(e) { SETTINGS = Object.assign({}, DEFAULTS); }
 
@@ -1114,7 +1113,7 @@ function showError(msg) {
 function sendMsg(text) {
   if (streaming) return;
   text = text.trim(); if (!text) return;
-  if (!SETTINGS.serverUrl && !SETTINGS.apiKey) { showError('请先前往关于我们配置后端地址或API密钥'); return; }
+  if (!SETTINGS.apiKey) { showError('API配置错误，请先前往关于我们中完成配置'); return; }
 
   var sessionId = ++chatSessionId;
   streaming = true; dom.btnSend.disabled = true; dom.typing.style.display = "flex"; scrollBottom();
@@ -1138,9 +1137,9 @@ function sendMsg(text) {
   var fullContent = "", resolved = false;
   abortController = new AbortController(); var signal = abortController.signal;
 
-  fetch((SETTINGS.serverUrl||"/api")+"/chat", {
+  fetch("https://api.deepseek.com/v1/chat/completions", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", Authorization: "Bearer " + SETTINGS.apiKey },
     body: JSON.stringify({ model: SETTINGS.model, messages: apiMsgs, stream: true, temperature: 0.2, max_tokens: 8192 }),
     signal: signal
   }).then(function(resp) {
@@ -1248,30 +1247,29 @@ function closeCaseDetail(){document.getElementById("caseDetail").classList.remov
 function saveApiConfig() {
   var key = document.getElementById("apiKeyInput").value.trim();
   var model = document.getElementById("apiModelSelect").value;
-  var serverUrl = document.getElementById("apiServerInput").value.trim();
-  if (!serverUrl && !key) { showToast("请配置后端地址或API Key"); return; }
-  var config = { apiKey: key, model: model, serverUrl: serverUrl };
+  if (!key) { showToast("请输入API Key"); return; }
+  if (!key.startsWith("sk-")) { showToast("API Key格式不正确，应以sk-开头"); return; }
+  var config = { apiKey: key, model: model };
   try { localStorage.setItem("lexpilot-config", JSON.stringify(config)); } catch(e) {}
   SETTINGS.apiKey = key;
   SETTINGS.model = model;
-  SETTINGS.serverUrl = serverUrl;
   showApiStatus();
-  showToast(serverUrl ? "已启用代理模式" : "已保存直连配置");
+  showToast("API配置已保存");
 }
 function loadApiConfig() {
   try {
     var s = JSON.parse(localStorage.getItem("lexpilot-config") || "{}");
-    if (s.apiKey) document.getElementById("apiKeyInput").value = s.apiKey;
-    if (s.serverUrl) document.getElementById("apiServerInput").value = s.serverUrl;
-    document.getElementById("apiModelSelect").value = s.model || "deepseek-v4-flash";
+    if (s.apiKey) {
+      document.getElementById("apiKeyInput").value = s.apiKey;
+      document.getElementById("apiModelSelect").value = s.model || "deepseek-v4-flash";
+    }
   } catch(e) {}
   showApiStatus();
 }
-function clearApiConfig(){document.getElementById("apiKeyInput").value="";document.getElementById("apiServerInput").value="";try{localStorage.removeItem("lexpilot-config")}catch(e){}SETTINGS.apiKey="";SETTINGS.model="deepseek-v4-flash";SETTINGS.serverUrl="";showApiStatus();showToast("API配置已清空");}
+function clearApiConfig(){document.getElementById("apiKeyInput").value="";try{localStorage.removeItem("lexpilot-config")}catch(e){}SETTINGS.apiKey="";SETTINGS.model="deepseek-v4-flash";showApiStatus();showToast("API配置已清空");}
 function showApiStatus() {
   var el = document.getElementById("apiStatus");
-  if (SETTINGS.serverUrl) { el.innerHTML = '<span class="api-status set">代理模式</span> ' + SETTINGS.serverUrl + ' · ' + SETTINGS.model; }
-  else if (SETTINGS.apiKey) {
+  if (SETTINGS.apiKey) {
     el.innerHTML = '<span class="api-status set">已配置</span> ' + SETTINGS.model;
   } else {
     el.innerHTML = '<span class="api-status unset">未配置</span> 请设置API Key以启用AI问答';
