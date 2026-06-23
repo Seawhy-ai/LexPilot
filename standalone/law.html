@@ -624,7 +624,7 @@
 // ============================================================
 
 // ----- CONFIG -----
-var DEFAULTS = { apiKey: "sk-6d616396f6e14e418a1954f920401b5e", model: "deepseek-v4-flash" };
+var DEFAULTS = { apiKey: "", model: "deepseek-v4-flash" };
 var SETTINGS = {};
 try { var s = JSON.parse(localStorage.getItem("lexpilot-config") || "{}"); SETTINGS = Object.assign({}, DEFAULTS, s); } catch(e) { SETTINGS = Object.assign({}, DEFAULTS); }
 
