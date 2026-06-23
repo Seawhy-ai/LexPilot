@@ -670,6 +670,7 @@
 <!-- Toast -->
 <div id="toast" style="position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--toast-bg);color:var(--toast-text);padding:10px 20px;border-radius:20px;font-size:13px;z-index:300;opacity:0;pointer-events:none;transition:opacity .3s;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,0.2)"></div>
 
+<script src="templates.js"></script>
 <script src="case_data.js"></script>
 <script>
 // ============================================================
@@ -1660,7 +1661,7 @@ var DOC_TYPES = [
     {key:"appeal_claims",label:"上诉请求",placeholder:"如：1.撤销原判；2.改判驳回原告全部诉讼请求",type:"textarea"},
     {key:"grounds",label:"上诉理由",placeholder:"详细说明一审判决认定事实错误、适用法律不当等理由",type:"textarea"}
   ]},
-  { id:"agency", name:"代理词", icon:"🎤", desc:"庭审陈述 · 代理意见 · 辩论要点", fields:[
+  { id:"agency", name:"代理词", icon:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>', desc:"庭审陈述 · 代理意见 · 辩论要点", fields:[
     {key:"lawyer",label:"代理人",placeholder:"律师事务所名称 + 律师姓名",type:"text"},
     {key:"client",label:"被代理人",placeholder:"当事人姓名/名称（原告/被告）",type:"text"},
     {key:"case_info",label:"案件信息",placeholder:"如：XX诉XX买卖合同纠纷案",type:"text"},
@@ -1778,87 +1779,7 @@ function regenerateDoc() {
 
 
 
-function buildDocTemplate(t, f) {
-  var d = new Date();
-  var ds = d.getFullYear() + "年" + (d.getMonth()+1) + "月" + d.getDate() + "日";
-  var h = "";
-  if (t.id === "purchase") {
-    h += "买卖合同\n\n甲方（买方）：" + (f.buyer||"________") + "\n乙方（卖方）：" + (f.seller||"________") + "\n\n";
-    h += "经友好协商，双方就以下货物买卖事宜达成一致：\n\n";
-    h += "一、标的物：" + (f.goods||"________") + "\n";
-    h += "二、数量：" + (f.quantity||"________") + "\n";
-    h += "三、单价：" + (f.price||"________") + "\n";
-    h += "四、总价款：" + (f.total||"________") + "\n";
-    h += "五、交货地点与日期：" + (f.delivery||"________") + "\n";
-    h += "六、付款方式：" + (f.payment||"________") + "\n";
-    h += "七、违约责任：" + (f.breach||"按《民法典》相关规定处理") + "\n";
-    if (f.extra) h += "八、其他约定：" + f.extra + "\n";
-    h += "九、争议解决：协商不成的，提交合同签订地人民法院诉讼解决。\n\n";
-    h += "甲方（签章）：________  日期：________\n";
-    h += "乙方（签章）：________  日期：________\n";
-  }
-  else if (t.id === "loan") {
-    h += "借款合同\n\n出借人（甲方）：" + (f.lender||"________") + "\n借款人（乙方）：" + (f.borrower||"________") + "\n\n";
-    h += "一、借款金额：" + (f.amount||"________") + "\n";
-    h += "二、年利率：" + (f.rate||"________") + "\n";
-    h += "三、借款期限：" + (f.term||"________") + "\n";
-    h += "四、还款方式：" + (f.method||"________") + "\n";
-    if (f.guarantee) h += "五、担保方式：" + f.guarantee + "\n";
-    h += "六、违约责任：逾期还款按约定利率上浮50%支付逾期利息。\n";
-    if (f.extra) h += "七、其他约定：" + f.extra + "\n";
-    h += "八、争议解决：协商不成的，向出借人住所地人民法院提起诉讼。\n\n";
-    h += "甲方（签章）：________  日期：________\n";
-    h += "乙方（签章）：________  日期：________\n";
-  }
-  else if (t.id === "employment") {
-    h += "劳动合同\n\n用人单位（甲方）：" + (f.employer||"________") + "\n劳动者（乙方）：" + (f.employee||"________") + "\n\n";
-    h += "根据《劳动法》《劳动合同法》，双方签订本合同。\n\n";
-    h += "一、工作岗位：" + (f.position||"________") + "\n";
-    h += "二、工资待遇：" + (f.salary||"________") + "\n";
-    h += "三、合同期限：" + (f.term||"________") + "\n";
-    h += "四、工作地点：" + (f.location||"________") + "\n";
-    h += "五、工时制度：" + (f.hours||"标准工时制") + "\n";
-    h += "六、社会保险：甲方依法为乙方缴纳社会保险。\n";
-    h += "七、劳动保护：甲方提供符合国家规定的劳动安全卫生条件。\n";
-    if (f.extra) h += "八、其他约定：" + f.extra + "\n";
-    h += "九、争议解决：发生劳动争议，可向劳动争议仲裁委员会申请仲裁。\n\n";
-    h += "甲方（盖章）：________  日期：________\n";
-    h += "乙方（签字）：________  日期：________\n";
-  }
-  else if (t.id === "lease") {
-    h += "租赁合同\n\n出租人（甲方）：" + (f.lessor||"________") + "\n承租人（乙方）：" + (f.lessee||"________") + "\n\n";
-    h += "一、租赁物：" + (f.property||"________") + "\n";
-    h += "二、租金：" + (f.rent||"________") + "\n";
-    h += "三、租期：" + (f.term||"________") + "\n";
-    if (f.deposit) h += "四、押金：" + f.deposit + "\n";
-    h += "五、租赁用途：" + (f.purpose||"________") + "\n";
-    h += "六、甲方保证对租赁物享有合法出租权，乙方应合理使用，不得擅自转租。\n";
-    if (f.extra) h += "七、其他约定：" + f.extra + "\n";
-    h += "八、争议解决：协商不成的，向租赁物所在地人民法院提起诉讼。\n\n";
-    h += "甲方（签章）：________  日期：________\n";
-    h += "乙方（签章）：________  日期：________\n";
-  }
-  else if (t.id === "complaint") {
-    h += "民事起诉状\n\n";
-    h += "原告：" + (f.plaintiff||"________") + "\n\n";
-    h += "被告：" + (f.defendant||"________") + "\n\n";
-    h += "诉讼请求：\n" + (f.claims||"________") + "\n\n";
-    h += "事实与理由：\n" + (f.facts||"________") + "\n\n";
-    h += "此致\n" + (f.court||"________") + "人民法院\n\n";
-    h += "附：本诉状副本____份\n\n";
-    h += "具状人（签名）：________\n" + ds + "\n";
-  }
-  else {
-    h += t.name + "\n\n";
-    for (var i = 0; i < t.fields.length; i++) {
-      var k = t.fields[i].key;
-      h += t.fields[i].label + "：" + (f[k]||"________") + "\n";
-    }
-    h += "\n日期：" + ds + "\n";
-  }
-  h += "\n\n【律师提示】本文书为模板生成，请核对信息准确性，必要时咨询律师。";
-  return h;
-}
+
 
 </script>
 </body>
