@@ -1472,27 +1472,6 @@ function selectQuizSubject(subject) {
   filterQuizQuestions();
 }
 
-
-function shuffleArray(arr) {
-  var a = arr.slice();
-  for (var i = a.length - 1; i > 0; i--) {
-    var j = Math.floor(Math.random() * (i + 1));
-    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
-  }
-  return a;
-}
-function shuffleQuizOptions(q) {
-  // Create shuffled copy with remapped answer
-  var indices = [0, 1, 2, 3];
-  var shuffled = shuffleArray(indices);
-  return {
-    q: q.q,
-    opts: [q.opts[shuffled[0]], q.opts[shuffled[1]], q.opts[shuffled[2]], q.opts[shuffled[3]]],
-    ans: shuffled.indexOf(0),
-    exp: q.exp
-  };
-}
-
 function filterQuizQuestions() {
   var all = [];
   if (QUIZ_STATE.subject === "全部") {
@@ -1501,7 +1480,7 @@ function filterQuizQuestions() {
         for (var i = 0; i < QUIZ_DATA[k].length; i++) {
           var q = QUIZ_DATA[k][i];
           q._subject = k;
-          all.push(q);
+          all.push(shuffleQuizOptions(q));
         }
       }
     }
@@ -1510,7 +1489,7 @@ function filterQuizQuestions() {
     for (var i = 0; i < arr.length; i++) {
       var q = arr[i];
       q._subject = QUIZ_STATE.subject;
-      all.push(q);
+      all.push(shuffleQuizOptions(q));
     }
   }
   for (var i = all.length - 1; i > 0; i--) {
