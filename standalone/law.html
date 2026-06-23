@@ -549,7 +549,7 @@
   <div class="about-body">
     <div class="about-logo"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 L12 21"/><path d="M5 3 L5 21"/><path d="M19 3 L19 21"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="5" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/></svg></div>
     <div class="about-name">LexPilot</div>
-    <div class="about-ver">v1.1.0 · 法学生AI学习助手 · 2026.06.23</div>
+    <div class="about-ver">v1.2.0 · 法学生AI学习助手 · 2026.06.23</div>
     <div class="about-desc">专为法学生打造的深度学习辅助工具<br>基于<strong>AI法律工具失效模式与规制路径研究</strong>（2026）优化</div>
 
     <div class="about-section">
@@ -616,8 +616,8 @@
   </div>
   <div class="doc-body">
     <div class="doc-header">
-      <h2>AI 法律文书生成</h2>
-      <p id="docSubtitle">选择文书类型，填写关键信息，一键生成</p>
+      <h2>法律文书生成</h2>
+      <p id="docSubtitle">选择文书类型，填写关键信息，生成文书</p>
     </div>
     <div class="doc-type-grid" id="docTypeGrid"></div>
     <div id="docFormArea"></div>
@@ -1630,7 +1630,7 @@ function goToQuizPage(idx) {
 // DOCUMENT GENERATION
 // ============================================================
 var DOC_TYPES = [
-  { id:"purchase", name:"买卖合同", icon:"📋", desc:"货物买卖 · 设备采购 · 商品销售", fields:[
+  { id:"purchase", name:"买卖合同", icon:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>', desc:"货物买卖 · 设备采购 · 商品销售", fields:[
     {key:"buyer",label:"买方（甲方）",placeholder:"公司/个人全称",type:"text"},
     {key:"seller",label:"卖方（乙方）",placeholder:"公司/个人全称",type:"text"},
     {key:"goods",label:"标的物",placeholder:"货物名称、规格、型号",type:"text"},
@@ -1642,7 +1642,7 @@ var DOC_TYPES = [
     {key:"breach",label:"违约责任",placeholder:"如：逾期每日按总价0.1%支付违约金",type:"text"},
     {key:"extra",label:"其他约定（选填）",placeholder:"如：争议由甲方所在地法院管辖",type:"textarea"}
   ]},
-  { id:"loan", name:"借款合同", icon:"💰", desc:"个人借贷 · 企业拆借 · 抵押借款", fields:[
+  { id:"loan", name:"借款合同", icon:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>', desc:"个人借贷 · 企业拆借 · 抵押借款", fields:[
     {key:"lender",label:"出借人（甲方）",placeholder:"全称",type:"text"},
     {key:"borrower",label:"借款人（乙方）",placeholder:"全称",type:"text"},
     {key:"amount",label:"借款金额",placeholder:"如：人民币壹拾万元整（¥100,000）",type:"text"},
@@ -1652,7 +1652,7 @@ var DOC_TYPES = [
     {key:"guarantee",label:"担保方式（选填）",placeholder:"如：保证人XXX / 房产抵押",type:"text"},
     {key:"extra",label:"其他约定（选填）",placeholder:"",type:"textarea"}
   ]},
-  { id:"employment", name:"劳动合同", icon:"💼", desc:"固定期限 · 无固定期限 · 试用期", fields:[
+  { id:"employment", name:"劳动合同", icon:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>', desc:"固定期限 · 无固定期限 · 试用期", fields:[
     {key:"employer",label:"用人单位（甲方）",placeholder:"公司全称",type:"text"},
     {key:"employee",label:"劳动者（乙方）",placeholder:"姓名",type:"text"},
     {key:"position",label:"工作岗位",placeholder:"如：软件工程师",type:"text"},
@@ -1662,7 +1662,7 @@ var DOC_TYPES = [
     {key:"hours",label:"工时制度",placeholder:"如：标准工时制 / 综合计算工时制",type:"text"},
     {key:"extra",label:"其他约定（选填）",placeholder:"如：保密协议、竞业限制等",type:"textarea"}
   ]},
-  { id:"lease", name:"租赁合同", icon:"🏠", desc:"房屋租赁 · 设备租赁 · 车辆租赁", fields:[
+  { id:"lease", name:"租赁合同", icon:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>', desc:"房屋租赁 · 设备租赁 · 车辆租赁", fields:[
     {key:"lessor",label:"出租人（甲方）",placeholder:"全称",type:"text"},
     {key:"lessee",label:"承租人（乙方）",placeholder:"全称",type:"text"},
     {key:"property",label:"租赁物",placeholder:"如：位于XX市XX区XX路XX号的房屋（面积XX㎡）",type:"text"},
@@ -1672,7 +1672,7 @@ var DOC_TYPES = [
     {key:"purpose",label:"租赁用途",placeholder:"如：居住 / 办公 / 经营",type:"text"},
     {key:"extra",label:"其他约定（选填）",placeholder:"如：不得转租、装修限制等",type:"textarea"}
   ]},
-  { id:"complaint", name:"民事起诉状", icon:"⚖️", desc:"合同纠纷 · 侵权纠纷 · 婚姻家庭", fields:[
+  { id:"complaint", name:"民事起诉状", icon:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="12" y1="2" x2="12" y2="8"/><path d="M8 8h8a4 4 0 0 1 0 8H8a4 4 0 0 1 0-8z"/><line x1="8" y1="19" x2="16" y2="19"/><line x1="12" y1="16" x2="12" y2="22"/></svg>', desc:"合同纠纷 · 侵权纠纷 · 婚姻家庭", fields:[
     {key:"plaintiff",label:"原告",placeholder:"姓名/名称、性别、出生日期、身份证号、住址、联系电话",type:"textarea"},
     {key:"defendant",label:"被告",placeholder:"姓名/名称、住址、联系电话",type:"textarea"},
     {key:"cause",label:"案由",placeholder:"如：买卖合同纠纷 / 民间借贷纠纷 / 离婚纠纷",type:"text"},
@@ -1680,14 +1680,14 @@ var DOC_TYPES = [
     {key:"facts",label:"事实与理由",placeholder:"详细描述纠纷经过、关键时间节点、已发生的交涉情况",type:"textarea"},
     {key:"court",label:"管辖法院（选填）",placeholder:"如：北京市朝阳区人民法院",type:"text"}
   ]},
-  { id:"answer", name:"民事答辩状", icon:"🛡️", desc:"应诉答辩 · 反驳主张 · 提出抗辩", fields:[
+  { id:"answer", name:"民事答辩状", icon:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>', desc:"应诉答辩 · 反驳主张 · 提出抗辩", fields:[
     {key:"respondent",label:"答辩人",placeholder:"姓名/名称、住址、联系电话",type:"textarea"},
     {key:"plaintiff2",label:"被答辩人（原告）",placeholder:"姓名/名称",type:"text"},
     {key:"cause",label:"案由",placeholder:"如：买卖合同纠纷",type:"text"},
     {key:"defense",label:"答辩意见",placeholder:"针对原告诉讼请求的逐一反驳意见及理由",type:"textarea"},
     {key:"facts",label:"事实与理由",placeholder:"详细说明对原告主张的异议及依据",type:"textarea"}
   ]},
-  { id:"appeal", name:"上诉状", icon:"📜", desc:"不服一审判决 · 二审程序", fields:[
+  { id:"appeal", name:"上诉状", icon:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>', desc:"不服一审判决 · 二审程序", fields:[
     {key:"appellant",label:"上诉人",placeholder:"一审原告/被告，基本信息",type:"textarea"},
     {key:"appellee",label:"被上诉人",placeholder:"对方当事人信息",type:"textarea"},
     {key:"case_info",label:"原审案件信息",placeholder:"如：XX人民法院(2026)X民初XX号民事判决",type:"text"},
@@ -1774,7 +1774,6 @@ function generateDoc() {
   var t = DOC_STATE.selectedType;
   if (!t) { showToast("请先选择文书类型"); return; }
 
-  // Collect field values
   var fields = {};
   var hasContent = false;
   for (var i = 0; i < t.fields.length; i++) {
@@ -1783,137 +1782,12 @@ function generateDoc() {
     fields[t.fields[i].key] = val;
     if (val) hasContent = true;
   }
-
   if (!hasContent) { showToast("请至少填写一项关键信息"); return; }
 
-  DOC_STATE.generating = true;
-  document.getElementById("docResultArea").innerHTML = '<div class="doc-loading"><div class="spinner"></div><p style="margin-top:12px">正在生成 ' + t.name + '，请稍候…</p><p style="font-size:11px;color:var(--text2)">使用 DeepSeek Flash · 预计10-30秒</p></div>';
+  var result = buildDocTemplate(t, fields);
+  DOC_STATE.result = result;
+  renderDocResult();
   document.getElementById("docResultArea").scrollIntoView({ behavior: "smooth" });
-
-  // Build prompt
-  var promptParts = [];
-  promptParts.push("你是一位经验丰富的中国执业律师，请根据以下信息撰写一份完整、规范的法律文书。");
-  promptParts.push("");
-  promptParts.push("【文书类型】" + t.name);
-  promptParts.push("");
-  promptParts.push("【关键信息】");
-  for (var i = 0; i < t.fields.length; i++) {
-    var f = t.fields[i];
-    var val = fields[f.key];
-    promptParts.push("- " + f.label + "：" + (val || "（未提供）"));
-  }
-  promptParts.push("");
-  promptParts.push("【格式要求】");
-  promptParts.push("1. 使用中国法律文书的规范格式，包含标题、当事人信息、正文、落款");
-  promptParts.push("2. 引用相关法条时注明《XX法》第X条");
-  promptParts.push("3. 关键信息（金额、日期、人名等）用【】标出提醒核实");
-  promptParts.push("4. 涉及利息/违约金时写出具体计算方式");
-  promptParts.push("5. 合同类文书包含必备条款（标的、数量、价款、履行、违约、争议解决）");
-  promptParts.push("6. 诉讼文书按法院要求的格式撰写");
-  promptParts.push("7. 使用专业、严谨、精炼的法律语言");
-  promptParts.push("8. 文书末尾添加【律师提示】简要说明使用注意事项");
-  var prompt = promptParts.join("\n");
-
-  var apiMsgs = [
-    { role: "system", content: "你是一位经验丰富的中国执业律师，精通各类法律文书写作。请直接输出完整的法律文书内容，不要额外解释。" },
-    { role: "user", content: prompt }
-  ];
-
-  var fullContent = "";
-  var abortCtrl = new AbortController();
-
-  fetch("https://api.deepseek.com/v1/chat/completions", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: "Bearer " + SETTINGS.apiKey },
-    body: JSON.stringify({ model: SETTINGS.model, messages: apiMsgs, stream: true, temperature: 0.3, max_tokens: 4096 }),
-    signal: abortCtrl.signal
-  }).then(function(resp) {
-    if (!resp.ok) return resp.text().then(function(t) { throw new Error("API " + resp.status + ": " + t.slice(0, 300)); });
-    var reader = resp.body.getReader(), decoder = new TextDecoder(), buf = "";
-    function pump() {
-      reader.read().then(function(result) {
-        if (result.done) {
-          DOC_STATE.result = fullContent || "（生成失败：空响应）";
-          DOC_STATE.generating = false;
-          renderDocResult();
-          return;
-        }
-        buf += decoder.decode(result.value, { stream: true });
-        var lines = buf.split("\n"); buf = lines.pop() || "";
-        for (var i = 0; i < lines.length; i++) {
-          var s = lines[i].trim(); if (!s.startsWith("data:")) continue;
-          var data = s.slice(5).trim(); if (data === "[DONE]") continue;
-          try { var p = JSON.parse(data), d = (p.choices || [{}])[0].delta; if (!d) continue; var t = d.content || ""; if (t) { fullContent += t; DOC_STATE.result = fullContent; renderDocResultStream(); } } catch(e) {}
-        }
-        pump();
-      }).catch(function(e) {
-        if (DOC_STATE.result) {
-          DOC_STATE.generating = false;
-          renderDocResult();
-        } else {
-          DOC_STATE.generating = false;
-          document.getElementById("docResultArea").innerHTML = '<div class="doc-result show"><p style="color:#e74c3c">生成失败：' + escHtml(e.message) + '</p></div>';
-        }
-      });
-    }
-    pump();
-  }).catch(function(e) {
-    if (fullContent) {
-      DOC_STATE.result = fullContent;
-      DOC_STATE.generating = false;
-      renderDocResult();
-    } else if (!(e && e.name === "AbortError")) {
-      DOC_STATE.generating = false;
-      document.getElementById("docResultArea").innerHTML = '<div class="doc-result show"><p style="color:#e74c3c">请求失败：' + escHtml(e.message) + '</p></div>';
-    }
-  });
-
-  DOC_STATE._abortCtrl = abortCtrl;
-}
-
-function renderDocResultStream() {
-  var h = '<div class="doc-result show">';
-  h += '<h3>📄 ' + (DOC_STATE.selectedType ? DOC_STATE.selectedType.name : "生成结果") + '</h3>';
-  h += '<div class="doc-result-content" id="docResultContent">' + escHtml(DOC_STATE.result || "") + '<span class="cursor-blink" style="display:inline-block;width:2px;height:16px;background:var(--accent);animation:blink .8s infinite;vertical-align:text-bottom;margin-left:2px"> </span></div>';
-  h += '</div>';
-  document.getElementById("docResultArea").innerHTML = h;
-  document.getElementById("docResultArea").scrollIntoView({ behavior: "smooth" });
-}
-
-function renderDocResult() {
-  var h = '<div class="doc-result show">';
-  h += '<h3>📄 ' + (DOC_STATE.selectedType ? DOC_STATE.selectedType.name : "生成结果") + '</h3>';
-  h += '<div class="doc-result-content" id="docResultContent">' + escHtml(DOC_STATE.result || "（无内容）") + '</div>';
-  h += '<div class="doc-btn-row">';
-  h += '<button class="doc-btn primary" onclick="copyDocResult()">📋 复制全文</button>';
-  h += '<button class="doc-btn secondary" onclick="downloadDocResult()">💾 下载为TXT</button>';
-  h += '<button class="doc-btn secondary" onclick="regenerateDoc()">🔄 重新生成</button>';
-  h += '</div>';
-  h += '</div>';
-  document.getElementById("docResultArea").innerHTML = h;
-  document.getElementById("docResultArea").scrollIntoView({ behavior: "smooth" });
-}
-
-function copyDocResult() {
-  if (!DOC_STATE.result) return;
-  navigator.clipboard.writeText(DOC_STATE.result).then(function() {
-    showToast("✅ 已复制全文到剪贴板");
-  }).catch(function() {
-    showToast("复制失败，请手动选择文本");
-  });
-}
-
-function downloadDocResult() {
-  if (!DOC_STATE.result) return;
-  var t = DOC_STATE.selectedType;
-  var filename = (t ? t.name : "法律文书") + "_" + new Date().toISOString().slice(0,10) + ".txt";
-  var blob = new Blob([DOC_STATE.result], { type: "text/plain;charset=utf-8" });
-  var a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(a.href);
-  showToast("✅ 已下载 " + filename);
 }
 
 function regenerateDoc() {
@@ -1924,3 +1798,86 @@ function regenerateDoc() {
 </script>
 </body>
 </html>
+function buildDocTemplate(t, f) {
+  var d = new Date();
+  var ds = d.getFullYear() + "年" + (d.getMonth()+1) + "月" + d.getDate() + "日";
+  var h = "";
+  if (t.id === "purchase") {
+    h += "买卖合同\n\n甲方（买方）：" + (f.buyer||"________") + "\n乙方（卖方）：" + (f.seller||"________") + "\n\n";
+    h += "经友好协商，双方就以下货物买卖事宜达成一致：\n\n";
+    h += "一、标的物：" + (f.goods||"________") + "\n";
+    h += "二、数量：" + (f.quantity||"________") + "\n";
+    h += "三、单价：" + (f.price||"________") + "\n";
+    h += "四、总价款：" + (f.total||"________") + "\n";
+    h += "五、交货地点与日期：" + (f.delivery||"________") + "\n";
+    h += "六、付款方式：" + (f.payment||"________") + "\n";
+    h += "七、违约责任：" + (f.breach||"按《民法典》相关规定处理") + "\n";
+    if (f.extra) h += "八、其他约定：" + f.extra + "\n";
+    h += "九、争议解决：协商不成的，提交合同签订地人民法院诉讼解决。\n\n";
+    h += "甲方（签章）：________  日期：________\n";
+    h += "乙方（签章）：________  日期：________\n";
+  }
+  else if (t.id === "loan") {
+    h += "借款合同\n\n出借人（甲方）：" + (f.lender||"________") + "\n借款人（乙方）：" + (f.borrower||"________") + "\n\n";
+    h += "一、借款金额：" + (f.amount||"________") + "\n";
+    h += "二、年利率：" + (f.rate||"________") + "\n";
+    h += "三、借款期限：" + (f.term||"________") + "\n";
+    h += "四、还款方式：" + (f.method||"________") + "\n";
+    if (f.guarantee) h += "五、担保方式：" + f.guarantee + "\n";
+    h += "六、违约责任：逾期还款按约定利率上浮50%支付逾期利息。\n";
+    if (f.extra) h += "七、其他约定：" + f.extra + "\n";
+    h += "八、争议解决：协商不成的，向出借人住所地人民法院提起诉讼。\n\n";
+    h += "甲方（签章）：________  日期：________\n";
+    h += "乙方（签章）：________  日期：________\n";
+  }
+  else if (t.id === "employment") {
+    h += "劳动合同\n\n用人单位（甲方）：" + (f.employer||"________") + "\n劳动者（乙方）：" + (f.employee||"________") + "\n\n";
+    h += "根据《劳动法》《劳动合同法》，双方签订本合同。\n\n";
+    h += "一、工作岗位：" + (f.position||"________") + "\n";
+    h += "二、工资待遇：" + (f.salary||"________") + "\n";
+    h += "三、合同期限：" + (f.term||"________") + "\n";
+    h += "四、工作地点：" + (f.location||"________") + "\n";
+    h += "五、工时制度：" + (f.hours||"标准工时制") + "\n";
+    h += "六、社会保险：甲方依法为乙方缴纳社会保险。\n";
+    h += "七、劳动保护：甲方提供符合国家规定的劳动安全卫生条件。\n";
+    if (f.extra) h += "八、其他约定：" + f.extra + "\n";
+    h += "九、争议解决：发生劳动争议，可向劳动争议仲裁委员会申请仲裁。\n\n";
+    h += "甲方（盖章）：________  日期：________\n";
+    h += "乙方（签字）：________  日期：________\n";
+  }
+  else if (t.id === "lease") {
+    h += "租赁合同\n\n出租人（甲方）：" + (f.lessor||"________") + "\n承租人（乙方）：" + (f.lessee||"________") + "\n\n";
+    h += "一、租赁物：" + (f.property||"________") + "\n";
+    h += "二、租金：" + (f.rent||"________") + "\n";
+    h += "三、租期：" + (f.term||"________") + "\n";
+    if (f.deposit) h += "四、押金：" + f.deposit + "\n";
+    h += "五、租赁用途：" + (f.purpose||"________") + "\n";
+    h += "六、甲方保证对租赁物享有合法出租权，乙方应合理使用，不得擅自转租。\n";
+    if (f.extra) h += "七、其他约定：" + f.extra + "\n";
+    h += "八、争议解决：协商不成的，向租赁物所在地人民法院提起诉讼。\n\n";
+    h += "甲方（签章）：________  日期：________\n";
+    h += "乙方（签章）：________  日期：________\n";
+  }
+  else if (t.id === "complaint") {
+    h += "民事起诉状\n\n";
+    h += "原告：" + (f.plaintiff||"________") + "\n\n";
+    h += "被告：" + (f.defendant||"________") + "\n\n";
+    h += "诉讼请求：\n" + (f.claims||"________") + "\n\n";
+    h += "事实与理由：\n" + (f.facts||"________") + "\n\n";
+    h += "此致\n" + (f.court||"________") + "人民法院\n\n";
+    h += "附：本诉状副本____份\n\n";
+    h += "具状人（签名）：________\n" + ds + "\n";
+  }
+  else {
+    h += t.name + "\n\n";
+    for (var i = 0; i < t.fields.length; i++) {
+      var k = t.fields[i].key;
+      h += t.fields[i].label + "：" + (f[k]||"________") + "\n";
+    }
+    h += "\n日期：" + ds + "\n";
+  }
+  h += "\n\n【律师提示】本文书为模板生成，请核对信息准确性，必要时咨询律师。";
+  return h;
+}
+
+
