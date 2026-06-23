@@ -1028,7 +1028,7 @@ function showAbout() {
 // SCREEN MANAGEMENT
 // ============================================================
 function hideAllViews() {
-  ["homeScreen","chatView","dbView","aboutView","quizView","docView"].forEach(function(id) {
+  ["homeScreen","chatView","dbView","aboutView","quizView","docView","caseView","caseDetail","caseView","caseDetail"].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) el.classList.remove("show");
   });
