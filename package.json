@@ -1,6 +1,6 @@
 {
   "name": "ai-chat",
-  "version": "1.0.0",
+  "version": "1.2.7",
   "description": "Mobile-friendly AI Chat with DeepSeek V4 Flash",
   "main": "server.js",
   "scripts": {
