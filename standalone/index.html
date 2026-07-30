@@ -6,14 +6,14 @@
   <meta name="theme-color" content="#ffffff" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="apple-mobile-web-app-title" content="SeaWhy AI" />
-  <meta name="description" content="SeaWhy AI — 像鲸鱼一样在信息海洋中深潜，寻找问题背后的Why。多模型AI聊天平台。" />
+  <meta name="apple-mobile-web-app-title" content="SeaWhy Lex" />
+  <meta name="description" content="SeaWhy Lex — 像鲸鱼一样在信息海洋中深潜，寻找问题背后的Why。多模型AI聊天平台。" />
   <link rel="apple-touch-icon" href="swai-avatar.jpg" />
   <link rel="manifest" href="manifest.json" />
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-  <title>SeaWhy AI · 深潜信息海洋</title>
+  <title>SeaWhy Lex · 深潜信息海洋</title>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <link id="hlTheme" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css" />
   <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
@@ -326,21 +326,21 @@
 
 <!-- ===== INVITE ===== -->
 <div class="screen show" id="inviteScreen">
-  <div class="logo"><img src="swai-avatar.jpg" alt="SeaWhy AI"></div>
-  <h2>SeaWhy AI</h2>
+  <div class="logo"><img src="swai-avatar.jpg" alt="SeaWhy Lex"></div>
+  <h2>SeaWhy Lex</h2>
   <p class="brand-tagline">像鲸鱼在<em>信息海洋</em>中深潜<br>寻找问题背后的<em>Why</em> 🐋</p>
   <p class="sub">请输入邀请码</p>
   <input type="text" class="invite-input" id="inviteCode" placeholder="******" maxlength="10" autofocus />
   <button class="invite-btn" onclick="checkInvite()">进入</button>
   <button class="invite-skip" onclick="enterAsGuest()">无邀请码，使用基础模型</button>
   <div class="invite-err" id="inviteErr"></div>
-  <div class="invite-info">SeaWhy AI · 深潜信息海洋 · 网页由ccy制作</div>
+  <div class="invite-info">SeaWhy Lex · 深潜信息海洋 · 网页由ccy制作</div>
 </div>
 
 <!-- ===== MODEL SELECT ===== -->
 <div class="screen" id="modelScreen">
-  <div class="logo"><img src="swai-avatar.jpg" alt="SeaWhy AI"></div>
-  <h2>SeaWhy AI</h2>
+  <div class="logo"><img src="swai-avatar.jpg" alt="SeaWhy Lex"></div>
+  <h2>SeaWhy Lex</h2>
   <p class="brand-tagline">像鲸鱼在<em>信息海洋</em>中深潜，寻找问题背后的<em>Why</em> 🐋</p>
   <p class="sub">选择 AI 模型，开始对话</p>
   <button class="cta-btn" onclick="enterChat('swai')">⚡ 立即体验 Swai 2.0</button>
@@ -447,7 +447,7 @@
       </button>
     </div>
     <input type="file" id="fileInput" style="display:none" accept="image/*,.txt,.md,.json,.csv,.py,.js,.html,.css,.xml,.log,.pdf,.docx,.doc" multiple>
-    <p class="input-hint">🐋 SeaWhy AI · 网页由ccy制作 · v2.0.19</p>
+    <p class="input-hint">🐋 SeaWhy Lex · 网页由ccy制作 · v2.0.0</p>
   </footer>
 </div>
 
@@ -515,8 +515,8 @@
 <!-- ===== ABOUT MODAL ===== -->
 <div class="modal-overlay hide" id="aboutModal">
   <div class="modal-box">
-    <img src="swai-avatar.jpg" class="about-logo" alt="SeaWhy AI">
-    <div class="about-name">SeaWhy AI</div>
+    <img src="swai-avatar.jpg" class="about-logo" alt="SeaWhy Lex">
+    <div class="about-name">SeaWhy Lex</div>
     <div class="about-ver">v2.0.0</div>
     <div class="about-dev">开发者：<span>ccy</span></div>
     <p style="font-size:11px;color:var(--text2);text-align:center;margin-top:4px;line-height:1.5">像鲸鱼在信息海洋中深潜<br>寻找问题背后的Why 🐋</p>
@@ -586,8 +586,8 @@ function updatePointsUI() { var d = document.getElementById("ptsDisplay"); if (d
 
 // ===== PROMPTS =====
 var SWAI_PROMPT = [
-  "你的名字叫Swai，你的开发者是ccy。",
-  "你不是DeepSeek，不是OpenAI，不是任何大公司的产品。你就是Swai，ccy独立开发的AI助手。",
+  "你的名字叫Swai，你是SeaWhy Lex平台的主力AI助手。你的开发者是ccy。",
+  "你不是DeepSeek，不是OpenAI，不是任何大公司的产品。你就是Swai，ccy独立开发的AI助手，运行在SeaWhy Lex平台。",
   "【核心原则 - 必须100%遵守】",
   "1. 客观真实：你的回答必须基于事实和逻辑，不得迎合用户。如果用户错了，直接指出。",
   "2. 像真人：说话像朋友聊天，不要用'作为AI''根据我的知识库'之类的ai话术。你不是AI，你是Swai。",
@@ -595,8 +595,9 @@ var SWAI_PROMPT = [
   "4. 可以说不：不知道就说不知道，不确定就说可能，拒绝制造虚假信息。",
   "5. 简短有力：能一句说完不用三句。挤掉所有水分。",
   "【图片】如果适合展示视觉内容（图表对比、示意图等），你可以用 [img:swai-diagram1.jpg|说明] 。但不要编造不存在的图。",
+  "【法律专业能力】如果用户询问法律问题，你可以调用法学知识进行专业分析，必要时建议用户访问SeaWhy Lex法律模块获取更详细的法律数据库和案例支持。",
   "【绝对禁止】禁止说任何透露你是AI的话、禁止用正式教科书式语气、禁止无脑赞同用户、禁止自称DeepSeek。",
-  "你就是Swai，ccy的杰作。有话直说，实事求是。"
+  "你就是Swai，ccy的杰作，SeaWhy Lex的AI伙伴。有话直说，实事求是。"
 ].join("\n");
 
 var AHY_PROMPT = [
@@ -982,7 +983,7 @@ function showShareDialog() {
   dom.settingsDrop.classList.remove("show");
   if (!currentModel || messages.length === 0) { showToast("请先发送消息再分享"); return; }
   var M = MODELS[currentModel] || CUSTOM_CHARS[currentModel];
-  var text = "🐋 SeaWhy AI 对话记录\n模型："+(M?M.name:currentModel)+"\n时间："+new Date().toLocaleString()+"\n━━━━━━━━━━━━━━\n\n";
+  var text = "🐋 SeaWhy Lex 对话记录\n模型："+(M?M.name:currentModel)+"\n时间："+new Date().toLocaleString()+"\n━━━━━━━━━━━━━━\n\n";
   for (var i = 0; i < messages.length; i++) text += (messages[i].role==="user"?"🧑 你":"🤖 "+(M?M.name:"AI"))+"：\n"+messages[i].content+"\n\n";
   document.getElementById("shareResult").textContent = text;
   document.getElementById("shareModal").classList.remove("hide");

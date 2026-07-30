@@ -1,12 +1,12 @@
 {
   "theme": "light",
   "accent": "#4A90D9",
-  "title": "SeaWhy AI",
-  "topbarTitle": "SeaWhy AI",
-  "welcomeTitle": "SeaWhy AI",
-  "welcomeSub": "像鲸鱼在信息海洋中深潜，寻找问题背后的Why",
+  "title": "SeaWhy Lex",
+  "topbarTitle": "SeaWhy Lex",
+  "welcomeTitle": "SeaWhy Lex",
+  "welcomeSub": "像鲸鱼在信息海洋中深潜，寻找法律问题背后的Why",
   "welcomeIcon": "🐋",
-  "footerHint": "🐋 SeaWhy AI · 深潜信息海洋 · 网页由ccy制作",
+  "footerHint": "🐋 SeaWhy Lex · 深潜信息海洋 · 网页由ccy制作",
   "model": "deepseek-v4-flash",
   "temperature": 0.7,
   "maxTokens": 4096,
@@ -21,6 +21,6 @@
   "userName": "你",
   "aiAvatar": "🤖",
   "aiName": "Swai",
-"apiKey": "sk-1a551106191f4489a031787a3b81b533",
+  "apiKey": "sk-1a551106191f4489a031787a3b81b533",
   "showThinking": true
 }
