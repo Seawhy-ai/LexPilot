@@ -40,8 +40,8 @@
     /* ===== SCREENS ===== */
     .screen{flex:1;display:none!important;flex-direction:column;overflow-y:auto;background:var(--invite-bg);-webkit-overflow-scrolling:touch}
     .screen.show{display:flex!important}
-    #homeScreen{align-items:center;justify-content:space-between;padding:0;text-align:center;min-height:100dvh;min-height:-webkit-fill-available;background:linear-gradient(180deg,#f0f4f8 0%,#e8ecf2 30%,#f5f6f8 100%)}
-    body.dark #homeScreen{background:linear-gradient(180deg,#1a1a1a 0%,#111 30%,#1a1a1a 100%)}
+    #homeScreen{align-items:center;justify-content:space-between;padding:0;text-align:center;min-height:100dvh;min-height:-webkit-fill-available;background:linear-gradient(180deg,#fff 0%,#f2f5f8 25%,#e8ecf2 60%,#f5f6f8 100%)}
+    body.dark #homeScreen{background:linear-gradient(180deg,#1a1a1a 0%,#151515 25%,#111 60%,#1a1a1a 100%)}
     #homeScreen.hide{display:none!important}
 
     /* ===== WELCOME SCREEN ===== */
@@ -171,6 +171,8 @@
 
     ::-webkit-scrollbar{width:0}
     #homeScreen,.screen.show{animation:fadeInUp .35s ease}
+    #chatView.show,#dbView.show,#aboutView.show,#quizView.show,#docView.show,#caseView.show,#learnCenterView.show,#notebookView.show,#plazaView.show,#lawReaderView.show{animation:fadeIn .25s ease}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
     #chatView{animation:fadeInUp .3s ease}
     @keyframes fadeInUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 
@@ -874,6 +876,7 @@ function typeWriter(el, text, speed, callback) {
       i++;
       setTimeout(type, speed + Math.random() * 60);
     } else {
+      if (cursor) cursor.remove();
       if (callback) callback();
     }
   }
