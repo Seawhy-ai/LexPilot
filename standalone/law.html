@@ -40,9 +40,13 @@
     /* ===== SCREENS ===== */
     .screen{flex:1;display:none!important;flex-direction:column;overflow-y:auto;background:var(--invite-bg);-webkit-overflow-scrolling:touch}
     .screen.show{display:flex!important}
-    #homeScreen{align-items:center;justify-content:space-between;padding:0;text-align:center;min-height:100dvh;min-height:-webkit-fill-available;background:linear-gradient(180deg,#fff 0%,#f2f5f8 25%,#e8ecf2 60%,#f5f6f8 100%)}
+    #homeScreen{align-items:center;justify-content:space-between;padding:0;text-align:center;min-height:100dvh;min-height:-webkit-fill-available;background:linear-gradient(180deg,#fff 0%,#f2f5f8 25%,#e8ecf2 60%,#f5f6f8 100%);position:relative}
     body.dark #homeScreen{background:linear-gradient(180deg,#1a1a1a 0%,#151515 25%,#111 60%,#1a1a1a 100%)}
     #homeScreen.hide{display:none!important}
+
+    .profile-btn{position:absolute;top:calc(16px + var(--safe-top));left:20px;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);background:rgba(255,255,255,0.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(0,0,0,0.06);z-index:10;transition:all .15s}
+    body.dark .profile-btn{background:rgba(40,40,40,0.6);border:1px solid rgba(255,255,255,0.08)}
+    .profile-btn:active{transform:scale(.92);opacity:.8}
 
     /* ===== WELCOME SCREEN ===== */
     .welcome-hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;padding-top:calc(50px + var(--safe-top))}
@@ -428,9 +432,9 @@
 .learn-cards{display:flex;flex-direction:column;gap:12px}
 .learn-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:18px;padding:18px 16px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .15s}
 .learn-card:active{transform:scale(.98);background:var(--input-bg)}
-.lc-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:28px;line-height:1}
+.lc-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text)}
 .lc-name{font-size:16px;font-weight:700;margin-bottom:2px}
-.lc-desc{font-size:12px;color:var(--text2);line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lc-desc{font-size:12px;color:var(--text2);line-height:1.4}
 
 /* ===== NOTEBOOK ===== */
 .notebook-body{flex:1;overflow-y:auto;padding:16px 14px calc(16px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch}
@@ -453,7 +457,10 @@
 
 <!-- ===== HOME SCREEN ===== -->
 <div class="screen show" id="homeScreen">
-  <div class="welcome-hero">
+  <div class="profile-btn" onclick="showAbout()" title="个人中心">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+</div>
+<div class="welcome-hero">
     <div class="whale-icon">🐋</div>
     <h1 class="typewriter" id="typewriter"></h1>
   </div>
@@ -671,19 +678,19 @@
   <div class="learn-body">
     <div class="learn-cards">
       <div class="learn-card" onclick="showCaseDatabase()">
-        <div class="lc-icon" style="background:rgba(231,76,60,0.1);font-size:28px">⚖️</div>
+        <div class="lc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
         <div class="lc-name">案例数据库</div>
-        <div class="lc-desc">经典判例 · 裁判要旨 · 类案检索</div>
+        <div class="lc-desc">经典判例与类案检索</div>
       </div>
       <div class="learn-card" onclick="showDatabase()">
-        <div class="lc-icon" style="background:rgba(74,144,217,0.1);font-size:28px">📖</div>
+        <div class="lc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="14" y2="11"/></svg></div>
         <div class="lc-name">法律数据库</div>
-        <div class="lc-desc">7部核心法律 · 全文检索 · 下载查阅</div>
+        <div class="lc-desc">7部核心法律全文检索</div>
       </div>
       <div class="learn-card" onclick="showDocGen()">
-        <div class="lc-icon" style="background:rgba(39,174,96,0.1);font-size:28px">📄</div>
+        <div class="lc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
         <div class="lc-name">法律文书生成</div>
-        <div class="lc-desc">起诉状 · 答辩状 · 代理词 · 合同审查</div>
+        <div class="lc-desc">起诉状 · 答辩状 · 合同审查</div>
       </div>
     </div>
   </div>
@@ -725,17 +732,17 @@
     <!-- 功能卡片 -->
     <div class="learn-cards">
       <div class="learn-card" onclick="showQuizModule()">
-        <div class="lc-icon" style="background:rgba(74,144,217,0.1);font-size:28px">📝</div>
+        <div class="lc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
         <div class="lc-name">题库</div>
         <div class="lc-desc">法考真题 · 章节练习 · 错题回顾</div>
       </div>
       <div class="learn-card" onclick="showMaterials()">
-        <div class="lc-icon" style="background:rgba(39,174,96,0.1);font-size:28px">📚</div>
+        <div class="lc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="14" y2="11"/></svg></div>
         <div class="lc-name">资料</div>
         <div class="lc-desc">核心法律 · 案例数据库 · 文书模板</div>
       </div>
       <div class="learn-card" onclick="showNotebook()">
-        <div class="lc-icon" style="background:rgba(245,166,35,0.12);font-size:28px">✏️</div>
+        <div class="lc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
         <div class="lc-name">笔记本</div>
         <div class="lc-desc">学习笔记 · 重点摘录 · 反思总结</div>
       </div>
