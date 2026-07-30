@@ -167,6 +167,9 @@
     #learnCenterView.show{display:flex!important}
     #notebookView{flex:1;display:none!important;flex-direction:column;overflow:hidden;overscroll-behavior:none;background:var(--bg)}
     #notebookView.show{display:flex!important}
+    #plazaView{flex:1;display:none!important;flex-direction:column;overflow:hidden;overscroll-behavior:none;background:var(--bg)}
+    #plazaView.show{display:flex!important}
+
     #dbView .wx-nav{border-bottom:1px solid var(--card-border)}
     #dbView .db-body{flex:1;overflow-y:auto;padding:16px 18px;-webkit-overflow-scrolling:touch}
     .db-header{text-align:center;padding:8px 0 16px}
@@ -432,56 +435,31 @@
 
 <!-- ===== HOME SCREEN ===== -->
 <div class="screen show" id="homeScreen">
-  <div class="logo"><span class="ico" style="width:56px;height:56px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 L12 21"/><path d="M5 3 L5 21"/><path d="M19 3 L19 21"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="5" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/></svg></span></div>
-  <h2>SeaWhy Lex</h2>
-  <p class="brand-tagline">法学生<em>AI学习助手</em><br>基于法学实证研究优化</p>
-  <p class="sub">选择功能开始使用</p>
-
-  <button class="cta-btn" onclick="enterChat()">
-    <span class="ico" style="margin-right:6px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>开始法律咨询
-  </button>
-
-  <div class="model-cards">
-    <div class="model-card" onclick="showDatabase()">
-      <div class="mc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="14" y2="11"/></svg></div>
-      <div class="mc-info">
-        <div class="mc-name">法律数据库</div>
-        <div class="mc-desc">7部核心法律 · 全文检索 · 下载查阅</div>
-      </div>
-      <span class="mc-arrow">›</span>
-    </div>
-    <div class="model-card" onclick="showCaseDatabase()">
-      <div class="mc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
-      <div class="mc-info">
-        <div class="mc-name">案例数据库</div>
-        <div class="mc-desc">经典判例 · 裁判要旨 · 类案检索</div>
-      </div>
-      <span class="mc-arrow">›</span>
-    </div>
-    <div class="model-card" onclick="showLearningCenter()">
-      <div class="mc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div>
-      <div class="mc-info">
-        <div class="mc-name">学习中心</div>
-        <div class="mc-desc">学习计划 · 题库练习 · 资料笔记</div>
-      </div>
-      <span class="mc-arrow">›</span>
-    </div>
-    <div class="model-card" onclick="showDocGen()">
-      <div class="mc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
-      <div class="mc-info">
-        <div class="mc-name">法律文书生成</div>
-        <div class="mc-desc">起诉状 · 答辩状 · 代理词 · 合同审查</div>
-      </div>
-      <span class="mc-arrow">›</span>
-    </div>
-    <div class="model-card" onclick="showAbout()">
-      <div class="mc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="0.5" fill="currentColor"/></svg></div>
-      <div class="mc-info">
-        <div class="mc-name">关于我们</div>
-        <div class="mc-desc">了解 SeaWhy Lex · 法学AI研究背景</div>
-      </div>
-      <span class="mc-arrow">›</span>
-    </div>
+  <div class="welcome-hero">
+    <div class="whale-icon">🐋</div>
+    <h1 class="typewriter" id="typewriter"></h1>
+  </div>
+  <div class="quote-card" id="quoteCard">
+    <div class="quote-text" id="quoteText"></div>
+    <div class="quote-author" id="quoteAuthor"></div>
+  </div>
+  <div class="bottom-nav" id="bottomNav">
+    <button class="nav-item" onclick="enterChat()">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span>AI咨询</span>
+    </button>
+    <button class="nav-item" onclick="showPlaza()">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      <span>广场</span>
+    </button>
+    <button class="nav-item" onclick="showLearningCenter()">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/></svg>
+      <span>学习</span>
+    </button>
+    <button class="nav-item" onclick="showAbout()">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="0.5" fill="currentColor"/></svg>
+      <span>设置</span>
+    </button>
   </div>
 </div>
 
@@ -606,12 +584,12 @@
 <div id="aboutView">
   <div class="wx-nav">
     <button class="back" onclick="goHome()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
-    <span class="title">关于我们</span>
+    <span class="title">设置</span>
   </div>
   <div class="about-body">
     <div class="about-logo"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 L12 21"/><path d="M5 3 L5 21"/><path d="M19 3 L19 21"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="5" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/></svg></div>
     <div class="about-name">SeaWhy Lex</div>
-    <div class="about-ver">v2.0.0 · 法学生AI学习助手 · 2026.07.30</div>
+    <div class="about-ver">v2.1.0 · 法学生AI学习助手 · 2026.07.30</div>
     <div class="about-desc">专为法学生打造的深度学习辅助工具<br>基于<strong>AI法律工具失效模式与规制路径研究</strong>（2026）优化</div>
 
     <div class="about-section">
@@ -665,6 +643,34 @@
 <div class="about-credit">
       研究参考：西南民族大学法学院 徐子涵团队 · 2026年5月<br>
       SeaWhy Lex © 2026 · 网页设计：曹春杨
+    </div>
+  </div>
+</div>
+
+
+<!-- ===== PLAZA VIEW ===== -->
+<div id="plazaView" style="display:none">
+  <div class="wx-nav">
+    <button class="back" onclick="goHome()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span class="title">广场</span>
+  </div>
+  <div class="learn-body">
+    <div class="learn-cards">
+      <div class="learn-card" onclick="showCaseDatabase()">
+        <div class="lc-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+        <div class="lc-name">案例数据库</div>
+        <div class="lc-desc">经典判例 · 裁判要旨 · 类案检索</div>
+      </div>
+      <div class="learn-card" onclick="showDatabase()">
+        <div class="lc-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="14" y2="11"/></svg></div>
+        <div class="lc-name">法律数据库</div>
+        <div class="lc-desc">7部核心法律 · 全文检索 · 下载查阅</div>
+      </div>
+      <div class="learn-card" onclick="showDocGen()">
+        <div class="lc-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+        <div class="lc-name">法律文书生成</div>
+        <div class="lc-desc">起诉状 · 答辩状 · 代理词 · 合同审查</div>
+      </div>
     </div>
   </div>
 </div>
@@ -825,6 +831,75 @@
 <script src="case_data.js?v=1.2.6"></script>
 <script>
 // ============================================================
+// TYPWRITER + LEGAL QUOTES
+// ============================================================
+var TYPEWRITER_TEXT = "你好，法律人";
+var LEGAL_QUOTES = [
+  { text: "法律的生命不在于逻辑，而在于经验。", author:"小奥利弗·温德尔·霍姆斯" },
+  { text: "迟来的正义非正义。", author:"英国法谚" },
+  { text: "法者，天下之程式也，万事之仪表也。", author:"《管子》" },
+  { text: "法律是善良与公正的艺术。", author:"塞尔苏斯" },
+  { text: "徒法不足以自行。", author:"《孟子》" },
+  { text: "正义从来不会缺席，只会迟到。", author:"休尼特法官" },
+  { text: "法不阿贵，绳不挠曲。", author:"《韩非子》" },
+  { text: "任何人不得转让超过自己拥有的权利。", author:"罗马法谚" },
+  { text: "法律是最低限度的道德。", author:"耶利内克" },
+  { text: "一次不公正的判决，其恶果胜过十次犯罪。", author:"弗朗西斯·培根" },
+  { text: "举证责任在于主张者，而非否认者。", author:"罗马法谚" },
+  { text: "法立于上则俗成于下。", author:"苏辙" },
+  { text: "疑罪从无。", author:"现代刑法原则" },
+  { text: "有权利必有救济。", author:"英国法谚" },
+  { text: "法者，治之端也。", author:"《荀子》" }
+];
+
+function typeWriter(el, text, speed, callback) {
+  var i = 0;
+  el.innerHTML = '<span class="cursor"></span>';
+  var cursor = el.querySelector(".cursor");
+  function type() {
+    if (i < text.length) {
+      var span = document.createElement("span");
+      span.textContent = text.charAt(i);
+      el.insertBefore(span, cursor);
+      i++;
+      setTimeout(type, speed + Math.random() * 60);
+    } else {
+      if (callback) callback();
+    }
+  }
+  setTimeout(type, 300);
+}
+
+function showRandomQuote() {
+  var q = LEGAL_QUOTES[Math.floor(Math.random() * LEGAL_QUOTES.length)];
+  var textEl = document.getElementById("quoteText");
+  var authorEl = document.getElementById("quoteAuthor");
+  var card = document.getElementById("quoteCard");
+  if (card) card.style.opacity = "0";
+  setTimeout(function() {
+    if (textEl) textEl.textContent = "「" + q.text + "」";
+    if (authorEl) authorEl.textContent = "—— " + q.author;
+    if (card) card.style.opacity = "1";
+  }, 300);
+}
+
+function initWelcome() {
+  var el = document.getElementById("typewriter");
+  if (el) {
+    typeWriter(el, TYPEWRITER_TEXT, 120, function() {
+      showRandomQuote();
+    });
+  }
+}
+
+// Run on load
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initWelcome);
+} else {
+  initWelcome();
+}
+
+// ============================================================
 // SeaWhy Lex v2.0 — Full App Logic
 // ============================================================
 
@@ -842,11 +917,12 @@ try { var o = JSON.parse(localStorage.getItem("seawhy-lex-opts") || "{}"); Objec
 // ============================================================
 // AUTO CHANGELOG — 自动更新日志系统
 // ============================================================
-var APP_VERSION = "v2.0.0";
+var APP_VERSION = "v2.1.0";
 var APP_VERSION_DATE = "2026.07.30";
 var CHANGELOG_KEY = "seawhy-lex-changelog";
 
 var DEFAULT_CHANGELOG = [
+  { ver: "v2.1.0", date: "2026.07.30", notes: "全新欢迎界面 · 法律名言 · 底部导航 · 选项随机打乱 · 备忘录升级" },
   { ver: "v2.0.0", date: "2026.07.30", notes: "品牌升级为SeaWhy Lex · 新增自动更新日志 · 学习题库升级为学习中心 · AI自我认知同步更新" },
   { ver: "v1.3.1", date: "2026.06.24", notes: "修复错题本返回科目消失bug，UI图标纯色化" },
   { ver: "v1.3.0", date: "2026.06.24", notes: "题库扩至300+题，刑法民法拆分总则/分则，新增错题本" },
@@ -1119,7 +1195,7 @@ function showAbout() {
 // SCREEN MANAGEMENT
 // ============================================================
 function hideAllViews() {
-  ["homeScreen","chatView","dbView","aboutView","quizView","docView","caseView","caseDetail","learnCenterView","notebookView"].forEach(function(id) {
+  ["homeScreen","chatView","dbView","aboutView","quizView","docView","caseView","caseDetail","learnCenterView","notebookView","plazaView"].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) el.classList.remove("show");
   });
@@ -1128,6 +1204,9 @@ function hideAllViews() {
 function goHome() {
   hideAllViews();
   document.getElementById("homeScreen").classList.add("show");
+  // Re-trigger welcome animation
+  var el = document.getElementById("typewriter");
+  if (el) { el.innerHTML = ""; initWelcome(); }
 }
 
 function enterChat() {
@@ -1161,7 +1240,7 @@ function setTheme(theme, btn) {
 // ============================================================
 function buildSystemPrompt() {
   var base = [
-    "你是SeaWhy Lex，法学AI助手(网站v2.0.0，由曹春杨设计)。回答要专业简洁。SeaWhy意为「海中为什么」——像鲸鱼在信息海洋中深潜，寻找法律问题背后的Why。",
+    "你是SeaWhy Lex，法学AI助手(网站v2.1.0，由曹春杨设计)。回答要专业简洁。SeaWhy意为「海中为什么」——像鲸鱼在信息海洋中深潜，寻找法律问题背后的Why。",
     "",
     "【核心原则】",
     "F1不引用不存在或已废止的法条。F2讨论所有可能罪名不默认最轻。F3量刑给区间不给点估计。",
@@ -1616,6 +1695,11 @@ function showMaterials() {
   hideAllViews();
   document.getElementById("dbView").classList.add("show");
   renderDatabase();
+}
+
+function showPlaza() {
+  hideAllViews();
+  document.getElementById("plazaView").classList.add("show");
 }
 
 // ============================================================
