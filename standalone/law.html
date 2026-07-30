@@ -1133,23 +1133,31 @@ function editProfile() {
 function pickProfileAvatar() {
   var p = loadProfile();
   var current = p.avatar || "👤";
-  var html = '<div style="text-align:center"><p style="font-size:14px;margin-bottom:12px">选择头像</p><div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:12px">';
-  for (var i = 0; i < AVATARS.length; i++) {
-    var a = AVATARS[i];
-    var selected = a === current ? ' style="border:2px solid var(--accent);transform:scale(1.2)"' : '';
-    html += '<button onclick="setAvatar('' + a + '')" style="width:44px;height:44px;border-radius:50%;border:1px solid var(--card-border);background:var(--card-bg);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center"' + (a === current ? ' style="border:2px solid var(--accent);transform:scale(1.15)"' : '') + '>' + a + '</button>';
-  }
-  html += '</div><button onclick="closeAvatarPick()" style="padding:10px 24px;border:none;border-radius:12px;background:var(--input-bg);color:var(--text);font-size:14px;cursor:pointer;font-family:inherit">关闭</button></div>';
-  // Show in a simple overlay
   var overlay = document.createElement("div");
   overlay.id = "avatarPickOverlay";
   overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px";
   overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
   var box = document.createElement("div");
-  box.style.cssText = "background:var(--card-bg);border-radius:20px;padding:20px;max-width:340px;width:100%";
-  box.innerHTML = html;
+  box.style.cssText = "background:var(--card-bg);border-radius:20px;padding:20px;max-width:340px;width:100%;text-align:center";
+  var h = '<p style="font-size:14px;margin-bottom:12px">选择头像</p><div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:12px">';
+  for (var i = 0; i < AVATARS.length; i++) {
+    h += '<button class="avatar-pick-btn" data-emoji="' + AVATARS[i] + '" style="width:44px;height:44px;border-radius:50%;border:1px solid var(--card-border);background:var(--card-bg);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center' + (AVATARS[i] === current ? ';border:2px solid var(--accent);transform:scale(1.15)' : '') + '">' + AVATARS[i] + '</button>';
+  }
+  h += '</div><button id="closeAvatarPickBtn" style="padding:10px 24px;border:none;border-radius:12px;background:var(--input-bg);color:var(--text);font-size:14px;cursor:pointer;font-family:inherit">关闭</button>';
+  box.innerHTML = h;
   overlay.appendChild(box);
   document.body.appendChild(overlay);
+  // Attach click handlers
+  setTimeout(function() {
+    var btns = box.querySelectorAll(".avatar-pick-btn");
+    for (var j = 0; j < btns.length; j++) {
+      btns[j].onclick = function() {
+        setAvatar(this.getAttribute("data-emoji"));
+      };
+    }
+    var closeBtn = document.getElementById("closeAvatarPickBtn");
+    if (closeBtn) closeBtn.onclick = closeAvatarPick;
+  }, 50);
 }
 
 function setAvatar(emoji) {
@@ -1185,11 +1193,17 @@ function rechargeVip() {
   var box = document.createElement("div");
   box.style.cssText = "background:var(--card-bg);border-radius:20px;padding:24px;max-width:340px;width:100%;text-align:center";
   box.innerHTML = '<div style="font-size:40px;margin-bottom:8px">👑</div><h3 style="margin-bottom:4px">SeaWhy Lex VIP</h3><p style="font-size:13px;color:var(--text2);margin-bottom:16px">解锁全部功能 · 无限AI咨询 · 高级模型</p>' +
-    '<div style="display:flex;gap:8px;margin-bottom:8px"><button onclick="doVipPay('month')" style="flex:1;padding:14px;border:2px solid var(--accent);border-radius:14px;background:var(--accent);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">月度 · ¥29</button></div>' +
-    '<div style="display:flex;gap:8px;margin-bottom:12px"><button onclick="doVipPay('year')" style="flex:1;padding:14px;border:2px solid #d4a017;border-radius:14px;background:linear-gradient(135deg,#f5a623,#d4a017);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">年度 · ¥199</button></div>' +
+    '<div style="display:flex;gap:8px;margin-bottom:8px"><button id="vipBtnMonth" style="flex:1;padding:14px;border:2px solid var(--accent);border-radius:14px;background:var(--accent);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">月度 ¥29</button></div>' +
+    '<div style="display:flex;gap:8px;margin-bottom:12px"><button id="vipBtnYear" style="flex:1;padding:14px;border:2px solid #d4a017;border-radius:14px;background:linear-gradient(135deg,#f5a623,#d4a017);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">年度 ¥199</button></div>' +
     '<button onclick="this.parentElement.parentElement.remove()" style="padding:10px 24px;border:none;border-radius:12px;background:var(--input-bg);color:var(--text);font-size:13px;cursor:pointer;font-family:inherit">暂不需要</button>';
   overlay.appendChild(box);
   document.body.appendChild(overlay);
+  setTimeout(function() {
+    var bm = document.getElementById("vipBtnMonth");
+    var by = document.getElementById("vipBtnYear");
+    if (bm) bm.onclick = function() { doVipPay("month"); };
+    if (by) by.onclick = function() { doVipPay("year"); };
+  }, 50);
 }
 
 function doVipPay(plan) {
