@@ -59,9 +59,9 @@
     .quote-author{font-size:12px;color:var(--text2);text-align:right;opacity:.7}
 
     /* frosted bottom nav card */
-    #bottomNav{display:flex;justify-content:space-around;align-items:center;margin:0 16px;margin-bottom:calc(12px + env(safe-area-inset-bottom));padding:8px 8px;background:rgba(255,255,255,0.72);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.6);border-radius:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.04);flex-shrink:0}
+    #bottomNav{display:flex;justify-content:space-around;align-items:center;margin:0 auto;margin-bottom:calc(12px + env(safe-area-inset-bottom));padding:10px 12px;background:rgba(255,255,255,0.72);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.6);border-radius:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.04);flex-shrink:0;max-width:380px;width:calc(100% - 48px)}
     body.dark #bottomNav{background:rgba(40,40,40,0.8);border:1px solid rgba(255,255,255,0.08);box-shadow:0 4px 24px rgba(0,0,0,0.3)}
-    #bottomNav .nav-item{display:flex;flex:1;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:10px 4px;border:none;background:none;color:var(--text2);font-family:inherit;font-size:11px;transition:all .15s;letter-spacing:.5px;border-radius:16px}
+    #bottomNav .nav-item{display:flex;align-items:center;justify-content:center;cursor:pointer;padding:12px;border:none;background:none;color:var(--text2);font-family:inherit;transition:all .15s;border-radius:16px;flex:1}
     #bottomNav .nav-item:active{color:var(--accent);background:rgba(74,144,217,0.08)}
     #bottomNav .nav-item svg{width:24px;height:24px}
     .cta-btn{display:flex;align-items:center;justify-content:center;gap:4px;width:100%;max-width:320px;margin:0 auto 20px;padding:15px 24px;border:none;border-radius:16px;font-size:clamp(15px,3.5vw,17px);font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(135deg,#1a5276,#2980b9);box-shadow:0 4px 20px rgba(26,82,118,0.3);transition:all .15s;font-family:inherit;letter-spacing:.5px;min-height:50px}
@@ -458,21 +458,17 @@
     <div class="quote-author" id="quoteAuthor"></div>
   </div>
   <div class="bottom-nav" id="bottomNav">
-    <button class="nav-item" onclick="enterChat()">
+    <button class="nav-item" onclick="enterChat()" title="AI咨询">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-      <span>AI咨询</span>
     </button>
-    <button class="nav-item" onclick="showPlaza()">
+    <button class="nav-item" onclick="showPlaza()" title="广场">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-      <span>广场</span>
     </button>
-    <button class="nav-item" onclick="showLearningCenter()">
+    <button class="nav-item" onclick="showLearningCenter()" title="学习">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/></svg>
-      <span>学习</span>
     </button>
-    <button class="nav-item" onclick="showAbout()">
+    <button class="nav-item" onclick="showAbout()" title="设置">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="0.5" fill="currentColor"/></svg>
-      <span>设置</span>
     </button>
   </div>
 </div>
