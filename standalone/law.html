@@ -196,8 +196,11 @@
     #profileView{flex:1;display:none!important;flex-direction:column;overflow:hidden;overscroll-behavior:none;background:var(--bg)}
     #profileView.show{display:flex!important}
     #profileView .about-body{flex:1;overflow-y:auto;padding:16px 18px calc(16px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch}
-    .ph-name{cursor:pointer}
-    .ph-name:active{opacity:.7}
+    .ph-name-row{display:inline-flex;align-items:center;gap:6px;cursor:pointer;padding:4px 10px;border-radius:10px;transition:all .15s;background:var(--accent-light)}
+    .ph-name-row:hover{background:rgba(74,144,217,0.18)}
+    .ph-name-row:active{transform:scale(.96)}
+    .ph-name-edit-icon{color:var(--accent);flex-shrink:0;opacity:.6}
+    .ph-name-row:hover .ph-name-edit-icon{opacity:1}
     .avatar-pick-btn.selected{border:3px solid var(--accent)!important;transform:scale(1.15)!important;box-shadow:0 0 0 3px rgba(74,144,217,0.25)}
     .note-detail-body{flex:1;overflow-y:auto;padding:16px 18px calc(16px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch}
     .nd-title{font-size:22px;font-weight:700;line-height:1.4;margin-bottom:8px}
@@ -671,12 +674,12 @@
     <div class="profile-header">
       <div class="ph-avatar" id="profileAvatar" onclick="pickProfileAvatar()">👤</div>
       <div class="ph-info">
-        <div class="ph-name" id="profileName" onclick="editNickname()">法律人</div>
+        <div class="ph-name-row" onclick="editNickname()">
+          <span class="ph-name" id="profileName">法律人</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="ph-name-edit-icon"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        </div>
         <div class="ph-level" id="profileLevel">🌱 新手</div>
       </div>
-      <button class="ph-edit-btn" onclick="pickProfileAvatar()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-      </button>
     </div>
     <div class="profile-stats">
       <div class="ps-item">
