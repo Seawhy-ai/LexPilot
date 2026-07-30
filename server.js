@@ -134,6 +134,36 @@ app.post("/api/chat", async (req, res) => {
   res.end();
 });
 
+// ----- cloud sync (store data on server) -----
+const fs = require("fs");
+const CLOUD_DATA_DIR = path.join(__dirname, "cloud_data");
+try { fs.mkdirSync(CLOUD_DATA_DIR, { recursive: true }); } catch(e) {}
+
+app.post("/api/sync/backup", (req, res) => {
+  const { username, data } = req.body || {};
+  if (!username || !data) return res.status(400).json({ error: "username and data required" });
+  try {
+    const file = path.join(CLOUD_DATA_DIR, `${username}.json`);
+    data._serverSavedAt = new Date().toISOString();
+    fs.writeFileSync(file, JSON.stringify(data, null, 2), "utf-8");
+    res.json({ ok: true, savedAt: data._serverSavedAt });
+  } catch(e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.get("/api/sync/restore/:username", (req, res) => {
+  const { username } = req.params;
+  try {
+    const file = path.join(CLOUD_DATA_DIR, `${username}.json`);
+    if (!fs.existsSync(file)) return res.status(404).json({ error: "no backup found" });
+    const data = JSON.parse(fs.readFileSync(file, "utf-8"));
+    res.json({ ok: true, data });
+  } catch(e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 // ----- SPA fallback -----
 app.get("*", (_req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
