@@ -723,10 +723,10 @@
     </div>
 
     <div class="profile-menu">
-      <div class="pm-item" style="padding:12px 16px;border-bottom:none">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
-        <input type="text" id="redeemCodeInput" placeholder="输入兑换码" maxlength="10" style="flex:1;border:none;background:transparent;font-size:14px;color:var(--text);outline:none;font-family:inherit" />
-        <button onclick="redeemVipCode()" style="padding:6px 16px;border:none;border-radius:10px;background:#111;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap">兑换</button>
+      <div style="display:flex;align-items:center;gap:8px;padding:12px 16px">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="flex-shrink:0"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+        <input type="text" id="redeemCodeInput" placeholder="输入兑换码" maxlength="10" autocomplete="off" style="flex:1;border:none;background:transparent;font-size:16px;color:var(--text);outline:none;font-family:inherit;min-width:0" />
+        <button id="redeemBtn" style="padding:8px 18px;border:none;border-radius:10px;background:#111;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0">兑换</button>
       </div>
       <p id="redeemMsg" style="font-size:11px;color:var(--text2);padding:0 16px 12px;min-height:16px"></p>
     </div>
@@ -1656,20 +1656,34 @@ function setVip(v) { try { localStorage.setItem(VIP_KEY, v ? "1" : "0"); } catch
 
 function redeemVipCode() {
   var input = document.getElementById("redeemCodeInput");
+  if (!input) { showToast("兑换功能加载中，请稍后再试"); return; }
   var code = (input.value || "").trim();
   var msgEl = document.getElementById("redeemMsg");
+  if (!code) {
+    if (msgEl) msgEl.textContent = "请输入兑换码";
+    return;
+  }
   if (code === "0815") {
     setVip(true);
     updateProfileUI();
-    msgEl.textContent = "";
-    showToast("兑换成功！永久VIP已激活");
+    if (msgEl) msgEl.textContent = "";
+    showToast("兑换成功！永久VIP已激活 👑");
     input.value = "";
-  } else if (!code) {
-    msgEl.textContent = "请输入兑换码";
   } else {
-    msgEl.textContent = "兑换码无效";
+    if (msgEl) msgEl.textContent = "兑换码无效";
+    showToast("兑换码无效");
   }
 }
+
+// Bind redeem button after DOM ready
+function bindRedeemButton() {
+  var btn = document.getElementById("redeemBtn");
+  if (btn) btn.onclick = redeemVipCode;
+  // Also bind enter key on input
+  var input = document.getElementById("redeemCodeInput");
+  if (input) input.onkeydown = function(e) { if (e.key === "Enter") redeemVipCode(); };
+}
+setTimeout(bindRedeemButton, 500);
 
 function doVipPay(plan) {
   showToast("感谢支持！VIP功能即将上线");
@@ -2436,6 +2450,7 @@ function showProfile() {
   hideAllViews();
   document.getElementById("profileView").classList.add("show");
   updateProfileUI();
+  setTimeout(bindRedeemButton, 100);
 }
 
 // ============================================================
