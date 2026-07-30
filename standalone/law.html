@@ -183,6 +183,8 @@
     #learnCenterView.show{display:flex!important}
     #notebookView{flex:1;display:none!important;flex-direction:column;overflow:hidden;overscroll-behavior:none;background:var(--bg)}
     #notebookView.show{display:flex!important}
+    #noteDetailView{flex:1;display:none!important;flex-direction:column;overflow:hidden;overscroll-behavior:none;background:var(--bg)}
+    #noteDetailView.show{display:flex!important}
     #plazaView{flex:1;display:none!important;flex-direction:column;overflow:hidden;overscroll-behavior:none;background:var(--bg)}
     #plazaView.show{display:flex!important}
 
@@ -426,9 +428,9 @@
 .learn-cards{display:flex;flex-direction:column;gap:12px}
 .learn-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:18px;padding:18px 16px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .15s}
 .learn-card:active{transform:scale(.98);background:var(--input-bg)}
-.lc-icon{width:52px;height:52px;border-radius:14px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--accent)}
+.lc-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:28px;line-height:1}
 .lc-name{font-size:16px;font-weight:700;margin-bottom:2px}
-.lc-desc{font-size:12px;color:var(--text2);line-height:1.4}
+.lc-desc{font-size:12px;color:var(--text2);line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* ===== NOTEBOOK ===== */
 .notebook-body{flex:1;overflow-y:auto;padding:16px 14px calc(16px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch}
@@ -561,7 +563,7 @@
 <!-- ===== DATABASE VIEW ===== -->
 <div id="caseView">
   <div class="wx-nav">
-    <button class="back" onclick="goHome()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back" onclick="goBackFromPlaza()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
     <span class="title">案例数据库</span>
   </div>
   <div class="case-cats" id="caseCats"></div>
@@ -577,7 +579,7 @@
 
 <div id="dbView">
   <div class="wx-nav">
-    <button class="back" onclick="goHome()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back" onclick="goBackFromPlaza()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
     <span class="title">法律数据库</span>
   </div>
   <div class="db-body">
@@ -669,17 +671,17 @@
   <div class="learn-body">
     <div class="learn-cards">
       <div class="learn-card" onclick="showCaseDatabase()">
-        <div class="lc-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+        <div class="lc-icon" style="background:rgba(231,76,60,0.1);font-size:28px">⚖️</div>
         <div class="lc-name">案例数据库</div>
         <div class="lc-desc">经典判例 · 裁判要旨 · 类案检索</div>
       </div>
       <div class="learn-card" onclick="showDatabase()">
-        <div class="lc-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="14" y2="11"/></svg></div>
+        <div class="lc-icon" style="background:rgba(74,144,217,0.1);font-size:28px">📖</div>
         <div class="lc-name">法律数据库</div>
         <div class="lc-desc">7部核心法律 · 全文检索 · 下载查阅</div>
       </div>
       <div class="learn-card" onclick="showDocGen()">
-        <div class="lc-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+        <div class="lc-icon" style="background:rgba(39,174,96,0.1);font-size:28px">📄</div>
         <div class="lc-name">法律文书生成</div>
         <div class="lc-desc">起诉状 · 答辩状 · 代理词 · 合同审查</div>
       </div>
@@ -698,7 +700,7 @@
     <div class="learn-report">
       <div class="learn-report-header">
         <h2>📊 今日学习报告</h2>
-        <p id="learnReportDate"></p>
+        
       </div>
       <div class="learn-stats-row">
         <div class="learn-stat-card">
@@ -723,17 +725,17 @@
     <!-- 功能卡片 -->
     <div class="learn-cards">
       <div class="learn-card" onclick="showQuizModule()">
-        <div class="lc-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+        <div class="lc-icon" style="background:rgba(74,144,217,0.1);font-size:28px">📝</div>
         <div class="lc-name">题库</div>
         <div class="lc-desc">法考真题 · 章节练习 · 错题回顾</div>
       </div>
       <div class="learn-card" onclick="showMaterials()">
-        <div class="lc-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="14" y2="11"/></svg></div>
+        <div class="lc-icon" style="background:rgba(39,174,96,0.1);font-size:28px">📚</div>
         <div class="lc-name">资料</div>
         <div class="lc-desc">核心法律 · 案例数据库 · 文书模板</div>
       </div>
       <div class="learn-card" onclick="showNotebook()">
-        <div class="lc-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+        <div class="lc-icon" style="background:rgba(245,166,35,0.12);font-size:28px">✏️</div>
         <div class="lc-name">笔记本</div>
         <div class="lc-desc">学习笔记 · 重点摘录 · 反思总结</div>
       </div>
@@ -759,6 +761,26 @@
       </div>
     </div>
     <div id="notebookList"></div>
+  </div>
+</div>
+
+
+<!-- ===== NOTE DETAIL VIEW ===== -->
+<div id="noteDetailView" style="display:none">
+  <div class="wx-nav">
+    <button class="back" onclick="closeNoteDetail()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span class="title" id="noteDetailTitle">笔记详情</span>
+  </div>
+  <div class="notebook-body">
+    <div class="note-editor" id="noteDetailEditor">
+      <input type="text" id="noteDetailTitleInput" placeholder="笔记标题..." maxlength="50" />
+      <textarea id="noteDetailContentInput" placeholder="写点什么..." rows="12"></textarea>
+      <input type="text" id="noteDetailTagsInput" placeholder="标签（逗号分隔）" maxlength="60" style="font-size:12px;width:100%;border:none;background:transparent;color:var(--text2);outline:none;margin-top:4px;font-family:inherit" />
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="quiz-mode-btn active" onclick="saveNoteDetail()" style="flex:1"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:3px"><polyline points="20 6 9 17 4 12"/></svg>保存</button>
+        <button class="quiz-wrongbook-btn" onclick="deleteNoteDetail()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:2px"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>删除</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -791,7 +813,7 @@
 <!-- ===== DOC GEN VIEW ===== -->
 <div id="docView">
   <div class="wx-nav">
-    <button class="back" onclick="goHome()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back" onclick="goBackFromPlaza()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
     <span class="title">法律文书生成</span>
   </div>
   <div class="doc-body">
@@ -1209,7 +1231,7 @@ function showAbout() {
 // SCREEN MANAGEMENT
 // ============================================================
 function hideAllViews() {
-  ["homeScreen","chatView","dbView","aboutView","quizView","docView","caseView","caseDetail","learnCenterView","notebookView","plazaView"].forEach(function(id) {
+  ["homeScreen","chatView","dbView","aboutView","quizView","docView","caseView","caseDetail","learnCenterView","notebookView","plazaView","noteDetailView"].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) el.classList.remove("show");
   });
@@ -1218,10 +1240,19 @@ function hideAllViews() {
 var _welcomePlayed = false;
 function goHome() {
   hideAllViews();
+  _fromPlaza = false;
   document.getElementById("homeScreen").classList.add("show");
   if (!_welcomePlayed) {
     var el = document.getElementById("typewriter");
     if (el) { el.innerHTML = ""; initWelcome(); }
+  }
+}
+
+function goBackFromPlaza() {
+  if (_fromPlaza) {
+    showPlaza();
+  } else {
+    goHome();
   }
 }
 
@@ -1673,8 +1704,7 @@ function updateLearnDashboard() {
   var todayData = stats.days[today] || { min: 0, q: 0 };
   var streak = getStreak(stats);
 
-  var elDate = document.getElementById("learnReportDate");
-  if (elDate) elDate.textContent = today + " · 累计学习 " + (stats.totalMin || 0) + " 分钟 · " + (stats.totalQ || 0) + " 题";
+
   var elMin = document.getElementById("learnTodayMin");
   if (elMin) elMin.textContent = todayData.min;
   var elQ = document.getElementById("learnTodayQ");
@@ -1713,8 +1743,10 @@ function showMaterials() {
   renderDatabase();
 }
 
+var _fromPlaza = false;
 function showPlaza() {
   hideAllViews();
+  _fromPlaza = true;
   document.getElementById("plazaView").classList.add("show");
 }
 
@@ -1797,15 +1829,50 @@ function editNote(index) {
   if (index < 0 || index >= notes.length) return;
   var n = notes[index];
   currentEditIndex = index;
-  var titleEl = document.getElementById("noteTitle");
-  var contentEl = document.getElementById("noteContent");
-  var tagsEl = document.getElementById("noteTags");
-  if (titleEl) titleEl.value = n.title || "";
-  if (contentEl) contentEl.value = n.content || "";
-  if (tagsEl && n.tags) tagsEl.value = n.tags.join(",");
-  var editor = document.getElementById("noteEditor");
-  if (editor) editor.scrollIntoView({ behavior: "smooth" });
-  document.getElementById("noteContent").focus();
+  hideAllViews();
+  var el = document.getElementById("noteDetailView");
+  el.style.display = "";
+  el.classList.add("show");
+  document.getElementById("noteDetailTitleInput").value = n.title || "";
+  document.getElementById("noteDetailContentInput").value = n.content || "";
+  document.getElementById("noteDetailTagsInput").value = (n.tags || []).join(",");
+  document.getElementById("noteDetailTitle").textContent = n.title || "笔记详情";
+}
+
+function closeNoteDetail() {
+  document.getElementById("noteDetailView").classList.remove("show");
+  document.getElementById("noteDetailView").style.display = "none";
+  showNotebook();
+}
+
+function saveNoteDetail() {
+  var notes = loadNotes();
+  if (currentEditIndex < 0 || currentEditIndex >= notes.length) return;
+  var title = document.getElementById("noteDetailTitleInput").value.trim() || "无标题";
+  var cnt = document.getElementById("noteDetailContentInput").value;
+  var tagsStr = document.getElementById("noteDetailTagsInput").value.trim();
+  var tags = tagsStr ? tagsStr.split(",").map(function(t){ return t.trim(); }).filter(Boolean) : [];
+  var nowStr = getTodayStr() + " " + ("0" + new Date().getHours()).slice(-2) + ":" + ("0" + new Date().getMinutes()).slice(-2);
+  notes[currentEditIndex].title = title;
+  notes[currentEditIndex].content = cnt;
+  notes[currentEditIndex].tags = tags;
+  notes[currentEditIndex].date = nowStr + " (已编辑)";
+  saveNotes(notes);
+  showToast("笔记已更新");
+  closeNoteDetail();
+}
+
+function deleteNoteDetail() {
+  var notes = loadNotes();
+  if (currentEditIndex < 0 || currentEditIndex >= notes.length) return;
+  if (confirm("确定要删除这条笔记吗？")) {
+    notes.splice(currentEditIndex, 1);
+    saveNotes(notes);
+    showToast("笔记已删除");
+    document.getElementById("noteDetailView").classList.remove("show");
+    document.getElementById("noteDetailView").style.display = "none";
+    showNotebook();
+  }
 }
 
 function renderNotes() {
