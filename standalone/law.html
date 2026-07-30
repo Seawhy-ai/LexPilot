@@ -189,6 +189,12 @@
     #notebookView.show{display:flex!important}
     #noteDetailView{flex:1;display:none!important;flex-direction:column;overflow:hidden;overscroll-behavior:none;background:var(--bg)}
     #noteDetailView.show{display:flex!important}
+    .note-detail-body{flex:1;overflow-y:auto;padding:16px 18px calc(16px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch}
+    .nd-title{font-size:22px;font-weight:700;line-height:1.4;margin-bottom:8px}
+    .nd-meta{font-size:12px;color:var(--text2);margin-bottom:12px}
+    .nd-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+    .nd-content{font-size:16px;line-height:1.8;color:var(--text);white-space:pre-wrap;word-break:break-word}
+    .nd-content p{margin:0 0 8px}
     #plazaView{flex:1;display:none!important;flex-direction:column;overflow:hidden;overscroll-behavior:none;background:var(--bg)}
     #plazaView.show{display:flex!important}
 
@@ -451,6 +457,23 @@
 .note-editor input::placeholder{color:#ccc;font-weight:400}
 .note-editor textarea{width:100%;border:none;background:var(--input-bg);border-radius:12px;font-size:15px;color:var(--text);outline:none;resize:vertical;min-height:140px;font-family:inherit;line-height:1.7;padding:10px 12px;margin-bottom:4px}
 
+
+    /* PROFILE */
+    .profile-header{display:flex;align-items:center;gap:14px;padding:16px 0;margin-bottom:12px}
+    .ph-avatar{width:56px;height:56px;border-radius:50%;background:var(--accent-light);display:flex;align-items:center;justify-content:center;font-size:28px;cursor:pointer;flex-shrink:0;transition:all .15s}
+    .ph-avatar:active{transform:scale(.92)}
+    .ph-info{flex:1;min-width:0}
+    .ph-name{font-size:18px;font-weight:700}
+    .ph-level{font-size:12px;color:var(--text2);margin-top:2px}
+    .ph-edit-btn{width:36px;height:36px;border-radius:50%;border:1px solid var(--card-border);background:var(--card-bg);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+    .ph-edit-btn:active{background:var(--input-bg)}
+    .profile-stats{display:flex;gap:8px;margin-bottom:16px}
+    .ps-item{flex:1;text-align:center;background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:12px 8px}
+    .ps-val{font-size:22px;font-weight:700;color:var(--accent)}
+    .ps-label{font-size:11px;color:var(--text2);margin-top:2px}
+    .vip-btn{display:block;width:100%;padding:14px;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(135deg,#f5a623,#d4a017);box-shadow:0 4px 16px rgba(245,166,35,0.3);font-family:inherit;margin-bottom:16px;transition:all .15s}
+    .vip-btn:active{transform:scale(.97);opacity:.9}
+
 </style>
 </head>
 <body>
@@ -608,6 +631,43 @@
     <span class="title">设置</span>
   </div>
   <div class="about-body">
+    <div class="profile-header">
+      <div class="ph-avatar" id="profileAvatar" onclick="pickProfileAvatar()">👤</div>
+      <div class="ph-info">
+        <div class="ph-name" id="profileName">法律人</div>
+        <div class="ph-level" id="profileLevel">🌱 新手</div>
+      </div>
+      <button class="ph-edit-btn" onclick="editProfile()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      </button>
+    </div>
+    <div class="profile-stats">
+      <div class="ps-item">
+        <div class="ps-val" id="profilePoints">0</div>
+        <div class="ps-label">积分</div>
+      </div>
+      <div class="ps-item">
+        <div class="ps-val" id="profileStudyDays">0</div>
+        <div class="ps-label">学习天数</div>
+      </div>
+      <div class="ps-item">
+        <div class="ps-val" id="profileNotes">0</div>
+        <div class="ps-label">笔记</div>
+      </div>
+    </div>
+    <button class="vip-btn" onclick="rechargeVip()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-4px;margin-right:4px"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      充值VIP · 解锁全部功能
+    </button>
+    <div class="about-section">
+      <h3>偏好设置</h3>
+      <div class="pref-row" style="margin-bottom:8px">
+        <span style="font-size:12px;color:var(--text2);margin-right:8px">昵称</span>
+        <input type="text" id="profileNicknameInput" placeholder="你的昵称" maxlength="12" style="flex:1;padding:6px 10px;border:1px solid var(--card-border);border-radius:10px;font-size:13px;font-family:inherit;background:var(--input-bg);color:var(--text);outline:none" />
+        <button onclick="saveNickname()" style="padding:6px 12px;border:none;border-radius:10px;background:var(--accent);color:#fff;font-size:12px;cursor:pointer;font-family:inherit;margin-left:4px">保存</button>
+      </div>
+    </div>
+
     <div class="about-logo"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 L12 21"/><path d="M5 3 L5 21"/><path d="M19 3 L19 21"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="5" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/></svg></div>
     <div class="about-name">SeaWhy Lex</div>
     <div class="about-ver">v2.1.0 · 法学生AI学习助手 · 2026.07.30</div>
@@ -711,17 +771,17 @@
       </div>
       <div class="learn-stats-row">
         <div class="learn-stat-card">
-          <div class="lsc-icon">⏱</div>
+          <div class="lsc-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
           <div class="lsc-val" id="learnTodayMin">0</div>
           <div class="lsc-label">今日学习 (分钟)</div>
         </div>
         <div class="learn-stat-card">
-          <div class="lsc-icon">📝</div>
+          <div class="lsc-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
           <div class="lsc-val" id="learnTodayQ">0</div>
           <div class="lsc-label">今日做题 (道)</div>
         </div>
         <div class="learn-stat-card">
-          <div class="lsc-icon">🔥</div>
+          <div class="lsc-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
           <div class="lsc-val" id="learnStreak">0</div>
           <div class="lsc-label">连续学习 (天)</div>
         </div>
@@ -776,16 +836,29 @@
 <div id="noteDetailView" style="display:none">
   <div class="wx-nav">
     <button class="back" onclick="closeNoteDetail()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
-    <span class="title" id="noteDetailTitle">笔记详情</span>
+    <span class="title" id="noteDetailTitle">笔记</span>
+    <div class="nav-right">
+      <button class="right-btn" onclick="toggleNoteMode()" id="btnNoteMode" title="编辑">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      </button>
+    </div>
   </div>
-  <div class="notebook-body">
-    <div class="note-editor" id="noteDetailEditor">
-      <input type="text" id="noteDetailTitleInput" placeholder="笔记标题..." maxlength="50" />
-      <textarea id="noteDetailContentInput" placeholder="写点什么..." rows="12"></textarea>
-      <input type="text" id="noteDetailTagsInput" placeholder="标签（逗号分隔）" maxlength="60" style="font-size:12px;width:100%;border:none;background:transparent;color:var(--text2);outline:none;margin-top:4px;font-family:inherit" />
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <button class="quiz-mode-btn active" onclick="saveNoteDetail()" style="flex:1"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:3px"><polyline points="20 6 9 17 4 12"/></svg>保存</button>
-        <button class="quiz-wrongbook-btn" onclick="deleteNoteDetail()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:2px"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>删除</button>
+  <div class="note-detail-body">
+    <div id="noteDetailReadMode">
+      <h1 class="nd-title" id="ndReadTitle"></h1>
+      <div class="nd-meta" id="ndReadMeta"></div>
+      <div class="nd-tags" id="ndReadTags"></div>
+      <div class="nd-content" id="ndReadContent"></div>
+    </div>
+    <div id="noteDetailEditMode" style="display:none">
+      <div class="note-editor" style="margin:16px;border:2px solid var(--accent);border-radius:16px;box-shadow:0 4px 16px rgba(74,144,217,0.12)">
+        <input type="text" id="noteDetailTitleInput" placeholder="笔记标题..." maxlength="50" />
+        <textarea id="noteDetailContentInput" placeholder="写点什么..." rows="16" style="min-height:300px"></textarea>
+        <input type="text" id="noteDetailTagsInput" placeholder="标签（逗号分隔）" maxlength="60" style="font-size:12px;width:100%;border:none;background:transparent;color:var(--text2);outline:none;margin-top:4px;font-family:inherit" />
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button class="quiz-mode-btn active" onclick="saveNoteDetail()" style="flex:1"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:3px"><polyline points="20 6 9 17 4 12"/></svg>保存</button>
+          <button class="quiz-wrongbook-btn" onclick="deleteNoteDetail()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:2px"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>删除</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1016,6 +1089,132 @@ function renderChangelog() {
 }
 
 autoCheckVersion();
+
+// ============================================================
+// PROFILE
+// ============================================================
+var PROFILE_KEY = "seawhy-lex-profile";
+var AVATARS = ["👤","🐋","⚖️","📚","🎓","💼","🏛️","🦉","🌟","🔥","💎","🦊","🐱","🐼","🦁"];
+
+function loadProfile() {
+  try { return JSON.parse(localStorage.getItem(PROFILE_KEY) || "{}"); } catch(e) { return {}; }
+}
+function saveProfile(p) {
+  try { localStorage.setItem(PROFILE_KEY, JSON.stringify(p)); } catch(e) {}
+}
+
+function updateProfileUI() {
+  var p = loadProfile();
+  var avatarEl = document.getElementById("profileAvatar");
+  var nameEl = document.getElementById("profileName");
+  var levelEl = document.getElementById("profileLevel");
+  var ptsEl = document.getElementById("profilePoints");
+  var daysEl = document.getElementById("profileStudyDays");
+  var notesEl = document.getElementById("profileNotes");
+  var nickInput = document.getElementById("profileNicknameInput");
+
+  if (avatarEl) avatarEl.textContent = p.avatar || "👤";
+  if (nameEl) nameEl.textContent = p.nickname || "法律人";
+  var level = getLevel(p.points || 0);
+  if (levelEl) levelEl.textContent = (p.vip ? "👑 VIP · " : "") + level;
+  if (ptsEl) ptsEl.textContent = p.points || 0;
+  // Count study days
+  var stats = loadLearnStats();
+  var studyDays = stats.days ? Object.keys(stats.days).length : 0;
+  if (daysEl) daysEl.textContent = studyDays;
+  if (notesEl) notesEl.textContent = loadNotes().length;
+  if (nickInput) nickInput.value = p.nickname || "";
+}
+
+function editProfile() {
+  pickProfileAvatar();
+}
+
+function pickProfileAvatar() {
+  var p = loadProfile();
+  var current = p.avatar || "👤";
+  var html = '<div style="text-align:center"><p style="font-size:14px;margin-bottom:12px">选择头像</p><div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:12px">';
+  for (var i = 0; i < AVATARS.length; i++) {
+    var a = AVATARS[i];
+    var selected = a === current ? ' style="border:2px solid var(--accent);transform:scale(1.2)"' : '';
+    html += '<button onclick="setAvatar('' + a + '')" style="width:44px;height:44px;border-radius:50%;border:1px solid var(--card-border);background:var(--card-bg);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center"' + (a === current ? ' style="border:2px solid var(--accent);transform:scale(1.15)"' : '') + '>' + a + '</button>';
+  }
+  html += '</div><button onclick="closeAvatarPick()" style="padding:10px 24px;border:none;border-radius:12px;background:var(--input-bg);color:var(--text);font-size:14px;cursor:pointer;font-family:inherit">关闭</button></div>';
+  // Show in a simple overlay
+  var overlay = document.createElement("div");
+  overlay.id = "avatarPickOverlay";
+  overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px";
+  overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
+  var box = document.createElement("div");
+  box.style.cssText = "background:var(--card-bg);border-radius:20px;padding:20px;max-width:340px;width:100%";
+  box.innerHTML = html;
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+}
+
+function setAvatar(emoji) {
+  var p = loadProfile();
+  p.avatar = emoji;
+  saveProfile(p);
+  updateProfileUI();
+  var overlay = document.getElementById("avatarPickOverlay");
+  if (overlay) overlay.remove();
+  showToast("头像已更新");
+}
+
+function closeAvatarPick() {
+  var overlay = document.getElementById("avatarPickOverlay");
+  if (overlay) overlay.remove();
+}
+
+function saveNickname() {
+  var input = document.getElementById("profileNicknameInput");
+  var name = (input.value || "").trim();
+  if (!name) { showToast("请输入昵称"); return; }
+  var p = loadProfile();
+  p.nickname = name;
+  saveProfile(p);
+  updateProfileUI();
+  showToast("昵称已保存");
+}
+
+function rechargeVip() {
+  var overlay = document.createElement("div");
+  overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px";
+  overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
+  var box = document.createElement("div");
+  box.style.cssText = "background:var(--card-bg);border-radius:20px;padding:24px;max-width:340px;width:100%;text-align:center";
+  box.innerHTML = '<div style="font-size:40px;margin-bottom:8px">👑</div><h3 style="margin-bottom:4px">SeaWhy Lex VIP</h3><p style="font-size:13px;color:var(--text2);margin-bottom:16px">解锁全部功能 · 无限AI咨询 · 高级模型</p>' +
+    '<div style="display:flex;gap:8px;margin-bottom:8px"><button onclick="doVipPay('month')" style="flex:1;padding:14px;border:2px solid var(--accent);border-radius:14px;background:var(--accent);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">月度 · ¥29</button></div>' +
+    '<div style="display:flex;gap:8px;margin-bottom:12px"><button onclick="doVipPay('year')" style="flex:1;padding:14px;border:2px solid #d4a017;border-radius:14px;background:linear-gradient(135deg,#f5a623,#d4a017);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">年度 · ¥199</button></div>' +
+    '<button onclick="this.parentElement.parentElement.remove()" style="padding:10px 24px;border:none;border-radius:12px;background:var(--input-bg);color:var(--text);font-size:13px;cursor:pointer;font-family:inherit">暂不需要</button>';
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+}
+
+function doVipPay(plan) {
+  showToast("感谢支持！VIP功能即将上线");
+  var overlay = document.getElementById("avatarPickOverlay");
+  if (!overlay) {
+    // Find any overlay and remove
+    var overlays = document.querySelectorAll('[id]');
+    for (var i = 0; i < overlays.length; i++) {
+      if (overlays[i].style.position === "fixed" && overlays[i].style.zIndex === "500") {
+        overlays[i].remove();
+      }
+    }
+  }
+  // Give some points as reward
+  addPoints(plan === "year" ? 500 : 100);
+}
+
+// Run on about page load
+var _origShowAbout = showAbout;
+showAbout = function() {
+  _origShowAbout();
+  updateProfileUI();
+};
+
 
 function $(s){return document.querySelector(s)}
 
@@ -1840,16 +2039,37 @@ function editNote(index) {
   var el = document.getElementById("noteDetailView");
   el.style.display = "";
   el.classList.add("show");
+  document.getElementById("noteDetailTitle").textContent = n.title || "笔记";
+  // Fill edit fields
   document.getElementById("noteDetailTitleInput").value = n.title || "";
   document.getElementById("noteDetailContentInput").value = n.content || "";
   document.getElementById("noteDetailTagsInput").value = (n.tags || []).join(",");
-  document.getElementById("noteDetailTitle").textContent = n.title || "笔记详情";
+  // Render read mode
+  document.getElementById("ndReadTitle").textContent = n.title || "无标题";
+  document.getElementById("ndReadMeta").textContent = n.date || "";
+  var tagsHtml = (n.tags || []).map(function(t){ return '<span class="note-tag">' + escHtml(t) + '</span>'; }).join("");
+  document.getElementById("ndReadTags").innerHTML = tagsHtml;
+  document.getElementById("ndReadContent").textContent = n.content || "";
+  // Start in read mode
+  setNoteMode("read");
 }
 
-function closeNoteDetail() {
-  document.getElementById("noteDetailView").classList.remove("show");
-  document.getElementById("noteDetailView").style.display = "none";
-  showNotebook();
+var _noteMode = "read";
+function setNoteMode(mode) {
+  _noteMode = mode;
+  document.getElementById("noteDetailReadMode").style.display = mode === "read" ? "block" : "none";
+  document.getElementById("noteDetailEditMode").style.display = mode === "edit" ? "block" : "none";
+  var btn = document.getElementById("btnNoteMode");
+  if (btn) {
+    btn.innerHTML = mode === "read"
+      ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>'
+      : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+    btn.title = mode === "read" ? "编辑" : "阅读";
+  }
+}
+
+function toggleNoteMode() {
+  setNoteMode(_noteMode === "read" ? "edit" : "read");
 }
 
 function saveNoteDetail() {
@@ -1865,8 +2085,14 @@ function saveNoteDetail() {
   notes[currentEditIndex].tags = tags;
   notes[currentEditIndex].date = nowStr + " (已编辑)";
   saveNotes(notes);
+  // Update read mode display
+  document.getElementById("noteDetailTitle").textContent = title;
+  document.getElementById("ndReadTitle").textContent = title;
+  document.getElementById("ndReadMeta").textContent = nowStr + " (已编辑)";
+  document.getElementById("ndReadTags").innerHTML = tags.map(function(t){ return '<span class="note-tag">' + escHtml(t) + '</span>'; }).join("");
+  document.getElementById("ndReadContent").textContent = cnt;
+  setNoteMode("read");
   showToast("笔记已更新");
-  closeNoteDetail();
 }
 
 function deleteNoteDetail() {
@@ -1882,12 +2108,18 @@ function deleteNoteDetail() {
   }
 }
 
+function closeNoteDetail() {
+  document.getElementById("noteDetailView").classList.remove("show");
+  document.getElementById("noteDetailView").style.display = "none";
+  showNotebook();
+}
+
 function renderNotes() {
   var notes = loadNotes();
   var el = document.getElementById("notebookList");
   if (!el) return;
   if (notes.length === 0) {
-    el.innerHTML = '<div style="text-align:center;padding:30px 16px;color:var(--text2)"><div style="font-size:36px;margin-bottom:8px">📒</div><p style="font-size:14px">还没有笔记</p><p style="font-size:12px;margin-top:4px">在上方编辑器中自由书写，点击保存</p></div>';
+    el.innerHTML = '<div style="text-align:center;padding:30px 16px;color:var(--text2)"><div style="margin-bottom:8px"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/></svg></div><p style="font-size:14px">还没有笔记</p><p style="font-size:12px;margin-top:4px">在上方编辑器中自由书写，点击保存</p></div>';
     return;
   }
   var html = "";
@@ -2088,7 +2320,7 @@ function renderQuizPage() {
         var optClass = "";
         if (isAnswered) optClass += " disabled";
         if (isAnswered && selected === j && j === (q._shuffledAns !== undefined ? q._shuffledAns : q.ans)) optClass += " correct-answer";
-        if (isAnswered && selected === j && j !== q.ans) optClass += " wrong-answer";
+        if (isAnswered && selected === j && j !== (q._shuffledAns !== undefined ? q._shuffledAns : q.ans)) optClass += " wrong-answer";
         if (isAnswered && j === (q._shuffledAns !== undefined ? q._shuffledAns : q.ans) && selected !== (q._shuffledAns !== undefined ? q._shuffledAns : q.ans)) optClass += " correct-answer";
         if (!isAnswered && selected === j) optClass += " selected";
         h += '<div class="quiz-opt' + optClass + '" onclick="selectAnswer(' + globalIdx + ',' + j + ')" id="opt' + globalIdx + '_' + j + '">';
