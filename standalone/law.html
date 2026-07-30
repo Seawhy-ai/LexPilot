@@ -669,7 +669,7 @@
 </div>
 
 <!-- ===== LEARNING CENTER VIEW ===== -->
-<div id="learnCenterView">
+<div id="learnCenterView" style="display:none">
   <div class="wx-nav">
     <button class="back" onclick="goHome()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
     <span class="title">学习中心</span>
@@ -723,7 +723,7 @@
 </div>
 
 <!-- ===== NOTEBOOK VIEW ===== -->
-<div id="notebookView">
+<div id="notebookView" style="display:none">
   <div class="wx-nav">
     <button class="back" onclick="showLearningCenter()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
     <span class="title">笔记本</span>
@@ -1559,7 +1559,9 @@ function getStreak(stats) {
 
 function showLearningCenter() {
   hideAllViews();
-  document.getElementById("learnCenterView").classList.add("show");
+  var el = document.getElementById("learnCenterView");
+  el.style.display = "";
+  el.classList.add("show");
   updateLearnDashboard();
 }
 
@@ -1624,7 +1626,9 @@ function saveNotes(notes) {
 
 function showNotebook() {
   hideAllViews();
-  document.getElementById("notebookView").classList.add("show");
+  var el = document.getElementById("notebookView");
+  el.style.display = "";
+  el.classList.add("show");
   renderNotes();
 }
 
