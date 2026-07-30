@@ -421,9 +421,10 @@
 .note-card .note-preview{font-size:12px;color:var(--text2);line-height:1.5;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .note-card .note-tags{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap}
 .note-tag{font-size:10px;padding:2px 8px;border-radius:10px;background:var(--accent-light);color:var(--accent)}
-.note-editor{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:14px;margin-bottom:12px}
-.note-editor input{width:100%;border:none;background:transparent;font-size:16px;font-weight:600;color:var(--text);outline:none;margin-bottom:8px;font-family:inherit}
-.note-editor textarea{width:100%;border:none;background:transparent;font-size:14px;color:var(--text);outline:none;resize:vertical;min-height:150px;font-family:inherit;line-height:1.6}
+.note-editor{background:var(--card-bg);border:2px solid var(--accent);border-radius:16px;padding:16px;margin-bottom:16px;box-shadow:0 4px 16px rgba(74,144,217,0.12)}
+.note-editor input{width:100%;border:none;background:transparent;font-size:17px;font-weight:700;color:var(--text);outline:none;margin-bottom:8px;font-family:inherit}
+.note-editor input::placeholder{color:#ccc;font-weight:400}
+.note-editor textarea{width:100%;border:none;background:var(--input-bg);border-radius:12px;font-size:15px;color:var(--text);outline:none;resize:vertical;min-height:140px;font-family:inherit;line-height:1.7;padding:10px 12px;margin-bottom:4px}
 
 </style>
 </head>
@@ -729,9 +730,15 @@
     <span class="title">笔记本</span>
   </div>
   <div class="notebook-body">
-    <div class="notebook-toolbar">
-      <button class="quiz-mode-btn active" onclick="newNote()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:3px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>新建笔记</button>
-      <button class="quiz-wrongbook-btn" onclick="clearAllNotes()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:2px"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>清空</button>
+    <div class="note-editor" id="noteEditor">
+      <input type="text" id="noteTitle" placeholder="笔记标题..." maxlength="50" />
+      <textarea id="noteContent" placeholder="写点什么...支持换行，自由记录" rows="5"></textarea>
+      <input type="text" id="noteTags" placeholder="标签（逗号分隔，如：刑法,重点）" maxlength="60" style="font-size:12px;width:100%;border:none;background:transparent;color:var(--text2);outline:none;margin-top:4px;font-family:inherit" />
+      <div class="note-editor-actions" style="display:flex;gap:8px;margin-top:8px">
+        <button class="quiz-mode-btn active" onclick="saveCurrentNote()" style="flex:1"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:3px"><polyline points="20 6 9 17 4 12"/></svg>保存</button>
+        <button class="quiz-wrongbook-btn" onclick="startNewNote()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:2px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>新建</button>
+        <button class="quiz-wrongbook-btn" onclick="clearAllNotes()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:2px"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>清空</button>
+      </div>
     </div>
     <div id="notebookList"></div>
   </div>
@@ -1615,6 +1622,7 @@ function showMaterials() {
 // NOTEBOOK
 // ============================================================
 var NOTEBOOK_KEY = "seawhy-lex-notebook";
+var currentEditIndex = -1; // -1 = new note, >= 0 = editing existing
 
 function loadNotes() {
   try { return JSON.parse(localStorage.getItem(NOTEBOOK_KEY) || "[]"); } catch(e) { return []; }
@@ -1629,7 +1637,75 @@ function showNotebook() {
   var el = document.getElementById("notebookView");
   el.style.display = "";
   el.classList.add("show");
+  clearEditor();
   renderNotes();
+}
+
+function clearEditor() {
+  currentEditIndex = -1;
+  var t = document.getElementById("noteTitle");
+  var c = document.getElementById("noteContent");
+  var g = document.getElementById("noteTags");
+  if (t) t.value = "";
+  if (c) c.value = "";
+  if (g) g.value = "";
+}
+
+function startNewNote() {
+  clearEditor();
+  document.getElementById("noteTitle").focus();
+}
+
+function saveCurrentNote() {
+  var titleEl = document.getElementById("noteTitle");
+  var contentEl = document.getElementById("noteContent");
+  var tagsEl = document.getElementById("noteTags");
+  var title = (titleEl.value || "").trim();
+  var cnt = (contentEl.value || "").trim();
+  if (!title && !cnt) {
+    showToast("请输入标题或内容");
+    return;
+  }
+  if (!title) title = "无标题";
+  var tagsStr = (tagsEl.value || "").trim();
+  var tags = tagsStr ? tagsStr.split(",").map(function(t){ return t.trim(); }).filter(Boolean) : [];
+  var nowStr = getTodayStr() + " " + ("0" + new Date().getHours()).slice(-2) + ":" + ("0" + new Date().getMinutes()).slice(-2);
+  var notes = loadNotes();
+  if (currentEditIndex >= 0 && currentEditIndex < notes.length) {
+    notes[currentEditIndex].title = title;
+    notes[currentEditIndex].content = cnt;
+    notes[currentEditIndex].tags = tags;
+    notes[currentEditIndex].date = nowStr + " (已编辑)";
+    showToast("笔记已更新");
+  } else {
+    notes.push({
+      title: title,
+      content: cnt,
+      tags: tags,
+      date: nowStr
+    });
+    showToast("笔记已保存");
+    recordStudyTime(5, 0);
+  }
+  saveNotes(notes);
+  clearEditor();
+  renderNotes();
+}
+
+function editNote(index) {
+  var notes = loadNotes();
+  if (index < 0 || index >= notes.length) return;
+  var n = notes[index];
+  currentEditIndex = index;
+  var titleEl = document.getElementById("noteTitle");
+  var contentEl = document.getElementById("noteContent");
+  var tagsEl = document.getElementById("noteTags");
+  if (titleEl) titleEl.value = n.title || "";
+  if (contentEl) contentEl.value = n.content || "";
+  if (tagsEl && n.tags) tagsEl.value = n.tags.join(",");
+  var editor = document.getElementById("noteEditor");
+  if (editor) editor.scrollIntoView({ behavior: "smooth" });
+  document.getElementById("noteContent").focus();
 }
 
 function renderNotes() {
@@ -1637,67 +1713,48 @@ function renderNotes() {
   var el = document.getElementById("notebookList");
   if (!el) return;
   if (notes.length === 0) {
-    el.innerHTML = '<div style="text-align:center;padding:40px 16px;color:var(--text2)"><div style="font-size:40px;margin-bottom:8px">📒</div><p style="font-size:14px">还没有笔记</p><p style="font-size:12px;margin-top:4px">点击“新建笔记”开始记录学习心得</p></div>';
+    el.innerHTML = '<div style="text-align:center;padding:30px 16px;color:var(--text2)"><div style="font-size:36px;margin-bottom:8px">📒</div><p style="font-size:14px">还没有笔记</p><p style="font-size:12px;margin-top:4px">在上方编辑器中自由书写，点击保存</p></div>';
     return;
   }
   var html = "";
   for (var i = notes.length - 1; i >= 0; i--) {
     var n = notes[i];
-    var preview = n.content ? n.content.substring(0, 80) : "";
-    html += '<div class="note-card" onclick="editNote(' + i + ')">' +
+    var preview = n.content ? n.content.substring(0, 100) : "";
+    html += '<div class="note-card" onclick="editNote(' + i + ')" style="cursor:pointer">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center">' +
       '<div class="note-date">' + (n.date || "") + '</div>' +
+      '<button onclick="event.stopPropagation();deleteNote(' + i + ')" style="background:none;border:none;color:var(--text2);cursor:pointer;font-size:14px;padding:4px 8px">🗑</button>' +
+      '</div>' +
       '<div class="note-title">' + escHtml(n.title || "无标题") + '</div>' +
-      '<div class="note-preview">' + escHtml(preview) + (n.content && n.content.length > 80 ? "…" : "") + '</div>' +
+      '<div class="note-preview">' + escHtml(preview) + (n.content && n.content.length > 100 ? "..." : "") + '</div>' +
       (n.tags && n.tags.length > 0 ? '<div class="note-tags">' + n.tags.map(function(t){ return '<span class="note-tag">' + escHtml(t) + '</span>'; }).join("") + '</div>' : "") +
       '</div>';
   }
   el.innerHTML = html;
 }
 
-function newNote() {
-  var title = prompt("笔记标题：", "");
-  if (!title || !title.trim()) return;
-  var cnt = prompt("笔记内容（支持换行）：", "");
-  var tagsStr = prompt("标签（用逗号分隔，如：刑法,正当防卫）：", "");
-  var tags = tagsStr ? tagsStr.split(",").map(function(t){ return t.trim(); }).filter(Boolean) : [];
-  var notes = loadNotes();
-  notes.push({
-    title: title.trim(),
-    content: cnt || "",
-    tags: tags,
-    date: getTodayStr() + " " + ("0" + new Date().getHours()).slice(-2) + ":" + ("0" + new Date().getMinutes()).slice(-2)
-  });
-  saveNotes(notes);
-  renderNotes();
-  showToast("笔记已保存");
-  recordStudyTime(5, 0);
-}
-
-function editNote(index) {
+function deleteNote(index) {
   var notes = loadNotes();
   if (index < 0 || index >= notes.length) return;
-  var n = notes[index];
-  var action = confirm("笔记：「" + n.title + "」\n\n" + (n.content || "").substring(0, 100) + "\n\n确定 = 编辑 | 取消 = 关闭");
-  if (!action) return;
-  var newTitle = prompt("编辑标题：", n.title);
-  if (newTitle === null) return;
-  var newContent = prompt("编辑内容：", n.content);
-  if (newContent === null) return;
-  n.title = newTitle.trim() || n.title;
-  n.content = newContent || "";
-  n.date = getTodayStr() + " " + ("0" + new Date().getHours()).slice(-2) + ":" + ("0" + new Date().getMinutes()).slice(-2) + " (已编辑)";
-  saveNotes(notes);
-  renderNotes();
-  showToast("笔记已更新");
+  if (confirm("确定要删除这条笔记吗？")) {
+    notes.splice(index, 1);
+    saveNotes(notes);
+    if (currentEditIndex === index) clearEditor();
+    else if (currentEditIndex > index) currentEditIndex--;
+    renderNotes();
+    showToast("笔记已删除");
+  }
 }
 
 function clearAllNotes() {
   if (confirm("确定要清空所有笔记吗？此操作不可恢复。")) {
     saveNotes([]);
+    clearEditor();
     renderNotes();
     showToast("笔记已清空");
   }
 }
+
 
 function buildQuizSubjectFilter() {
   var subjects = ["全部"];
@@ -1744,6 +1801,46 @@ function filterQuizQuestions() {
   for (var i = all.length - 1; i > 0; i--) {
     var j = Math.floor(Math.random() * (i + 1));
     var tmp = all[i]; all[i] = all[j]; all[j] = tmp;
+  }
+  // Shuffle options + even distribution of correct answers
+  var ansCounts = [0,0,0,0,0,0]; // track correct answer positions
+  for (var qi = 0; qi < all.length; qi++) {
+    var q = all[qi];
+    var n = (q.opts && q.opts.length) || 0;
+    if (n === 0) continue;
+    // Create shuffle indices
+    var indices = [];
+    for (var oi = 0; oi < n; oi++) indices.push(oi);
+    // Fisher-Yates shuffle
+    for (var si = n - 1; si > 0; si--) {
+      var sj = Math.floor(Math.random() * (si + 1));
+      var stmp = indices[si]; indices[si] = indices[sj]; indices[sj] = stmp;
+    }
+    // Even distribution: find the target position with fewest correct answers
+    // Only consider positions 0-3 (A/B/C/D) for standard 4-option questions
+    var maxPos = Math.min(n, 4);
+    // Find min count among first maxPos positions
+    var minCount = ansCounts[0], bestPos = 0;
+    for (var pi = 1; pi < maxPos; pi++) {
+      if (ansCounts[pi] < minCount) { minCount = ansCounts[pi]; bestPos = pi; }
+    }
+    // Swap: move the index that equals q.ans to bestPos
+    var ansOrigIdx = indices.indexOf(q.ans);
+    if (ansOrigIdx >= 0 && bestPos < n) {
+      var swapTmp = indices[bestPos];
+      indices[bestPos] = indices[ansOrigIdx];
+      indices[ansOrigIdx] = swapTmp;
+    }
+    // Build shuffled options
+    var shuffledOpts = [];
+    for (var oi = 0; oi < n; oi++) {
+      shuffledOpts.push(q.opts[indices[oi]]);
+    }
+    q._shuffledOpts = shuffledOpts;
+    q._shuffledAns = bestPos < n ? bestPos : (ansOrigIdx >= 0 ? ansOrigIdx : q.ans);
+    // If bestPos not found, fallback to original position (no shuffle)
+    if (ansOrigIdx < 0) q._shuffledAns = q.ans;
+    ansCounts[q._shuffledAns] = (ansCounts[q._shuffledAns] || 0) + 1;
   }
   QUIZ_STATE.questions = all;
   QUIZ_STATE.currentIndex = 0;
@@ -1816,13 +1913,13 @@ function renderQuizPage() {
       for (var j = 0; j < q.opts.length; j++) {
         var optClass = "";
         if (isAnswered) optClass += " disabled";
-        if (isAnswered && selected === j && j === q.ans) optClass += " correct-answer";
+        if (isAnswered && selected === j && j === (q._shuffledAns !== undefined ? q._shuffledAns : q.ans)) optClass += " correct-answer";
         if (isAnswered && selected === j && j !== q.ans) optClass += " wrong-answer";
-        if (isAnswered && j === q.ans && selected !== q.ans) optClass += " correct-answer";
+        if (isAnswered && j === (q._shuffledAns !== undefined ? q._shuffledAns : q.ans) && selected !== (q._shuffledAns !== undefined ? q._shuffledAns : q.ans)) optClass += " correct-answer";
         if (!isAnswered && selected === j) optClass += " selected";
         h += '<div class="quiz-opt' + optClass + '" onclick="selectAnswer(' + globalIdx + ',' + j + ')" id="opt' + globalIdx + '_' + j + '">';
         h += '<span class="quiz-opt-prefix">' + labels[j] + '.</span>';
-        h += '<span>' + escHtml(q.opts[j]) + '</span>';
+        h += '<span>' + escHtml(q._shuffledOpts ? q._shuffledOpts[j] : q.opts[j]) + '</span>';
         h += '</div>';
       }
       h += '</div>';
@@ -1832,7 +1929,7 @@ function renderQuizPage() {
     if (isAnswered) {
       var chk = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#27ae60" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-3px;margin-right:2px"><polyline points="20 6 9 17 4 12"/></svg>';
       var crs = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-3px;margin-right:2px"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
-      h += (isCorrect ? chk + '<strong>回答正确！</strong>' : crs + '<strong>回答错误</strong>（正确答案：' + (q.opts ? (["A","B","C","D","E","F"][q.ans] + '. ' + q.opts[q.ans]) : "") + '）');
+      h += (isCorrect ? chk + '<strong>回答正确！</strong>' : crs + '<strong>回答错误</strong>（正确答案：' + (q.opts ? (function(){var ai=q._shuffledAns!==undefined?q._shuffledAns:q.ans;var ao=q._shuffledOpts?q._shuffledOpts[ai]:q.opts[ai];return ["A","B","C","D","E","F"][ai]+'. '+ao;})() : "") + '）');
     }
     if (q.exp) {
       var bk = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="vertical-align:-2px;margin-right:3px"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/></svg>';
@@ -1900,7 +1997,7 @@ function submitAnswer(qIdx) {
     return;
   }
   var q = QUIZ_STATE.questions[qIdx];
-  var isCorrect = QUIZ_STATE.answers[qIdx] === q.ans;
+  var isCorrect = QUIZ_STATE.answers[qIdx] === (q._shuffledAns !== undefined ? q._shuffledAns : q.ans);
   QUIZ_STATE.answered[qIdx] = true;
   QUIZ_STATE.correct[qIdx] = isCorrect;
   if (!isCorrect) { addToWrongBook(q, QUIZ_STATE.answers[qIdx]); }
