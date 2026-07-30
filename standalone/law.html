@@ -898,6 +898,7 @@ function initWelcome() {
   if (el) {
     typeWriter(el, TYPEWRITER_TEXT, 120, function() {
       showRandomQuote();
+      _welcomePlayed = true;
     });
   }
 }
@@ -1211,12 +1212,14 @@ function hideAllViews() {
   });
 }
 
+var _welcomePlayed = false;
 function goHome() {
   hideAllViews();
   document.getElementById("homeScreen").classList.add("show");
-  // Re-trigger welcome animation
-  var el = document.getElementById("typewriter");
-  if (el) { el.innerHTML = ""; initWelcome(); }
+  if (!_welcomePlayed) {
+    var el = document.getElementById("typewriter");
+    if (el) { el.innerHTML = ""; initWelcome(); }
+  }
 }
 
 function enterChat() {
