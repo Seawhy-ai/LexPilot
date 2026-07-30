@@ -472,20 +472,28 @@
 
 
     /* PROFILE */
-    .profile-header{display:flex;align-items:center;gap:14px;padding:16px 0;margin-bottom:12px}
-    .ph-avatar{width:56px;height:56px;border-radius:50%;background:var(--accent-light);display:flex;align-items:center;justify-content:center;font-size:28px;cursor:pointer;flex-shrink:0;transition:all .15s}
-    .ph-avatar:active{transform:scale(.92)}
-    .ph-info{flex:1;min-width:0}
-    .ph-name{font-size:18px;font-weight:700}
-    .ph-level{font-size:12px;color:var(--text2);margin-top:2px}
-    .ph-edit-btn{width:36px;height:36px;border-radius:50%;border:1px solid var(--card-border);background:var(--card-bg);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
-    .ph-edit-btn:active{background:var(--input-bg)}
-    .profile-stats{display:flex;gap:8px;margin-bottom:16px}
-    .ps-item{flex:1;text-align:center;background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:12px 8px}
-    .ps-val{font-size:22px;font-weight:700;color:var(--accent)}
+    .profile-card{text-align:center;padding:24px 20px 16px}
+    .profile-card .ph-avatar{width:64px;height:64px;border-radius:50%;background:#f5f5f5;display:flex;align-items:center;justify-content:center;font-size:32px;cursor:pointer;margin:0 auto 10px;transition:all .15s;border:2px solid transparent}
+    body.dark .profile-card .ph-avatar{background:#2a2a2a}
+    .profile-card .ph-avatar:active{transform:scale(.94)}
+    .ph-name-row{display:inline-flex;align-items:center;justify-content:center;cursor:pointer;gap:2px}
+    .ph-name-row:active{opacity:.7}
+    .ph-name{font-size:18px;font-weight:700;color:#111}
+    body.dark .ph-name{color:#eee}
+    .ph-vip-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px;background:#111;color:#fff;margin:6px auto;letter-spacing:1px}
+    body.dark .ph-vip-badge{background:#fff;color:#111}
+    .ph-level-text{font-size:12px;color:var(--text2);margin-top:2px}
+    .profile-stats-row{display:flex;gap:0;margin:4px 20px 16px;border:1px solid var(--card-border);border-radius:14px;overflow:hidden}
+    .profile-stats-row .ps-item{flex:1;text-align:center;padding:14px 8px;border-right:1px solid var(--card-border)}
+    .profile-stats-row .ps-item:last-child{border-right:none}
+    .ps-val{font-size:20px;font-weight:700;color:#111}
+    body.dark .ps-val{color:#eee}
     .ps-label{font-size:11px;color:var(--text2);margin-top:2px}
-    .vip-btn{display:block;width:100%;padding:14px;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(135deg,#f5a623,#d4a017);box-shadow:0 4px 16px rgba(245,166,35,0.3);font-family:inherit;margin-bottom:16px;transition:all .15s}
-    .vip-btn:active{transform:scale(.97);opacity:.9}
+    .profile-menu{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;margin:0 20px 12px;overflow:hidden}
+    .pm-item{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;transition:all .15s;border-bottom:1px solid var(--card-border);font-size:14px;color:var(--text)}
+    .pm-item:last-child{border-bottom:none}
+    .pm-item:active{background:var(--input-bg)}
+    .pm-arrow{color:#ccc;font-size:18px;margin-left:auto}
 
 </style>
 </head>
@@ -659,6 +667,90 @@
       <input type="text" id="dbSearch" placeholder="搜索法律名称…" oninput="filterLaws()" />
     </div>
     <div id="dbContent"></div>
+  </div>
+</div>
+
+<!-- ===== ABOUT VIEW ===== -->
+
+<!-- ===== PROFILE VIEW ===== -->
+<div id="profileView" style="display:none">
+  <div class="wx-nav">
+    <button class="back" onclick="goHome()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span class="title">个人中心</span>
+  </div>
+  <div class="about-body" style="background:var(--bg)">
+    <div class="profile-card">
+      <div class="ph-avatar" id="profileAvatar" onclick="pickProfileAvatar()">👤</div>
+      <div class="ph-name-row" onclick="editNickname()">
+        <span class="ph-name" id="profileName">法律人</span>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="margin-left:2px;opacity:.4"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      </div>
+      <div class="ph-vip-badge" id="profileVipBadge" style="display:none">VIP</div>
+      <div class="ph-level-text" id="profileLevel">🌱 新手</div>
+    </div>
+
+    <div class="profile-stats-row">
+      <div class="ps-item">
+        <div class="ps-val" id="profilePoints">0</div>
+        <div class="ps-label">积分</div>
+      </div>
+      <div class="ps-item">
+        <div class="ps-val" id="profileStudyDays">0</div>
+        <div class="ps-label">学习天数</div>
+      </div>
+      <div class="ps-item">
+        <div class="ps-val" id="profileNotes">0</div>
+        <div class="ps-label">笔记</div>
+      </div>
+    </div>
+
+    <div class="profile-menu">
+      <div class="pm-item" onclick="pickProfileAvatar()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>修改头像</span>
+        <span class="pm-arrow">›</span>
+      </div>
+      <div class="pm-item" onclick="editNickname()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        <span>修改昵称</span>
+        <span class="pm-arrow">›</span>
+      </div>
+      <div class="pm-item" onclick="rechargeVip()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <span>充值VIP</span>
+        <span class="pm-arrow">›</span>
+      </div>
+    </div>
+
+    <div class="profile-menu">
+      <div class="pm-item" style="padding:12px 16px;border-bottom:none">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+        <input type="text" id="redeemCodeInput" placeholder="输入兑换码" maxlength="10" style="flex:1;border:none;background:transparent;font-size:14px;color:var(--text);outline:none;font-family:inherit" />
+        <button onclick="redeemVipCode()" style="padding:6px 16px;border:none;border-radius:10px;background:#111;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap">兑换</button>
+      </div>
+      <p id="redeemMsg" style="font-size:11px;color:var(--text2);padding:0 16px 12px;min-height:16px"></p>
+    </div>
+
+    <div class="profile-menu">
+      <div class="pm-item" onclick="cloudBackup()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <span>备份到云端</span>
+        <span class="pm-arrow">›</span>
+      </div>
+      <div class="pm-item" onclick="cloudRestore()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>从云端恢复</span>
+        <span class="pm-arrow">›</span>
+      </div>
+      <p id="backupStatus" style="font-size:10px;color:var(--text2);padding:0 16px 8px;min-height:14px"></p>
+      <input type="file" id="restoreFileInput" accept=".json" style="display:none" onchange="handleRestoreFile(this)" />
+    </div>
+
+    <div class="profile-menu">
+      <div class="pm-item" onclick="logoutAccount()" style="justify-content:center;color:#e74c3c;border-bottom:none">
+        <span>退出登录</span>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1466,13 +1558,15 @@ function updateProfileUI() {
   if (avatarEl) avatarEl.textContent = p.avatar || "👤";
   if (nameEl) nameEl.textContent = p.nickname || "法律人";
   var level = getLevel(p.points || 0);
-  if (levelEl) levelEl.textContent = (p.vip ? "👑 VIP · " : "") + level;
+  if (levelEl) levelEl.textContent = (isVip() ? "👑 永久VIP · " : "") + level;
   if (ptsEl) ptsEl.textContent = p.points || 0;
   // Count study days
   var stats = loadLearnStats();
   var studyDays = stats.days ? Object.keys(stats.days).length : 0;
   if (daysEl) daysEl.textContent = studyDays;
   if (notesEl) notesEl.textContent = loadNotes().length;
+  var vipBadge = document.getElementById("profileVipBadge");
+  if (vipBadge) vipBadge.style.display = isVip() ? "inline-block" : "none";
   if (nickInput) nickInput.value = p.nickname || "";
 }
 
@@ -1554,6 +1648,27 @@ function rechargeVip() {
     if (bm) bm.onclick = function() { doVipPay("month"); };
     if (by) by.onclick = function() { doVipPay("year"); };
   }, 50);
+}
+
+var VIP_KEY = "seawhy-lex-vip";
+function isVip() { try { return localStorage.getItem(VIP_KEY) === "1"; } catch(e) { return false; } }
+function setVip(v) { try { localStorage.setItem(VIP_KEY, v ? "1" : "0"); } catch(e) {} }
+
+function redeemVipCode() {
+  var input = document.getElementById("redeemCodeInput");
+  var code = (input.value || "").trim();
+  var msgEl = document.getElementById("redeemMsg");
+  if (code === "0815") {
+    setVip(true);
+    updateProfileUI();
+    msgEl.textContent = "";
+    showToast("兑换成功！永久VIP已激活");
+    input.value = "";
+  } else if (!code) {
+    msgEl.textContent = "请输入兑换码";
+  } else {
+    msgEl.textContent = "兑换码无效";
+  }
 }
 
 function doVipPay(plan) {
