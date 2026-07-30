@@ -8,7 +8,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="SeaWhy Lex" />
   <meta name="description" content="SeaWhy Lex · 法学生AI学习助手 — 基于法学实证研究的智能辅助工具" />
-  <link rel="apple-touch-icon" href="swai-avatar.jpg" />
+  <link rel="icon" href="app-icon.jpg" />
+  <link rel="apple-touch-icon" href="app-icon.jpg" />
   <link rel="manifest" href="law-manifest.json" />
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
@@ -189,6 +190,12 @@
     #notebookView.show{display:flex!important}
     #noteDetailView{flex:1;display:none!important;flex-direction:column;overflow:hidden;overscroll-behavior:none;background:var(--bg)}
     #noteDetailView.show{display:flex!important}
+    #profileView{flex:1;display:none!important;flex-direction:column;overflow:hidden;overscroll-behavior:none;background:var(--bg)}
+    #profileView.show{display:flex!important}
+    #profileView .about-body{flex:1;overflow-y:auto;padding:16px 18px calc(16px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch}
+    .ph-name{cursor:pointer}
+    .ph-name:active{opacity:.7}
+    .avatar-pick-btn.selected{border:3px solid var(--accent)!important;transform:scale(1.15)!important;box-shadow:0 0 0 3px rgba(74,144,217,0.25)}
     .note-detail-body{flex:1;overflow-y:auto;padding:16px 18px calc(16px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch}
     .nd-title{font-size:22px;font-weight:700;line-height:1.4;margin-bottom:8px}
     .nd-meta{font-size:12px;color:var(--text2);margin-bottom:12px}
@@ -480,7 +487,7 @@
 
 <!-- ===== HOME SCREEN ===== -->
 <div class="screen show" id="homeScreen">
-  <div class="profile-btn" onclick="showAbout()" title="个人中心">
+  <div class="profile-btn" onclick="showProfile()" title="个人中心">
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
 </div>
 <div class="welcome-hero">
@@ -625,19 +632,21 @@
 </div>
 
 <!-- ===== ABOUT VIEW ===== -->
-<div id="aboutView">
+
+<!-- ===== PROFILE VIEW ===== -->
+<div id="profileView" style="display:none">
   <div class="wx-nav">
     <button class="back" onclick="goHome()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
-    <span class="title">设置</span>
+    <span class="title">个人中心</span>
   </div>
   <div class="about-body">
     <div class="profile-header">
       <div class="ph-avatar" id="profileAvatar" onclick="pickProfileAvatar()">👤</div>
       <div class="ph-info">
-        <div class="ph-name" id="profileName">法律人</div>
+        <div class="ph-name" id="profileName" onclick="editNickname()">法律人</div>
         <div class="ph-level" id="profileLevel">🌱 新手</div>
       </div>
-      <button class="ph-edit-btn" onclick="editProfile()">
+      <button class="ph-edit-btn" onclick="pickProfileAvatar()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
       </button>
     </div>
@@ -659,14 +668,15 @@
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-4px;margin-right:4px"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
       充值VIP · 解锁全部功能
     </button>
-    <div class="about-section">
-      <h3>偏好设置</h3>
-      <div class="pref-row" style="margin-bottom:8px">
-        <span style="font-size:12px;color:var(--text2);margin-right:8px">昵称</span>
-        <input type="text" id="profileNicknameInput" placeholder="你的昵称" maxlength="12" style="flex:1;padding:6px 10px;border:1px solid var(--card-border);border-radius:10px;font-size:13px;font-family:inherit;background:var(--input-bg);color:var(--text);outline:none" />
-        <button onclick="saveNickname()" style="padding:6px 12px;border:none;border-radius:10px;background:var(--accent);color:#fff;font-size:12px;cursor:pointer;font-family:inherit;margin-left:4px">保存</button>
-      </div>
-    </div>
+  </div>
+</div>
+
+<div id="aboutView">
+  <div class="wx-nav">
+    <button class="back" onclick="goHome()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span class="title">设置</span>
+  </div>
+  <div class="about-body">
 
     <div class="about-logo"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 L12 21"/><path d="M5 3 L5 21"/><path d="M19 3 L19 21"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="5" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/></svg></div>
     <div class="about-name">SeaWhy Lex</div>
@@ -1141,7 +1151,8 @@ function pickProfileAvatar() {
   box.style.cssText = "background:var(--card-bg);border-radius:20px;padding:20px;max-width:340px;width:100%;text-align:center";
   var h = '<p style="font-size:14px;margin-bottom:12px">选择头像</p><div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:12px">';
   for (var i = 0; i < AVATARS.length; i++) {
-    h += '<button class="avatar-pick-btn" data-emoji="' + AVATARS[i] + '" style="width:44px;height:44px;border-radius:50%;border:1px solid var(--card-border);background:var(--card-bg);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center' + (AVATARS[i] === current ? ';border:2px solid var(--accent);transform:scale(1.15)' : '') + '">' + AVATARS[i] + '</button>';
+    var isCurrent = AVATARS[i] === current;
+    h += '<button class="avatar-pick-btn' + (isCurrent ? ' selected' : '') + '" data-emoji="' + AVATARS[i] + '" style="width:44px;height:44px;border-radius:50%;border:2px solid ' + (isCurrent ? 'var(--accent)' : 'var(--card-border)') + ';background:var(--card-bg);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center' + (isCurrent ? ';transform:scale(1.15);box-shadow:0 0 0 3px rgba(74,144,217,0.25)' : '') + '">' + AVATARS[i] + '</button>';
   }
   h += '</div><button id="closeAvatarPickBtn" style="padding:10px 24px;border:none;border-radius:12px;background:var(--input-bg);color:var(--text);font-size:14px;cursor:pointer;font-family:inherit">关闭</button>';
   box.innerHTML = h;
@@ -1175,15 +1186,14 @@ function closeAvatarPick() {
   if (overlay) overlay.remove();
 }
 
-function saveNickname() {
-  var input = document.getElementById("profileNicknameInput");
-  var name = (input.value || "").trim();
-  if (!name) { showToast("请输入昵称"); return; }
+function editNickname() {
   var p = loadProfile();
-  p.nickname = name;
+  var name = prompt("修改昵称", p.nickname || "法律人");
+  if (name === null || !name.trim()) return;
+  p.nickname = name.trim();
   saveProfile(p);
   updateProfileUI();
-  showToast("昵称已保存");
+  showToast("昵称已更新");
 }
 
 function rechargeVip() {
@@ -1223,11 +1233,6 @@ function doVipPay(plan) {
 }
 
 // Run on about page load
-var _origShowAbout = showAbout;
-showAbout = function() {
-  _origShowAbout();
-  updateProfileUI();
-};
 
 
 function $(s){return document.querySelector(s)}
@@ -1451,7 +1456,7 @@ function showAbout() {
 // SCREEN MANAGEMENT
 // ============================================================
 function hideAllViews() {
-  ["homeScreen","chatView","dbView","aboutView","quizView","docView","caseView","caseDetail","learnCenterView","notebookView","plazaView","noteDetailView"].forEach(function(id) {
+  ["homeScreen","chatView","dbView","aboutView","quizView","docView","caseView","caseDetail","learnCenterView","notebookView","plazaView","noteDetailView","profileView"].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) el.classList.remove("show");
   });
@@ -1968,6 +1973,12 @@ function showPlaza() {
   hideAllViews();
   _fromPlaza = true;
   document.getElementById("plazaView").classList.add("show");
+}
+
+function showProfile() {
+  hideAllViews();
+  document.getElementById("profileView").classList.add("show");
+  updateProfileUI();
 }
 
 // ============================================================
