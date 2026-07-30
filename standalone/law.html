@@ -815,7 +815,7 @@
 
     <div class="about-logo"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 L12 21"/><path d="M5 3 L5 21"/><path d="M19 3 L19 21"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="5" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/></svg></div>
     <div class="about-name">SeaWhy Lex</div>
-    <div class="about-ver">v2.1.0 · 法学生AI学习助手 · 2026.07.30</div>
+    <div class="about-ver">v2.2.0 · 法学生AI学习助手 · 2026.07.30</div>
     <div class="about-desc">专为法学生打造的深度学习辅助工具<br>基于<strong>AI法律工具失效模式与规制路径研究</strong>（2026）优化</div>
 
     <div class="about-section">
@@ -1475,12 +1475,12 @@ try { var o = JSON.parse(localStorage.getItem("seawhy-lex-opts") || "{}"); Objec
 // ============================================================
 // AUTO CHANGELOG — 自动更新日志系统
 // ============================================================
-var APP_VERSION = "v2.1.0";
+var APP_VERSION = "v2.2.0";
 var APP_VERSION_DATE = "2026.07.30";
 var CHANGELOG_KEY = "seawhy-lex-changelog";
 
 var DEFAULT_CHANGELOG = [
-  { ver: "v2.1.0", date: "2026.07.30", notes: "全新欢迎界面 · 法律名言 · 底部导航 · 选项随机打乱 · 备忘录升级" },
+  { ver: "v2.2.0", date: "2026.07.30", notes: "注册登录系统 · 云备份恢复 · 个人中心纯黑UI · 兑换码VIP(0815) · 笔记本全屏阅读" },
   { ver: "v2.0.0", date: "2026.07.30", notes: "品牌升级为SeaWhy Lex · 新增自动更新日志 · 学习题库升级为学习中心 · AI自我认知同步更新" },
   { ver: "v1.3.1", date: "2026.06.24", notes: "修复错题本返回科目消失bug，UI图标纯色化" },
   { ver: "v1.3.0", date: "2026.06.24", notes: "题库扩至300+题，刑法民法拆分总则/分则，新增错题本" },
@@ -1509,7 +1509,15 @@ function autoCheckVersion() {
   var log = loadChangelog();
   var latestVer = (log.length > 0) ? log[0].ver : "";
   if (latestVer !== APP_VERSION) {
-    var entry = { ver: APP_VERSION, date: APP_VERSION_DATE, notes: "" };
+    // Look for notes in DEFAULT_CHANGELOG
+    var notes = "";
+    for (var i = 0; i < DEFAULT_CHANGELOG.length; i++) {
+      if (DEFAULT_CHANGELOG[i].ver === APP_VERSION) {
+        notes = DEFAULT_CHANGELOG[i].notes;
+        break;
+      }
+    }
+    var entry = { ver: APP_VERSION, date: APP_VERSION_DATE, notes: notes };
     log.unshift(entry);
     saveChangelog(log);
   }
@@ -1983,7 +1991,7 @@ function setTheme(theme, btn) {
 // ============================================================
 function buildSystemPrompt() {
   var base = [
-    "你是SeaWhy Lex，法学AI助手(网站v2.1.0，由曹春杨设计)。回答要专业简洁。SeaWhy意为「海中为什么」——像鲸鱼在信息海洋中深潜，寻找法律问题背后的Why。",
+    "你是SeaWhy Lex，法学AI助手(网站v2.2.0，由曹春杨设计)。回答要专业简洁。SeaWhy意为「海中为什么」——像鲸鱼在信息海洋中深潜，寻找法律问题背后的Why。",
     "",
     "【核心原则】",
     "F1不引用不存在或已废止的法条。F2讨论所有可能罪名不默认最轻。F3量刑给区间不给点估计。",
