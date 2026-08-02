@@ -1,0 +1,23 @@
+{
+  "packageId": "com.seawhy.lex",
+  "host": "seawhy-ai.github.io",
+  "name": "SeaWhy Lex",
+  "launcherName": "SeaWhy Lex",
+  "display": "standalone",
+  "themeColor": "#111111",
+  "backgroundColor": "#ffffff",
+  "startUrl": "/LexPilot/standalone/law.html",
+  "iconUrl": "https://seawhy-ai.github.io/LexPilot/standalone/app-icon.jpg",
+  "maskableIconUrl": "https://seawhy-ai.github.io/LexPilot/standalone/app-icon.jpg",
+  "monochromeIconUrl": "https://seawhy-ai.github.io/LexPilot/standalone/app-icon.jpg",
+  "splashScreenFadeOutDuration": 300,
+  "enableNotifications": false,
+  "fallbackType": "customtabs",
+  "features": {
+    "locationDelegation": { "enabled": false }
+  },
+  "signingKey": {
+    "path": "./android.keystore",
+    "alias": "seawhy-lex"
+  }
+}
