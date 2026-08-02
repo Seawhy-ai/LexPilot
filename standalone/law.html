@@ -496,8 +496,10 @@
     .pm-item:last-child{border-bottom:none}
     .pm-item:active{background:var(--input-bg)}
     .pm-arrow{color:#ccc;font-size:18px;margin-left:auto}
-    .pm-toggle{margin-left:auto;padding:5px 10px;border-radius:999px;border:1px solid var(--card-border);background:var(--input-bg);color:var(--text2);font-size:11px;min-width:52px;text-align:center;transition:all .15s}
-    .pm-toggle.on{background:var(--accent);border-color:var(--accent);color:#fff}
+    .pm-toggle{position:relative;margin-left:auto;width:52px;height:30px;border-radius:999px;border:1px solid var(--card-border);background:var(--input-bg);transition:all .2s ease;box-shadow:inset 0 0 0 1px rgba(0,0,0,0.04)}
+    .pm-toggle::before{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,0.12);transition:all .2s ease}
+    .pm-toggle.on{background:var(--accent);border-color:var(--accent)}
+    .pm-toggle.on::before{left:25px;background:#fff}
 
 </style>
 </head>
@@ -731,7 +733,7 @@
       <div class="pm-item" onclick="toggleQuoteAuto()">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.93 19.07l2.83-2.83"/><path d="M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="4"/></svg>
         <span>自动轮播</span>
-        <span class="pm-toggle" id="profileQuoteAutoState">开启</span>
+        <span class="pm-toggle on" id="profileQuoteAutoState" aria-label="自动轮播开关"></span>
       </div>
       <div class="pm-item" onclick="showAbout()">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -1218,7 +1220,6 @@ function applyQuoteAutoState() {
     sBtn.classList.toggle("active", options.quoteAuto);
   }
   if (pBtn) {
-    pBtn.textContent = options.quoteAuto ? "开启" : "关闭";
     pBtn.classList.toggle("on", options.quoteAuto);
   }
   if (options.quoteAuto) {
