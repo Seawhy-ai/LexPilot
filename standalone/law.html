@@ -61,10 +61,12 @@
     @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 
     /* frosted quote card */
-    .quote-card{background:rgba(255,255,255,0.72);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.6);border-radius:20px;padding:24px 28px;margin:0 auto 24px;max-width:380px;width:calc(100% - 48px);box-shadow:0 4px 24px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.04);transition:opacity .4s}
+    .quote-card{background:rgba(255,255,255,0.72);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.6);border-radius:20px;padding:24px 28px;margin:0 auto 24px;max-width:380px;width:calc(100% - 48px);box-shadow:0 4px 24px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.04);transition:opacity .4s,transform .2s ease,box-shadow .2s ease;cursor:pointer;user-select:none}
+    .quote-card:hover{transform:translateY(-1px);box-shadow:0 8px 26px rgba(0,0,0,0.08)}
+    .quote-card:active{transform:scale(.98);box-shadow:0 3px 12px rgba(0,0,0,0.06)}
     body.dark .quote-card{background:rgba(40,40,40,0.8);border:1px solid rgba(255,255,255,0.08);box-shadow:0 4px 24px rgba(0,0,0,0.3)}
-    .quote-text{font-family:"SimSun","STSong","Songti SC","Noto Serif CJK SC",serif;font-size:15px;line-height:1.9;color:var(--text);margin-bottom:12px;letter-spacing:1px}
-    .quote-author{font-size:12px;color:var(--text2);text-align:right;opacity:.7}
+    .quote-text{font-family:"SimSun","STSong","Songti SC","Noto Serif CJK SC",serif;font-size:15px;line-height:1.9;color:var(--text);margin-bottom:12px;letter-spacing:1px;transition:opacity .25s ease}
+    .quote-author{font-size:12px;color:var(--text2);text-align:right;opacity:.7;transition:opacity .25s ease}
 
     /* frosted bottom nav card */
     #bottomNav{display:flex;justify-content:space-around;align-items:center;margin:0 auto;margin-bottom:calc(12px + env(safe-area-inset-bottom));padding:10px 12px;background:rgba(255,255,255,0.72);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.6);border-radius:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.04);flex-shrink:0;max-width:380px;width:calc(100% - 48px)}
@@ -661,7 +663,7 @@
   <div class="db-body">
     <div class="db-header">
       <h2>核心法律法规</h2>
-      <p>共收录 7 部 · 全文可下载 · 仅供学习参考</p>
+      <p>全文可下载 · 仅供学习参考</p>
     </div>
     <div class="db-search">
       <input type="text" id="dbSearch" placeholder="搜索法律名称…" oninput="filterLaws()" />
@@ -792,7 +794,7 @@
       充值VIP · 解锁全部功能
     </button>
     <div class="about-section">
-      <h3>☁️ 云同步</h3>
+      <h3>云同步</h3>
       <p style="font-size:11px;color:var(--text2);margin-bottom:8px">备份数据到云端，换设备后可恢复</p>
       <div style="display:flex;gap:8px">
         <button onclick="cloudBackup()" style="flex:1;padding:10px;border:1px solid var(--card-border);border-radius:12px;background:var(--input-bg);color:var(--text);font-size:12px;cursor:pointer;font-family:inherit">📤 备份到云端</button>
@@ -1152,8 +1154,20 @@ function typeWriter(el, text, speed, callback) {
   setTimeout(type, 300);
 }
 
+var _lastQuoteIndex = -1;
+var _quoteRotationTimer = null;
+
 function showRandomQuote() {
-  var q = LEGAL_QUOTES[Math.floor(Math.random() * LEGAL_QUOTES.length)];
+  var available = LEGAL_QUOTES.length;
+  var nextIndex = Math.floor(Math.random() * available);
+  if (available > 1) {
+    while (nextIndex === _lastQuoteIndex) {
+      nextIndex = Math.floor(Math.random() * available);
+    }
+  }
+  _lastQuoteIndex = nextIndex;
+
+  var q = LEGAL_QUOTES[nextIndex];
   var textEl = document.getElementById("quoteText");
   var authorEl = document.getElementById("quoteAuthor");
   var card = document.getElementById("quoteCard");
@@ -1165,11 +1179,41 @@ function showRandomQuote() {
   }, 300);
 }
 
+function startQuoteRotation() {
+  if (_quoteRotationTimer) return;
+  _quoteRotationTimer = setInterval(function() {
+    showRandomQuote();
+  }, 5000);
+}
+
+function stopQuoteRotation() {
+  if (_quoteRotationTimer) {
+    clearInterval(_quoteRotationTimer);
+    _quoteRotationTimer = null;
+  }
+}
+
 function initWelcome() {
   var el = document.getElementById("typewriter");
+  var card = document.getElementById("quoteCard");
+  if (card) {
+    card.title = "点击切换名言";
+    card.addEventListener("click", function() {
+      if (card.dataset.busy === "true") return;
+      card.dataset.busy = "true";
+      card.style.transform = "scale(0.98)";
+      setTimeout(function() {
+        card.style.transform = "";
+        card.dataset.busy = "false";
+      }, 180);
+      showRandomQuote();
+      startQuoteRotation();
+    });
+  }
   if (el) {
     typeWriter(el, TYPEWRITER_TEXT, 120, function() {
       showRandomQuote();
+      startQuoteRotation();
       _welcomePlayed = true;
     });
   }
