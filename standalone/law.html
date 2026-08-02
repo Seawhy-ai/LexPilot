@@ -61,12 +61,13 @@
     @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 
     /* frosted quote card */
-    .quote-card{background:rgba(255,255,255,0.72);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.6);border-radius:20px;padding:24px 28px;margin:0 auto 24px;max-width:380px;width:calc(100% - 48px);box-shadow:0 4px 24px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.04);transition:opacity .4s,transform .2s ease,box-shadow .2s ease;cursor:pointer;user-select:none}
+    .quote-card{position:relative;background:rgba(255,255,255,0.72);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.6);border-radius:20px;padding:24px 28px;margin:0 auto 24px;max-width:380px;width:calc(100% - 48px);min-height:132px;height:132px;display:flex;flex-direction:column;justify-content:center;box-shadow:0 4px 24px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.04);transition:opacity .4s,transform .2s ease,box-shadow .2s ease;cursor:pointer;user-select:none;overflow:hidden}
+    .quote-card::before{content:"";position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,rgba(74,144,217,0.18),rgba(74,144,217,0.04));border:1px solid rgba(74,144,217,0.12)}
     .quote-card:hover{transform:translateY(-1px);box-shadow:0 8px 26px rgba(0,0,0,0.08)}
     .quote-card:active{transform:scale(.98);box-shadow:0 3px 12px rgba(0,0,0,0.06)}
     body.dark .quote-card{background:rgba(40,40,40,0.8);border:1px solid rgba(255,255,255,0.08);box-shadow:0 4px 24px rgba(0,0,0,0.3)}
-    .quote-text{font-family:"SimSun","STSong","Songti SC","Noto Serif CJK SC",serif;font-size:15px;line-height:1.9;color:var(--text);margin-bottom:12px;letter-spacing:1px;transition:opacity .25s ease}
-    .quote-author{font-size:12px;color:var(--text2);text-align:right;opacity:.7;transition:opacity .25s ease}
+    .quote-text{position:relative;z-index:1;font-family:"SimSun","STSong","Songti SC","Noto Serif CJK SC",serif;font-size:15px;line-height:1.9;color:var(--text);margin-bottom:12px;letter-spacing:1px;transition:opacity .25s ease;display:-webkit-box;-webkit-line-clamp:3;line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
+    .quote-author{position:relative;z-index:1;font-size:12px;color:var(--text2);text-align:right;opacity:.7;transition:opacity .25s ease;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
     /* frosted bottom nav card */
     #bottomNav{display:flex;justify-content:space-around;align-items:center;margin:0 auto;margin-bottom:calc(12px + env(safe-area-inset-bottom));padding:10px 12px;background:rgba(255,255,255,0.72);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.6);border-radius:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.04);flex-shrink:0;max-width:380px;width:calc(100% - 48px)}
@@ -579,6 +580,10 @@
           <button class="s-btn" id="sPractical" onclick="toggleOptBtn('practical','sPractical')">实务</button>
           <button class="s-btn" id="sCompare" onclick="toggleOptBtn('compare','sCompare')">比较法</button>
         </div>
+        <div class="s-row" style="margin-top:8px;justify-content:space-between">
+          <span class="s-label" style="margin:0">自动切换</span>
+          <button class="s-btn active" id="sQuoteAuto" onclick="toggleQuoteAuto()">开启</button>
+        </div>
         <div class="s-row" style="margin-top:8px">
           <button class="s-btn danger" onclick="clearHistory()">清空对话</button>
         </div>
@@ -892,7 +897,7 @@
       <div class="learn-card" onclick="showDatabase()">
         <div class="lc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="14" y2="11"/></svg></div>
         <div class="lc-name">法律数据库</div>
-        <div class="lc-desc">7部核心法律全文检索</div>
+        <div class="lc-desc">核心法律全文检索</div>
       </div>
       <div class="learn-card" onclick="showDocGen()">
         <div class="lc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
@@ -913,7 +918,7 @@
     <!-- 今日学习报告 -->
     <div class="learn-report">
       <div class="learn-report-header">
-        <h2>📊 今日学习报告</h2>
+        <h2></h2> 今日学习报告</h2>
         
       </div>
       <div class="learn-stats-row">
@@ -1156,6 +1161,7 @@ function typeWriter(el, text, speed, callback) {
 
 var _lastQuoteIndex = -1;
 var _quoteRotationTimer = null;
+var QUOTE_ROTATION_MS = 5000;
 
 function showRandomQuote() {
   var available = LEGAL_QUOTES.length;
@@ -1180,10 +1186,10 @@ function showRandomQuote() {
 }
 
 function startQuoteRotation() {
-  if (_quoteRotationTimer) return;
+  if (_quoteRotationTimer || !options.quoteAuto) return;
   _quoteRotationTimer = setInterval(function() {
     showRandomQuote();
-  }, 5000);
+  }, QUOTE_ROTATION_MS);
 }
 
 function stopQuoteRotation() {
@@ -1191,6 +1197,26 @@ function stopQuoteRotation() {
     clearInterval(_quoteRotationTimer);
     _quoteRotationTimer = null;
   }
+}
+
+function applyQuoteAutoState() {
+  var sBtn = document.getElementById("sQuoteAuto");
+  if (sBtn) {
+    sBtn.textContent = options.quoteAuto ? "开启" : "关闭";
+    sBtn.classList.toggle("active", options.quoteAuto);
+  }
+  if (options.quoteAuto) {
+    startQuoteRotation();
+  } else {
+    stopQuoteRotation();
+  }
+}
+
+function toggleQuoteAuto() {
+  options.quoteAuto = !options.quoteAuto;
+  try { localStorage.setItem("seawhy-lex-opts", JSON.stringify(options)); } catch(e) {}
+  applyQuoteAutoState();
+  showToast(options.quoteAuto ? "自动切换已开启" : "自动切换已关闭");
 }
 
 function initWelcome() {
@@ -1207,16 +1233,27 @@ function initWelcome() {
         card.dataset.busy = "false";
       }, 180);
       showRandomQuote();
-      startQuoteRotation();
+      if (options.quoteAuto) startQuoteRotation();
     });
   }
+  applyQuoteAutoState();
   if (el) {
     typeWriter(el, TYPEWRITER_TEXT, 120, function() {
       showRandomQuote();
-      startQuoteRotation();
+      if (options.quoteAuto) startQuoteRotation();
       _welcomePlayed = true;
     });
   }
+}
+
+if (document.visibilityState !== 'hidden') {
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden) {
+      stopQuoteRotation();
+    } else if (options.quoteAuto) {
+      startQuoteRotation();
+    }
+  });
 }
 
 // Run on load
@@ -1535,7 +1572,7 @@ try { var s = JSON.parse(localStorage.getItem("seawhy-lex-config") || "{}"); SET
 var userTheme = "light";
 try { userTheme = JSON.parse(localStorage.getItem("seawhy-lex-theme") || '"light"'); } catch(e) {}
 
-var options = { deep: true, multi: false, practical: false, compare: false };
+var options = { deep: true, multi: false, practical: false, compare: false, quoteAuto: true };
 try { var o = JSON.parse(localStorage.getItem("seawhy-lex-opts") || "{}"); Object.keys(options).forEach(function(k){ if(k in o) options[k] = o[k]; }); } catch(e) {}
 
 // ============================================================
@@ -2270,6 +2307,9 @@ function updateOptUI() {
     var sEl = document.getElementById("s" + k.charAt(0).toUpperCase() + k.slice(1));
     if (tEl) tEl.classList.toggle("on", options[k]);
     if (sEl) { sEl.classList.toggle("active", options[k]); }
+    if (k === "quoteAuto") {
+      if (sEl) sEl.textContent = options[k] ? "开启" : "关闭";
+    }
   });
 }
 
