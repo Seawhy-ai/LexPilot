@@ -1683,7 +1683,14 @@ function updateProfileUI() {
   var notesEl = document.getElementById("profileNotes");
   var nickInput = document.getElementById("profileNicknameInput");
 
-  if (avatarEl) avatarEl.textContent = p.avatar || "👤";
+  if (avatarEl) {
+    if (p.avatarType === "image" && p.avatarDataUrl) {
+      avatarEl.innerHTML = '<img src="' + p.avatarDataUrl + '" alt="avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%" />';
+    } else {
+      avatarEl.innerHTML = "";
+      avatarEl.textContent = p.avatar || "👤";
+    }
+  }
   if (nameEl) nameEl.textContent = p.nickname || "法律人";
   var level = getLevel(p.points || 0);
   if (levelEl) levelEl.textContent = (isVip() ? "👑 永久VIP · " : "") + level;
@@ -1705,6 +1712,7 @@ function editProfile() {
 function pickProfileAvatar() {
   var p = loadProfile();
   var current = p.avatar || "👤";
+  var customSelected = p.avatarType === "image" && !!p.avatarDataUrl;
   var overlay = document.createElement("div");
   overlay.id = "avatarPickOverlay";
   overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px";
@@ -1713,21 +1721,32 @@ function pickProfileAvatar() {
   box.style.cssText = "background:var(--card-bg);border-radius:20px;padding:20px;max-width:340px;width:100%;text-align:center";
   var h = '<p style="font-size:14px;margin-bottom:12px">选择头像</p><div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:12px">';
   for (var i = 0; i < AVATARS.length; i++) {
-    var isCurrent = AVATARS[i] === current;
+    var isCurrent = AVATARS[i] === current && !customSelected;
     h += '<button class="avatar-pick-btn' + (isCurrent ? ' selected' : '') + '" data-emoji="' + AVATARS[i] + '" style="width:44px;height:44px;border-radius:50%;border:2px solid ' + (isCurrent ? 'var(--accent)' : 'var(--card-border)') + ';background:var(--card-bg);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center' + (isCurrent ? ';transform:scale(1.15);box-shadow:0 0 0 3px rgba(74,144,217,0.25)' : '') + '">' + AVATARS[i] + '</button>';
   }
-  h += '</div><button id="closeAvatarPickBtn" style="padding:10px 24px;border:none;border-radius:12px;background:var(--input-bg);color:var(--text);font-size:14px;cursor:pointer;font-family:inherit">关闭</button>';
+  h += '</div><div style="display:flex;justify-content:center;margin-bottom:12px"><button id="avatarUploadBtn" class="avatar-pick-btn' + (customSelected ? ' selected' : '') + '" type="button" style="width:100%;max-width:220px;height:44px;border-radius:12px;border:2px solid ' + (customSelected ? 'var(--accent)' : 'var(--card-border)') + ';background:var(--card-bg);font-size:14px;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px' + (customSelected ? ';transform:scale(1.01);box-shadow:0 0 0 3px rgba(74,144,217,0.18)' : '') + '"><span>📷</span><span>上传头像</span></button></div>';
+  h += '<input id="avatarUploadInput" type="file" accept="image/*" style="display:none" />';
+  h += '<button id="closeAvatarPickBtn" style="padding:10px 24px;border:none;border-radius:12px;background:var(--input-bg);color:var(--text);font-size:14px;cursor:pointer;font-family:inherit">关闭</button>';
   box.innerHTML = h;
   overlay.appendChild(box);
   document.body.appendChild(overlay);
-  // Attach click handlers
   setTimeout(function() {
     var btns = box.querySelectorAll(".avatar-pick-btn");
     for (var j = 0; j < btns.length; j++) {
-      btns[j].onclick = function() {
+      var btn = btns[j];
+      if (btn.id === "avatarUploadBtn") {
+        btn.onclick = function() {
+          var input = document.getElementById("avatarUploadInput");
+          if (input) input.click();
+        };
+        continue;
+      }
+      btn.onclick = function() {
         setAvatar(this.getAttribute("data-emoji"));
       };
     }
+    var uploadInput = document.getElementById("avatarUploadInput");
+    if (uploadInput) uploadInput.onchange = function() { handleAvatarUpload(this); };
     var closeBtn = document.getElementById("closeAvatarPickBtn");
     if (closeBtn) closeBtn.onclick = closeAvatarPick;
   }, 50);
@@ -1736,11 +1755,35 @@ function pickProfileAvatar() {
 function setAvatar(emoji) {
   var p = loadProfile();
   p.avatar = emoji;
+  p.avatarType = "emoji";
+  p.avatarDataUrl = "";
   saveProfile(p);
   updateProfileUI();
   var overlay = document.getElementById("avatarPickOverlay");
   if (overlay) overlay.remove();
   showToast("头像已更新");
+}
+
+function handleAvatarUpload(input) {
+  var file = input && input.files ? input.files[0] : null;
+  if (!file) return;
+  if (!file.type || !file.type.startsWith("image/")) {
+    showToast("请选择图片文件");
+    return;
+  }
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var p = loadProfile();
+    p.avatar = "📷";
+    p.avatarType = "image";
+    p.avatarDataUrl = e.target.result;
+    saveProfile(p);
+    updateProfileUI();
+    var overlay = document.getElementById("avatarPickOverlay");
+    if (overlay) overlay.remove();
+    showToast("头像已更新");
+  };
+  reader.readAsDataURL(file);
 }
 
 function closeAvatarPick() {
