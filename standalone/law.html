@@ -361,6 +361,7 @@
         .quiz-explain{display:none;margin-top:12px;padding:12px 14px;background:var(--input-bg);border-radius:12px;font-size:13px;line-height:1.65;color:var(--text);border-left:3px solid var(--accent)}
         .quiz-explain.show{display:block}
         .quiz-explain strong{color:var(--accent)}
+        .quiz-lock-gate{background:rgba(0,0,0,0.04);border:1px dashed var(--card-border);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6;margin-top:10px}
         .quiz-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
         .quiz-btn{padding:8px 16px;border:none;border-radius:14px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
         .quiz-btn.primary{background:var(--accent);color:#fff}
@@ -510,7 +511,17 @@
     .ph-vip-badge{position:relative;overflow:hidden;display:inline-block;font-size:9px;font-weight:700;padding:1px 7px;border-radius:7px;background:linear-gradient(135deg,#f7b733,#fc4a1a);color:#fff;margin:0 0 0 6px;letter-spacing:.5px;box-shadow:0 2px 12px rgba(247,183,51,0.5);vertical-align:middle}
     .ph-vip-badge::after{content:"";position:absolute;top:0;left:-130%;width:60%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,0.65),transparent);animation:vipShine 2.4s ease-in-out infinite}
     @keyframes vipShine{0%{left:-130%}55%,100%{left:150%}}
-    .ph-level-text{font-size:12px;color:var(--text2);margin-top:2px}
+    .ph-level-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px}
+    .ph-level-icon{width:46px;height:46px;border-radius:50%;object-fit:cover;flex-shrink:0;box-shadow:0 2px 10px rgba(0,0,0,0.15)}
+    .ph-level-text{font-size:15px;font-weight:700;color:#111;letter-spacing:1px}
+    .ph-level-progress{width:180px;max-width:70%;height:6px;background:var(--card-border);border-radius:3px;margin:8px auto 0;overflow:hidden}
+    .ph-level-fill{height:100%;background:linear-gradient(90deg,#f7b733,#fc4a1a);border-radius:3px;transition:width .4s ease;width:0%}
+    .ph-level-prog{font-size:10px;color:var(--text2);margin-top:4px;text-align:center}
+    .pp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+    .pp-card{background:var(--input-bg);border:1px solid var(--card-border);border-radius:12px;padding:10px 6px;text-align:center;cursor:pointer;transition:all .15s}
+    .pp-card:active{transform:scale(.95);border-color:var(--accent)}
+    .pp-name{font-size:11px;font-weight:600;color:var(--text)}
+    .pp-cost{font-size:11px;color:var(--accent);font-weight:700;margin-top:3px}
     .profile-stats-row{display:flex;gap:0;margin:4px 20px 16px;border:1px solid var(--card-border);border-radius:14px;overflow:hidden}
     .profile-stats-row .ps-item{flex:1;text-align:center;padding:14px 8px;border-right:1px solid var(--card-border)}
     .profile-stats-row .ps-item:last-child{border-right:none}
@@ -738,7 +749,12 @@
         <span class="ph-name" id="profileName">法律人</span>
         <div class="ph-vip-badge" id="profileVipBadge" style="display:none">VIP</div>
       </div>
-      <div class="ph-level-text" id="profileLevel">🌱 新手</div>
+      <div class="ph-level-row">
+        <img class="ph-level-icon" id="profileLevelIcon" src="images/levels/LV1.webp" alt="" />
+        <span class="ph-level-text" id="profileLevel">见习</span>
+      </div>
+      <div class="ph-level-progress"><div class="ph-level-fill" id="profileLevelFill"></div></div>
+      <div class="ph-level-prog" id="profileLevelProg">累计 0 积分</div>
     </div>
 
     <div class="profile-stats-row">
@@ -765,6 +781,21 @@
       <div class="pm-item" onclick="editNickname()">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
         <span>修改昵称</span>
+        <span class="pm-arrow">›</span>
+      </div>
+      <div class="pm-item" onclick="openPointsPanel()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v12"/><path d="M15 9.5c0-1-1.2-2-3-2s-3 1-3 2 1 1.8 3 2 3 .9 3 2-1.2 2-3 2-3-1-3-2"/></svg>
+        <span>积分兑换</span>
+        <span class="pm-arrow">›</span>
+      </div>
+      <div class="pm-item" onclick="showVipPerks()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/><path d="M20 18L9 7"/></svg>
+        <span>VIP特权</span>
+        <span class="pm-arrow">›</span>
+      </div>
+      <div class="pm-item" onclick="showSchedule()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/></svg>
+        <span>课程表</span>
         <span class="pm-arrow">›</span>
       </div>
       <div class="pm-item" onclick="rechargeVip()">
@@ -1384,7 +1415,9 @@ function checkinToday() {
   c.lastDate = t;
   saveCheckin(c);
   renderCheckin();
-  showToast("打卡成功 ✔ 累计 " + c.count + " 天");
+  var pts = isVip() ? 5 + Math.floor(Math.random() * 6) : 1 + Math.floor(Math.random() * 3);
+  addPoints(pts);
+  showToast("打卡成功 ✔ 累计 " + c.count + " 天 +" + pts + "积分");
 }
 
 function renderCheckin() {
@@ -1462,11 +1495,16 @@ function openTodoModal() {
     var input = document.getElementById("todoInput");
     var txt = input ? input.value.trim() : "";
     if (!txt) return;
+    var isFirst = o.items.length === 0;
     o.items.push({ text: txt, done: false });
     saveTodos(o);
     if (input) input.value = "";
     renderTodoList(o, box);
     renderTodoStatus();
+    if (isFirst) {
+      var tb = oneTimeBonus("todo", 5);
+      if (tb) showToast("首次创建待办 +" + tb + "积分");
+    }
   }
   var addBtn = document.getElementById("todoAddBtn");
   if (addBtn) addBtn.onclick = addTodo;
@@ -1497,10 +1535,16 @@ function renderTodoList(o, box) {
   for (var t = 0; t < toggles.length; t++) {
     toggles[t].onclick = function() {
       var idx = parseInt(this.getAttribute("data-idx"), 10);
+      var wasDone = o.items[idx].done;
       o.items[idx].done = !o.items[idx].done;
       saveTodos(o);
       renderTodoList(o, box);
       renderTodoStatus();
+      // 完成待办：普通+1 VIP+2（每日限3次）
+      if (!wasDone && o.items[idx].done && dailyCount("todo") < 3) {
+        dailyInc("todo");
+        awardPoints(vipRate(1), "完成任务");
+      }
     };
   }
   var dels = list.querySelectorAll(".todo-del");
@@ -1948,8 +1992,16 @@ function updateProfileUI() {
     }
   }
   if (nameEl) nameEl.textContent = p.nickname || "法律人";
-  var level = getLevel(p.points || 0);
-  if (levelEl) levelEl.textContent = (isVip() ? "👑 永久VIP · " : "") + level;
+  var levelInfo = getLevelInfo(p.totalPoints || 0);
+  if (levelEl) levelEl.textContent = levelInfo.name;
+  var lvlIcon = document.getElementById("profileLevelIcon");
+  if (lvlIcon) lvlIcon.src = levelInfo.icon;
+  var lvlFill = document.getElementById("profileLevelFill");
+  if (lvlFill) lvlFill.style.width = levelInfo.progress + "%";
+  var lvlProg = document.getElementById("profileLevelProg");
+  if (lvlProg) lvlProg.textContent = levelInfo.next
+    ? "累计 " + (p.totalPoints || 0) + " 积分 · 还需 " + Math.max(0, levelInfo.nextMin - (p.totalPoints || 0)) + " 升至" + levelInfo.next
+    : "已达成最高等级";
   if (ptsEl) ptsEl.textContent = p.points || 0;
   // Count study days
   var stats = loadLearnStats();
@@ -1958,6 +2010,8 @@ function updateProfileUI() {
   if (notesEl) notesEl.textContent = loadNotes().length;
   var vipBadge = document.getElementById("profileVipBadge");
   if (vipBadge) vipBadge.style.display = isVip() ? "inline-block" : "none";
+  var vipRemain = getVipRemainDays();
+  if (vipRemain) vipBadge.setAttribute("title", vipRemain === "永久" ? "永久VIP" : "VIP 剩余 " + vipRemain + " 天");
   if (nickInput) nickInput.value = p.nickname || "";
 }
 
@@ -1980,7 +2034,7 @@ function pickProfileAvatar() {
     var isCurrent = AVATARS[i] === current && !customSelected;
     h += '<button class="avatar-pick-btn' + (isCurrent ? ' selected' : '') + '" data-emoji="' + AVATARS[i] + '" style="width:44px;height:44px;border-radius:50%;border:2px solid ' + (isCurrent ? 'var(--accent)' : 'var(--card-border)') + ';background:var(--card-bg);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center' + (isCurrent ? ';transform:scale(1.15);box-shadow:0 0 0 3px rgba(74,144,217,0.25)' : '') + '">' + AVATARS[i] + '</button>';
   }
-  h += '</div><div style="display:flex;justify-content:center;margin-bottom:12px"><button id="avatarUploadBtn" type="button" style="width:100%;max-width:220px;height:44px;border-radius:12px;border:2px solid ' + (customSelected ? 'var(--accent)' : 'var(--card-border)') + ';background:var(--card-bg);font-size:14px;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px' + (customSelected ? ';transform:scale(1.01);box-shadow:0 0 0 3px rgba(74,144,217,0.18)' : '') + '"><span>📷</span><span>上传头像</span></button></div>';
+  h += '</div><div style="display:flex;justify-content:center;margin-bottom:12px"><button id="avatarUploadBtn" type="button" style="width:100%;max-width:220px;height:44px;border-radius:12px;border:2px solid ' + (customSelected ? 'var(--accent)' : 'var(--card-border)') + ';background:var(--card-bg);font-size:14px;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px' + (customSelected ? ';transform:scale(1.01);box-shadow:0 0 0 3px rgba(74,144,217,0.18)' : '') + '"><span>📷</span><span>' + (isVip() ? '上传头像' : '上传头像（VIP）') + '</span></button></div>';
   h += '<input id="avatarUploadInput" type="file" accept="image/*" style="display:none" />';
   h += '</div><div style="display:flex;gap:8px;justify-content:center">' +
        '<button id="confirmAvatarPickBtn" style="flex:1;padding:10px;border:none;border-radius:12px;background:var(--accent);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">确定</button>' +
@@ -1999,6 +2053,7 @@ function pickProfileAvatar() {
     if (!t || t.tagName !== "BUTTON") return;
     var id = t.id;
     if (id === "avatarUploadBtn") {
+      if (!isVip()) { showToast("VIP 专属：开通 VIP 后可上传自定义头像"); return; }
       var input = document.getElementById("avatarUploadInput");
       if (input) input.click();
       return;
@@ -2033,7 +2088,8 @@ function setAvatar(emoji) {
   updateProfileUI();
   var overlay = document.getElementById("avatarPickOverlay");
   if (overlay) overlay.remove();
-  showToast("头像已更新");
+  var bonus = oneTimeBonus("avatar", 5);
+  showToast("头像已更新" + (bonus ? " +" + bonus + "积分" : ""));
 }
 
 function handleAvatarUpload(input) {
@@ -2053,7 +2109,8 @@ function handleAvatarUpload(input) {
     updateProfileUI();
     var overlay = document.getElementById("avatarPickOverlay");
     if (overlay) overlay.remove();
-    showToast("头像已更新");
+    var bonus = oneTimeBonus("avatar", 5);
+    showToast("头像已更新" + (bonus ? " +" + bonus + "积分" : ""));
   };
   reader.readAsDataURL(file);
 }
@@ -2070,7 +2127,8 @@ function editNickname() {
   p.nickname = name.trim();
   saveProfile(p);
   updateProfileUI();
-  showToast("昵称已更新");
+  var bonus = oneTimeBonus("nickname", 5);
+  showToast("昵称已更新" + (bonus ? " +" + bonus + "积分" : ""));
 }
 
 function rechargeVip() {
@@ -2094,17 +2152,271 @@ function rechargeVip() {
 }
 
 var VIP_KEY = "seawhy-lex-vip";
-function isVip() { try { return localStorage.getItem(VIP_KEY) === "1"; } catch(e) { return false; } }
+function isVip() {
+  try {
+    if (localStorage.getItem(VIP_KEY) === "1") return true; // 永久VIP（兑换码0815）
+    var p = loadProfile();
+    return !!(p.vipUntil && p.vipUntil > Date.now());
+  } catch(e) { return false; }
+}
 function setVip(v) { try { localStorage.setItem(VIP_KEY, v ? "1" : "0"); } catch(e) {} }
 
-function getLevel(points) {
-  points = points || 0;
-  if (points >= 500) return "👑 法学大师";
-  if (points >= 200) return "⚖️ 资深法律人";
-  if (points >= 100) return "🌟 法律精英";
-  if (points >= 50) return "📘 见习法务";
-  if (points >= 20) return "🌱 法律新手";
-  return "🌱 新手";
+// ===== 等级系统 =====
+var LEVELS = [
+  { name: "见习", icon: "images/levels/LV1.webp", min: 0 },
+  { name: "辅庭", icon: "images/levels/LV2.webp", min: 50 },
+  { name: "出庭", icon: "images/levels/LV3.webp", min: 200 },
+  { name: "合伙", icon: "images/levels/LV4.webp", min: 500 },
+  { name: "资深合伙", icon: "images/levels/LV5.webp", min: 1000 },
+  { name: "掌门人", icon: "images/levels/LV6.webp", min: 2000 }
+];
+function getLevelInfo(totalPoints) {
+  totalPoints = totalPoints || 0;
+  var idx = 0;
+  for (var i = 0; i < LEVELS.length; i++) if (totalPoints >= LEVELS[i].min) idx = i;
+  var info = { index: idx, name: LEVELS[idx].name, icon: LEVELS[idx].icon, min: LEVELS[idx].min };
+  if (idx < LEVELS.length - 1) {
+    info.next = LEVELS[idx + 1].name;
+    info.nextMin = LEVELS[idx + 1].min;
+    info.need = LEVELS[idx + 1].min - LEVELS[idx].min;
+    info.have = totalPoints - LEVELS[idx].min;
+    info.progress = Math.min(100, Math.round(info.have / info.need * 100));
+  } else {
+    info.next = null;
+    info.progress = 100;
+  }
+  return info;
+}
+function getLevel(totalPoints) { return getLevelInfo(totalPoints).name; }
+
+// ===== 积分系统 =====
+function addPoints(amount) {
+  var p = loadProfile();
+  p.points = (p.points || 0) + amount;
+  p.totalPoints = (p.totalPoints || 0) + amount;
+  saveProfile(p);
+  updateProfileUI();
+}
+function awardPoints(amount, msg) {
+  if (!amount || amount <= 0) return;
+  addPoints(amount);
+  if (msg) showToast(msg + " +" + amount + " 积分");
+  else showToast("+" + amount + " 积分");
+}
+function vipRate(base) { return isVip() ? base * 2 : base; }
+
+// 每日计数
+function dailyCount(key) {
+  var p = loadProfile();
+  if (!p.daily || p.daily.date !== getTodayStr()) return 0;
+  return p.daily[key] || 0;
+}
+function dailyInc(key) {
+  var p = loadProfile();
+  if (!p.daily || p.daily.date !== getTodayStr()) p.daily = { date: getTodayStr() };
+  p.daily[key] = (p.daily[key] || 0) + 1;
+  saveProfile(p);
+}
+
+// 一次性任务奖励（返回奖励的积分，0=已完成过）
+function oneTimeBonus(task, amount) {
+  var p = loadProfile();
+  if (!p.doneTasks) p.doneTasks = {};
+  if (p.doneTasks[task]) return 0;
+  p.doneTasks[task] = true;
+  saveProfile(p);
+  addPoints(amount);
+  return amount;
+}
+
+// ===== 积分兑换 / 权限 =====
+function canViewQuizExplanation() {
+  if (isVip()) return true;
+  var p = loadProfile();
+  return !!(p.quizUnlockUntil && p.quizUnlockUntil > Date.now());
+}
+function getQuizUnlockRemain() {
+  var p = loadProfile();
+  if (!p.quizUnlockUntil || p.quizUnlockUntil <= Date.now()) return 0;
+  return Math.ceil((p.quizUnlockUntil - Date.now()) / 3600000);
+}
+function getVipRemainDays() {
+  var p = loadProfile();
+  if (localStorage.getItem(VIP_KEY) === "1") return "永久";
+  if (!p.vipUntil || p.vipUntil <= Date.now()) return 0;
+  return Math.ceil((p.vipUntil - Date.now()) / 86400000);
+}
+
+var VIP_PLANS = [
+  { days: 1, cost: 100, label: "24小时" },
+  { days: 3, cost: 188, label: "72小时" },
+  { days: 7, cost: 398, label: "7天" },
+  { days: 30, cost: 998, label: "30天" }
+];
+var QUIZ_PLANS = [ { hours: 3, cost: 5 }, { hours: 12, cost: 10 }, { hours: 48, cost: 15 } ];
+
+function redeemVipPlan(idx) {
+  var plan = VIP_PLANS[idx];
+  var p = loadProfile();
+  if ((p.points || 0) < plan.cost) { showToast("积分不足，需要 " + plan.cost + " 积分"); return; }
+  var now = Date.now();
+  var base = (p.vipUntil && p.vipUntil > now) ? p.vipUntil : now;
+  p.vipUntil = base + plan.days * 86400000;
+  saveProfile(p);
+  addPoints(-plan.cost);
+  updateProfileUI();
+  showToast("VIP 已开通 " + plan.label + " 🎉");
+  renderPointsPanel();
+}
+function redeemQuizPlan(idx) {
+  var plan = QUIZ_PLANS[idx];
+  var p = loadProfile();
+  if ((p.points || 0) < plan.cost) { showToast("积分不足，需要 " + plan.cost + " 积分"); return; }
+  var now = Date.now();
+  var base = (p.quizUnlockUntil && p.quizUnlockUntil > now) ? p.quizUnlockUntil : now;
+  p.quizUnlockUntil = base + plan.hours * 3600000;
+  saveProfile(p);
+  addPoints(-plan.cost);
+  showToast("题目解析已解锁 " + plan.hours + " 小时");
+  renderPointsPanel();
+}
+function redeemNoteCredit() {
+  var p = loadProfile();
+  if ((p.points || 0) < 5) { showToast("积分不足，需要 5 积分"); return; }
+  p.noteCredits = (p.noteCredits || 0) + 1;
+  saveProfile(p);
+  addPoints(-5);
+  showToast("已获得 1 篇笔记额度（VIP 免费创建）");
+  renderPointsPanel();
+}
+
+// ===== 积分兑换面板 =====
+function openPointsPanel() {
+  var overlay = document.createElement("div");
+  overlay.id = "pointsOverlay";
+  overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:600;display:flex;align-items:center;justify-content:center;padding:20px";
+  overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
+  var box = document.createElement("div");
+  box.id = "pointsPanelBox";
+  box.style.cssText = "background:var(--card-bg);border-radius:20px;padding:20px;max-width:360px;width:100%;max-height:78vh;display:flex;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch";
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+  renderPointsPanel();
+}
+
+function renderPointsPanel() {
+  var box = document.getElementById("pointsPanelBox");
+  if (!box) return;
+  var p = loadProfile();
+  var vipRemain = getVipRemainDays();
+  var quizRemain = getQuizUnlockRemain();
+  var h = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">' +
+    '<p style="font-size:16px;font-weight:700;color:var(--text);margin:0">积分兑换</p>' +
+    '<span style="font-size:13px;color:var(--accent);font-weight:700">余额 ' + (p.points || 0) + ' 分</span></div>';
+  h += '<div style="background:var(--input-bg);border-radius:12px;padding:10px 12px;margin-bottom:12px;font-size:12px;color:var(--text)">VIP 状态：' +
+    (vipRemain === "永久" ? '<b style="color:#f7b733">👑 永久VIP</b>' : vipRemain > 0 ? '<b style="color:#f7b733">👑 VIP 剩余 ' + vipRemain + ' 天</b>' : '<b>未开通</b>') +
+    (quizRemain > 0 ? '　·　解析解锁剩 ' + quizRemain + ' 小时' : '') + '</div>';
+  h += '<p style="font-size:12px;font-weight:700;color:var(--text);margin:0 0 8px">VIP 兑换</p>';
+  h += '<div class="pp-grid">';
+  for (var i = 0; i < VIP_PLANS.length; i++) {
+    h += '<div class="pp-card" onclick="redeemVipPlan(' + i + ')"><div class="pp-name">' + VIP_PLANS[i].label + '</div><div class="pp-cost">' + VIP_PLANS[i].cost + ' 分</div></div>';
+  }
+  h += '</div>';
+  h += '<p style="font-size:12px;font-weight:700;color:var(--text);margin:14px 0 8px">题目解析解锁</p>';
+  h += '<div class="pp-grid">';
+  for (var j = 0; j < QUIZ_PLANS.length; j++) {
+    h += '<div class="pp-card" onclick="redeemQuizPlan(' + j + ')"><div class="pp-name">' + QUIZ_PLANS[j].hours + ' 小时</div><div class="pp-cost">' + QUIZ_PLANS[j].cost + ' 分</div></div>';
+  }
+  h += '</div>';
+  h += '<p style="font-size:12px;font-weight:700;color:var(--text);margin:14px 0 8px">笔记本</p>';
+  h += '<div class="pp-grid"><div class="pp-card" onclick="redeemNoteCredit()"><div class="pp-name">1 篇笔记额度' + (p.noteCredits ? '（现有 ' + p.noteCredits + '）' : '') + '</div><div class="pp-cost">5 分</div></div></div>';
+  h += '<p style="font-size:10px;color:var(--text2);margin:12px 0 0;line-height:1.6">VIP 无限查看解析、免费创建笔记。兑换码 0815 可开通永久 VIP。</p>';
+  box.innerHTML = h;
+}
+
+// ===== VIP特权页 =====
+function showVipPerks() {
+  var perks = [
+    "不限量 AI 问答，超快响应速度",
+    "支持使用笔记本功能（免费无限创建）",
+    "支持自定义上传头像",
+    "超炫酷专属徽标",
+    "课程表功能",
+    "每日打卡 5-10 积分，完成任务双倍积分",
+    "题库无限查看解析"
+  ];
+  var overlay = document.createElement("div");
+  overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:600;display:flex;align-items:center;justify-content:center;padding:20px";
+  overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
+  var box = document.createElement("div");
+  box.style.cssText = "background:var(--card-bg);border-radius:20px;padding:22px;max-width:340px;width:100%;max-height:80vh;overflow-y:auto";
+  var h = '<div style="text-align:center;margin-bottom:14px">' +
+    '<div style="width:56px;height:56px;margin:0 auto 8px;border-radius:50%;background:linear-gradient(135deg,#f7b733,#fc4a1a);display:flex;align-items:center;justify-content:center;font-size:28px">👑</div>' +
+    '<h3 style="margin:0 0 2px;color:var(--text)">SeaWhy Lex VIP</h3>' +
+    '<p style="font-size:12px;color:var(--text2);margin:0">' + (isVip() ? "您已是 VIP 会员 🎉" : "开通 VIP 解锁全部特权") + '</p></div>';
+  for (var i = 0; i < perks.length; i++) {
+    h += '<div style="display:flex;align-items:flex-start;gap:8px;padding:9px 4px;border-bottom:1px solid var(--card-border);font-size:13px;color:var(--text)">' +
+      '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f7b733" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px"><path d="M20 6L9 17l-5-5"/></svg>' +
+      '<span>' + perks[i] + '</span></div>';
+  }
+  h += '<button onclick="openPointsPanel()" style="width:100%;margin-top:14px;padding:12px;border:none;border-radius:12px;background:linear-gradient(135deg,#f7b733,#fc4a1a);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">积分兑换 VIP</button>';
+  box.innerHTML = h;
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+}
+
+// ===== 课程表（VIP专属） =====
+var SCHEDULE_KEY = "seawhy-lex-schedule";
+var SCHEDULE_DAYS = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
+var SCHEDULE_PERIODS = 8;
+function loadSchedule() {
+  try { return JSON.parse(localStorage.getItem(SCHEDULE_KEY)) || {}; } catch (e) { return {}; }
+}
+function saveSchedule(s) { try { localStorage.setItem(SCHEDULE_KEY, JSON.stringify(s)); } catch (e) {} }
+
+function showSchedule() {
+  if (!isVip()) {
+    showToast("课程表为 VIP 专属功能");
+    showVipPerks();
+    return;
+  }
+  var sched = loadSchedule();
+  var overlay = document.createElement("div");
+  overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:600;display:flex;align-items:center;justify-content:center;padding:14px";
+  overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
+  var box = document.createElement("div");
+  box.style.cssText = "background:var(--card-bg);border-radius:18px;padding:16px;max-width:560px;width:100%;max-height:80vh;overflow-y:auto;-webkit-overflow-scrolling:touch";
+  var h = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">' +
+    '<p style="font-size:16px;font-weight:700;color:var(--text);margin:0">课程表</p>' +
+    '<button onclick="saveScheduleAll()" style="padding:6px 16px;border:none;border-radius:10px;background:var(--accent);color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">保存</button></div>';
+  h += '<table style="width:100%;border-collapse:collapse;font-size:11px">';
+  h += '<tr><th style="padding:4px;color:var(--text2);font-weight:600">节次</th>';
+  for (var d = 0; d < SCHEDULE_DAYS.length; d++) h += '<th style="padding:4px;color:var(--text2);font-weight:600">' + SCHEDULE_DAYS[d] + '</th>';
+  h += '</tr>';
+  for (var per = 1; per <= SCHEDULE_PERIODS; per++) {
+    h += '<tr><td style="padding:2px 4px;color:var(--text2);text-align:center">' + per + '</td>';
+    for (var d2 = 0; d2 < SCHEDULE_DAYS.length; d2++) {
+      var key = d2 + "_" + per;
+      var val = sched[key] || "";
+      h += '<td style="padding:2px"><input type="text" value="' + escAttr(val) + '" maxlength="8" data-sk="' + key + '" style="width:100%;box-sizing:border-box;padding:5px 3px;border:1px solid var(--card-border);border-radius:6px;background:var(--input-bg);color:var(--text);font-size:10px;text-align:center;outline:none" /></td>';
+    }
+    h += '</tr>';
+  }
+  h += '</table>';
+  h += '<p style="font-size:10px;color:var(--text2);margin:10px 0 0;text-align:center">点格子填写课程，点保存生效</p>';
+  box.innerHTML = h;
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+}
+function saveScheduleAll() {
+  var s = {};
+  var inputs = document.querySelectorAll("[data-sk]");
+  for (var i = 0; i < inputs.length; i++) {
+    var v = inputs[i].value.trim();
+    if (v) s[inputs[i].getAttribute("data-sk")] = v;
+  }
+  saveSchedule(s);
+  showToast("课程表已保存");
 }
 
 function redeemVipCode() {
@@ -2553,6 +2865,10 @@ function sendMsg(text) {
 
   messages.push({ role: "user", content: text, _time: Date.now() });
   renderMsg("user", text); persist();
+  // 积分：与AI对话（每日限10次）+ 首次体验 +20
+  if (dailyCount("chat") < 10) { dailyInc("chat"); awardPoints(vipRate(1), "AI对话"); }
+  var chatBonus = oneTimeBonus("chat", 20);
+  if (chatBonus) showToast("首次体验AI聊天 +" + chatBonus + "积分");
 
   var sysP = buildSystemPrompt();
   var apiMsgs = [{ role: "system", content: sysP }];
@@ -2822,11 +3138,15 @@ function recordStudyTime(minutes, questions) {
   var stats = loadLearnStats();
   var today = getTodayStr();
   if (!stats.days[today]) stats.days[today] = { min: 0, q: 0 };
+  var prevTotal = stats.totalMin || 0;
   stats.days[today].min += minutes || 0;
   stats.days[today].q += questions || 0;
   stats.totalMin = (stats.totalMin || 0) + (minutes || 0);
   stats.totalQ = (stats.totalQ || 0) + (questions || 0);
   saveLearnStats(stats);
+  // 每 5 分钟学习 +1 积分（VIP +2）
+  var blocks = Math.floor(stats.totalMin / 5) - Math.floor(prevTotal / 5);
+  if (blocks > 0) awardPoints(vipRate(blocks), "学习奖励");
 }
 
 function getStreak(stats) {
@@ -2974,13 +3294,28 @@ function saveCurrentNote() {
     notes[currentEditIndex].date = nowStr + " (已编辑)";
     showToast("笔记已更新");
   } else {
+    // 新建笔记：非VIP 每篇扣 5 积分（可用额度抵扣），VIP 免费
+    var p = loadProfile();
+    if (!isVip()) {
+      var fee = 5;
+      if ((p.noteCredits || 0) > 0) {
+        p.noteCredits--;
+        saveProfile(p);
+      } else if ((p.points || 0) < fee) {
+        showToast("积分不足，创建笔记需 5 积分（VIP 免费）");
+        return;
+      } else {
+        addPoints(-fee);
+      }
+    }
     notes.push({
       title: title,
       content: cnt,
       tags: tags,
       date: nowStr
     });
-    showToast("笔记已保存");
+    var nb = oneTimeBonus("note", 5);
+    showToast("笔记已保存" + (nb ? " +" + nb + "积分" : "") + (isVip() ? "" : " -5积分"));
     recordStudyTime(5, 0);
   }
   saveNotes(notes);
@@ -3402,10 +3737,17 @@ function renderQuizPage() {
       var chk = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#27ae60" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-3px;margin-right:2px"><polyline points="20 6 9 17 4 12"/></svg>';
       var crs = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-3px;margin-right:2px"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
       h += (isCorrect ? chk + '<strong>回答正确！</strong>' : crs + '<strong>回答错误</strong>（正确答案：' + (q.opts ? (function(){var ai=q._shuffledAns!==undefined?q._shuffledAns:q.ans;var ao=q._shuffledOpts?q._shuffledOpts[ai]:q.opts[ai];return ["A","B","C","D","E","F"][ai]+'. '+ao;})() : "") + '）');
-    }
-    if (q.exp) {
-      var bk = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="vertical-align:-2px;margin-right:3px"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/></svg>';
-      h += '<br><br>' + bk + escHtml(q.exp);
+      if (q.exp) {
+        if (canViewQuizExplanation()) {
+          var bk = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="vertical-align:-2px;margin-right:3px"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/></svg>';
+          h += '<br><br>' + bk + escHtml(q.exp);
+        } else {
+          var remain = getQuizUnlockRemain();
+          h += '<div class="quiz-lock-gate"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="vertical-align:-2px;margin-right:4px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>查看解析需开通 VIP（无限查看）或积分解锁' +
+            (remain > 0 ? '（已解锁剩余 ' + remain + ' 小时）' : '') +
+            '<button class="quiz-btn primary" onclick="openPointsPanel()" style="margin-top:8px;display:block">去解锁</button></div>';
+        }
+      }
     }
     h += '</div>';
 
@@ -3475,6 +3817,7 @@ function submitAnswer(qIdx) {
   if (!isCorrect) { addToWrongBook(q, QUIZ_STATE.answers[qIdx]); }
   else if (wrongBookMode && q._wbIdx !== undefined) { removeFromWrongBook(q.q); }
   recordStudyTime(2, 1);
+  if (isCorrect && !wrongBookMode) awardPoints(vipRate(1), "答对");
   renderQuizPage();
   setTimeout(function() {
     var el = document.getElementById("explain" + qIdx);
@@ -3769,6 +4112,8 @@ function generateDoc() {
   DOC_STATE.result = result;
   renderDocResult();
   document.getElementById("docResultArea").scrollIntoView({ behavior: "smooth" });
+  // 积分：生成文书（每日限3次）
+  if (dailyCount("doc") < 3) { dailyInc("doc"); awardPoints(vipRate(1), "生成文书"); }
 }
 
 function regenerateDoc() {
