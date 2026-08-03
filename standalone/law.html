@@ -1735,38 +1735,37 @@ function pickProfileAvatar() {
   document.body.appendChild(overlay);
   // Track pending selection (blue frame moves but not yet saved)
   var selectedEmoji = current;
-  setTimeout(function() {
+
+  // ---- 事件委托：弹窗内所有按钮统一响应 ----
+  box.onclick = function(e) {
+    var t = e.target;
+    while (t && t !== box && t.tagName !== "BUTTON") t = t.parentNode;
+    if (!t || t.tagName !== "BUTTON") return;
+    var id = t.id;
+    if (id === "avatarUploadBtn") {
+      var input = document.getElementById("avatarUploadInput");
+      if (input) input.click();
+      return;
+    }
+    if (id === "confirmAvatarPickBtn") { setAvatar(selectedEmoji); return; }
+    if (id === "closeAvatarPickBtn") { closeAvatarPick(); return; }
+    var emoji = t.getAttribute("data-emoji");
+    if (!emoji) return;
+    // Move blue frame to newly clicked avatar
     var btns = box.querySelectorAll(".avatar-pick-btn");
     for (var j = 0; j < btns.length; j++) {
-      var btn = btns[j];
-      if (btn.id === "avatarUploadBtn") {
-        btn.onclick = function() {
-          var input = document.getElementById("avatarUploadInput");
-          if (input) input.click();
-        };
-        continue;
-      }
-      btns[j].onclick = function() {
-        var emoji = this.getAttribute("data-emoji");
-        // Move blue frame to newly clicked avatar
-        box.querySelectorAll(".avatar-pick-btn").forEach(function(b) {
-          var isSel = b.getAttribute("data-emoji") === emoji;
-          b.className = "avatar-pick-btn" + (isSel ? " selected" : "");
-          b.style.borderColor = isSel ? "var(--accent)" : "var(--card-border)";
-          b.style.transform = isSel ? "scale(1.15)" : "";
-          b.style.boxShadow = isSel ? "0 0 0 3px rgba(74,144,217,0.25)" : "";
-        });
-        selectedEmoji = emoji;
-      };
+      var b = btns[j];
+      var isSel = b.getAttribute("data-emoji") === emoji;
+      b.className = "avatar-pick-btn" + (isSel ? " selected" : "");
+      b.style.borderColor = isSel ? "var(--accent)" : "var(--card-border)";
+      b.style.transform = isSel ? "scale(1.15)" : "";
+      b.style.boxShadow = isSel ? "0 0 0 3px rgba(74,144,217,0.25)" : "";
     }
-    var uploadInput = document.getElementById("avatarUploadInput");
-    if (uploadInput) uploadInput.onchange = function() { handleAvatarUpload(this); };
-    var confirmBtn = document.getElementById("confirmAvatarPickBtn");
-    if (confirmBtn) confirmBtn.onclick = function() { setAvatar(selectedEmoji); };
-    var closeBtn = document.getElementById("closeAvatarPickBtn");
-    if (closeBtn) closeBtn.onclick = closeAvatarPick;
+    selectedEmoji = emoji;
+  };
 
-  }, 50);
+  var uploadInput = document.getElementById("avatarUploadInput");
+  if (uploadInput) uploadInput.onchange = function() { handleAvatarUpload(this); };
 }
 
 function setAvatar(emoji) {
