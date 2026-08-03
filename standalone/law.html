@@ -77,6 +77,10 @@
     .dash-name{font-size:14px;font-weight:600;color:var(--text)}
     .dash-sub{font-size:11px;color:var(--text2);white-space:nowrap}
     .dash-card.checked .dash-name,.dash-card.checked .dash-sub{color:var(--accent)}
+    .todo-preview{width:100%;display:flex;flex-direction:column;gap:2px;margin-top:2px}
+    .todo-preview .tp-item{font-size:10px;color:var(--text2);text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 4px;line-height:1.45;max-width:100%}
+    .todo-preview .tp-item.done{text-decoration:line-through;opacity:.5}
+    .todo-preview .tp-empty{font-size:10px;color:var(--text2);text-align:center;opacity:.6}
 
     /* frosted bottom nav card */
     #bottomNav{display:flex;justify-content:space-around;align-items:center;margin:0 auto;margin-bottom:calc(12px + env(safe-area-inset-bottom));padding:10px 12px;background:rgba(255,255,255,0.72);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.6);border-radius:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.04);flex-shrink:0;max-width:380px;width:calc(100% - 48px)}
@@ -573,7 +577,8 @@
     <div class="dash-card" id="todoCard" onclick="openTodoModal()" title="今日待办">
       <div class="dash-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8.5 8.5h7"/><path d="M8.5 12.5h7"/><path d="M9 16.5l2 2 4-4"/></svg></div>
       <div class="dash-name">今日待办</div>
-      <div class="dash-sub" id="todoStatus">0 项待完成</div>
+      <div class="dash-sub" id="todoStatus">暂无待办</div>
+      <div class="todo-preview" id="todoPreview"></div>
     </div>
   </div>
   <div class="quote-card" id="quoteCard">
@@ -1167,6 +1172,15 @@
 // ============================================================
 // TYPWRITER + LEGAL QUOTES
 // ============================================================
+function getGreeting() {
+  var h = new Date().getHours();
+  if (h >= 5 && h < 9) return "早上好，法律人";
+  if (h >= 9 && h < 12) return "上午好，法律人";
+  if (h >= 12 && h < 14) return "中午好，法律人";
+  if (h >= 14 && h < 18) return "下午好，法律人";
+  if (h >= 18 && h < 23) return "晚上好，法律人";
+  return "夜深了，法律人";
+}
 var TYPEWRITER_TEXT = "你好，法律人";
 var LEGAL_QUOTES = [
   { "text": "公理之下，正义不朽", "author": "网络" },
@@ -1310,7 +1324,7 @@ function initWelcome() {
   }
   applyQuoteAutoState();
   if (el) {
-    typeWriter(el, TYPEWRITER_TEXT, 120, function() {
+    typeWriter(el, getGreeting(), 120, function() {
       showRandomQuote();
       if (options.quoteAuto) startQuoteRotation();
       _welcomePlayed = true;
@@ -1351,8 +1365,9 @@ function renderCheckin() {
   var el = document.getElementById("checkinStatus");
   var card = document.getElementById("checkinCard");
   if (!el) return;
-  if (loadCheckin().days[todayStr()]) {
-    el.textContent = "今日已打卡";
+  var c = loadCheckin();
+  if (c.days[todayStr()]) {
+    el.textContent = "累计打卡 " + (c.count || 0) + " 天";
     if (card) card.classList.add("checked");
   } else {
     el.textContent = "点我打卡";
@@ -1376,11 +1391,27 @@ function escapeHtml(s) {
 
 function renderTodoStatus() {
   var el = document.getElementById("todoStatus");
-  if (!el) return;
+  var pre = document.getElementById("todoPreview");
   var o = loadTodos();
-  var pending = 0;
-  for (var i = 0; i < o.items.length; i++) if (!o.items[i].done) pending++;
-  el.textContent = pending > 0 ? pending + " 项待完成" : "已全部完成";
+  if (el) {
+    var pending = 0;
+    for (var i = 0; i < o.items.length; i++) if (!o.items[i].done) pending++;
+    el.textContent = pending > 0 ? pending + " 项待完成" : (o.items.length ? "已全部完成 ✓" : "暂无待办");
+  }
+  if (!pre) return;
+  if (o.items.length === 0) {
+    pre.innerHTML = '<div class="tp-empty">点此添加待办事项</div>';
+    return;
+  }
+  var h = "";
+  var shown = 0;
+  for (var j = 0; j < o.items.length && shown < 3; j++) {
+    var it = o.items[j];
+    h += '<div class="tp-item' + (it.done ? ' done' : '') + '">' + (it.done ? '✓ ' : '· ') + escapeHtml(it.text) + '</div>';
+    shown++;
+  }
+  if (o.items.length > 3) h += '<div class="tp-empty">还有 ' + (o.items.length - 3) + ' 项…</div>';
+  pre.innerHTML = h;
 }
 
 function openTodoModal() {
@@ -1743,6 +1774,8 @@ function initApp() {
   if (checkLoginState()) {
     // Already logged in, show home
     document.getElementById("homeScreen").classList.add("show");
+    renderCheckin();
+    renderTodoStatus();
     initWelcome();
     updateProfileUI();
   } else {
@@ -2037,6 +2070,16 @@ function rechargeVip() {
 var VIP_KEY = "seawhy-lex-vip";
 function isVip() { try { return localStorage.getItem(VIP_KEY) === "1"; } catch(e) { return false; } }
 function setVip(v) { try { localStorage.setItem(VIP_KEY, v ? "1" : "0"); } catch(e) {} }
+
+function getLevel(points) {
+  points = points || 0;
+  if (points >= 500) return "👑 法学大师";
+  if (points >= 200) return "⚖️ 资深法律人";
+  if (points >= 100) return "🌟 法律精英";
+  if (points >= 50) return "📘 见习法务";
+  if (points >= 20) return "🌱 法律新手";
+  return "🌱 新手";
+}
 
 function redeemVipCode() {
   var input = document.getElementById("redeemCodeInput");
