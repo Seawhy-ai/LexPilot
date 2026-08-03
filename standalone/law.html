@@ -512,14 +512,18 @@
     .ph-vip-badge::after{content:"";position:absolute;top:0;left:-130%;width:60%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,0.65),transparent);animation:vipShine 2.4s ease-in-out infinite}
     @keyframes vipShine{0%{left:-130%}55%,100%{left:150%}}
     .ph-level-badge{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:6px;padding:4px 0}
-    .ph-level-badge::before{content:"";position:absolute;top:50%;left:50%;width:min(280px,74vw);height:min(280px,74vw);transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(247,183,51,0.38),rgba(252,74,26,0.14) 55%,transparent 72%);filter:blur(6px);animation:lvlGlow 2.8s ease-in-out infinite;z-index:0;pointer-events:none}
+    /* 流光（等级越高越壮观） */
     .ph-level-badge::after{content:"";position:absolute;top:6%;left:-45%;width:42%;height:88%;background:linear-gradient(100deg,transparent,rgba(255,255,255,0.45),transparent);transform:skewX(-18deg);animation:lvlShine 3.2s ease-in-out infinite;z-index:2;pointer-events:none}
-    .ph-level-icon{position:relative;z-index:1;width:min(260px,68vw);height:min(260px,68vw);object-fit:cover;animation:lvlFloat 3s ease-in-out infinite}
-    .ph-level-text{position:relative;z-index:1;font-size:18px;font-weight:800;color:#111;letter-spacing:3px;animation:lvlPulse 2.2s ease-in-out infinite}
-    @keyframes lvlFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-    @keyframes lvlGlow{0%,100%{opacity:.6;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}}
+    .ph-level-badge::before{content:"";position:absolute;top:6%;left:-45%;width:30%;height:88%;background:linear-gradient(100deg,transparent,rgba(247,183,51,0.55),transparent);transform:skewX(-18deg);animation:lvlShine2 5s ease-in-out infinite;z-index:2;pointer-events:none;opacity:0}
+    .ph-level-badge.lvl0::after,.ph-level-badge.lvl1::after{opacity:.45;animation-duration:4.2s}
+    .ph-level-badge.lvl2::after,.ph-level-badge.lvl3::after{opacity:.8;animation-duration:3s}
+    .ph-level-badge.lvl4::after,.ph-level-badge.lvl5::after{opacity:1;animation-duration:2.2s;width:55%;background:linear-gradient(100deg,transparent,rgba(255,255,255,0.7),rgba(247,183,51,0.5),transparent)}
+    .ph-level-badge.lvl2::before,.ph-level-badge.lvl3::before{opacity:.45;animation-duration:3.6s}
+    .ph-level-badge.lvl4::before,.ph-level-badge.lvl5::before{opacity:.85;animation-duration:2.6s}
+    .ph-level-icon{position:relative;z-index:1;width:min(260px,68vw);height:min(260px,68vw);object-fit:cover}
+    .ph-level-text{position:relative;z-index:1;font-size:18px;font-weight:800;color:#111;letter-spacing:3px}
     @keyframes lvlShine{0%{left:-45%}55%,100%{left:140%}}
-    @keyframes lvlPulse{0%,100%{opacity:1}50%{opacity:.6}}
+    @keyframes lvlShine2{0%{left:-45%}60%,100%{left:150%}}
     .ph-level-progress{height:7px;background:var(--card-border);border-radius:4px;margin:10px 20px 0;overflow:hidden}
     .ph-level-fill{height:100%;background:linear-gradient(90deg,#f7b733,#fc4a1a);border-radius:3px;transition:width .4s ease;width:0%}
     .ph-level-prog{font-size:10px;color:var(--text2);margin-top:4px;text-align:center}
@@ -541,6 +545,8 @@
     .pc-amt{font-weight:800;flex-shrink:0}
     .pc-plus{color:#27ae60}
     .pc-minus{color:#e74c3c}
+    .modal-close{position:absolute;top:10px;right:10px;width:28px;height:28px;border:none;border-radius:50%;background:var(--input-bg);color:var(--text2);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit;line-height:1;z-index:5}
+    .modal-close:active{transform:scale(.9)}
     .profile-stats-row{display:flex;gap:0;margin:4px 20px 16px;border:1px solid var(--card-border);border-radius:14px;overflow:hidden}
     .profile-stats-row .ps-item{flex:1;text-align:center;padding:14px 8px;border-right:1px solid var(--card-border)}
     .profile-stats-row .ps-item:last-child{border-right:none}
@@ -768,7 +774,7 @@
         <span class="ph-name" id="profileName">法律人</span>
         <div class="ph-vip-badge" id="profileVipBadge" style="display:none">VIP</div>
       </div>
-      <div class="ph-level-badge">
+      <div class="ph-level-badge" id="profileLevelBadge">
         <img class="ph-level-icon" id="profileLevelIcon" src="images/levels/LV1.jpg" alt="" />
         <div class="ph-level-text" id="profileLevel">见习</div>
       </div>
@@ -2015,6 +2021,8 @@ function updateProfileUI() {
   if (levelEl) levelEl.textContent = levelInfo.name;
   var lvlIcon = document.getElementById("profileLevelIcon");
   if (lvlIcon) lvlIcon.src = levelInfo.icon;
+  var lvlBadge = document.getElementById("profileLevelBadge");
+  if (lvlBadge) lvlBadge.className = "ph-level-badge lvl" + levelInfo.index;
   var lvlFill = document.getElementById("profileLevelFill");
   if (lvlFill) lvlFill.style.width = levelInfo.progress + "%";
   var lvlProg = document.getElementById("profileLevelProg");
@@ -2212,7 +2220,7 @@ function getLevel(totalPoints) { return getLevelInfo(totalPoints).name; }
 function addPoints(amount, label) {
   var p = loadProfile();
   p.points = (p.points || 0) + amount;
-  p.totalPoints = (p.totalPoints || 0) + amount;
+  if (amount > 0) p.totalPoints = (p.totalPoints || 0) + amount; // 累计积分只增不减
   if (!p.transactions) p.transactions = [];
   p.transactions.push({ a: amount, t: Date.now(), m: label || "" });
   if (p.transactions.length > 300) p.transactions = p.transactions.slice(-300);
@@ -2320,9 +2328,12 @@ function openPointsPanel() {
   overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
   var box = document.createElement("div");
   box.id = "pointsPanelBox";
-  box.style.cssText = "background:var(--card-bg);border-radius:20px;padding:20px;max-width:360px;width:100%;max-height:78vh;display:flex;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch";
+  box.style.cssText = "position:relative;background:var(--card-bg);border-radius:20px;padding:20px;max-width:360px;width:100%;max-height:78vh;display:flex;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch";
+  box.innerHTML = '<button class="modal-close">✕</button>';
   overlay.appendChild(box);
   document.body.appendChild(overlay);
+  var mc = box.querySelector(".modal-close");
+  if (mc) mc.onclick = function() { overlay.remove(); };
   renderPointsPanel();
 }
 
@@ -2332,7 +2343,8 @@ function renderPointsPanel() {
   var p = loadProfile();
   var vipRemain = getVipRemainDays();
   var quizRemain = getQuizUnlockRemain();
-  var h = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">' +
+  var h = '<button class="modal-close">✕</button>' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">' +
     '<p style="font-size:16px;font-weight:700;color:var(--text);margin:0">积分兑换</p>' +
     '<span style="font-size:13px;color:var(--accent);font-weight:700">余额 ' + (p.points || 0) + ' 分</span></div>';
   h += '<div style="background:var(--input-bg);border-radius:12px;padding:10px 12px;margin-bottom:12px;font-size:12px;color:var(--text)">VIP 状态：' +
@@ -2354,6 +2366,8 @@ function renderPointsPanel() {
   h += '<div class="pp-grid"><div class="pp-card" onclick="redeemNoteCredit()"><div class="pp-name">1 篇笔记额度' + (p.noteCredits ? '（现有 ' + p.noteCredits + '）' : '') + '</div><div class="pp-cost">5 分</div></div></div>';
   h += '<p style="font-size:10px;color:var(--text2);margin:12px 0 0;line-height:1.6">VIP 无限查看解析、免费创建笔记。兑换码 0815 可开通永久 VIP。</p>';
   box.innerHTML = h;
+  var mc = box.querySelector(".modal-close");
+  if (mc) mc.onclick = function() { var o = document.getElementById("pointsOverlay"); if (o) o.remove(); };
 }
 
 // ===== 积分中心（任务 + 明细） =====
@@ -2363,8 +2377,9 @@ function openPointsCenter() {
   overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:600;display:flex;align-items:center;justify-content:center;padding:16px";
   overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
   var box = document.createElement("div");
-  box.style.cssText = "background:var(--card-bg);border-radius:20px;padding:18px;max-width:360px;width:100%;max-height:82vh;display:flex;flex-direction:column";
+  box.style.cssText = "position:relative;background:var(--card-bg);border-radius:20px;padding:18px;max-width:360px;width:100%;max-height:82vh;display:flex;flex-direction:column";
   box.innerHTML =
+    '<button class="modal-close">✕</button>' +
     '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">' +
     '<p style="font-size:16px;font-weight:700;color:var(--text);margin:0">积分中心</p>' +
     '<span style="font-size:13px;color:var(--accent);font-weight:700">余额 ' + (p.points || 0) + ' 分</span></div>' +
@@ -2373,6 +2388,8 @@ function openPointsCenter() {
     '<div id="pcTxn" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch"></div>';
   overlay.appendChild(box);
   document.body.appendChild(overlay);
+  var mc = box.querySelector(".modal-close");
+  if (mc) mc.onclick = function() { overlay.remove(); };
   renderPointsCenter(p, box);
 }
 
@@ -2440,7 +2457,7 @@ function showVipPerks() {
   overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:600;display:flex;align-items:center;justify-content:center;padding:20px";
   overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
   var box = document.createElement("div");
-  box.style.cssText = "background:var(--card-bg);border-radius:20px;padding:22px;max-width:340px;width:100%;max-height:80vh;overflow-y:auto";
+  box.style.cssText = "position:relative;background:var(--card-bg);border-radius:20px;padding:22px;max-width:340px;width:100%;max-height:80vh;overflow-y:auto";
   var h = '<div style="text-align:center;margin-bottom:14px">' +
     '<div style="width:56px;height:56px;margin:0 auto 8px;border-radius:50%;background:linear-gradient(135deg,#f7b733,#fc4a1a);display:flex;align-items:center;justify-content:center;font-size:28px">👑</div>' +
     '<h3 style="margin:0 0 2px;color:var(--text)">SeaWhy Lex VIP</h3>' +
@@ -2451,9 +2468,11 @@ function showVipPerks() {
       '<span>' + perks[i] + '</span></div>';
   }
   h += '<button onclick="openPointsPanel()" style="width:100%;margin-top:14px;padding:12px;border:none;border-radius:12px;background:linear-gradient(135deg,#f7b733,#fc4a1a);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">积分兑换 VIP</button>';
-  box.innerHTML = h;
+  box.innerHTML = '<button class="modal-close">✕</button>' + h;
   overlay.appendChild(box);
   document.body.appendChild(overlay);
+  var mc = box.querySelector(".modal-close");
+  if (mc) mc.onclick = function() { overlay.remove(); };
 }
 
 // ===== 课程表（VIP专属） =====
