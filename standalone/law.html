@@ -1596,18 +1596,33 @@ function pickProfileAvatar() {
     var isCurrent = AVATARS[i] === current;
     h += '<button class="avatar-pick-btn' + (isCurrent ? ' selected' : '') + '" data-emoji="' + AVATARS[i] + '" style="width:44px;height:44px;border-radius:50%;border:2px solid ' + (isCurrent ? 'var(--accent)' : 'var(--card-border)') + ';background:var(--card-bg);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center' + (isCurrent ? ';transform:scale(1.15);box-shadow:0 0 0 3px rgba(74,144,217,0.25)' : '') + '">' + AVATARS[i] + '</button>';
   }
-  h += '</div><button id="closeAvatarPickBtn" style="padding:10px 24px;border:none;border-radius:12px;background:var(--input-bg);color:var(--text);font-size:14px;cursor:pointer;font-family:inherit">关闭</button>';
+  h += '</div><div style="display:flex;gap:8px;justify-content:center">' +
+       '<button id="confirmAvatarPickBtn" style="flex:1;padding:10px;border:none;border-radius:12px;background:var(--accent);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">确定</button>' +
+       '<button id="closeAvatarPickBtn" style="flex:1;padding:10px;border:1px solid var(--card-border);border-radius:12px;background:var(--input-bg);color:var(--text);font-size:14px;cursor:pointer;font-family:inherit">取消</button>' +
+       '</div>';
   box.innerHTML = h;
   overlay.appendChild(box);
   document.body.appendChild(overlay);
-  // Attach click handlers
+  // Track pending selection (blue frame moves but not yet saved)
+  var selectedEmoji = current;
   setTimeout(function() {
     var btns = box.querySelectorAll(".avatar-pick-btn");
     for (var j = 0; j < btns.length; j++) {
       btns[j].onclick = function() {
-        setAvatar(this.getAttribute("data-emoji"));
+        var emoji = this.getAttribute("data-emoji");
+        // Move blue frame to newly clicked avatar
+        box.querySelectorAll(".avatar-pick-btn").forEach(function(b) {
+          var isSel = b.getAttribute("data-emoji") === emoji;
+          b.className = "avatar-pick-btn" + (isSel ? " selected" : "");
+          b.style.borderColor = isSel ? "var(--accent)" : "var(--card-border)";
+          b.style.transform = isSel ? "scale(1.15)" : "";
+          b.style.boxShadow = isSel ? "0 0 0 3px rgba(74,144,217,0.25)" : "";
+        });
+        selectedEmoji = emoji;
       };
     }
+    var confirmBtn = document.getElementById("confirmAvatarPickBtn");
+    if (confirmBtn) confirmBtn.onclick = function() { setAvatar(selectedEmoji); };
     var closeBtn = document.getElementById("closeAvatarPickBtn");
     if (closeBtn) closeBtn.onclick = closeAvatarPick;
   }, 50);
