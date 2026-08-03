@@ -1,4 +1,4 @@
-var CACHE = "lexpilot-v124";
+var CACHE = "lexpilot-v125";
 self.addEventListener("install", function(e) { self.skipWaiting(); });
 self.addEventListener("activate", function(e) {
   e.waitUntil(caches.keys().then(function(keys) {
@@ -13,10 +13,12 @@ self.addEventListener("fetch", function(e) {
   }
   e.respondWith(
     caches.match(e.request).then(function(r) {
-      return r || fetch(e.request).then(function(resp) {
+      // stale-while-revalidate: 立即返回缓存，同时后台拉取新版本更新缓存
+      var network = fetch(e.request).then(function(resp) {
         if (resp.ok) { var clone = resp.clone(); caches.open(CACHE).then(function(c) { c.put(e.request, clone); }); }
         return resp;
-      });
+      }).catch(function() { return r; });
+      return r || network;
     })
   );
 });
