@@ -511,9 +511,10 @@
     .ph-vip-badge{position:relative;overflow:hidden;display:inline-block;font-size:9px;font-weight:700;padding:1px 7px;border-radius:7px;background:linear-gradient(135deg,#f7b733,#fc4a1a);color:#fff;margin:0 0 0 6px;letter-spacing:.5px;box-shadow:0 2px 12px rgba(247,183,51,0.5);vertical-align:middle}
     .ph-vip-badge::after{content:"";position:absolute;top:0;left:-130%;width:60%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,0.65),transparent);animation:vipShine 2.4s ease-in-out infinite}
     @keyframes vipShine{0%{left:-130%}55%,100%{left:150%}}
-    .ph-level-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px}
-    .ph-level-icon{width:46px;height:46px;border-radius:50%;object-fit:cover;flex-shrink:0;box-shadow:0 2px 10px rgba(0,0,0,0.15)}
-    .ph-level-text{font-size:15px;font-weight:700;color:#111;letter-spacing:1px}
+    .ph-level-badge{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:6px}
+    .ph-level-icon{width:76px;height:76px;border-radius:50%;object-fit:cover;box-shadow:0 4px 16px rgba(0,0,0,0.22),0 0 0 2px rgba(247,183,51,0.35);transition:transform .3s}
+    .ph-level-icon:active{transform:scale(1.05)}
+    .ph-level-text{font-size:16px;font-weight:800;color:#111;letter-spacing:2px}
     .ph-level-progress{width:180px;max-width:70%;height:6px;background:var(--card-border);border-radius:3px;margin:8px auto 0;overflow:hidden}
     .ph-level-fill{height:100%;background:linear-gradient(90deg,#f7b733,#fc4a1a);border-radius:3px;transition:width .4s ease;width:0%}
     .ph-level-prog{font-size:10px;color:var(--text2);margin-top:4px;text-align:center}
@@ -522,6 +523,19 @@
     .pp-card:active{transform:scale(.95);border-color:var(--accent)}
     .pp-name{font-size:11px;font-weight:600;color:var(--text)}
     .pp-cost{font-size:11px;color:var(--accent);font-weight:700;margin-top:3px}
+    .pc-tasks{display:flex;flex-direction:column;gap:0;border:1px solid var(--card-border);border-radius:12px;overflow:hidden}
+    .pc-task{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:8px 10px;font-size:12px;color:var(--text);border-bottom:1px solid var(--card-border)}
+    .pc-task:last-child{border-bottom:none}
+    .pc-task.pc-done{opacity:.55}
+    .pc-tdesc{font-size:10px;color:var(--text2);flex:1;text-align:right;padding:0 6px}
+    .pc-tdone{font-size:10px;font-weight:700;flex-shrink:0}
+    .pc-task.pc-done .pc-tdone{color:#27ae60}
+    .pc-task:not(.pc-done) .pc-tdone{color:var(--accent)}
+    .pc-txn{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:8px 2px;font-size:12px;color:var(--text);border-bottom:1px solid var(--card-border)}
+    .pc-txn .pc-tm{font-size:10px;color:var(--text2);flex:1;text-align:right;padding:0 6px}
+    .pc-amt{font-weight:800;flex-shrink:0}
+    .pc-plus{color:#27ae60}
+    .pc-minus{color:#e74c3c}
     .profile-stats-row{display:flex;gap:0;margin:4px 20px 16px;border:1px solid var(--card-border);border-radius:14px;overflow:hidden}
     .profile-stats-row .ps-item{flex:1;text-align:center;padding:14px 8px;border-right:1px solid var(--card-border)}
     .profile-stats-row .ps-item:last-child{border-right:none}
@@ -749,18 +763,18 @@
         <span class="ph-name" id="profileName">法律人</span>
         <div class="ph-vip-badge" id="profileVipBadge" style="display:none">VIP</div>
       </div>
-      <div class="ph-level-row">
+      <div class="ph-level-badge">
         <img class="ph-level-icon" id="profileLevelIcon" src="images/levels/LV1.webp" alt="" />
-        <span class="ph-level-text" id="profileLevel">见习</span>
+        <div class="ph-level-text" id="profileLevel">见习</div>
       </div>
       <div class="ph-level-progress"><div class="ph-level-fill" id="profileLevelFill"></div></div>
       <div class="ph-level-prog" id="profileLevelProg">累计 0 积分</div>
     </div>
 
     <div class="profile-stats-row">
-      <div class="ps-item">
+      <div class="ps-item" onclick="openPointsCenter()" title="查看任务与积分明细" style="cursor:pointer">
         <div class="ps-val" id="profilePoints">0</div>
-        <div class="ps-label">积分</div>
+        <div class="ps-label">积分 ›</div>
       </div>
       <div class="ps-item">
         <div class="ps-val" id="profileStudyDays">0</div>
@@ -791,11 +805,6 @@
       <div class="pm-item" onclick="showVipPerks()">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/><path d="M20 18L9 7"/></svg>
         <span>VIP特权</span>
-        <span class="pm-arrow">›</span>
-      </div>
-      <div class="pm-item" onclick="showSchedule()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/></svg>
-        <span>课程表</span>
         <span class="pm-arrow">›</span>
       </div>
       <div class="pm-item" onclick="rechargeVip()">
@@ -1048,6 +1057,11 @@
         <div class="lc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
         <div class="lc-name">笔记本</div>
         <div class="lc-desc">学习笔记 · 重点摘录 · 反思总结</div>
+      </div>
+      <div class="learn-card" onclick="showSchedule()">
+        <div class="lc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/></svg></div>
+        <div class="lc-name">课程表</div>
+        <div class="lc-desc">VIP 专属 · 周课程安排</div>
       </div>
     </div>
   </div>
@@ -1416,7 +1430,7 @@ function checkinToday() {
   saveCheckin(c);
   renderCheckin();
   var pts = isVip() ? 5 + Math.floor(Math.random() * 6) : 1 + Math.floor(Math.random() * 3);
-  addPoints(pts);
+  addPoints(pts, "每日打卡");
   showToast("打卡成功 ✔ 累计 " + c.count + " 天 +" + pts + "积分");
 }
 
@@ -1502,7 +1516,7 @@ function openTodoModal() {
     renderTodoList(o, box);
     renderTodoStatus();
     if (isFirst) {
-      var tb = oneTimeBonus("todo", 5);
+      var tb = oneTimeBonus("todo", 5, "首次创建待办");
       if (tb) showToast("首次创建待办 +" + tb + "积分");
     }
   }
@@ -2088,7 +2102,7 @@ function setAvatar(emoji) {
   updateProfileUI();
   var overlay = document.getElementById("avatarPickOverlay");
   if (overlay) overlay.remove();
-  var bonus = oneTimeBonus("avatar", 5);
+  var bonus = oneTimeBonus("avatar", 5, "更换头像");
   showToast("头像已更新" + (bonus ? " +" + bonus + "积分" : ""));
 }
 
@@ -2109,7 +2123,7 @@ function handleAvatarUpload(input) {
     updateProfileUI();
     var overlay = document.getElementById("avatarPickOverlay");
     if (overlay) overlay.remove();
-    var bonus = oneTimeBonus("avatar", 5);
+    var bonus = oneTimeBonus("avatar", 5, "更换头像");
     showToast("头像已更新" + (bonus ? " +" + bonus + "积分" : ""));
   };
   reader.readAsDataURL(file);
@@ -2127,7 +2141,7 @@ function editNickname() {
   p.nickname = name.trim();
   saveProfile(p);
   updateProfileUI();
-  var bonus = oneTimeBonus("nickname", 5);
+  var bonus = oneTimeBonus("nickname", 5, "更换昵称");
   showToast("昵称已更新" + (bonus ? " +" + bonus + "积分" : ""));
 }
 
@@ -2190,16 +2204,19 @@ function getLevelInfo(totalPoints) {
 function getLevel(totalPoints) { return getLevelInfo(totalPoints).name; }
 
 // ===== 积分系统 =====
-function addPoints(amount) {
+function addPoints(amount, label) {
   var p = loadProfile();
   p.points = (p.points || 0) + amount;
   p.totalPoints = (p.totalPoints || 0) + amount;
+  if (!p.transactions) p.transactions = [];
+  p.transactions.push({ a: amount, t: Date.now(), m: label || "" });
+  if (p.transactions.length > 300) p.transactions = p.transactions.slice(-300);
   saveProfile(p);
   updateProfileUI();
 }
 function awardPoints(amount, msg) {
   if (!amount || amount <= 0) return;
-  addPoints(amount);
+  addPoints(amount, msg || "");
   if (msg) showToast(msg + " +" + amount + " 积分");
   else showToast("+" + amount + " 积分");
 }
@@ -2219,13 +2236,13 @@ function dailyInc(key) {
 }
 
 // 一次性任务奖励（返回奖励的积分，0=已完成过）
-function oneTimeBonus(task, amount) {
+function oneTimeBonus(task, amount, label) {
   var p = loadProfile();
   if (!p.doneTasks) p.doneTasks = {};
   if (p.doneTasks[task]) return 0;
   p.doneTasks[task] = true;
   saveProfile(p);
-  addPoints(amount);
+  addPoints(amount, label || "任务奖励");
   return amount;
 }
 
@@ -2263,7 +2280,7 @@ function redeemVipPlan(idx) {
   var base = (p.vipUntil && p.vipUntil > now) ? p.vipUntil : now;
   p.vipUntil = base + plan.days * 86400000;
   saveProfile(p);
-  addPoints(-plan.cost);
+  addPoints(-plan.cost, "兑换VIP");
   updateProfileUI();
   showToast("VIP 已开通 " + plan.label + " 🎉");
   renderPointsPanel();
@@ -2276,7 +2293,7 @@ function redeemQuizPlan(idx) {
   var base = (p.quizUnlockUntil && p.quizUnlockUntil > now) ? p.quizUnlockUntil : now;
   p.quizUnlockUntil = base + plan.hours * 3600000;
   saveProfile(p);
-  addPoints(-plan.cost);
+  addPoints(-plan.cost, "解锁解析");
   showToast("题目解析已解锁 " + plan.hours + " 小时");
   renderPointsPanel();
 }
@@ -2285,7 +2302,7 @@ function redeemNoteCredit() {
   if ((p.points || 0) < 5) { showToast("积分不足，需要 5 积分"); return; }
   p.noteCredits = (p.noteCredits || 0) + 1;
   saveProfile(p);
-  addPoints(-5);
+  addPoints(-5, "笔记本额度");
   showToast("已获得 1 篇笔记额度（VIP 免费创建）");
   renderPointsPanel();
 }
@@ -2332,6 +2349,75 @@ function renderPointsPanel() {
   h += '<div class="pp-grid"><div class="pp-card" onclick="redeemNoteCredit()"><div class="pp-name">1 篇笔记额度' + (p.noteCredits ? '（现有 ' + p.noteCredits + '）' : '') + '</div><div class="pp-cost">5 分</div></div></div>';
   h += '<p style="font-size:10px;color:var(--text2);margin:12px 0 0;line-height:1.6">VIP 无限查看解析、免费创建笔记。兑换码 0815 可开通永久 VIP。</p>';
   box.innerHTML = h;
+}
+
+// ===== 积分中心（任务 + 明细） =====
+function openPointsCenter() {
+  var p = loadProfile();
+  var overlay = document.createElement("div");
+  overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:600;display:flex;align-items:center;justify-content:center;padding:16px";
+  overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
+  var box = document.createElement("div");
+  box.style.cssText = "background:var(--card-bg);border-radius:20px;padding:18px;max-width:360px;width:100%;max-height:82vh;display:flex;flex-direction:column";
+  box.innerHTML =
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">' +
+    '<p style="font-size:16px;font-weight:700;color:var(--text);margin:0">积分中心</p>' +
+    '<span style="font-size:13px;color:var(--accent);font-weight:700">余额 ' + (p.points || 0) + ' 分</span></div>' +
+    '<div id="pcTasks" style="flex-shrink:0"></div>' +
+    '<p style="font-size:12px;font-weight:700;color:var(--text);margin:12px 0 6px">积分明细</p>' +
+    '<div id="pcTxn" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch"></div>';
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+  renderPointsCenter(p, box);
+}
+
+function renderPointsCenter(p, box) {
+  var isV = isVip();
+  var checked = loadCheckin().days[todayStr()];
+  var tasks = [
+    { n: "每日打卡", d: (isV ? "5-10" : "1-3") + " 积分/天", s: checked ? "已完成" : "未打卡", c: checked ? "pc-done" : "" },
+    { n: "答对题目", d: (isV ? "+2" : "+1") + " 积分/题", s: "", c: "" },
+    { n: "学习时间", d: (isV ? "+2" : "+1") + " 积分/5分钟", s: "", c: "" },
+    { n: "AI 对话", d: (isV ? "+2" : "+1") + " 积分/条，今日 " + dailyCount("chat") + "/10", s: dailyCount("chat") >= 10 ? "已满" : "", c: dailyCount("chat") >= 10 ? "pc-done" : "" },
+    { n: "完成待办", d: (isV ? "+2" : "+1") + " 积分/个，今日 " + dailyCount("todo") + "/3", s: dailyCount("todo") >= 3 ? "已满" : "", c: dailyCount("todo") >= 3 ? "pc-done" : "" },
+    { n: "生成文书", d: (isV ? "+2" : "+1") + " 积分/次，今日 " + dailyCount("doc") + "/3", s: dailyCount("doc") >= 3 ? "已满" : "", c: dailyCount("doc") >= 3 ? "pc-done" : "" }
+  ];
+  var oneTimes = [
+    { n: "更换头像", a: 5, k: "avatar" },
+    { n: "更换昵称", a: 5, k: "nickname" },
+    { n: "首次 AI 对话", a: 20, k: "chat" },
+    { n: "首次创建笔记", a: 5, k: "note" },
+    { n: "首次创建待办", a: 5, k: "todo" }
+  ];
+  var h = '<p style="font-size:12px;font-weight:700;color:var(--text);margin:0 0 6px">任务中心' + (isV ? ' <span style="color:#f7b733;font-weight:700">· VIP双倍</span>' : '') + '</p><div class="pc-tasks">';
+  for (var i = 0; i < tasks.length; i++) {
+    h += '<div class="pc-task ' + tasks[i].c + '"><span>' + tasks[i].n + '</span><span class="pc-tdesc">' + tasks[i].d + '</span><span class="pc-tdone">' + tasks[i].s + '</span></div>';
+  }
+  h += '</div><p style="font-size:12px;font-weight:700;color:var(--text);margin:12px 0 6px">一次性任务</p><div class="pc-tasks">';
+  for (var j = 0; j < oneTimes.length; j++) {
+    var o = oneTimes[j];
+    var done = p.doneTasks && p.doneTasks[o.k];
+    h += '<div class="pc-task ' + (done ? "pc-done" : "") + '"><span>' + o.n + '</span><span class="pc-tdesc">+' + o.a + '</span><span class="pc-tdone">' + (done ? "已完成" : "未完成") + '</span></div>';
+  }
+  h += '</div>';
+  var tasksEl = box.querySelector("#pcTasks");
+  if (tasksEl) tasksEl.innerHTML = h;
+
+  var txns = (p.transactions || []).slice().reverse();
+  var th = "";
+  if (!txns.length) {
+    th = '<div style="text-align:center;color:var(--text2);font-size:12px;padding:20px 0">暂无积分记录，做任务赚积分吧</div>';
+  } else {
+    for (var k = 0; k < txns.length && k < 100; k++) {
+      var tr = txns[k];
+      var d = new Date(tr.t);
+      var tm = ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2) + " " + ("0" + (d.getMonth() + 1)).slice(-2) + "/" + ("0" + d.getDate()).slice(-2);
+      th += '<div class="pc-txn"><span>' + (tr.m || "积分变动") + '</span><span class="pc-tm">' + tm + '</span>' +
+        '<span class="pc-amt ' + (tr.a > 0 ? "pc-plus" : "pc-minus") + '">' + (tr.a > 0 ? "+" : "") + tr.a + '</span></div>';
+    }
+  }
+  var txnEl = box.querySelector("#pcTxn");
+  if (txnEl) txnEl.innerHTML = th;
 }
 
 // ===== VIP特权页 =====
@@ -2463,7 +2549,7 @@ function doVipPay(plan) {
     }
   }
   // Give some points as reward
-  addPoints(plan === "year" ? 500 : 100);
+  addPoints(plan === "year" ? 500 : 100, "VIP充值");
 }
 
 // Run on about page load
@@ -2867,7 +2953,7 @@ function sendMsg(text) {
   renderMsg("user", text); persist();
   // 积分：与AI对话（每日限10次）+ 首次体验 +20
   if (dailyCount("chat") < 10) { dailyInc("chat"); awardPoints(vipRate(1), "AI对话"); }
-  var chatBonus = oneTimeBonus("chat", 20);
+  var chatBonus = oneTimeBonus("chat", 20, "首次体验AI聊天");
   if (chatBonus) showToast("首次体验AI聊天 +" + chatBonus + "积分");
 
   var sysP = buildSystemPrompt();
@@ -3305,7 +3391,7 @@ function saveCurrentNote() {
         showToast("积分不足，创建笔记需 5 积分（VIP 免费）");
         return;
       } else {
-        addPoints(-fee);
+        addPoints(-fee, "创建笔记");
       }
     }
     notes.push({
@@ -3314,7 +3400,7 @@ function saveCurrentNote() {
       tags: tags,
       date: nowStr
     });
-    var nb = oneTimeBonus("note", 5);
+    var nb = oneTimeBonus("note", 5, "首次创建笔记");
     showToast("笔记已保存" + (nb ? " +" + nb + "积分" : "") + (isVip() ? "" : " -5积分"));
     recordStudyTime(5, 0);
   }
