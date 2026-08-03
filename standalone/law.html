@@ -78,7 +78,7 @@
     .dash-head .dash-icon svg{width:14px;height:14px}
     .dash-head .dash-name{font-size:11px;font-weight:600;color:var(--text2);letter-spacing:.5px;white-space:nowrap}
     .dash-main{font-size:16px;font-weight:700;color:var(--text);margin-top:8px;text-align:left;line-height:1.4;word-break:break-word;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .dash-card.checked .dash-main{color:var(--accent)}
+    #checkinStatus{text-align:center}
     .todo-preview{width:100%;display:flex;flex-direction:column;gap:3px;margin-top:8px}
     .todo-preview .tp-item{font-size:11px;color:var(--text);text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 2px;line-height:1.5;max-width:100%}
     .todo-preview .tp-item.done{text-decoration:line-through;opacity:.45}
@@ -507,7 +507,7 @@
     .ph-name-row{display:inline-flex;align-items:center;justify-content:center;gap:2px}
     .ph-name{font-size:18px;font-weight:700;color:#111}
     body.dark .ph-name{color:#eee}
-    .ph-vip-badge{position:relative;overflow:hidden;display:inline-block;font-size:10px;font-weight:700;padding:3px 10px;border-radius:8px;background:linear-gradient(135deg,#f7b733,#fc4a1a);color:#fff;margin:6px auto;letter-spacing:1px;box-shadow:0 2px 12px rgba(247,183,51,0.5)}
+    .ph-vip-badge{position:relative;overflow:hidden;display:inline-block;font-size:9px;font-weight:700;padding:1px 7px;border-radius:7px;background:linear-gradient(135deg,#f7b733,#fc4a1a);color:#fff;margin:0 0 0 6px;letter-spacing:.5px;box-shadow:0 2px 12px rgba(247,183,51,0.5);vertical-align:middle}
     .ph-vip-badge::after{content:"";position:absolute;top:0;left:-130%;width:60%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,0.65),transparent);animation:vipShine 2.4s ease-in-out infinite}
     @keyframes vipShine{0%{left:-130%}55%,100%{left:150%}}
     .ph-level-text{font-size:12px;color:var(--text2);margin-top:2px}
@@ -736,8 +736,8 @@
       <div class="ph-avatar" id="profileAvatar">👤</div>
       <div class="ph-name-row">
         <span class="ph-name" id="profileName">法律人</span>
+        <div class="ph-vip-badge" id="profileVipBadge" style="display:none">VIP</div>
       </div>
-      <div class="ph-vip-badge" id="profileVipBadge" style="display:none">VIP</div>
       <div class="ph-level-text" id="profileLevel">🌱 新手</div>
     </div>
 
