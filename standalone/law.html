@@ -566,19 +566,19 @@
     .sch-week-date{font-size:11px;color:#999;margin-top:2px}
     .sch-add-btn{padding:7px 14px;border:none;border-radius:16px;background:#111;color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0}
     .sch-add-btn:active{opacity:.8}
-    .schedule-scroll{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:12px 10px}
-    .schedule-grid{display:grid;grid-template-columns:64px repeat(7,1fr);grid-auto-rows:46px;gap:2px;min-width:760px}
+    .schedule-scroll{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:8px 6px}
+    .schedule-grid{display:grid;grid-template-columns:44px repeat(7,1fr);grid-auto-rows:40px;gap:2px;min-width:0;width:100%}
     .sch-corner,.sch-dayhead,.sch-time{background:#fff}
-    .sch-corner{display:flex;align-items:center;justify-content:center;font-size:11px;color:#999;font-weight:600}
-    .sch-dayhead{display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#333;padding:2px 0}
-    .sch-dayhead span{font-size:10px;color:#999;font-weight:400}
-    .sch-time{display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;color:#666;font-weight:600;line-height:1.3;text-align:center}
-    .sch-time span{font-size:8.5px;color:#aaa;font-weight:400}
-    .sch-course{border-radius:8px;padding:4px 6px;color:#fff;cursor:pointer;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-start;box-shadow:0 1px 3px rgba(0,0,0,0.15);transition:transform .15s}
+    .sch-corner{display:flex;align-items:center;justify-content:center;font-size:9px;color:#999;font-weight:600}
+    .sch-dayhead{display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#333;padding:1px 0;line-height:1.25}
+    .sch-dayhead span{font-size:8px;color:#999;font-weight:400}
+    .sch-time{display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:9px;color:#666;font-weight:600;line-height:1.2;text-align:center}
+    .sch-time span{font-size:6.5px;color:#aaa;font-weight:400;line-height:1.2}
+    .sch-course{border-radius:6px;padding:2px 2px;color:#fff;cursor:pointer;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-start;box-shadow:0 1px 3px rgba(0,0,0,0.15);transition:transform .15s}
     .sch-course:active{transform:scale(.97)}
-    .sc-name{font-size:12px;font-weight:700;line-height:1.3;word-break:break-word}
-    .sc-loc{font-size:10px;opacity:.9;margin-top:2px}
-    .sch-empty{background:#fff;border:1px dashed #ececec;border-radius:8px;cursor:pointer}
+    .sc-name{font-size:9.5px;font-weight:700;line-height:1.2;word-break:break-word}
+    .sc-loc{font-size:8px;opacity:.9;margin-top:1px}
+    .sch-empty{background:#fff;border:1px dashed #ececec;border-radius:6px;cursor:pointer}
     .sch-empty:active{background:#f5f5f5}
     .schedule-hint{text-align:center;font-size:10px;color:#bbb;padding:8px 0 calc(8px + env(safe-area-inset-bottom));background:#fafafa}
     .sf-label{display:block;font-size:11px;color:#999;margin-bottom:4px}
@@ -2564,13 +2564,30 @@ var SCHEDULE_COLORS = ["#FFB300", "#4CAF50", "#7E57C2", "#EC407A", "#29B6F6", "#
 function loadSchedule() {
   try {
     var d = JSON.parse(localStorage.getItem(SCHEDULE_KEY)) || {};
-    if (!d.weeks) d.weeks = {};
+    if (!Array.isArray(d.courses)) d.courses = [];
+    // 迁移旧数据（按周存储 → 全局课程+周范围）
+    if (d.weeks) {
+      for (var wk in d.weeks) {
+        var arr = d.weeks[wk] || [];
+        for (var i = 0; i < arr.length; i++) {
+          var c = arr[i];
+          if (c.wStart == null && c.wEnd == null) { c.wStart = parseInt(wk, 10); c.wEnd = parseInt(wk, 10); }
+          d.courses.push(c);
+        }
+      }
+      delete d.weeks;
+    }
     if (!d.currentWeek) d.currentWeek = 1;
     return d;
-  } catch (e) { return { weeks: {}, currentWeek: 1 }; }
+  } catch (e) { return { courses: [], currentWeek: 1 }; }
 }
 function saveSchedule(s) { try { localStorage.setItem(SCHEDULE_KEY, JSON.stringify(s)); } catch (e) {} }
-function getWeekCourses(d, week) { return d.weeks[week] || []; }
+function getVisibleCourses(d, week) {
+  return d.courses.filter(function(c) {
+    var ws = c.wStart || 1, we = c.wEnd || 30;
+    return week >= ws && week <= we;
+  });
+}
 
 function getSemesterStart() {
   var d = loadSchedule();
@@ -2621,7 +2638,7 @@ function changeScheduleWeek(delta) {
 
 function renderScheduleGrid(week) {
   var d = loadSchedule();
-  var courses = getWeekCourses(d, week);
+  var courses = getVisibleCourses(d, week);
   var dates = getWeekDates(week);
   var html = "";
   // 表头
@@ -2631,18 +2648,22 @@ function renderScheduleGrid(week) {
   }
   // 时间列
   for (var p = 1; p <= 10; p++) {
-    html += '<div class="sch-time" style="grid-column:1;grid-row:' + (p + 1) + '">第' + p + '节<span>' + SCHEDULE_TIMES[p - 1] + '-' + SCHEDULE_ENDTIMES[p - 1] + '</span></div>';
+    html += '<div class="sch-time" style="grid-column:1;grid-row:' + (p + 1) + '">第' + p + '节<span>' + SCHEDULE_TIMES[p - 1] + '<br>' + SCHEDULE_ENDTIMES[p - 1] + '</span></div>';
   }
-  // 课程块（带跨行）
+  // 课程块（带跨行），记录在可见数组中的真实索引
   var occupied = {};
+  var fullIdx = 0;
   for (var day = 0; day < 7; day++) {
-    var dayCourses = courses.filter(function(c) { return c.day === day; });
+    var dayCourses = [];
+    for (var ci = 0; ci < courses.length; ci++) {
+      if (courses[ci].day === day) dayCourses.push({ c: courses[ci], idx: ci });
+    }
     for (var i = 0; i < dayCourses.length; i++) {
-      var c = dayCourses[i];
+      var c = dayCourses[i].c;
       var start = c.start, end = c.end || start;
       for (var pp = start; pp <= end; pp++) occupied[day + "_" + pp] = true;
       var color = SCHEDULE_COLORS[(c.color == null ? 0 : c.color) % SCHEDULE_COLORS.length];
-      html += '<div class="sch-course" style="grid-column:' + (day + 2) + ';grid-row:' + (start + 1) + '/' + (end + 2) + ';background:' + color + '" onclick="editScheduleCourse(' + week + ',' + day + ',' + i + ')">' +
+      html += '<div class="sch-course" style="grid-column:' + (day + 2) + ';grid-row:' + (start + 1) + '/' + (end + 2) + ';background:' + color + '" onclick="editScheduleCourse(' + week + ',' + dayCourses[i].idx + ')">' +
         '<div class="sc-name">' + escHtml(c.name || "课程") + '</div>' +
         (c.loc ? '<div class="sc-loc">' + escHtml(c.loc) + '</div>' : '') +
         '</div>';
@@ -2662,15 +2683,15 @@ function renderScheduleGrid(week) {
 var _schedEditRef = null;
 function addScheduleCourse(day, period) {
   _schedEditRef = null;
-  openScheduleForm({ day: day, start: period, end: period, name: "", loc: "", color: 0 });
+  openScheduleForm({ day: day, start: period, end: period, name: "", loc: "", color: 0, wStart: 1, wEnd: 30 });
 }
-function editScheduleCourse(week, day, idx) {
+function editScheduleCourse(week, idx) {
   var d = loadSchedule();
-  var courses = getWeekCourses(d, week);
+  var courses = getVisibleCourses(d, week);
   var c = courses[idx];
   if (!c) return;
-  _schedEditRef = { week: week, idx: idx };
-  openScheduleForm({ day: c.day, start: c.start, end: c.end, name: c.name, loc: c.loc, color: c.color });
+  _schedEditRef = { realIdx: d.courses.indexOf(c) };
+  openScheduleForm({ day: c.day, start: c.start, end: c.end, name: c.name, loc: c.loc, color: c.color, wStart: c.wStart, wEnd: c.wEnd });
 }
 function openScheduleForm(prefill) {
   var overlay = document.createElement("div");
@@ -2689,6 +2710,10 @@ function openScheduleForm(prefill) {
   for (var pi = 1; pi <= 10; pi++) startOptions += '<option value="' + pi + '"' + (prefill.start == pi ? " selected" : "") + '>第' + pi + '节</option>';
   var endOptions = "";
   for (var pe = 1; pe <= 10; pe++) endOptions += '<option value="' + pe + '"' + (prefill.end == pe ? " selected" : "") + '>第' + pe + '节</option>';
+  var weekOptions = "";
+  for (var wk = 1; wk <= 30; wk++) weekOptions += '<option value="' + wk + '"' + ((prefill.wStart || 1) == wk ? " selected" : "") + '>' + wk + '</option>';
+  var weekEndOptions = "";
+  for (var wk2 = 1; wk2 <= 30; wk2++) weekEndOptions += '<option value="' + wk2 + '"' + ((prefill.wEnd || 30) == wk2 ? " selected" : "") + '>' + wk2 + '</option>';
   box.innerHTML =
     '<button class="modal-close">✕</button>' +
     '<p style="font-size:16px;font-weight:700;color:var(--text);margin:0 0 12px">' + (_schedEditRef ? "编辑课程" : "新增课程") + '</p>' +
@@ -2701,6 +2726,12 @@ function openScheduleForm(prefill) {
     '<div style="display:flex;gap:8px;margin-bottom:10px">' +
     '<div style="flex:1"><label class="sf-label">开始节次</label><select id="sfStart" style="width:100%;padding:8px;border:1px solid var(--card-border);border-radius:10px;background:var(--input-bg);color:var(--text);font-size:12px;outline:none;font-family:inherit">' + startOptions + '</select></div>' +
     '<div style="flex:1"><label class="sf-label">结束节次</label><select id="sfEnd" style="width:100%;padding:8px;border:1px solid var(--card-border);border-radius:10px;background:var(--input-bg);color:var(--text);font-size:12px;outline:none;font-family:inherit">' + endOptions + '</select></div>' +
+    '</div>' +
+    '<label class="sf-label">只在这些周有课（起始周—结束周）</label>' +
+    '<div style="display:flex;gap:8px;margin-bottom:10px">' +
+    '<div style="flex:1"><select id="sfWStart" style="width:100%;padding:8px;border:1px solid var(--card-border);border-radius:10px;background:var(--input-bg);color:var(--text);font-size:12px;outline:none;font-family:inherit">' + weekOptions + '</select></div>' +
+    '<span style="align-self:center;color:var(--text2);font-size:12px">至</span>' +
+    '<div style="flex:1"><select id="sfWEnd" style="width:100%;padding:8px;border:1px solid var(--card-border);border-radius:10px;background:var(--input-bg);color:var(--text);font-size:12px;outline:none;font-family:inherit">' + weekEndOptions + '</select></div>' +
     '</div>' +
     '<label class="sf-label">颜色</label>' +
     '<div id="sfColors" style="display:flex;gap:6px;margin-bottom:14px">' + colorOptions + '</div>' +
@@ -2726,8 +2757,6 @@ function openScheduleForm(prefill) {
 }
 function saveScheduleCourse() {
   var d = loadSchedule();
-  var week = d.currentWeek;
-  if (!d.weeks[week]) d.weeks[week] = [];
   var name = document.getElementById("sfName").value.trim();
   if (!name) { showToast("请输入课程名称"); return; }
   var loc = document.getElementById("sfLoc").value.trim();
@@ -2735,13 +2764,15 @@ function saveScheduleCourse() {
   var start = parseInt(document.getElementById("sfStart").value, 10);
   var end = parseInt(document.getElementById("sfEnd").value, 10);
   if (end < start) { showToast("结束节次不能早于开始节次"); return; }
+  var wStart = parseInt(document.getElementById("sfWStart").value, 10);
+  var wEnd = parseInt(document.getElementById("sfWEnd").value, 10);
+  if (wEnd < wStart) { showToast("结束周不能早于起始周"); return; }
   var color = window._schedForm ? window._schedForm.getColor() : 0;
-  var course = { day: day, start: start, end: end, name: name, loc: loc, color: color };
+  var course = { day: day, start: start, end: end, name: name, loc: loc, color: color, wStart: wStart, wEnd: wEnd };
   if (_schedEditRef) {
-    var cs = d.weeks[_schedEditRef.week] || [];
-    if (_schedEditRef.idx >= 0 && _schedEditRef.idx < cs.length) cs[_schedEditRef.idx] = course;
+    if (_schedEditRef.realIdx >= 0 && _schedEditRef.realIdx < d.courses.length) d.courses[_schedEditRef.realIdx] = course;
   } else {
-    d.weeks[week].push(course);
+    d.courses.push(course);
   }
   saveSchedule(d);
   _schedEditRef = null;
@@ -2753,8 +2784,7 @@ function saveScheduleCourse() {
 function deleteScheduleCourse() {
   if (!_schedEditRef) return;
   var d = loadSchedule();
-  var cs = d.weeks[_schedEditRef.week] || [];
-  if (_schedEditRef.idx >= 0 && _schedEditRef.idx < cs.length) cs.splice(_schedEditRef.idx, 1);
+  if (_schedEditRef.realIdx >= 0 && _schedEditRef.realIdx < d.courses.length) d.courses.splice(_schedEditRef.realIdx, 1);
   saveSchedule(d);
   _schedEditRef = null;
   var ov = document.getElementById("scheduleFormOverlay");
