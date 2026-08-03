@@ -68,6 +68,16 @@
     .quote-text{position:relative;z-index:1;font-family:"SimSun","STSong","Songti SC","Noto Serif CJK SC",serif;font-size:16px;line-height:1.9;color:var(--text);margin-bottom:12px;letter-spacing:1px;transition:opacity .25s ease;display:-webkit-box;-webkit-line-clamp:4;line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
     .quote-author{position:relative;z-index:1;font-size:12px;color:var(--text2);text-align:right;opacity:.7;transition:opacity .25s ease;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
+    /* home dash cards (打卡 / 今日待办) */
+    .home-dash{display:flex;gap:12px;max-width:420px;width:calc(100% - 32px);margin:0 auto 14px}
+    .dash-card{flex:1;background:rgba(255,255,255,0.72);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.6);border-radius:20px;padding:14px 10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;box-shadow:0 4px 24px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.04);transition:all .15s;min-height:104px;user-select:none}
+    body.dark .dash-card{background:rgba(40,40,40,0.8);border:1px solid rgba(255,255,255,0.08);box-shadow:0 4px 24px rgba(0,0,0,0.3)}
+    .dash-card:active{transform:scale(.97)}
+    .dash-icon{color:var(--accent);width:38px;height:38px;border-radius:12px;background:var(--accent-light);display:flex;align-items:center;justify-content:center}
+    .dash-name{font-size:14px;font-weight:600;color:var(--text)}
+    .dash-sub{font-size:11px;color:var(--text2);white-space:nowrap}
+    .dash-card.checked .dash-name,.dash-card.checked .dash-sub{color:var(--accent)}
+
     /* frosted bottom nav card */
     #bottomNav{display:flex;justify-content:space-around;align-items:center;margin:0 auto;margin-bottom:calc(12px + env(safe-area-inset-bottom));padding:10px 12px;background:rgba(255,255,255,0.72);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.6);border-radius:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.04);flex-shrink:0;max-width:380px;width:calc(100% - 48px)}
     body.dark #bottomNav{background:rgba(40,40,40,0.8);border:1px solid rgba(255,255,255,0.08);box-shadow:0 4px 24px rgba(0,0,0,0.3)}
@@ -438,7 +448,7 @@
 
 /* ===== LEARNING CENTER ===== */
 .learn-body{flex:1;overflow-y:auto;padding:16px 14px calc(16px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch}
-.learn-report{background:linear-gradient(135deg,#667eea,#4A90D9);border-radius:18px;padding:20px 18px;margin-bottom:20px;color:#fff;box-shadow:0 4px 20px rgba(74,144,217,0.3)}
+.learn-report{background:linear-gradient(135deg,#667eea,#4A90D9);border-radius:18px;padding:20px 18px;margin-bottom:28px;color:#fff;box-shadow:0 4px 20px rgba(74,144,217,0.3)}
 .learn-report-header h2{font-size:20px;font-weight:700;margin-bottom:2px;color:#fff}
 .learn-report-header p{font-size:11px;opacity:.8;margin-bottom:14px}
 .learn-stats-row{display:flex;gap:10px;margin-bottom:16px}
@@ -538,6 +548,18 @@
 <div class="welcome-hero">
     <div class="whale-icon">🐋</div>
     <h1 class="typewriter" id="typewriter"></h1>
+  </div>
+  <div class="home-dash">
+    <div class="dash-card" id="checkinCard" onclick="checkinToday()" title="每日打卡">
+      <div class="dash-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg></div>
+      <div class="dash-name">打卡</div>
+      <div class="dash-sub" id="checkinStatus">未打卡</div>
+    </div>
+    <div class="dash-card" id="todoCard" onclick="openTodoModal()" title="今日待办">
+      <div class="dash-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8.5 8.5h7"/><path d="M8.5 12.5h7"/><path d="M9 16.5l2 2 4-4"/></svg></div>
+      <div class="dash-name">今日待办</div>
+      <div class="dash-sub" id="todoStatus">0 项待完成</div>
+    </div>
   </div>
   <div class="quote-card" id="quoteCard">
     <div class="quote-text" id="quoteText"></div>
@@ -931,8 +953,8 @@
     <!-- 今日学习报告 -->
     <div class="learn-report">
       <div class="learn-report-header">
-        <h2></h2> 今日学习报告</h2>
-        
+        <h2>今日学习报告</h2>
+
       </div>
       <div class="learn-stats-row">
         <div class="learn-stat-card">
@@ -1263,6 +1285,146 @@ function initWelcome() {
   }
 }
 
+// ============================================================
+// 打卡 + 今日待办
+// ============================================================
+var CHECKIN_KEY = "seawhy-lex-checkin";
+var TODO_KEY = "seawhy-lex-todos";
+
+function todayStr() {
+  var d = new Date();
+  return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
+}
+
+function loadCheckin() {
+  try { return JSON.parse(localStorage.getItem(CHECKIN_KEY)) || { days: {}, count: 0 }; }
+  catch (e) { return { days: {}, count: 0 }; }
+}
+function saveCheckin(c) { try { localStorage.setItem(CHECKIN_KEY, JSON.stringify(c)); } catch (e) {} }
+
+function checkinToday() {
+  var c = loadCheckin();
+  var t = todayStr();
+  if (c.days[t]) { showToast("今天已打卡啦 🐋"); return; }
+  c.days[t] = true;
+  c.count = (c.count || 0) + 1;
+  c.lastDate = t;
+  saveCheckin(c);
+  renderCheckin();
+  showToast("打卡成功 ✔ 累计 " + c.count + " 天");
+}
+
+function renderCheckin() {
+  var el = document.getElementById("checkinStatus");
+  var card = document.getElementById("checkinCard");
+  if (!el) return;
+  if (loadCheckin().days[todayStr()]) {
+    el.textContent = "今日已打卡";
+    if (card) card.classList.add("checked");
+  } else {
+    el.textContent = "点我打卡";
+    if (card) card.classList.remove("checked");
+  }
+}
+
+function loadTodos() {
+  var t = todayStr();
+  try {
+    var o = JSON.parse(localStorage.getItem(TODO_KEY)) || {};
+    if (o.date !== t) return { date: t, items: [] };
+    return o;
+  } catch (e) { return { date: t, items: [] }; }
+}
+function saveTodos(o) { try { localStorage.setItem(TODO_KEY, JSON.stringify(o)); } catch (e) {} }
+
+function escapeHtml(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+function renderTodoStatus() {
+  var el = document.getElementById("todoStatus");
+  if (!el) return;
+  var o = loadTodos();
+  var pending = 0;
+  for (var i = 0; i < o.items.length; i++) if (!o.items[i].done) pending++;
+  el.textContent = pending > 0 ? pending + " 项待完成" : "已全部完成";
+}
+
+function openTodoModal() {
+  var o = loadTodos();
+  var overlay = document.createElement("div");
+  overlay.id = "todoOverlay";
+  overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px";
+  overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
+  var box = document.createElement("div");
+  box.style.cssText = "background:var(--card-bg);border-radius:20px;padding:20px;max-width:340px;width:100%;max-height:72vh;display:flex;flex-direction:column";
+  box.innerHTML =
+    '<p style="font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text)">今日待办</p>' +
+    '<div style="display:flex;gap:8px;margin-bottom:10px;flex-shrink:0">' +
+    '<input id="todoInput" placeholder="添加待办事项…" maxlength="50" style="flex:1;padding:10px 12px;border:2px solid var(--card-border);border-radius:12px;background:var(--input-bg);color:var(--text);font-size:14px;outline:none;font-family:inherit" />' +
+    '<button id="todoAddBtn" type="button" style="padding:0 16px;border:none;border-radius:12px;background:var(--accent);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">添加</button>' +
+    '</div>' +
+    '<div id="todoList" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch"></div>';
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+
+  function addTodo() {
+    var input = document.getElementById("todoInput");
+    var txt = input ? input.value.trim() : "";
+    if (!txt) return;
+    o.items.push({ text: txt, done: false });
+    saveTodos(o);
+    if (input) input.value = "";
+    renderTodoList(o, box);
+    renderTodoStatus();
+  }
+  var addBtn = document.getElementById("todoAddBtn");
+  if (addBtn) addBtn.onclick = addTodo;
+  var input = document.getElementById("todoInput");
+  if (input) input.onkeydown = function(e) { if (e.key === "Enter") addTodo(); };
+
+  renderTodoList(o, box);
+}
+
+function renderTodoList(o, box) {
+  var list = document.getElementById("todoList");
+  if (!list) return;
+  if (!o.items.length) {
+    list.innerHTML = '<p style="text-align:center;color:var(--text2);font-size:12px;padding:18px 0">还没有待办，添加一个吧</p>';
+    return;
+  }
+  var h = "";
+  for (var i = 0; i < o.items.length; i++) {
+    var it = o.items[i];
+    h += '<div style="display:flex;align-items:center;gap:8px;padding:10px 2px;border-bottom:1px solid var(--card-border)">' +
+      '<button type="button" class="todo-toggle" data-idx="' + i + '" style="width:22px;height:22px;border-radius:50%;border:2px solid ' + (it.done ? 'var(--accent)' : 'var(--card-border)') + ';background:' + (it.done ? 'var(--accent)' : 'transparent') + ';cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;line-height:1">' + (it.done ? '✓' : '') + '</button>' +
+      '<span style="flex:1;font-size:13px;color:var(--text);' + (it.done ? 'text-decoration:line-through;opacity:.5' : '') + '">' + escapeHtml(it.text) + '</span>' +
+      '<button type="button" class="todo-del" data-idx="' + i + '" style="border:none;background:none;color:var(--text2);cursor:pointer;font-size:16px;flex-shrink:0;padding:2px 6px;font-family:inherit">✕</button>' +
+      '</div>';
+  }
+  list.innerHTML = h;
+  var toggles = list.querySelectorAll(".todo-toggle");
+  for (var t = 0; t < toggles.length; t++) {
+    toggles[t].onclick = function() {
+      var idx = parseInt(this.getAttribute("data-idx"), 10);
+      o.items[idx].done = !o.items[idx].done;
+      saveTodos(o);
+      renderTodoList(o, box);
+      renderTodoStatus();
+    };
+  }
+  var dels = list.querySelectorAll(".todo-del");
+  for (var d = 0; d < dels.length; d++) {
+    dels[d].onclick = function() {
+      var idx = parseInt(this.getAttribute("data-idx"), 10);
+      o.items.splice(idx, 1);
+      saveTodos(o);
+      renderTodoList(o, box);
+      renderTodoStatus();
+    };
+  }
+}
+
 if (document.visibilityState !== 'hidden') {
   document.addEventListener('visibilitychange', function() {
     if (document.hidden) {
@@ -1335,6 +1497,8 @@ function goHomeAfterLogin() {
   var home = document.getElementById("homeScreen");
   home.style.display = "";
   home.classList.add("show");
+  renderCheckin();
+  renderTodoStatus();
   if (!_welcomePlayed) {
     var el = document.getElementById("typewriter");
     if (el) { el.innerHTML = ""; initWelcome(); }
@@ -2125,6 +2289,8 @@ function goHome() {
   var home = document.getElementById("homeScreen");
   home.style.display = "";
   home.classList.add("show");
+  renderCheckin();
+  renderTodoStatus();
   if (!_welcomePlayed) {
     var el = document.getElementById("typewriter");
     if (el) { el.innerHTML = ""; initWelcome(); }
