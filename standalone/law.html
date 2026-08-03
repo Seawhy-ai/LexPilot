@@ -511,11 +511,11 @@
     .ph-vip-badge{position:relative;overflow:hidden;display:inline-block;font-size:9px;font-weight:700;padding:1px 7px;border-radius:7px;background:linear-gradient(135deg,#f7b733,#fc4a1a);color:#fff;margin:0 0 0 6px;letter-spacing:.5px;box-shadow:0 2px 12px rgba(247,183,51,0.5);vertical-align:middle}
     .ph-vip-badge::after{content:"";position:absolute;top:0;left:-130%;width:60%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,0.65),transparent);animation:vipShine 2.4s ease-in-out infinite}
     @keyframes vipShine{0%{left:-130%}55%,100%{left:150%}}
-    .ph-level-badge{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:6px}
-    .ph-level-icon{width:76px;height:76px;border-radius:50%;object-fit:cover;box-shadow:0 4px 16px rgba(0,0,0,0.22),0 0 0 2px rgba(247,183,51,0.35);transition:transform .3s}
+    .ph-level-badge{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:4px}
+    .ph-level-icon{width:130px;height:130px;object-fit:cover;transition:transform .3s}
     .ph-level-icon:active{transform:scale(1.05)}
-    .ph-level-text{font-size:16px;font-weight:800;color:#111;letter-spacing:2px}
-    .ph-level-progress{width:180px;max-width:70%;height:6px;background:var(--card-border);border-radius:3px;margin:8px auto 0;overflow:hidden}
+    .ph-level-text{font-size:17px;font-weight:800;color:#111;letter-spacing:2px}
+    .ph-level-progress{height:7px;background:var(--card-border);border-radius:4px;margin:10px 20px 0;overflow:hidden}
     .ph-level-fill{height:100%;background:linear-gradient(90deg,#f7b733,#fc4a1a);border-radius:3px;transition:width .4s ease;width:0%}
     .ph-level-prog{font-size:10px;color:var(--text2);margin-top:4px;text-align:center}
     .pp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
@@ -764,7 +764,7 @@
         <div class="ph-vip-badge" id="profileVipBadge" style="display:none">VIP</div>
       </div>
       <div class="ph-level-badge">
-        <img class="ph-level-icon" id="profileLevelIcon" src="images/levels/LV1.webp" alt="" />
+        <img class="ph-level-icon" id="profileLevelIcon" src="images/levels/LV1.jpg" alt="" />
         <div class="ph-level-text" id="profileLevel">见习</div>
       </div>
       <div class="ph-level-progress"><div class="ph-level-fill" id="profileLevelFill"></div></div>
@@ -2177,12 +2177,12 @@ function setVip(v) { try { localStorage.setItem(VIP_KEY, v ? "1" : "0"); } catch
 
 // ===== 等级系统 =====
 var LEVELS = [
-  { name: "见习", icon: "images/levels/LV1.webp", min: 0 },
-  { name: "辅庭", icon: "images/levels/LV2.webp", min: 50 },
-  { name: "出庭", icon: "images/levels/LV3.webp", min: 200 },
-  { name: "合伙", icon: "images/levels/LV4.webp", min: 500 },
-  { name: "资深合伙", icon: "images/levels/LV5.webp", min: 1000 },
-  { name: "掌门人", icon: "images/levels/LV6.webp", min: 2000 }
+  { name: "见习", icon: "images/levels/LV1.jpg", min: 0 },
+  { name: "辅庭", icon: "images/levels/LV2.jpg", min: 50 },
+  { name: "出庭", icon: "images/levels/LV3.jpg", min: 200 },
+  { name: "合伙", icon: "images/levels/LV4.png", min: 500 },
+  { name: "资深合伙", icon: "images/levels/LV5.png", min: 1000 },
+  { name: "掌门人", icon: "images/levels/LV6.png", min: 2000 }
 ];
 function getLevelInfo(totalPoints) {
   totalPoints = totalPoints || 0;
@@ -2519,6 +2519,12 @@ function redeemVipCode() {
     updateProfileUI();
     if (msgEl) msgEl.textContent = "";
     showToast("兑换成功！永久VIP已激活 👑");
+    input.value = "";
+  } else if (code === "999") {
+    addPoints(100, "兑换码999");
+    updateProfileUI();
+    if (msgEl) msgEl.textContent = "";
+    showToast("兑换成功！+100 积分 🎉");
     input.value = "";
   } else {
     if (msgEl) msgEl.textContent = "兑换码无效";
