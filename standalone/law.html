@@ -511,10 +511,15 @@
     .ph-vip-badge{position:relative;overflow:hidden;display:inline-block;font-size:9px;font-weight:700;padding:1px 7px;border-radius:7px;background:linear-gradient(135deg,#f7b733,#fc4a1a);color:#fff;margin:0 0 0 6px;letter-spacing:.5px;box-shadow:0 2px 12px rgba(247,183,51,0.5);vertical-align:middle}
     .ph-vip-badge::after{content:"";position:absolute;top:0;left:-130%;width:60%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,0.65),transparent);animation:vipShine 2.4s ease-in-out infinite}
     @keyframes vipShine{0%{left:-130%}55%,100%{left:150%}}
-    .ph-level-badge{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:4px}
-    .ph-level-icon{width:130px;height:130px;object-fit:cover;transition:transform .3s}
-    .ph-level-icon:active{transform:scale(1.05)}
-    .ph-level-text{font-size:17px;font-weight:800;color:#111;letter-spacing:2px}
+    .ph-level-badge{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:6px;padding:4px 0}
+    .ph-level-badge::before{content:"";position:absolute;top:50%;left:50%;width:min(280px,74vw);height:min(280px,74vw);transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(247,183,51,0.38),rgba(252,74,26,0.14) 55%,transparent 72%);filter:blur(6px);animation:lvlGlow 2.8s ease-in-out infinite;z-index:0;pointer-events:none}
+    .ph-level-badge::after{content:"";position:absolute;top:6%;left:-45%;width:42%;height:88%;background:linear-gradient(100deg,transparent,rgba(255,255,255,0.45),transparent);transform:skewX(-18deg);animation:lvlShine 3.2s ease-in-out infinite;z-index:2;pointer-events:none}
+    .ph-level-icon{position:relative;z-index:1;width:min(260px,68vw);height:min(260px,68vw);object-fit:cover;animation:lvlFloat 3s ease-in-out infinite}
+    .ph-level-text{position:relative;z-index:1;font-size:18px;font-weight:800;color:#111;letter-spacing:3px;animation:lvlPulse 2.2s ease-in-out infinite}
+    @keyframes lvlFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+    @keyframes lvlGlow{0%,100%{opacity:.6;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}}
+    @keyframes lvlShine{0%{left:-45%}55%,100%{left:140%}}
+    @keyframes lvlPulse{0%,100%{opacity:1}50%{opacity:.6}}
     .ph-level-progress{height:7px;background:var(--card-border);border-radius:4px;margin:10px 20px 0;overflow:hidden}
     .ph-level-fill{height:100%;background:linear-gradient(90deg,#f7b733,#fc4a1a);border-radius:3px;transition:width .4s ease;width:0%}
     .ph-level-prog{font-size:10px;color:var(--text2);margin-top:4px;text-align:center}
