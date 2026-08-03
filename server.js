@@ -15,8 +15,14 @@ app.use((_req, res, next) => {
   res.setHeader("Bypass-Tunnel-Reminder", "true");
   next();
 });
-app.use(express.static(path.join(__dirname, "public")));
-app.use("/standalone", express.static(path.join(__dirname, "standalone")));
+app.use("/chat", express.static(path.join(__dirname, "sites", "chat")));
+app.use("/lex", express.static(path.join(__dirname, "sites", "lex")));
+app.use("/standalone", express.static(path.join(__dirname, "sites", "lex"))); // legacy alias
+
+// ----- site entrypoints -----
+app.get("/", (_req, res) => res.redirect("/chat"));
+app.get("/chat", (_req, res) => res.sendFile(path.join(__dirname, "sites", "chat", "index.html")));
+app.get("/lex", (_req, res) => res.sendFile(path.join(__dirname, "sites", "lex", "index.html")));
 
 // ----- health -----
 app.get("/api/health", (_req, res) => res.json({ ok: true, model: DEEPSEEK_MODEL }));
@@ -166,7 +172,11 @@ app.get("/api/sync/restore/:username", (req, res) => {
 
 // ----- SPA fallback -----
 app.get("*", (_req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+  const reqPath = (_req.path || "").toLowerCase();
+  if (reqPath.startsWith("/lex") || reqPath.startsWith("/standalone")) {
+    return res.sendFile(path.join(__dirname, "sites", "lex", "index.html"));
+  }
+  return res.sendFile(path.join(__dirname, "sites", "chat", "index.html"));
 });
 
 app.listen(PORT, () => {

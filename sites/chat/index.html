@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f0f23" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="description" content="AI Chat · DeepSeek V4 Flash — 快速、智能的AI助手" />
+  <title>AI Chat · DeepSeek V4 Flash</title>
+  <link rel="stylesheet" href="/chat/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <button class="btn-icon" id="btnSidebar" aria-label="会话列表">☰</button>
+    <h1 class="topbar-title">DeepSeek Chat</h1>
+    <button class="btn-icon" id="btnNewChat" aria-label="新对话">＋</button>
+  </header>
+
+  <div class="overlay" id="overlay"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <span>会话记录</span>
+      <button class="btn-icon" id="btnCloseSidebar" aria-label="关闭">✕</button>
+    </div>
+    <div class="sidebar-list" id="conversationList"></div>
+    <div class="sidebar-foot">
+      <button class="btn-text" id="btnClearAll">🗑 清空全部会话</button>
+    </div>
+  </aside>
+
+  <main class="chat-area" id="chatArea">
+    <div class="messages" id="messages">
+      <div class="welcome">
+        <div class="welcome-icon">🤖</div>
+        <h2>DeepSeek V4 Flash</h2>
+        <p class="welcome-desc">快速、智能的 AI 助手，随时随地为你解答</p>
+      </div>
+    </div>
+    <div class="typing-indicator" id="typingIndicator" style="display:none">
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+    </div>
+  </main>
+
+  <footer class="input-bar">
+    <div class="input-row">
+      <textarea id="userInput" class="input-field" placeholder="输入消息…" rows="1" autofocus></textarea>
+      <button class="btn-send" id="btnSend" aria-label="发送">➤</button>
+    </div>
+    <p class="input-hint">DeepSeek V4 Flash · 内容由 AI 生成，仅供参考</p>
+  </footer>
+
+  <script src="/chat/app.js"></script>
+</body>
+</html>

@@ -61,10 +61,12 @@
     @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 
     /* frosted quote card */
-    .quote-card{background:rgba(255,255,255,0.72);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.6);border-radius:20px;padding:24px 28px;margin:0 auto 24px;max-width:380px;width:calc(100% - 48px);box-shadow:0 4px 24px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.04);transition:opacity .4s}
+    .quote-card{position:relative;background:rgba(255,255,255,0.72);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.6);border-radius:20px;padding:24px 28px;margin:0 auto 24px;max-width:420px;width:calc(100% - 32px);min-height:170px;height:auto;display:flex;flex-direction:column;justify-content:center;box-shadow:0 4px 24px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.04);transition:opacity .4s,transform .2s ease,box-shadow .2s ease;cursor:pointer;user-select:none;overflow:hidden}
+    .quote-card:hover{transform:translateY(-1px);box-shadow:0 8px 26px rgba(0,0,0,0.08)}
+    .quote-card:active{transform:scale(.98);box-shadow:0 3px 12px rgba(0,0,0,0.06)}
     body.dark .quote-card{background:rgba(40,40,40,0.8);border:1px solid rgba(255,255,255,0.08);box-shadow:0 4px 24px rgba(0,0,0,0.3)}
-    .quote-text{font-family:"SimSun","STSong","Songti SC","Noto Serif CJK SC",serif;font-size:15px;line-height:1.9;color:var(--text);margin-bottom:12px;letter-spacing:1px}
-    .quote-author{font-size:12px;color:var(--text2);text-align:right;opacity:.7}
+    .quote-text{position:relative;z-index:1;font-family:"SimSun","STSong","Songti SC","Noto Serif CJK SC",serif;font-size:16px;line-height:1.9;color:var(--text);margin-bottom:12px;letter-spacing:1px;transition:opacity .25s ease;display:-webkit-box;-webkit-line-clamp:4;line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
+    .quote-author{position:relative;z-index:1;font-size:12px;color:var(--text2);text-align:right;opacity:.7;transition:opacity .25s ease;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
     /* frosted bottom nav card */
     #bottomNav{display:flex;justify-content:space-around;align-items:center;margin:0 auto;margin-bottom:calc(12px + env(safe-area-inset-bottom));padding:10px 12px;background:rgba(255,255,255,0.72);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.6);border-radius:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.04);flex-shrink:0;max-width:380px;width:calc(100% - 48px)}
@@ -494,13 +496,17 @@
     .pm-item:last-child{border-bottom:none}
     .pm-item:active{background:var(--input-bg)}
     .pm-arrow{color:#ccc;font-size:18px;margin-left:auto}
+    .pm-toggle{position:relative;margin-left:auto;width:52px;height:30px;border-radius:999px;border:1px solid var(--card-border);background:var(--input-bg);transition:all .2s ease;box-shadow:inset 0 0 0 1px rgba(0,0,0,0.04)}
+    .pm-toggle::before{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,0.12);transition:all .2s ease}
+    .pm-toggle.on{background:var(--accent);border-color:var(--accent)}
+    .pm-toggle.on::before{left:25px;background:#fff}
 
 </style>
 </head>
 <body>
 
 <!-- ===== LOGIN SCREEN ===== -->
-<div class="screen show" id="loginScreen" style="align-items:center;justify-content:center;padding:40px 24px;text-align:center;background:linear-gradient(180deg,#fff 0%,#f2f5f8 100%)">
+<div class="screen" id="loginScreen" style="align-items:center;justify-content:center;padding:40px 24px;text-align:center;background:linear-gradient(180deg,#fff 0%,#f2f5f8 100%)">
   <div class="whale-icon" style="font-size:48px;margin-bottom:16px">🐋</div>
   <h1 style="font-family:'SimSun','STSong',serif;font-size:28px;font-weight:400;letter-spacing:4px;margin-bottom:8px">SeaWhy Lex</h1>
   <p style="font-size:13px;color:var(--text2);margin-bottom:32px">法律人的AI学习伙伴</p>
@@ -576,6 +582,10 @@
           <button class="s-btn" id="sMulti" onclick="toggleOptBtn('multi','sMulti')">多视角</button>
           <button class="s-btn" id="sPractical" onclick="toggleOptBtn('practical','sPractical')">实务</button>
           <button class="s-btn" id="sCompare" onclick="toggleOptBtn('compare','sCompare')">比较法</button>
+        </div>
+        <div class="s-row" style="margin-top:8px;justify-content:space-between">
+          <span class="s-label" style="margin:0">自动切换</span>
+          <button class="s-btn active" id="sQuoteAuto" onclick="toggleQuoteAuto()">开启</button>
         </div>
         <div class="s-row" style="margin-top:8px">
           <button class="s-btn danger" onclick="clearHistory()">清空对话</button>
@@ -661,7 +671,7 @@
   <div class="db-body">
     <div class="db-header">
       <h2>核心法律法规</h2>
-      <p>共收录 7 部 · 全文可下载 · 仅供学习参考</p>
+      <p>全文可下载 · 仅供学习参考</p>
     </div>
     <div class="db-search">
       <input type="text" id="dbSearch" placeholder="搜索法律名称…" oninput="filterLaws()" />
@@ -718,6 +728,16 @@
       <div class="pm-item" onclick="rechargeVip()">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
         <span>充值VIP</span>
+        <span class="pm-arrow">›</span>
+      </div>
+      <div class="pm-item" onclick="toggleQuoteAuto()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.93 19.07l2.83-2.83"/><path d="M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="4"/></svg>
+        <span>自动轮播</span>
+        <span class="pm-toggle on" id="profileQuoteAutoState" aria-label="自动轮播开关"></span>
+      </div>
+      <div class="pm-item" onclick="showAbout()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>设置</span>
         <span class="pm-arrow">›</span>
       </div>
     </div>
@@ -792,7 +812,7 @@
       充值VIP · 解锁全部功能
     </button>
     <div class="about-section">
-      <h3>☁️ 云同步</h3>
+      <h3>云同步</h3>
       <p style="font-size:11px;color:var(--text2);margin-bottom:8px">备份数据到云端，换设备后可恢复</p>
       <div style="display:flex;gap:8px">
         <button onclick="cloudBackup()" style="flex:1;padding:10px;border:1px solid var(--card-border);border-radius:12px;background:var(--input-bg);color:var(--text);font-size:12px;cursor:pointer;font-family:inherit">📤 备份到云端</button>
@@ -890,7 +910,7 @@
       <div class="learn-card" onclick="showDatabase()">
         <div class="lc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="14" y2="11"/></svg></div>
         <div class="lc-name">法律数据库</div>
-        <div class="lc-desc">7部核心法律全文检索</div>
+        <div class="lc-desc">核心法律全文检索</div>
       </div>
       <div class="learn-card" onclick="showDocGen()">
         <div class="lc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
@@ -911,7 +931,7 @@
     <!-- 今日学习报告 -->
     <div class="learn-report">
       <div class="learn-report-header">
-        <h2>📊 今日学习报告</h2>
+        <h2></h2> 今日学习报告</h2>
         
       </div>
       <div class="learn-stats-row">
@@ -1094,21 +1114,43 @@
 // ============================================================
 var TYPEWRITER_TEXT = "你好，法律人";
 var LEGAL_QUOTES = [
-  { text: "法律的生命不在于逻辑，而在于经验。", author:"小奥利弗·温德尔·霍姆斯" },
-  { text: "迟来的正义非正义。", author:"英国法谚" },
-  { text: "法者，天下之程式也，万事之仪表也。", author:"《管子》" },
-  { text: "法律是善良与公正的艺术。", author:"塞尔苏斯" },
-  { text: "徒法不足以自行。", author:"《孟子》" },
-  { text: "正义从来不会缺席，只会迟到。", author:"休尼特法官" },
-  { text: "法不阿贵，绳不挠曲。", author:"《韩非子》" },
-  { text: "任何人不得转让超过自己拥有的权利。", author:"罗马法谚" },
-  { text: "法律是最低限度的道德。", author:"耶利内克" },
-  { text: "一次不公正的判决，其恶果胜过十次犯罪。", author:"弗朗西斯·培根" },
-  { text: "举证责任在于主张者，而非否认者。", author:"罗马法谚" },
-  { text: "法立于上则俗成于下。", author:"苏辙" },
-  { text: "疑罪从无。", author:"现代刑法原则" },
-  { text: "有权利必有救济。", author:"英国法谚" },
-  { text: "法者，治之端也。", author:"《荀子》" }
+  { "text": "公理之下，正义不朽", "author": "网络" },
+  { "text": "法不阿贵，绳不挠曲", "author": "网络" },
+  { "text": "法律不能使人人平等，但在法律面前人人平等", "author": "网络" },
+  { "text": "为苍天请命，为弱者鸣冤。苦难无声，却震耳欲聋。", "author": "网络" },
+  { "text": "我不同意你说的每一句话，但我誓死捍卫你说话的权利", "author": "网络" },
+  { "text": "我将用毕生捍卫法律的尊严", "author": "网络" },
+  { "text": "我将以律法为枪，正义为膛，击溃这世界腐烂的土壤", "author": "网络" },
+  { "text": "什么是法律？是天理是国法是人情。我不相信没有天理的国法，我也不相信没有人情的天理", "author": "网络" },
+  { "text": "一个玩笑，如果你不会说给你妈妈和你女儿听，那你也不应该说给你的女同事和女同学听", "author": "网络" },
+  { "text": "无罪推定", "author": "网络" },
+  { "text": "法者天下之公器也，变者天下之公理也。", "author": "网络" },
+  { "text": "没有被听见不是沉默的理由", "author": "网络" },
+  { "text": "当每一个问题只有一个答案，答案的正确性总是可疑的", "author": "网络" },
+  { "text": "挥法律之利剑，持正义之天平，除人间之邪恶，守正法治圣洁，积人文之底蕴，昌世界之文明", "author": "网络" },
+  { "text": "法律的生命不在于逻辑，而在于经验。", "author": "霍姆斯" },
+  { "text": "法律需要被信仰，否则它形同虚设。", "author": "伯尔曼" },
+  { "text": "正义不仅应当得到实现，而且要以人们看得见的方式实现。", "author": "桑德拉·戴·奥康纳" },
+  { "text": "迟来的正义即非正义。", "author": "网络" },
+  { "text": "一次不公的裁判比多次不平的举动为祸尤烈。", "author": "培根" },
+  { "text": "法不强人所难。", "author": "网络" },
+  { "text": "在民主的国家里，法律就是国王；在专制的国家里，国王就是法律。", "author": "马克思" },
+  { "text": "自由是做法律所许可的一切事情的权利。", "author": "孟德斯鸠" },
+  { "text": "对普通人而言，法无禁止即可为；对公权力而言，法无授权即禁止。", "author": "网络" },
+  { "text": "法无明文规定不为罪，法无明文规定不处罚。", "author": "网络" },
+  { "text": "为权利而斗争是权利人对自己的义务。", "author": "耶林" },
+  { "text": "权利不会永远等在原地。真正珍视权利的人，也要主动维护它。", "author": "网络" },
+  { "text": "程序是法治和恣意而治的分水岭。", "author": "网络" },
+  { "text": "我们办的不是案子，是别人的人生。", "author": "网络" },
+  { "text": "法不能向不法让步。", "author": "网络" },
+  { "text": "法律是让坏人犯罪的成本更高，而不是让好人出手的代价更高。", "author": "网络" },
+  { "text": "律师的使命不是评判对错，而是捍卫权利。", "author": "网络" },
+  { "text": "法律的意义，不只在于逻辑自洽，更在于它能回应真实生活中的复杂经验。", "author": "网络" },
+  { "text": "法律是成文的道德，道德是内心的法律。", "author": "网络" },
+  { "text": "法不阿贵，绳不绕曲。", "author": "韩非子" },
+  { "text": "天下之事，不难于立法，而难于法之必行。", "author": "张居正" },
+  { "text": "法律就是秩序，有好的法律才有好的秩序。", "author": "亚里士多德" },
+  { "text": "刑罚的威慑力不在于刑罚的严酷性，而在于其不可避免性。", "author": "贝卡利亚" }
 ];
 
 function typeWriter(el, text, speed, callback) {
@@ -1130,8 +1172,21 @@ function typeWriter(el, text, speed, callback) {
   setTimeout(type, 300);
 }
 
+var _lastQuoteIndex = -1;
+var _quoteRotationTimer = null;
+var QUOTE_ROTATION_MS = 5000;
+
 function showRandomQuote() {
-  var q = LEGAL_QUOTES[Math.floor(Math.random() * LEGAL_QUOTES.length)];
+  var available = LEGAL_QUOTES.length;
+  var nextIndex = Math.floor(Math.random() * available);
+  if (available > 1) {
+    while (nextIndex === _lastQuoteIndex) {
+      nextIndex = Math.floor(Math.random() * available);
+    }
+  }
+  _lastQuoteIndex = nextIndex;
+
+  var q = LEGAL_QUOTES[nextIndex];
   var textEl = document.getElementById("quoteText");
   var authorEl = document.getElementById("quoteAuthor");
   var card = document.getElementById("quoteCard");
@@ -1143,14 +1198,79 @@ function showRandomQuote() {
   }, 300);
 }
 
+function startQuoteRotation() {
+  if (_quoteRotationTimer || !options.quoteAuto) return;
+  _quoteRotationTimer = setInterval(function() {
+    showRandomQuote();
+  }, QUOTE_ROTATION_MS);
+}
+
+function stopQuoteRotation() {
+  if (_quoteRotationTimer) {
+    clearInterval(_quoteRotationTimer);
+    _quoteRotationTimer = null;
+  }
+}
+
+function applyQuoteAutoState() {
+  var sBtn = document.getElementById("sQuoteAuto");
+  var pBtn = document.getElementById("profileQuoteAutoState");
+  if (sBtn) {
+    sBtn.textContent = options.quoteAuto ? "开启" : "关闭";
+    sBtn.classList.toggle("active", options.quoteAuto);
+  }
+  if (pBtn) {
+    pBtn.classList.toggle("on", options.quoteAuto);
+  }
+  if (options.quoteAuto) {
+    startQuoteRotation();
+  } else {
+    stopQuoteRotation();
+  }
+}
+
+function toggleQuoteAuto() {
+  options.quoteAuto = !options.quoteAuto;
+  try { localStorage.setItem("seawhy-lex-opts", JSON.stringify(options)); } catch(e) {}
+  applyQuoteAutoState();
+  showToast(options.quoteAuto ? "自动切换已开启" : "自动切换已关闭");
+}
+
 function initWelcome() {
   var el = document.getElementById("typewriter");
+  var card = document.getElementById("quoteCard");
+  if (card) {
+    card.title = "点击切换名言";
+    card.addEventListener("click", function() {
+      if (card.dataset.busy === "true") return;
+      card.dataset.busy = "true";
+      card.style.transform = "scale(0.98)";
+      setTimeout(function() {
+        card.style.transform = "";
+        card.dataset.busy = "false";
+      }, 180);
+      showRandomQuote();
+      if (options.quoteAuto) startQuoteRotation();
+    });
+  }
+  applyQuoteAutoState();
   if (el) {
     typeWriter(el, TYPEWRITER_TEXT, 120, function() {
       showRandomQuote();
+      if (options.quoteAuto) startQuoteRotation();
       _welcomePlayed = true;
     });
   }
+}
+
+if (document.visibilityState !== 'hidden') {
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden) {
+      stopQuoteRotation();
+    } else if (options.quoteAuto) {
+      startQuoteRotation();
+    }
+  });
 }
 
 // Run on load
@@ -1469,7 +1589,7 @@ try { var s = JSON.parse(localStorage.getItem("seawhy-lex-config") || "{}"); SET
 var userTheme = "light";
 try { userTheme = JSON.parse(localStorage.getItem("seawhy-lex-theme") || '"light"'); } catch(e) {}
 
-var options = { deep: true, multi: false, practical: false, compare: false };
+var options = { deep: true, multi: false, practical: false, compare: false, quoteAuto: true };
 try { var o = JSON.parse(localStorage.getItem("seawhy-lex-opts") || "{}"); Object.keys(options).forEach(function(k){ if(k in o) options[k] = o[k]; }); } catch(e) {}
 
 // ============================================================
@@ -1480,15 +1600,15 @@ var APP_VERSION_DATE = "2026.07.30";
 var CHANGELOG_KEY = "seawhy-lex-changelog";
 
 var DEFAULT_CHANGELOG = [
-  { ver: "v2.2.0", date: "2026.07.30", notes: "注册登录系统 · 云备份恢复 · 个人中心纯黑UI · 兑换码VIP(0815) · 笔记本全屏阅读" },
-  { ver: "v2.0.0", date: "2026.07.30", notes: "品牌升级为SeaWhy Lex · 新增自动更新日志 · 学习题库升级为学习中心 · AI自我认知同步更新" },
-  { ver: "v1.3.1", date: "2026.06.24", notes: "修复错题本返回科目消失bug，UI图标纯色化" },
+  { ver: "v2.2.0", date: "2026.07.30", notes: "注册登录系统 · 云备份恢复  · 笔记本全屏阅读" },
+  { ver: "v2.0.0", date: "2026.07.30", notes: "品牌升级为SeaWhy Lex · 学习题库升级为学习中心 " },
+  { ver: "v1.3.1", date: "2026.06.24", notes: "修复错题本返回科目消失bug" },
   { ver: "v1.3.0", date: "2026.06.24", notes: "题库扩至300+题，刑法民法拆分总则/分则，新增错题本" },
   { ver: "v1.2.7", date: "2026.06.24", notes: "API key 更新" },
-  { ver: "v1.2.4", date: "2026.06.23", notes: "文书生成改用内置模板，无需AI" },
+  { ver: "v1.2.4", date: "2026.06.23", notes: "文书生成改用内置模板" },
   { ver: "v1.2.0", date: "2026.06.23", notes: "新增案例数据库，五分类35案例" },
-  { ver: "v1.1.0", date: "2026.06.23", notes: "法律文书生成升级，emoji改为纯色SVG图标" },
-  { ver: "v1.0.1", date: "2026.06.23", notes: "CDN切换至bootcdn，国内访问优化" },
+  { ver: "v1.1.0", date: "2026.06.23", notes: "法律文书生成升级" },
+  { ver: "v1.0.1", date: "2026.06.23", notes: "CDN切换至bootcdn，访问优化" },
   { ver: "v1.0",   date: "2026.06.15", notes: "SeaWhy Lex（原LexPilot）正式上线" }
 ];
 
@@ -1563,7 +1683,14 @@ function updateProfileUI() {
   var notesEl = document.getElementById("profileNotes");
   var nickInput = document.getElementById("profileNicknameInput");
 
-  if (avatarEl) avatarEl.textContent = p.avatar || "👤";
+  if (avatarEl) {
+    if (p.avatarType === "image" && p.avatarDataUrl) {
+      avatarEl.innerHTML = '<img src="' + p.avatarDataUrl + '" alt="avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%" />';
+    } else {
+      avatarEl.innerHTML = "";
+      avatarEl.textContent = p.avatar || "👤";
+    }
+  }
   if (nameEl) nameEl.textContent = p.nickname || "法律人";
   var level = getLevel(p.points || 0);
   if (levelEl) levelEl.textContent = (isVip() ? "👑 永久VIP · " : "") + level;
@@ -1585,6 +1712,7 @@ function editProfile() {
 function pickProfileAvatar() {
   var p = loadProfile();
   var current = p.avatar || "👤";
+  var customSelected = p.avatarType === "image" && !!p.avatarDataUrl;
   var overlay = document.createElement("div");
   overlay.id = "avatarPickOverlay";
   overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px";
@@ -1593,9 +1721,11 @@ function pickProfileAvatar() {
   box.style.cssText = "background:var(--card-bg);border-radius:20px;padding:20px;max-width:340px;width:100%;text-align:center";
   var h = '<p style="font-size:14px;margin-bottom:12px">选择头像</p><div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:12px">';
   for (var i = 0; i < AVATARS.length; i++) {
-    var isCurrent = AVATARS[i] === current;
+    var isCurrent = AVATARS[i] === current && !customSelected;
     h += '<button class="avatar-pick-btn' + (isCurrent ? ' selected' : '') + '" data-emoji="' + AVATARS[i] + '" style="width:44px;height:44px;border-radius:50%;border:2px solid ' + (isCurrent ? 'var(--accent)' : 'var(--card-border)') + ';background:var(--card-bg);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center' + (isCurrent ? ';transform:scale(1.15);box-shadow:0 0 0 3px rgba(74,144,217,0.25)' : '') + '">' + AVATARS[i] + '</button>';
   }
+  h += '</div><div style="display:flex;justify-content:center;margin-bottom:12px"><button id="avatarUploadBtn" type="button" style="width:100%;max-width:220px;height:44px;border-radius:12px;border:2px solid ' + (customSelected ? 'var(--accent)' : 'var(--card-border)') + ';background:var(--card-bg);font-size:14px;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px' + (customSelected ? ';transform:scale(1.01);box-shadow:0 0 0 3px rgba(74,144,217,0.18)' : '') + '"><span>📷</span><span>上传头像</span></button></div>';
+  h += '<input id="avatarUploadInput" type="file" accept="image/*" style="display:none" />';
   h += '</div><div style="display:flex;gap:8px;justify-content:center">' +
        '<button id="confirmAvatarPickBtn" style="flex:1;padding:10px;border:none;border-radius:12px;background:var(--accent);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">确定</button>' +
        '<button id="closeAvatarPickBtn" style="flex:1;padding:10px;border:1px solid var(--card-border);border-radius:12px;background:var(--input-bg);color:var(--text);font-size:14px;cursor:pointer;font-family:inherit">取消</button>' +
@@ -1608,6 +1738,14 @@ function pickProfileAvatar() {
   setTimeout(function() {
     var btns = box.querySelectorAll(".avatar-pick-btn");
     for (var j = 0; j < btns.length; j++) {
+      var btn = btns[j];
+      if (btn.id === "avatarUploadBtn") {
+        btn.onclick = function() {
+          var input = document.getElementById("avatarUploadInput");
+          if (input) input.click();
+        };
+        continue;
+      }
       btns[j].onclick = function() {
         var emoji = this.getAttribute("data-emoji");
         // Move blue frame to newly clicked avatar
@@ -1621,21 +1759,48 @@ function pickProfileAvatar() {
         selectedEmoji = emoji;
       };
     }
+    var uploadInput = document.getElementById("avatarUploadInput");
+    if (uploadInput) uploadInput.onchange = function() { handleAvatarUpload(this); };
     var confirmBtn = document.getElementById("confirmAvatarPickBtn");
     if (confirmBtn) confirmBtn.onclick = function() { setAvatar(selectedEmoji); };
     var closeBtn = document.getElementById("closeAvatarPickBtn");
     if (closeBtn) closeBtn.onclick = closeAvatarPick;
+
   }, 50);
 }
 
 function setAvatar(emoji) {
   var p = loadProfile();
   p.avatar = emoji;
+  p.avatarType = "emoji";
+  p.avatarDataUrl = "";
   saveProfile(p);
   updateProfileUI();
   var overlay = document.getElementById("avatarPickOverlay");
   if (overlay) overlay.remove();
   showToast("头像已更新");
+}
+
+function handleAvatarUpload(input) {
+  var file = input && input.files ? input.files[0] : null;
+  if (!file) return;
+  if (!file.type || !file.type.startsWith("image/")) {
+    showToast("请选择图片文件");
+    return;
+  }
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var p = loadProfile();
+    p.avatar = "📷";
+    p.avatarType = "image";
+    p.avatarDataUrl = e.target.result;
+    saveProfile(p);
+    updateProfileUI();
+    var overlay = document.getElementById("avatarPickOverlay");
+    if (overlay) overlay.remove();
+    showToast("头像已更新");
+  };
+  reader.readAsDataURL(file);
 }
 
 function closeAvatarPick() {
@@ -2219,6 +2384,9 @@ function updateOptUI() {
     var sEl = document.getElementById("s" + k.charAt(0).toUpperCase() + k.slice(1));
     if (tEl) tEl.classList.toggle("on", options[k]);
     if (sEl) { sEl.classList.toggle("active", options[k]); }
+    if (k === "quoteAuto") {
+      if (sEl) sEl.textContent = options[k] ? "开启" : "关闭";
+    }
   });
 }
 
