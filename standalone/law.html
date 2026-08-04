@@ -512,16 +512,24 @@
     .ph-vip-badge::after{content:"";position:absolute;top:0;left:-130%;width:60%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,0.65),transparent);animation:vipShine 2.4s ease-in-out infinite}
     @keyframes vipShine{0%{left:-130%}55%,100%{left:150%}}
     .ph-level-badge{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:6px;padding:4px 0}
-    /* 流光，只在图片内（overflow:hidden 裁剪） */
-    .ph-level-img{position:relative;width:min(200px,60vw);height:min(200px,60vw);overflow:hidden;flex-shrink:0;border-radius:4px}
-    .ph-level-img::after{content:"";position:absolute;top:0;left:-50%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,0.5),transparent);transform:skewX(-18deg);animation:lvlShine 3.2s ease-in-out infinite}
-    .ph-level-img::before{content:"";position:absolute;top:0;left:-50%;width:28%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,0.6),transparent);transform:skewX(-18deg);animation:lvlShine2 5s ease-in-out infinite;opacity:0}
-    .ph-level-badge.lvl0 .ph-level-img::after,.ph-level-badge.lvl1 .ph-level-img::after{opacity:.4;animation-duration:4.2s}
-    .ph-level-badge.lvl2 .ph-level-img::after,.ph-level-badge.lvl3 .ph-level-img::after{opacity:.75;animation-duration:3s}
-    .ph-level-badge.lvl4 .ph-level-img::after,.ph-level-badge.lvl5 .ph-level-img::after{opacity:1;animation-duration:2.2s;width:52%}
-    .ph-level-badge.lvl2 .ph-level-img::before,.ph-level-badge.lvl3 .ph-level-img::before{opacity:.5;animation-duration:3.6s}
-    .ph-level-badge.lvl4 .ph-level-img::before,.ph-level-badge.lvl5 .ph-level-img::before{opacity:.9;animation-duration:2.6s}
-    .ph-level-icon{position:relative;z-index:1;width:100%;height:100%;object-fit:cover;display:block}
+    /* 徽章轮播（左右滑动） */
+    .ph-level-scroll{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;width:100%;-webkit-overflow-scrolling:touch}
+    .ph-level-scroll::-webkit-scrollbar{display:none}
+    .ph-level-item{flex:0 0 100%;scroll-snap-align:center;display:flex;justify-content:center;align-items:center}
+    .ph-level-item .ph-level-img{position:relative;width:min(200px,60vw);height:min(200px,60vw);overflow:hidden;flex-shrink:0;border-radius:4px;transition:transform .2s}
+    .ph-level-item .ph-level-img img{position:relative;z-index:1;width:100%;height:100%;object-fit:cover;display:block}
+    /* 流光（白色，只在当前查看的徽章图片内，等级越高越壮观） */
+    .ph-level-item .ph-level-img::after{content:"";position:absolute;top:0;left:-50%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,0.5),transparent);transform:skewX(-18deg);animation:lvlShine 3.2s ease-in-out infinite;opacity:0}
+    .ph-level-item .ph-level-img::before{content:"";position:absolute;top:0;left:-50%;width:28%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,0.6),transparent);transform:skewX(-18deg);animation:lvlShine2 5s ease-in-out infinite;opacity:0}
+    .ph-level-item.active .ph-level-img{transform:scale(1.03)}
+    .ph-level-item.active .ph-level-img::after{opacity:1}
+    .ph-level-item.active.lvl0 .ph-level-img::after,.ph-level-item.active.lvl1 .ph-level-img::after{opacity:.45}
+    .ph-level-item.active.lvl2 .ph-level-img::after,.ph-level-item.active.lvl3 .ph-level-img::after{opacity:.75}
+    .ph-level-item.active.lvl4 .ph-level-img::after,.ph-level-item.active.lvl5 .ph-level-img::after{opacity:1;width:52%}
+    .ph-level-item.active.lvl6 .ph-level-img::after,.ph-level-item.active.lvl7 .ph-level-img::after{opacity:1;width:62%;animation-duration:1.8s;background:linear-gradient(100deg,transparent,rgba(255,255,255,0.85),rgba(255,215,0,0.65),transparent)}
+    .ph-level-item.active.lvl2 .ph-level-img::before,.ph-level-item.active.lvl3 .ph-level-img::before{opacity:.5;animation-duration:3.6s}
+    .ph-level-item.active.lvl4 .ph-level-img::before,.ph-level-item.active.lvl5 .ph-level-img::before{opacity:.9;animation-duration:2.6s}
+    .ph-level-item.active.lvl6 .ph-level-img::before,.ph-level-item.active.lvl7 .ph-level-img::before{opacity:1;animation-duration:2s}
     .ph-level-text{position:relative;z-index:1;font-size:17px;font-weight:800;color:#111;letter-spacing:3px}
     @keyframes lvlShine{0%{left:-50%}55%,100%{left:135%}}
     @keyframes lvlShine2{0%{left:-50%}60%,100%{left:145%}}
@@ -837,9 +845,7 @@
         <div class="ph-vip-badge" id="profileVipBadge" style="display:none">VIP</div>
       </div>
       <div class="ph-level-badge" id="profileLevelBadge">
-        <div class="ph-level-img">
-          <img class="ph-level-icon" id="profileLevelIcon" src="images/levels/LV1.jpg" alt="" />
-        </div>
+        <div class="ph-level-scroll" id="levelScroll"></div>
         <div class="ph-level-text" id="profileLevel">见习</div>
       </div>
       <div class="ph-level-progress"><div class="ph-level-fill" id="profileLevelFill"></div></div>
@@ -2171,18 +2177,7 @@ function updateProfileUI() {
     }
   }
   if (nameEl) nameEl.textContent = p.nickname || "法律人";
-  var levelInfo = getLevelInfo(p.totalPoints || 0);
-  if (levelEl) levelEl.textContent = levelInfo.name;
-  var lvlIcon = document.getElementById("profileLevelIcon");
-  if (lvlIcon) lvlIcon.src = levelInfo.icon;
-  var lvlBadge = document.getElementById("profileLevelBadge");
-  if (lvlBadge) lvlBadge.className = "ph-level-badge lvl" + levelInfo.index;
-  var lvlFill = document.getElementById("profileLevelFill");
-  if (lvlFill) lvlFill.style.width = levelInfo.progress + "%";
-  var lvlProg = document.getElementById("profileLevelProg");
-  if (lvlProg) lvlProg.textContent = levelInfo.next
-    ? "已累计 " + (p.totalPoints || 0) + " 积分 · 还需 " + Math.max(0, levelInfo.nextMin - (p.totalPoints || 0)) + " 升至" + levelInfo.next
-    : "已达成最高等级";
+  renderLevelBadges();
   if (ptsEl) ptsEl.textContent = p.points || 0;
   // Count study days
   var stats = loadLearnStats();
@@ -2345,12 +2340,14 @@ function setVip(v) { try { localStorage.setItem(VIP_KEY, v ? "1" : "0"); } catch
 
 // ===== 等级系统 =====
 var LEVELS = [
-  { name: "见习", icon: "images/levels/LV1.jpg", min: 0 },
-  { name: "辅庭", icon: "images/levels/LV2.jpg", min: 50 },
-  { name: "出庭", icon: "images/levels/LV3.jpg", min: 200 },
-  { name: "合伙", icon: "images/levels/LV4.png", min: 500 },
-  { name: "资深合伙", icon: "images/levels/LV5.png", min: 1000 },
-  { name: "掌门人", icon: "images/levels/LV6.png", min: 2000 }
+  { name: "见习", icon: "images/levels/LV1.webp", min: 0 },
+  { name: "辅庭", icon: "images/levels/LV2.webp", min: 50 },
+  { name: "出庭", icon: "images/levels/LV3.webp", min: 200 },
+  { name: "合伙", icon: "images/levels/LV4.webp", min: 500 },
+  { name: "资深合伙", icon: "images/levels/LV5.webp", min: 1000 },
+  { name: "掌门人", icon: "images/levels/LV6.webp", min: 2000 },
+  { name: "法魂圣印", icon: "images/levels/LV7.webp", min: 5000 },
+  { name: "永恒法典", icon: "images/levels/LV8.webp", min: 10000 }
 ];
 function getLevelInfo(totalPoints) {
   totalPoints = totalPoints || 0;
@@ -2370,6 +2367,52 @@ function getLevelInfo(totalPoints) {
   return info;
 }
 function getLevel(totalPoints) { return getLevelInfo(totalPoints).name; }
+
+// 徽章轮播渲染
+function renderLevelBadges() {
+  var scroll = document.getElementById("levelScroll");
+  if (!scroll) return;
+  var p = loadProfile();
+  var curIdx = getLevelInfo(p.totalPoints || 0).index;
+  var h = "";
+  for (var i = 0; i < LEVELS.length; i++) {
+    h += '<div class="ph-level-item lvl' + i + '"><div class="ph-level-img"><img src="' + LEVELS[i].icon + '" alt="" /></div></div>';
+  }
+  scroll.innerHTML = h;
+  var itemW = scroll.clientWidth;
+  scroll.scrollLeft = curIdx * itemW;
+  scroll.onscroll = function() {
+    var idx = Math.round(this.scrollLeft / this.clientWidth);
+    idx = Math.max(0, Math.min(LEVELS.length - 1, idx));
+    updateLevelDisplay(idx);
+  };
+  updateLevelDisplay(curIdx);
+}
+
+function updateLevelDisplay(idx) {
+  if (idx < 0 || idx >= LEVELS.length) return;
+  var p = loadProfile();
+  var total = p.totalPoints || 0;
+  var levelEl = document.getElementById("profileLevel");
+  if (levelEl) levelEl.textContent = LEVELS[idx].name;
+  var fill = document.getElementById("profileLevelFill");
+  var prog = document.getElementById("profileLevelProg");
+  if (idx < LEVELS.length - 1) {
+    var span = LEVELS[idx + 1].min - LEVELS[idx].min;
+    var have = total - LEVELS[idx].min;
+    var pct = Math.max(0, Math.min(100, Math.round(have / span * 100)));
+    if (fill) fill.style.width = pct + "%";
+    if (prog) prog.textContent = "累计 " + total + " 积分 · 距下一级还需 " + Math.max(0, LEVELS[idx + 1].min - total) + " 积分";
+  } else {
+    if (fill) fill.style.width = "100%";
+    if (prog) prog.textContent = "累计 " + total + " 积分 · 已达成最高等级";
+  }
+  // 高亮当前查看的徽章
+  var items = document.querySelectorAll(".ph-level-item");
+  for (var i = 0; i < items.length; i++) {
+    items[i].className = "ph-level-item lvl" + i + (i === idx ? " active" : "");
+  }
+}
 
 // ===== 积分系统 =====
 function addPoints(amount, label) {
