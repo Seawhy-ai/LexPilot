@@ -567,17 +567,17 @@
     .sch-add-btn{padding:7px 14px;border:none;border-radius:16px;background:#111;color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0}
     .sch-add-btn:active{opacity:.8}
     .schedule-scroll{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:8px 6px}
-    .schedule-grid{display:grid;grid-template-columns:44px repeat(7,1fr);grid-auto-rows:40px;gap:2px;min-width:0;width:100%}
+    .schedule-grid{display:grid;grid-template-columns:44px repeat(7,1fr);grid-auto-rows:64px;gap:2px;min-width:0;width:100%}
     .sch-corner,.sch-dayhead,.sch-time{background:#fff}
     .sch-corner{display:flex;align-items:center;justify-content:center;font-size:9px;color:#999;font-weight:600}
     .sch-dayhead{display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#333;padding:1px 0;line-height:1.25}
     .sch-dayhead span{font-size:8px;color:#999;font-weight:400}
     .sch-time{display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:9px;color:#666;font-weight:600;line-height:1.2;text-align:center}
     .sch-time span{font-size:6.5px;color:#aaa;font-weight:400;line-height:1.2}
-    .sch-course{border-radius:6px;padding:2px 2px;color:#fff;cursor:pointer;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-start;box-shadow:0 1px 3px rgba(0,0,0,0.15);transition:transform .15s}
+    .sch-course{border-radius:6px;padding:4px 3px;color:#fff;cursor:pointer;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-start;box-shadow:0 1px 3px rgba(0,0,0,0.15);transition:transform .15s}
     .sch-course:active{transform:scale(.97)}
-    .sc-name{font-size:9.5px;font-weight:700;line-height:1.2;word-break:break-word}
-    .sc-loc{font-size:8px;opacity:.9;margin-top:1px}
+    .sc-name{font-size:10px;font-weight:700;line-height:1.25;word-break:break-word}
+    .sc-loc{font-size:8.5px;opacity:.9;margin-top:auto;padding-top:2px;word-break:break-word}
     .sch-empty{background:#fff;border:1px dashed #ececec;border-radius:6px;cursor:pointer}
     .sch-empty:active{background:#f5f5f5}
     .schedule-hint{text-align:center;font-size:10px;color:#bbb;padding:8px 0 calc(8px + env(safe-area-inset-bottom));background:#fafafa}
@@ -2009,22 +2009,30 @@ var APP_VERSION_DATE = "2026.08.09";
 var CHANGELOG_KEY = "seawhy-lex-changelog";
 
 var DEFAULT_CHANGELOG = [
-  { ver: "v2.2.0", date: "2026.07.30", notes: "注册登录系统 · 云备份恢复  · 笔记本全屏阅读" },
-  { ver: "v2.0.0", date: "2026.07.30", notes: "品牌升级为SeaWhy Lex · 学习题库升级为学习中心 " },
-  { ver: "v1.3.1", date: "2026.06.24", notes: "修复错题本返回科目消失bug" },
-  { ver: "v1.3.0", date: "2026.06.24", notes: "题库扩至300+题，刑法民法拆分总则/分则，新增错题本" },
-  { ver: "v1.2.7", date: "2026.06.24", notes: "API key 更新" },
-  { ver: "v1.2.4", date: "2026.06.23", notes: "文书生成改用内置模板" },
-  { ver: "v1.2.0", date: "2026.06.23", notes: "新增案例数据库，五分类35案例" },
-  { ver: "v1.1.0", date: "2026.06.23", notes: "法律文书生成升级" },
-  { ver: "v1.0.1", date: "2026.06.23", notes: "CDN切换至bootcdn，访问优化" },
-  { ver: "v1.0",   date: "2026.06.15", notes: "SeaWhy Lex（原LexPilot）正式上线" }
+  { ver: "v3.1.0", date: "2026.08.09", notes: "新增课程表，支持自定义创建大学课程表" },
+  { ver: "v3.0.0", date: "2026.08.08", notes: "新增等级与积分系统，支持完成任务赚积分、积分升级换好礼；VIP权益正式上线；主页欢迎语优化升级" },
+  { ver: "v2.5.5", date: "2026.08.05", notes: "新增主界面打卡和每日待办功能" },
+  { ver: "v2.5.0", date: "2026.08.03", notes: "学习题库优化升级，支持按章节查询题目" },
+  { ver: "v2.4.0", date: "2026.08.01", notes: "主界面名言卡片优化升级，支持自动轮播和手动切换" },
+  { ver: "v2.3.7", date: "2026.07.31", notes: "新增笔记本，支持创建学习笔记" },
+  { ver: "v2.3.0", date: "2026.07.30", notes: "新增个人中心，支持创建头像与昵称" },
+  { ver: "v2.2.0", date: "2026.07.29", notes: "新增注册登录系统，支持云备份恢复" },
+  { ver: "v2.1.0", date: "2026.07.27", notes: "新增主界面名言卡片，备忘录优化升级" },
+  { ver: "v2.0.0", date: "2026.07.25", notes: "品牌升级为SeaWhy Lex，全新UI设计，全新主界面，学习题库升级为学习中心" },
+  { ver: "v1.3.1", date: "2026.06.28", notes: "修复已知问题、提高系统稳定性" },
+  { ver: "v1.3.0", date: "2026.06.26", notes: "题库科目题量升级，新增错题本" },
+  { ver: "v1.2.7", date: "2026.06.24", notes: "AI咨询优化升级" },
+  { ver: "v1.2.4", date: "2026.06.23", notes: "法律文书生成优化升级" },
+  { ver: "v1.2.0", date: "2026.06.21", notes: "新增案例数据库，学习题库" },
+  { ver: "v1.1.0", date: "2026.06.20", notes: "新增法律文书生成、界面UI美化升级" },
+  { ver: "v1.0.5", date: "2026.06.17", notes: "新增法律数据库" },
+  { ver: "v1.0.0", date: "2026.06.15", notes: "SeaWhy Lex（原LexPilot）正式上线，支持AI咨询功能" }
 ];
 
 function loadChangelog() {
   try {
     var saved = JSON.parse(localStorage.getItem(CHANGELOG_KEY) || "null");
-    if (Array.isArray(saved) && saved.length > 0) return saved;
+    if (Array.isArray(saved) && saved.length > 0 && saved[0].ver === DEFAULT_CHANGELOG[0].ver) return saved;
   } catch(e) {}
   try { localStorage.setItem(CHANGELOG_KEY, JSON.stringify(DEFAULT_CHANGELOG)); } catch(e) {}
   return DEFAULT_CHANGELOG.slice();
