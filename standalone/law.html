@@ -513,7 +513,7 @@
     @keyframes vipShine{0%{left:-130%}55%,100%{left:150%}}
     .ph-level-badge{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:6px;padding:4px 0}
     /* 徽章轮播（左右滑动） */
-    .ph-level-scroll{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;width:100%;-webkit-overflow-scrolling:touch}
+    .ph-level-scroll{display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;width:100%;-webkit-overflow-scrolling:touch;touch-action:pan-x;overscroll-behavior-x:contain}
     .ph-level-scroll::-webkit-scrollbar{display:none}
     .ph-level-item{flex:0 0 100%;scroll-snap-align:center;display:flex;justify-content:center;align-items:center}
     .ph-level-item .ph-level-img{position:relative;width:min(200px,60vw);height:min(200px,60vw);overflow:hidden;flex-shrink:0;border-radius:4px;transition:transform .2s}
@@ -846,7 +846,6 @@
       </div>
       <div class="ph-level-badge" id="profileLevelBadge">
         <div class="ph-level-scroll" id="levelScroll"></div>
-        <div class="ph-level-text" id="profileLevel">见习</div>
       </div>
       <div class="ph-level-progress"><div class="ph-level-fill" id="profileLevelFill"></div></div>
       <div class="ph-level-prog" id="profileLevelProg">累计 0 积分</div>
@@ -2162,7 +2161,6 @@ function updateProfileUI() {
   var p = loadProfile();
   var avatarEl = document.getElementById("profileAvatar");
   var nameEl = document.getElementById("profileName");
-  var levelEl = document.getElementById("profileLevel");
   var ptsEl = document.getElementById("profilePoints");
   var daysEl = document.getElementById("profileStudyDays");
   var notesEl = document.getElementById("profileNotes");
@@ -2340,14 +2338,14 @@ function setVip(v) { try { localStorage.setItem(VIP_KEY, v ? "1" : "0"); } catch
 
 // ===== 等级系统 =====
 var LEVELS = [
-  { name: "见习", icon: "images/levels/LV1.webp", min: 0 },
-  { name: "辅庭", icon: "images/levels/LV2.webp", min: 50 },
-  { name: "出庭", icon: "images/levels/LV3.webp", min: 200 },
-  { name: "合伙", icon: "images/levels/LV4.webp", min: 500 },
-  { name: "资深合伙", icon: "images/levels/LV5.webp", min: 1000 },
-  { name: "掌门人", icon: "images/levels/LV6.webp", min: 2000 },
-  { name: "法魂圣印", icon: "images/levels/LV7.webp", min: 5000 },
-  { name: "永恒法典", icon: "images/levels/LV8.webp", min: 10000 }
+  { name: "见习", icon: "images/levels/LV1.png", min: 0 },
+  { name: "辅庭", icon: "images/levels/LV2.png", min: 50 },
+  { name: "出庭", icon: "images/levels/LV3.png", min: 200 },
+  { name: "合伙", icon: "images/levels/LV4.png", min: 500 },
+  { name: "资深合伙", icon: "images/levels/LV5.png", min: 1000 },
+  { name: "掌门人", icon: "images/levels/LV6.png", min: 2000 },
+  { name: "法魂圣印", icon: "images/levels/LV7.png", min: 5000 },
+  { name: "永恒法典", icon: "images/levels/LV8.png", min: 10000 }
 ];
 function getLevelInfo(totalPoints) {
   totalPoints = totalPoints || 0;
@@ -2393,8 +2391,6 @@ function updateLevelDisplay(idx) {
   if (idx < 0 || idx >= LEVELS.length) return;
   var p = loadProfile();
   var total = p.totalPoints || 0;
-  var levelEl = document.getElementById("profileLevel");
-  if (levelEl) levelEl.textContent = LEVELS[idx].name;
   var fill = document.getElementById("profileLevelFill");
   var prog = document.getElementById("profileLevelProg");
   if (idx < LEVELS.length - 1) {
