@@ -516,23 +516,8 @@
     .ph-level-scroll{display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;width:100%;-webkit-overflow-scrolling:touch;touch-action:pan-x;overscroll-behavior-x:contain}
     .ph-level-scroll::-webkit-scrollbar{display:none}
     .ph-level-item{flex:0 0 100%;scroll-snap-align:center;display:flex;justify-content:center;align-items:center}
-    .ph-level-item .ph-level-img{position:relative;width:min(200px,60vw);height:min(200px,60vw);overflow:hidden;flex-shrink:0;border-radius:4px;transition:transform .2s}
+    .ph-level-item .ph-level-img{position:relative;width:min(200px,60vw);height:min(200px,60vw);overflow:hidden;flex-shrink:0;border-radius:4px}
     .ph-level-item .ph-level-img img{position:relative;z-index:1;width:100%;height:100%;object-fit:cover;display:block}
-    /* 流光（白色，只在当前查看的徽章图片内，等级越高越壮观） */
-    .ph-level-item .ph-level-img::after{content:"";position:absolute;top:0;left:-50%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,0.5),transparent);transform:skewX(-18deg);animation:lvlShine 3.2s ease-in-out infinite;opacity:0}
-    .ph-level-item .ph-level-img::before{content:"";position:absolute;top:0;left:-50%;width:28%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,0.6),transparent);transform:skewX(-18deg);animation:lvlShine2 5s ease-in-out infinite;opacity:0}
-    .ph-level-item.active .ph-level-img{transform:scale(1.03)}
-    .ph-level-item.active .ph-level-img::after{opacity:1}
-    .ph-level-item.active.lvl0 .ph-level-img::after,.ph-level-item.active.lvl1 .ph-level-img::after{opacity:.45}
-    .ph-level-item.active.lvl2 .ph-level-img::after,.ph-level-item.active.lvl3 .ph-level-img::after{opacity:.75}
-    .ph-level-item.active.lvl4 .ph-level-img::after,.ph-level-item.active.lvl5 .ph-level-img::after{opacity:1;width:52%}
-    .ph-level-item.active.lvl6 .ph-level-img::after,.ph-level-item.active.lvl7 .ph-level-img::after{opacity:1;width:62%;animation-duration:1.8s;background:linear-gradient(100deg,transparent,rgba(255,255,255,0.85),rgba(255,215,0,0.65),transparent)}
-    .ph-level-item.active.lvl2 .ph-level-img::before,.ph-level-item.active.lvl3 .ph-level-img::before{opacity:.5;animation-duration:3.6s}
-    .ph-level-item.active.lvl4 .ph-level-img::before,.ph-level-item.active.lvl5 .ph-level-img::before{opacity:.9;animation-duration:2.6s}
-    .ph-level-item.active.lvl6 .ph-level-img::before,.ph-level-item.active.lvl7 .ph-level-img::before{opacity:1;animation-duration:2s}
-    .ph-level-text{position:relative;z-index:1;font-size:17px;font-weight:800;color:#111;letter-spacing:3px}
-    @keyframes lvlShine{0%{left:-50%}55%,100%{left:135%}}
-    @keyframes lvlShine2{0%{left:-50%}60%,100%{left:145%}}
     .ph-level-progress{height:7px;background:var(--card-border);border-radius:4px;margin:10px 20px 0;overflow:hidden}
     .ph-level-fill{height:100%;background:linear-gradient(90deg,#f7b733,#fc4a1a);border-radius:3px;transition:width .4s ease;width:0%}
     .ph-level-prog{font-size:10px;color:var(--text2);margin-top:4px;text-align:center}
@@ -2338,14 +2323,14 @@ function setVip(v) { try { localStorage.setItem(VIP_KEY, v ? "1" : "0"); } catch
 
 // ===== 等级系统 =====
 var LEVELS = [
-  { name: "见习", icon: "images/levels/LV1.png", min: 0 },
-  { name: "辅庭", icon: "images/levels/LV2.png", min: 50 },
-  { name: "出庭", icon: "images/levels/LV3.png", min: 200 },
-  { name: "合伙", icon: "images/levels/LV4.png", min: 500 },
-  { name: "资深合伙", icon: "images/levels/LV5.png", min: 1000 },
-  { name: "掌门人", icon: "images/levels/LV6.png", min: 2000 },
-  { name: "法魂圣印", icon: "images/levels/LV7.png", min: 5000 },
-  { name: "永恒法典", icon: "images/levels/LV8.png", min: 10000 }
+  { name: "见习", icon: "images/levels/LV1.webp", min: 0 },
+  { name: "辅庭", icon: "images/levels/LV2.webp", min: 50 },
+  { name: "出庭", icon: "images/levels/LV3.webp", min: 200 },
+  { name: "合伙", icon: "images/levels/LV4.webp", min: 500 },
+  { name: "资深合伙", icon: "images/levels/LV5.webp", min: 1000 },
+  { name: "掌门人", icon: "images/levels/LV6.webp", min: 2000 },
+  { name: "法魂圣印", icon: "images/levels/LV7.webp", min: 5000 },
+  { name: "永恒法典", icon: "images/levels/LV8.webp", min: 10000 }
 ];
 function getLevelInfo(totalPoints) {
   totalPoints = totalPoints || 0;
