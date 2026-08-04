@@ -968,6 +968,7 @@
     </div>
     <div class="nav-right">
       <button class="sch-add-btn" onclick="addScheduleCourse(0,1)">＋新增</button>
+      <button class="sch-set-btn" onclick="openScheduleImport()" title="导入课表"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
       <button class="sch-set-btn" onclick="openScheduleSettings()" title="课表设置"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
     </div>
   </div>
@@ -3219,6 +3220,128 @@ function deleteScheduleCourse() {
   if (ov) ov.remove();
   renderScheduleView();
   showToast("已删除");
+}
+
+// ===== 导入课表 =====
+function openScheduleImport() {
+  var overlay = document.createElement("div");
+  overlay.id = "scheduleImportOverlay";
+  overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:600;display:flex;align-items:center;justify-content:center;padding:16px";
+  var box = document.createElement("div");
+  box.style.cssText = "position:relative;background:var(--card-bg);border-radius:18px;padding:18px;max-width:360px;width:100%";
+  box.innerHTML =
+    '<button class="modal-close" onclick="document.getElementById(\'scheduleImportOverlay\').remove()">✕</button>' +
+    '<p style="font-size:16px;font-weight:700;color:var(--text);margin:0 0 8px">导入课表</p>' +
+    '<p style="font-size:11px;color:var(--text2);line-height:1.6;margin:0 0 10px">每行一条课程，格式：<b>周一 第1-2节 国际法 A教201</b><br>支持：周几 + 节次 + 课程名 + 地点</p>' +
+    '<button class="ss-save" style="width:100%;padding:9px;font-size:13px;margin-bottom:10px" onclick="document.getElementById(\'impPdfInput\').click()">📄 上传 PDF 提取文字</button>' +
+    '<input type="file" id="impPdfInput" accept=".pdf,application/pdf" style="display:none" />' +
+    '<textarea id="impText" placeholder="周一 第1-2节 国际法 A教201&#10;周二 第5节 刑法 B305&#10;周三 第3-4节 民法..." style="width:100%;box-sizing:border-box;height:150px;padding:10px;border:1px solid var(--card-border);border-radius:10px;background:var(--input-bg);color:var(--text);font-size:13px;font-family:inherit;outline:none;resize:vertical"></textarea>' +
+    '<div id="impResult" style="font-size:11px;color:var(--text2);margin:8px 0;min-height:14px"></div>' +
+    '<div style="display:flex;gap:8px">' +
+    '<button class="sf-save" onclick="importScheduleText()">解析并导入</button>' +
+    '<button class="sf-cancel" onclick="document.getElementById(\'scheduleImportOverlay\').remove()">取消</button>' +
+    '</div>';
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+  var inp = document.getElementById("impPdfInput");
+  if (inp) inp.onchange = function() { extractPdfText(this); };
+}
+
+function parseScheduleText(text) {
+  var DAYMAP = { "周一": 0, "星期一": 0, "礼拜一": 0, "周二": 1, "星期二": 1, "礼拜二": 1, "周三": 2, "星期三": 2, "礼拜三": 2, "周四": 3, "星期四": 3, "礼拜四": 3, "周五": 4, "星期五": 4, "礼拜五": 4, "周六": 5, "星期六": 5, "礼拜六": 5, "周日": 6, "星期天": 6, "星期日": 6, "礼拜天": 6 };
+  var dayKeys = Object.keys(DAYMAP).sort(function(a, b) { return b.length - a.length; });
+  var out = [];
+  var lines = text.split(/\r?\n/);
+  for (var li = 0; li < lines.length; li++) {
+    var line = lines[li].replace(/\s+/g, " ").trim();
+    if (!line) continue;
+    var day = -1;
+    for (var dk = 0; dk < dayKeys.length; dk++) {
+      var k = dayKeys[dk];
+      var pos = line.indexOf(k);
+      if (pos >= 0) { day = DAYMAP[k]; line = line.slice(0, pos) + line.slice(pos + k.length); break; }
+    }
+    if (day < 0) continue;
+    var pm = line.match(/(?:第)?(\d{1,2})\s*[-~至到]+\s*(\d{1,2})\s*节?/);
+    var start, end;
+    if (pm) { start = parseInt(pm[1], 10); end = parseInt(pm[2], 10); line = line.replace(/(?:第)?\d{1,2}\s*[-~至到]+\s*\d{1,2}\s*节?/, " "); }
+    else {
+      pm = line.match(/(?:第)?(\d{1,2})\s*节?/);
+      if (!pm) continue;
+      start = end = parseInt(pm[1], 10);
+      line = line.replace(/(?:第)?\d{1,2}\s*节?/, " ");
+    }
+    start = Math.max(1, Math.min(10, start));
+    end = Math.max(start, Math.min(10, end));
+    line = line.replace(/[，,、;；]\s*$/, "").trim();
+    if (!line) continue;
+    var parts = line.split(/\s+/);
+    var loc = "";
+    if (parts.length >= 2) loc = parts.pop();
+    var name = parts.join(" ").trim();
+    if (!name) { name = loc; loc = ""; }
+    if (name.length > 20) name = name.slice(0, 20);
+    if (loc.length > 12) loc = loc.slice(0, 12);
+    out.push({ day: day, start: start, end: end, name: name, loc: loc, color: (out.length + Math.floor(Math.random() * 3)) % SCHEDULE_COLORS.length, weeks: allWeeks() });
+  }
+  return out;
+}
+
+function importScheduleText() {
+  var ta = document.getElementById("impText");
+  var text = ta ? ta.value : "";
+  var courses = parseScheduleText(text);
+  var res = document.getElementById("impResult");
+  if (!courses.length) {
+    if (res) res.textContent = "未识别到有效课程，请检查格式：周一 第1-2节 课程名 地点";
+    return;
+  }
+  var d = loadSchedule();
+  d.courses = d.courses.concat(courses);
+  saveSchedule(d);
+  if (res) res.textContent = "✅ 成功导入 " + courses.length + " 门课程";
+  renderScheduleView();
+  showToast("已导入 " + courses.length + " 门课程");
+}
+
+function extractPdfText(input) {
+  var file = input.files[0];
+  if (!file) return;
+  var res = document.getElementById("impResult");
+  if (res) res.textContent = "正在读取 PDF…";
+  var load = function() {
+    doExtractPdf(file, res);
+  };
+  if (!window.pdfjsLib) {
+    var s = document.createElement("script");
+    s.src = "https://cdn.bootcdn.net/ajax/libs/pdf.js/3.11.174/pdf.min.js";
+    s.onload = function() {
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdn.bootcdn.net/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+      load();
+    };
+    s.onerror = function() { if (res) res.textContent = "PDF 解析组件加载失败，请手动粘贴文字"; };
+    document.head.appendChild(s);
+  } else {
+    load();
+  }
+}
+function doExtractPdf(file, res) {
+  var fr = new FileReader();
+  fr.onload = function() {
+    try {
+      var arr = new Uint8Array(fr.result);
+      window.pdfjsLib.getDocument({ data: arr }).promise.then(function(pdf) {
+        var ps = [];
+        for (var p = 1; p <= pdf.numPages; p++) ps.push(pdf.getPage(p).then(function(pg) { return pg.getTextContent().then(function(tc) { return tc.items.map(function(it) { return it.str; }).join(" "); }); }));
+        Promise.all(ps).then(function(texts) {
+          var ta = document.getElementById("impText");
+          if (ta) ta.value = texts.join("\n");
+          if (res) res.textContent = "已提取 PDF 文字，请检查调整后点【解析并导入】";
+        });
+      }).catch(function() { if (res) res.textContent = "PDF 解析失败（扫描件需文字版 PDF）"; });
+    } catch (e) { if (res) res.textContent = "PDF 读取失败：" + e.message; }
+  };
+  fr.readAsArrayBuffer(file);
 }
 
 function redeemVipCode() {
