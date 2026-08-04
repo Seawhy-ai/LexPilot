@@ -197,7 +197,7 @@
 
     ::-webkit-scrollbar{width:0}
     #homeScreen,.screen.show{animation:fadeInUp .35s ease}
-    #chatView.show,#dbView.show,#aboutView.show,#quizView.show,#docView.show,#caseView.show,#learnCenterView.show,#notebookView.show,#plazaView.show,#lawReaderView.show,#pointsView.show,#scheduleView.show{animation:fadeIn .25s ease}
+    #chatView.show,#dbView.show,#aboutView.show,#quizView.show,#docView.show,#caseView.show,#learnCenterView.show,#notebookView.show,#plazaView.show,#lawReaderView.show,#pointsView.show,#scheduleView.show,#scheduleSettingsView.show{animation:fadeIn .25s ease}
     @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
     #chatView{animation:fadeInUp .3s ease}
     @keyframes fadeInUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
@@ -567,11 +567,18 @@
     .sch-week-btn:active{background:#e0e0e0}
     .sch-add-btn{padding:6px 12px;border:none;border-radius:16px;background:#111;color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0}
     .sch-add-btn:active{opacity:.8}
+    .sch-set-btn{width:28px;height:28px;border:none;border-radius:50%;background:#f2f2f2;color:#555;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .sch-set-btn:active{background:#e0e0e0}
+    #scheduleSettingsView{flex:1;display:none!important;flex-direction:column;overflow:hidden;background:var(--bg)}
+    #scheduleSettingsView.show{display:flex!important}
+    .ss-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:16px;margin-bottom:14px}
+    .ss-val{font-size:20px;font-weight:700;color:var(--accent);text-align:center;margin-top:6px}
+    .ss-save{width:100%;padding:13px;border:none;border-radius:12px;background:linear-gradient(135deg,#667eea,#4A90D9);color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
     .schedule-scroll{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:8px 6px}
     .schedule-grid{display:grid;grid-template-columns:48px repeat(7,1fr);grid-template-rows:32px;grid-auto-rows:96px;gap:2px;min-width:0;width:100%}
     .sch-corner,.sch-dayhead,.sch-time{background:#fff}
     .sch-corner{display:flex;align-items:center;justify-content:center;font-size:11px;color:#999;font-weight:600}
-    .sch-dayhead{display:flex;flex-direction:row;align-items:center;justify-content:center;gap:3px;font-size:12px;font-weight:700;color:#333;padding:0 2px;line-height:1.1}
+    .sch-dayhead{display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#333;padding:0;line-height:1.15}
     .sch-dayhead span{font-size:8px;color:#999;font-weight:400}
     .sch-time{display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:14px;color:#555;font-weight:700;line-height:1.2;text-align:center}
     .sch-time span{font-size:9px;color:#aaa;font-weight:400;line-height:1.2}
@@ -582,8 +589,8 @@
     .sch-empty{background:#fff;border:1px dashed #ececec;border-radius:6px;cursor:pointer}
     .sch-empty:active{background:#f5f5f5}
     .sf-label{display:block;font-size:11px;color:#999;margin-bottom:4px}
-    .sf-week-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:14px}
-    .sf-week{padding:7px 0;border:1px solid var(--card-border);border-radius:8px;background:var(--input-bg);color:var(--text);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
+    .sf-week-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px;justify-items:center}
+    .sf-week{width:34px;height:34px;border-radius:50%;border:1px solid var(--card-border);background:var(--input-bg);color:var(--text);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;display:flex;align-items:center;justify-content:center}
     .sf-week.on{background:var(--accent);color:#fff;border-color:var(--accent)}
     .sf-week:active{transform:scale(.94)}
     .sf-save{flex:1;padding:10px;border:none;border-radius:10px;background:#111;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
@@ -951,10 +958,31 @@
       <button class="sch-week-btn" onclick="changeScheduleWeek(-1)">‹</button>
       <button class="sch-week-btn" onclick="changeScheduleWeek(1)">›</button>
       <button class="sch-add-btn" onclick="addScheduleCourse(0,1)">＋新增</button>
+      <button class="sch-set-btn" onclick="openScheduleSettings()" title="课表设置"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
     </div>
   </div>
   <div class="schedule-scroll">
     <div class="schedule-grid" id="scheduleGrid"></div>
+  </div>
+</div>
+
+<!-- ===== SCHEDULE SETTINGS VIEW ===== -->
+<div id="scheduleSettingsView" style="display:none">
+  <div class="wx-nav">
+    <button class="back" onclick="closeScheduleSettings()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span class="title">课表设置</span>
+  </div>
+  <div class="points-body">
+    <div class="ss-card">
+      <label class="sf-label">卡片长度（拖动滑块调整）</label>
+      <input type="range" id="ssCardHeight" min="60" max="140" step="4" value="96" style="width:100%;accent-color:var(--accent)" oninput="document.getElementById('ssCardHeightVal').textContent = this.value + 'px'" />
+      <div class="ss-val" id="ssCardHeightVal">96px</div>
+    </div>
+    <div class="ss-card">
+      <label class="sf-label">学期开始日期（第1周周一）</label>
+      <input type="date" id="ssSemesterStart" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid var(--card-border);border-radius:10px;background:var(--input-bg);color:var(--text);font-size:14px;font-family:inherit" />
+    </div>
+    <button class="ss-save" onclick="saveScheduleSettings()">保存设置</button>
   </div>
 </div>
 
@@ -1728,7 +1756,7 @@ function checkLoginState() {
 }
 
 function showLoginScreen() {
-  ["homeScreen","chatView","dbView","aboutView","quizView","docView","caseView","caseDetail","learnCenterView","notebookView","plazaView","noteDetailView","profileView","pointsView","scheduleView"].forEach(function(id) {
+  ["homeScreen","chatView","dbView","aboutView","quizView","docView","caseView","caseDetail","learnCenterView","notebookView","plazaView","noteDetailView","profileView","pointsView","scheduleView","scheduleSettingsView"].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) { el.classList.remove("show"); el.style.display = "none"; }
   });
@@ -2661,8 +2689,43 @@ function changeScheduleWeek(delta) {
   renderScheduleView();
 }
 
+// ===== 课表设置 =====
+function openScheduleSettings() {
+  hideAllViews();
+  document.getElementById("scheduleSettingsView").style.display = "";
+  document.getElementById("scheduleSettingsView").classList.add("show");
+  renderScheduleSettings();
+}
+function closeScheduleSettings() { showSchedule(); }
+function renderScheduleSettings() {
+  var d = loadSchedule();
+  var hEl = document.getElementById("ssCardHeight");
+  var vEl = document.getElementById("ssCardHeightVal");
+  var ch = d.cardHeight || 96;
+  if (hEl) { hEl.value = ch; if (vEl) vEl.textContent = ch + "px"; }
+  var dEl = document.getElementById("ssSemesterStart");
+  if (dEl) {
+    if (d.semesterStart) {
+      var dt = new Date(d.semesterStart);
+      dEl.value = dt.getFullYear() + "-" + ("0" + (dt.getMonth() + 1)).slice(-2) + "-" + ("0" + dt.getDate()).slice(-2);
+    } else { dEl.value = ""; }
+  }
+}
+function saveScheduleSettings() {
+  var d = loadSchedule();
+  var h = parseInt(document.getElementById("ssCardHeight").value, 10);
+  if (h > 0) d.cardHeight = h;
+  var dEl = document.getElementById("ssSemesterStart");
+  if (dEl && dEl.value) d.semesterStart = new Date(dEl.value + "T00:00:00").getTime();
+  saveSchedule(d);
+  showToast("课表设置已保存");
+  closeScheduleSettings();
+}
+
 function renderScheduleGrid(week) {
   var d = loadSchedule();
+  var gridEl = document.getElementById("scheduleGrid");
+  if (gridEl) gridEl.style.gridAutoRows = (d.cardHeight || 96) + "px";
   var courses = getVisibleCourses(d, week);
   var dates = getWeekDates(week);
   var html = "";
@@ -3108,7 +3171,7 @@ function showAbout() {
 // SCREEN MANAGEMENT
 // ============================================================
 function hideAllViews() {
-  ["homeScreen","chatView","dbView","aboutView","quizView","docView","caseView","caseDetail","learnCenterView","notebookView","plazaView","noteDetailView","profileView","pointsView","scheduleView"].forEach(function(id) {
+  ["homeScreen","chatView","dbView","aboutView","quizView","docView","caseView","caseDetail","learnCenterView","notebookView","plazaView","noteDetailView","profileView","pointsView","scheduleView","scheduleSettingsView"].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) el.classList.remove("show");
   });
