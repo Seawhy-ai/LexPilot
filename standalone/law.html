@@ -197,7 +197,7 @@
 
     ::-webkit-scrollbar{width:0}
     #homeScreen,.screen.show{animation:fadeInUp .35s ease}
-    #chatView.show,#dbView.show,#aboutView.show,#quizView.show,#docView.show,#caseView.show,#learnCenterView.show,#notebookView.show,#plazaView.show,#lawReaderView.show,#pointsView.show,#scheduleView.show,#scheduleSettingsView.show{animation:fadeIn .25s ease}
+    #chatView.show,#dbView.show,#aboutView.show,#quizView.show,#docView.show,#caseView.show,#learnCenterView.show,#notebookView.show,#plazaView.show,#lawReaderView.show,#pointsView.show,#scheduleView.show,#scheduleSettingsView.show,#videoView.show{animation:fadeIn .25s ease}
     @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
     #chatView{animation:fadeInUp .3s ease}
     @keyframes fadeInUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
@@ -571,6 +571,19 @@
     .sch-set-btn:active{background:#e0e0e0}
     #scheduleSettingsView{flex:1;display:none!important;flex-direction:column;overflow:hidden;background:var(--bg)}
     #scheduleSettingsView.show{display:flex!important}
+    #videoView{flex:1;display:none!important;flex-direction:column;overflow:hidden;background:var(--bg)}
+    #videoView.show{display:flex!important}
+    .video-body{flex:1;overflow-y:auto;padding:14px 16px calc(16px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch;max-width:640px;margin:0 auto;width:100%}
+    .video-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:12px;margin-bottom:14px}
+    .video-wrap{position:relative;width:100%;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:#000}
+    .video-wrap iframe{width:100%;height:100%;border:none}
+    .video-title{font-size:14px;font-weight:700;color:var(--text);margin:10px 4px 0;line-height:1.4}
+    .video-meta{display:flex;align-items:center;justify-content:space-between;margin:4px 4px 0;font-size:11px;color:var(--text2)}
+    .video-del{border:none;background:none;color:#e74c3c;font-size:12px;cursor:pointer;font-family:inherit}
+    .video-empty{text-align:center;color:var(--text2);padding:60px 20px}
+    .video-empty svg{margin-bottom:12px;opacity:.3}
+    .video-empty p{font-size:13px;line-height:1.6}
+    .vid-form-input{width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid var(--card-border);border-radius:10px;background:var(--input-bg);color:var(--text);font-size:14px;outline:none;margin-bottom:10px;font-family:inherit}
     .ss-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:16px;margin-bottom:14px}
     .ss-val{font-size:20px;font-weight:700;color:var(--accent);text-align:center;margin-top:6px}
     .ss-save{width:100%;padding:13px;border:none;border-radius:12px;background:linear-gradient(135deg,#667eea,#4A90D9);color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
@@ -986,6 +999,20 @@
   </div>
 </div>
 
+<!-- ===== VIDEO CENTER VIEW ===== -->
+<div id="videoView" style="display:none">
+  <div class="wx-nav">
+    <button class="back" onclick="showLearningCenter()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span class="title">视频学习</span>
+    <div class="nav-right">
+      <button class="right-btn" onclick="openAddVideoForm()" title="添加B站视频">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="video-body" id="videoList"></div>
+</div>
+
 <!-- ===== ABOUT VIEW ===== -->
 
 <!-- ===== PROFILE VIEW ===== -->
@@ -1187,6 +1214,11 @@
         <div class="lc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/></svg></div>
         <div class="lc-name">课程表</div>
         <div class="lc-desc">VIP 专属 · 周课程安排</div>
+      </div>
+      <div class="learn-card" onclick="showVideoCenter()">
+        <div class="lc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="M10 9l5 3-5 3z"/></svg></div>
+        <div class="lc-name">视频</div>
+        <div class="lc-desc">B站法学课程 · 视频学习</div>
       </div>
     </div>
   </div>
@@ -1756,7 +1788,7 @@ function checkLoginState() {
 }
 
 function showLoginScreen() {
-  ["homeScreen","chatView","dbView","aboutView","quizView","docView","caseView","caseDetail","learnCenterView","notebookView","plazaView","noteDetailView","profileView","pointsView","scheduleView","scheduleSettingsView"].forEach(function(id) {
+  ["homeScreen","chatView","dbView","aboutView","quizView","docView","caseView","caseDetail","learnCenterView","notebookView","plazaView","noteDetailView","profileView","pointsView","scheduleView","scheduleSettingsView","videoView"].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) { el.classList.remove("show"); el.style.display = "none"; }
   });
@@ -2722,6 +2754,86 @@ function saveScheduleSettings() {
   closeScheduleSettings();
 }
 
+// ===== 视频中心（B站嵌入） =====
+var VIDEO_KEY = "seawhy-lex-videos";
+function loadVideos() {
+  try { return JSON.parse(localStorage.getItem(VIDEO_KEY) || "[]"); } catch (e) { return []; }
+}
+function saveVideos(v) { try { localStorage.setItem(VIDEO_KEY, JSON.stringify(v)); } catch (e) {} }
+function showVideoCenter() {
+  hideAllViews();
+  document.getElementById("videoView").style.display = "";
+  document.getElementById("videoView").classList.add("show");
+  renderVideos();
+}
+function renderVideos() {
+  var list = document.getElementById("videoList");
+  if (!list) return;
+  var vids = loadVideos();
+  if (!vids.length) {
+    list.innerHTML = '<div class="video-empty"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="M10 9l5 3-5 3z"/></svg><p>还没有视频<br>点右上角 + 粘贴 B 站链接添加</p></div>';
+    return;
+  }
+  var h = "";
+  for (var i = 0; i < vids.length; i++) {
+    var v = vids[i];
+    var src = "https://player.bilibili.com/player.html?bvid=" + encodeURIComponent(v.bvid) + "&high_quality=1&danmaku=0";
+    h += '<div class="video-card">' +
+      '<div class="video-wrap"><iframe src="' + src + '" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe></div>' +
+      '<div class="video-title">' + escHtml(v.title || ("B站视频" + (i + 1))) + '</div>' +
+      '<div class="video-meta"><span>bilibili · ' + escHtml(v.bvid) + '</span>' +
+      '<button class="video-del" onclick="deleteVideo(' + i + ')">删除</button></div>' +
+      '</div>';
+  }
+  list.innerHTML = h;
+}
+function deleteVideo(idx) {
+  var vids = loadVideos();
+  if (idx < 0 || idx >= vids.length) return;
+  if (!confirm("删除该视频？")) return;
+  vids.splice(idx, 1);
+  saveVideos(vids);
+  renderVideos();
+}
+function parseBvid(url) {
+  var m = url.match(/BV[0-9A-Za-z]+/);
+  return m ? m[0] : "";
+}
+function openAddVideoForm() {
+  var overlay = document.createElement("div");
+  overlay.id = "videoFormOverlay";
+  overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:600;display:flex;align-items:center;justify-content:center;padding:16px";
+  var box = document.createElement("div");
+  box.style.cssText = "position:relative;background:var(--card-bg);border-radius:18px;padding:18px;max-width:320px;width:100%";
+  box.innerHTML =
+    '<button class="modal-close" onclick="document.getElementById(\'videoFormOverlay\').remove()">✕</button>' +
+    '<p style="font-size:16px;font-weight:700;color:var(--text);margin:0 0 12px">添加 B 站视频</p>' +
+    '<label class="sf-label">视频标题</label>' +
+    '<input id="vfTitle" type="text" maxlength="30" placeholder="如：民法典讲解" class="vid-form-input" />' +
+    '<label class="sf-label">B 站视频链接</label>' +
+    '<input id="vfUrl" type="text" placeholder="https://www.bilibili.com/video/BV1xx411c7mD" class="vid-form-input" />' +
+    '<div style="display:flex;gap:8px">' +
+    '<button class="sf-save" onclick="addVideo()">添加</button>' +
+    '<button class="sf-cancel" onclick="document.getElementById(\'videoFormOverlay\').remove()">取消</button>' +
+    '</div>';
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+}
+function addVideo() {
+  var title = document.getElementById("vfTitle").value.trim();
+  var url = document.getElementById("vfUrl").value.trim();
+  var bvid = parseBvid(url);
+  if (!bvid) { showToast("请输入有效的 B 站视频链接"); return; }
+  if (!title) title = "B站视频";
+  var vids = loadVideos();
+  vids.push({ title: title, bvid: bvid });
+  saveVideos(vids);
+  var ov = document.getElementById("videoFormOverlay");
+  if (ov) ov.remove();
+  renderVideos();
+  showToast("视频已添加");
+}
+
 function renderScheduleGrid(week) {
   var d = loadSchedule();
   var gridEl = document.getElementById("scheduleGrid");
@@ -3171,7 +3283,7 @@ function showAbout() {
 // SCREEN MANAGEMENT
 // ============================================================
 function hideAllViews() {
-  ["homeScreen","chatView","dbView","aboutView","quizView","docView","caseView","caseDetail","learnCenterView","notebookView","plazaView","noteDetailView","profileView","pointsView","scheduleView","scheduleSettingsView"].forEach(function(id) {
+  ["homeScreen","chatView","dbView","aboutView","quizView","docView","caseView","caseDetail","learnCenterView","notebookView","plazaView","noteDetailView","profileView","pointsView","scheduleView","scheduleSettingsView","videoView"].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) el.classList.remove("show");
   });
