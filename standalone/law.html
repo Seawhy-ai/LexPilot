@@ -36,7 +36,8 @@
       --invite-bg:#111;--accent:#5dade2;--accent-light:rgba(93,173,226,0.18);
       --modal-overlay:rgba(0,0,0,0.75);--toast-bg:#444;--toast-text:#e5e5e5;
     }
-    body{display:flex;flex-direction:column;background:var(--bg)}
+    html{height:100%}
+    body{display:flex;flex-direction:column;background:var(--bg);height:100dvh;overflow:hidden;overscroll-behavior:none}
 
     /* ===== SCREENS ===== */
     .screen{flex:1;display:none!important;flex-direction:column;overflow-y:auto;background:var(--invite-bg);-webkit-overflow-scrolling:touch}
@@ -2036,6 +2037,22 @@ if (document.readyState === "loading") {
 } else {
   initApp();
 }
+
+// 移动端键盘适配：body 高度跟随可视视口，防止整体上移/滚动
+(function() {
+  if (!window.visualViewport) return;
+  var vv = window.visualViewport;
+  function syncBodyHeight() {
+    var h = vv.height;
+    if (h <= 0) return;
+    document.body.style.height = h + "px";
+  }
+  vv.addEventListener("resize", syncBodyHeight);
+  vv.addEventListener("scroll", syncBodyHeight);
+  window.addEventListener("orientationchange", function() {
+    setTimeout(syncBodyHeight, 120);
+  });
+})();
 
 
 // ============================================================
