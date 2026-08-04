@@ -2756,8 +2756,16 @@ function saveScheduleSettings() {
 
 // ===== 视频中心（B站嵌入） =====
 var VIDEO_KEY = "seawhy-lex-videos";
+var DEFAULT_VIDEOS = [
+  { title: "2027法硕精讲 · 刑法学（车润海·众合）", bvid: "BV1ZqPNzTEss" }
+];
 function loadVideos() {
-  try { return JSON.parse(localStorage.getItem(VIDEO_KEY) || "[]"); } catch (e) { return []; }
+  try {
+    var v = JSON.parse(localStorage.getItem(VIDEO_KEY) || "null");
+    if (Array.isArray(v)) return v;
+  } catch (e) {}
+  saveVideos(DEFAULT_VIDEOS);
+  return DEFAULT_VIDEOS.slice();
 }
 function saveVideos(v) { try { localStorage.setItem(VIDEO_KEY, JSON.stringify(v)); } catch (e) {} }
 function showVideoCenter() {
