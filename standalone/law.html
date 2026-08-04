@@ -504,7 +504,7 @@
 
     /* PROFILE */
     .profile-card{text-align:center;padding:24px 20px 16px}
-    .profile-card .ph-avatar{width:64px;height:64px;border-radius:50%;background:#f5f5f5;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 10px;border:2px solid transparent}
+    .profile-card .ph-avatar{width:64px;height:64px;border-radius:50%;background:#f5f5f5;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 10px;border:2px solid transparent;visibility:hidden}
     body.dark .profile-card .ph-avatar{background:#2a2a2a}
     .ph-name-row{display:inline-flex;align-items:center;justify-content:center;gap:2px}
     .ph-name{font-size:18px;font-weight:700;color:#111}
@@ -584,7 +584,7 @@
     .ss-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:16px;margin-bottom:14px}
     .ss-val{font-size:20px;font-weight:700;color:var(--accent);text-align:center;margin-top:6px}
     .ss-save{width:100%;padding:13px;border:none;border-radius:12px;background:linear-gradient(135deg,#667eea,#4A90D9);color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
-    .schedule-scroll{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:8px 6px}
+    .schedule-scroll{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:8px 6px;touch-action:pan-y}
     .schedule-grid{display:grid;grid-template-columns:48px repeat(7,1fr);grid-template-rows:32px;grid-auto-rows:96px;gap:2px;min-width:0;width:100%;background:#fff}
     .sch-corner,.sch-dayhead,.sch-time{background:#fff}
     .sch-corner{display:flex;align-items:center;justify-content:center;font-size:11px;color:#999;font-weight:600}
@@ -2074,6 +2074,22 @@ if (document.readyState === "loading") {
   });
 })();
 
+// 打开任何新界面默认滑到最顶端（聊天保留阅读位置）
+(function() {
+  if (!window.MutationObserver) return;
+  var SELS = ".about-body,.points-body,.video-body,.learn-body,.quiz-body,.db-body,.doc-body,.case-body,.notebook-body,.schedule-scroll,.lr-body,.plaza-body,.note-detail-body,.screen,.case-detail";
+  new MutationObserver(function(muts) {
+    for (var i = 0; i < muts.length; i++) {
+      if (muts[i].type !== "attributes" || muts[i].attributeName !== "class") continue;
+      var el = muts[i].target;
+      if (!el.classList || !el.classList.contains("show")) continue;
+      if (el.id === "chatView") continue; // 聊天保留位置
+      var sc = el.querySelector(SELS);
+      if (sc) requestAnimationFrame(function() { sc.scrollTop = 0; });
+    }
+  }).observe(document.body, { subtree: true, attributes: true, attributeFilter: ["class"] });
+})();
+
 
 // ============================================================
 // SeaWhy Lex v2.0 — Full App Logic
@@ -2230,7 +2246,7 @@ function pickProfileAvatar() {
     var isCurrent = AVATARS[i] === current && !customSelected;
     h += '<button class="avatar-pick-btn' + (isCurrent ? ' selected' : '') + '" data-emoji="' + AVATARS[i] + '" style="width:44px;height:44px;border-radius:50%;border:2px solid ' + (isCurrent ? 'var(--accent)' : 'var(--card-border)') + ';background:var(--card-bg);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center' + (isCurrent ? ';transform:scale(1.15);box-shadow:0 0 0 3px rgba(74,144,217,0.25)' : '') + '">' + AVATARS[i] + '</button>';
   }
-  h += '</div><div style="display:flex;justify-content:center;margin-bottom:12px"><button id="avatarUploadBtn" type="button" style="width:100%;max-width:220px;height:44px;border-radius:12px;border:2px solid ' + (customSelected ? 'var(--accent)' : 'var(--card-border)') + ';background:var(--card-bg);font-size:14px;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px' + (customSelected ? ';transform:scale(1.01);box-shadow:0 0 0 3px rgba(74,144,217,0.18)' : '') + '"><span>📷</span><span>' + (isVip() ? '上传头像' : '上传头像（VIP）') + '</span></button></div>';
+  h += '</div><div style="display:flex;justify-content:center;margin-bottom:12px"><button id="avatarUploadBtn" type="button" style="width:100%;max-width:220px;height:44px;border-radius:12px;border:2px solid ' + (customSelected ? 'var(--accent)' : 'var(--card-border)') + ';background:var(--card-bg);font-size:14px;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px' + (customSelected ? ';transform:scale(1.01);box-shadow:0 0 0 3px rgba(74,144,217,0.18)' : '') + '"><span>📷</span><span>上传头像</span></button></div>';
   h += '<input id="avatarUploadInput" type="file" accept="image/*" style="display:none" />';
   h += '</div><div style="display:flex;gap:8px;justify-content:center">' +
        '<button id="confirmAvatarPickBtn" style="flex:1;padding:10px;border:none;border-radius:12px;background:var(--accent);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">确定</button>' +
@@ -2249,7 +2265,6 @@ function pickProfileAvatar() {
     if (!t || t.tagName !== "BUTTON") return;
     var id = t.id;
     if (id === "avatarUploadBtn") {
-      if (!isVip()) { showToast("VIP 专属：开通 VIP 后可上传自定义头像"); return; }
       var input = document.getElementById("avatarUploadInput");
       if (input) input.click();
       return;
@@ -2414,9 +2429,7 @@ function goToProfile() {
   } else {
     fly.textContent = p.avatar || "👤";
   }
-  // 飞行期间按钮清空（头像"飞走"了）
-  btn.innerHTML = "";
-  btn.textContent = "";
+  // 左上角按钮保留头像（个人中心不显示头像）
   fly.style.cssText = "position:fixed;z-index:999;width:40px;height:40px;border-radius:50%;font-size:22px;display:flex;align-items:center;justify-content:center;background:#fff;overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,0.25);transition:all .3s cubic-bezier(.35,.1,.25,1);left:" + startRect.left + "px;top:" + startRect.top + "px;";
   document.body.appendChild(fly);
   requestAnimationFrame(function() {
@@ -2434,7 +2447,6 @@ function goToProfile() {
   });
   setTimeout(function() {
     if (fly.parentNode) fly.parentNode.removeChild(fly);
-    renderHomeAvatar(); // 回主页时恢复
   }, 450);
 }
 
