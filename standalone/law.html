@@ -49,7 +49,7 @@
     body.dark #homeScreen{background:linear-gradient(180deg,#1a1a1a 0%,#151515 25%,#111 60%,#1a1a1a 100%)}
     #homeScreen.hide{display:none!important}
 
-    .profile-btn{position:absolute;top:calc(16px + var(--safe-top));left:20px;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);background:rgba(255,255,255,0.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(0,0,0,0.06);z-index:10;transition:all .15s}
+    .profile-btn{position:absolute;top:calc(16px + var(--safe-top));left:20px;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);font-size:20px;background:rgba(255,255,255,0.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(0,0,0,0.06);z-index:10;transition:all .15s;overflow:hidden}
     body.dark .profile-btn{background:rgba(40,40,40,0.6);border:1px solid rgba(255,255,255,0.08)}
     .profile-btn:active{transform:scale(.92);opacity:.8}
 
@@ -585,7 +585,7 @@
     .ss-val{font-size:20px;font-weight:700;color:var(--accent);text-align:center;margin-top:6px}
     .ss-save{width:100%;padding:13px;border:none;border-radius:12px;background:linear-gradient(135deg,#667eea,#4A90D9);color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
     .schedule-scroll{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:8px 6px}
-    .schedule-grid{display:grid;grid-template-columns:48px repeat(7,1fr);grid-template-rows:32px;grid-auto-rows:96px;gap:2px;min-width:0;width:100%}
+    .schedule-grid{display:grid;grid-template-columns:48px repeat(7,1fr);grid-template-rows:32px;grid-auto-rows:96px;gap:2px;min-width:0;width:100%;background:#fff}
     .sch-corner,.sch-dayhead,.sch-time{background:#fff}
     .sch-corner{display:flex;align-items:center;justify-content:center;font-size:11px;color:#999;font-weight:600}
     .sch-dayhead{display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#333;padding:0;line-height:1.15}
@@ -653,9 +653,7 @@
 
 <!-- ===== HOME SCREEN ===== -->
 <div class="screen" id="homeScreen" style="display:none">
-  <div class="profile-btn" onclick="showProfile()" title="个人中心">
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-</div>
+  <div class="profile-btn" id="homeProfileBtn" onclick="goToProfile()" title="个人中心"></div>
 <div class="welcome-hero">
     <div class="whale-icon">🐋</div>
     <h1 class="typewriter" id="typewriter"></h1>
@@ -1888,10 +1886,17 @@ function skipLogin() {
 }
 
 function logoutAccount() {
-  if (confirm("确定要退出登录吗？本地数据不会丢失。")) {
+  if (confirm("确定要退出登录吗？退出后将清空本机全部数据（头像、昵称、积分、笔记、待办、课程表、视频等），且不可恢复。")) {
     currentUser = null;
-    showToast("已退出登录");
-    showLoginScreen();
+    try {
+      var keys = [];
+      for (var i = 0; i < localStorage.length; i++) keys.push(localStorage.key(i));
+      keys.forEach(function(k) { if (k.indexOf("seawhy-") === 0) localStorage.removeItem(k); });
+    } catch(e) {}
+    // 重置内存状态
+    try { wrongBook = []; saveWrongBook(); } catch(e) {}
+    showToast("已退出登录，数据已清空");
+    location.reload();
   }
 }
 
@@ -2192,6 +2197,7 @@ function updateProfileUI() {
     }
   }
   if (nameEl) nameEl.textContent = p.nickname || "法律人";
+  renderHomeAvatar();
   renderLevelBadges();
   if (ptsEl) ptsEl.textContent = p.points || 0;
   // Count study days
@@ -2382,6 +2388,49 @@ function getLevelInfo(totalPoints) {
   return info;
 }
 function getLevel(totalPoints) { return getLevelInfo(totalPoints).name; }
+
+// 主页左上角头像
+function renderHomeAvatar() {
+  var btn = document.getElementById("homeProfileBtn");
+  if (!btn) return;
+  var p = loadProfile();
+  if (p.avatarType === "image" && p.avatarDataUrl) {
+    btn.innerHTML = '<img src="' + p.avatarDataUrl + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%" />';
+  } else {
+    btn.textContent = p.avatar || "👤";
+  }
+}
+
+// 头像飞向个人中心动画
+function goToProfile() {
+  var btn = document.getElementById("homeProfileBtn");
+  if (!btn) { showProfile(); return; }
+  var p = loadProfile();
+  var startRect = btn.getBoundingClientRect();
+  var fly = document.createElement("div");
+  var isImg = p.avatarType === "image" && p.avatarDataUrl;
+  if (isImg) {
+    fly.innerHTML = '<img src="' + p.avatarDataUrl + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%" />';
+  } else {
+    fly.textContent = p.avatar || "👤";
+  }
+  fly.style.cssText = "position:fixed;z-index:999;width:40px;height:40px;border-radius:50%;font-size:22px;display:flex;align-items:center;justify-content:center;background:#fff;overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,0.25);transition:all .45s cubic-bezier(.35,.1,.25,1);left:" + startRect.left + "px;top:" + startRect.top + "px;";
+  document.body.appendChild(fly);
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      showProfile();
+      var target = document.querySelector(".profile-card .ph-avatar");
+      if (!target) { if (fly.parentNode) fly.parentNode.removeChild(fly); return; }
+      var endRect = target.getBoundingClientRect();
+      fly.style.left = endRect.left + "px";
+      fly.style.top = endRect.top + "px";
+      fly.style.width = endRect.width + "px";
+      fly.style.height = endRect.height + "px";
+      fly.style.fontSize = "30px";
+    });
+  });
+  setTimeout(function() { if (fly.parentNode) fly.parentNode.removeChild(fly); }, 650);
+}
 
 // 徽章轮播渲染
 function renderLevelBadges() {
@@ -2817,9 +2866,31 @@ function renderScheduleView() {
 }
 function changeScheduleWeek(delta) {
   var d = loadSchedule();
-  d.currentWeek = Math.max(1, Math.min(30, d.currentWeek + delta));
-  saveSchedule(d);
-  renderScheduleView();
+  var newWeek = Math.max(1, Math.min(30, d.currentWeek + delta));
+  if (newWeek === d.currentWeek) return;
+  var grid = document.getElementById("scheduleGrid");
+  var dir = delta > 0 ? -1 : 1;
+  // 先滑出
+  if (grid) {
+    grid.style.transition = "transform .22s ease, opacity .22s ease";
+    grid.style.transform = "translateX(" + (dir * 45) + "px)";
+    grid.style.opacity = "0.2";
+  }
+  setTimeout(function() {
+    d.currentWeek = newWeek;
+    saveSchedule(d);
+    renderScheduleView();
+    var g2 = document.getElementById("scheduleGrid");
+    if (g2) {
+      g2.style.transition = "none";
+      g2.style.transform = "translateX(" + (dir * -45) + "px)";
+      g2.style.opacity = "0.2";
+      void g2.offsetWidth; // 强制回流
+      g2.style.transition = "transform .24s ease, opacity .24s ease";
+      g2.style.transform = "translateX(0)";
+      g2.style.opacity = "1";
+    }
+  }, 200);
 }
 
 // ===== 课表设置 =====
@@ -3411,6 +3482,10 @@ function hideAllViews() {
     var el = document.getElementById(id);
     if (el) el.classList.remove("show");
   });
+  window.scrollTo(0, 0);
+  // 新界面默认滚到最顶端（聊天保留阅读位置）
+  var scs = document.querySelectorAll(".about-body,.points-body,.video-body,.learn-body,.quiz-body,.db-body,.doc-body,.case-body,.notebook-body,.schedule-scroll,.lr-body,.plaza-body,.note-detail-body,.screen,.case-detail");
+  for (var si = 0; si < scs.length; si++) scs[si].scrollTop = 0;
 }
 
 var _welcomePlayed = false;
