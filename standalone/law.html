@@ -86,7 +86,7 @@
     .hbg-name{font-size:14px;font-weight:600;color:var(--text)}
     .hbg-desc{font-size:11px;color:var(--text2)}
 
-    .profile-btn{position:absolute;top:calc(16px + var(--safe-top));left:20px;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);font-size:20px;background:rgba(255,255,255,0.3);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.5);z-index:10;transition:all .15s;overflow:hidden}
+    .profile-btn{position:absolute!important;top:calc(16px + var(--safe-top));left:20px!important;right:auto!important;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);font-size:20px;background:rgba(255,255,255,0.3);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.5);z-index:10;transition:all .15s;overflow:hidden}
     body.dark .profile-btn{background:rgba(40,40,40,0.35);border:1px solid rgba(255,255,255,0.15)}
     body.dark .profile-btn{background:rgba(40,40,40,0.6);border:1px solid rgba(255,255,255,0.08)}
     .profile-btn:active{transform:scale(.92);opacity:.8}
@@ -105,7 +105,7 @@
     .quote-card:active{transform:scale(.98);box-shadow:0 3px 12px rgba(0,0,0,0.06)}
     body.dark .quote-card{background:rgba(40,40,40,0.8);border:1px solid rgba(255,255,255,0.08);box-shadow:0 4px 24px rgba(0,0,0,0.3)}
     .quote-text{position:relative;z-index:1;font-family:"SimSun","STSong","Songti SC","Noto Serif CJK SC",serif;font-size:16px;line-height:1.9;color:#111;margin-bottom:12px;letter-spacing:1px;transition:opacity .25s ease;display:-webkit-box;-webkit-line-clamp:4;line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
-    .quote-author{position:relative;z-index:1;font-size:12px;color:var(--text2);text-align:right;opacity:.7;transition:opacity .25s ease;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .quote-author{position:relative;z-index:1;font-size:12px;color:#111;text-align:right;opacity:.8;transition:opacity .25s ease;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
     /* home dash cards (打卡 / 今日待办) */
     .home-dash{display:flex;gap:12px;max-width:420px;width:calc(100% - 32px);margin:0 auto 14px}
@@ -113,7 +113,7 @@
     body.dark .dash-card{background:rgba(40,40,40,0.8);border:1px solid rgba(255,255,255,0.08);box-shadow:0 4px 24px rgba(0,0,0,0.3)}
     .dash-card:active{transform:scale(.97)}
     .dash-head{display:flex;align-items:center;gap:5px;width:100%;justify-content:flex-start}
-    .dash-head .dash-icon{color:var(--accent);width:22px;height:22px;border-radius:7px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .dash-head .dash-icon{color:#111;width:22px;height:22px;border-radius:7px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;flex-shrink:0}
     .dash-head .dash-icon svg{width:14px;height:14px}
     .dash-head .dash-name{font-size:11px;font-weight:600;color:#111;letter-spacing:.5px;white-space:nowrap}
     .dash-main{font-size:16px;font-weight:700;color:#111;margin-top:8px;text-align:left;line-height:1.4;word-break:break-word;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -126,7 +126,7 @@
     /* frosted bottom nav card */
     #bottomNav{display:flex;justify-content:space-around;align-items:center;margin:0 auto;margin-bottom:calc(12px + env(safe-area-inset-bottom));padding:10px 12px;background:rgba(255,255,255,0.42);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.6);border-radius:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.04);flex-shrink:0;max-width:380px;width:calc(100% - 48px)}
     body.dark #bottomNav{background:rgba(40,40,40,0.8);border:1px solid rgba(255,255,255,0.08);box-shadow:0 4px 24px rgba(0,0,0,0.3)}
-    #bottomNav .nav-item{display:flex;align-items:center;justify-content:center;cursor:pointer;padding:12px;border:none;background:none;color:var(--text2);font-family:inherit;transition:all .15s;border-radius:16px;flex:1}
+    #bottomNav .nav-item{display:flex;align-items:center;justify-content:center;cursor:pointer;padding:12px;border:none;background:none;color:#111;font-family:inherit;transition:all .15s;border-radius:16px;flex:1}
     #bottomNav .nav-item:active{color:var(--accent);background:rgba(74,144,217,0.08)}
     #bottomNav .nav-item svg{width:24px;height:24px}
     .cta-btn{display:flex;align-items:center;justify-content:center;gap:4px;width:100%;max-width:320px;margin:0 auto 20px;padding:15px 24px;border:none;border-radius:16px;font-size:clamp(15px,3.5vw,17px);font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(135deg,#1a5276,#2980b9);box-shadow:0 4px 20px rgba(26,82,118,0.3);transition:all .15s;font-family:inherit;letter-spacing:.5px;min-height:50px}
@@ -1342,7 +1342,11 @@
     <div id="quizSubjectScreen">
       <div class="quiz-header">
         <h2>选择科目</h2>
-        <p>法学题库 · 选择科目开始练习</p>
+        <p>先选模式，再选科目和章节开始练习</p>
+      </div>
+      <div class="quiz-mode-bar" style="margin-bottom:14px">
+        <button class="quiz-mode-btn active" id="subjModePractice" onclick="selectSubjectMode('practice')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:3px"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>练习模式</button>
+        <button class="quiz-mode-btn" id="subjModeExam" onclick="selectSubjectMode('exam')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:3px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>考试模式</button>
       </div>
       <div class="quiz-subject-grid" id="quizSubjectGrid"></div>
     </div>
@@ -4672,6 +4676,7 @@ function setQuizScreen(screen) {
 
 function showQuizSubjects() {
   setQuizScreen("subjects");
+  selectSubjectMode(QUIZ_STATE.mode);
   var subjects = [];
   var totalAll = 0;
   for (var k in QUIZ_DATA) {
@@ -4931,6 +4936,19 @@ function setQuizMode(mode) {
   QUIZ_STATE.currentIndex = 0;
   // 切换模式不重排题目顺序
   filterQuizQuestions(true);
+}
+
+// 科目选择页的模式切换（练习/考试）
+function selectSubjectMode(mode) {
+  QUIZ_STATE.mode = mode;
+  var sp = document.getElementById("subjModePractice");
+  var se = document.getElementById("subjModeExam");
+  if (sp) sp.classList.toggle("active", mode === "practice");
+  if (se) se.classList.toggle("active", mode === "exam");
+  var mp = document.getElementById("modePractice");
+  var me = document.getElementById("modeExam");
+  if (mp) mp.classList.toggle("active", mode === "practice");
+  if (me) me.classList.toggle("active", mode === "exam");
 }
 
 function submitExam() {
