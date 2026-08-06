@@ -1618,20 +1618,35 @@ function applyHomeBg() {
     bg.innerHTML = "";
   }
 }
+function getOwnedBgs() {
+  var p = loadProfile();
+  return p.bgOwned || [];
+}
+function ownBg(key) {
+  var p = loadProfile();
+  if (!p.bgOwned) p.bgOwned = [];
+  if (p.bgOwned.indexOf(key) < 0) p.bgOwned.push(key);
+  saveProfile(p);
+}
 function openHomeBgPicker() {
   var overlay = document.createElement("div");
   overlay.id = "homeBgOverlay";
   overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:600;display:flex;align-items:center;justify-content:center;padding:16px";
   var box = document.createElement("div");
   box.style.cssText = "position:relative;background:var(--card-bg);border-radius:18px;padding:18px;max-width:320px;width:100%";
+  var owned = getOwnedBgs();
+  var p = loadProfile();
   var h = '<button class="modal-close" onclick="document.getElementById(\'homeBgOverlay\').remove()">✕</button>' +
-    '<p style="font-size:16px;font-weight:700;color:var(--text);margin:0 0 12px">主页背景</p>';
+    '<p style="font-size:16px;font-weight:700;color:var(--text);margin:0 0 4px">主页背景</p>' +
+    '<p style="font-size:11px;color:var(--text2);margin:0 0 12px">高级背景 100 积分/个，余额 ' + (p.points || 0) + ' 分</p>';
   for (var i = 0; i < HOME_BGS.length; i++) {
     var b = HOME_BGS[i];
     var cur = (options.homeBg || "default") === b.key;
+    var isOwned = b.key === "default" || owned.indexOf(b.key) >= 0;
+    var status = cur ? ' ✓ 使用中' : (isOwned ? ' 已拥有' : ' · 100积分');
     h += '<div class="hbg-opt' + (cur ? " on" : "") + '" onclick="selectHomeBg(\'' + b.key + '\')">' +
       '<div class="hbg-swatch bg-' + b.key + '"></div>' +
-      '<div><div class="hbg-name">' + b.name + (cur ? ' ✓' : '') + '</div><div class="hbg-desc">' + b.desc + '</div></div>' +
+      '<div><div class="hbg-name">' + b.name + '<span style="font-size:11px;color:var(--accent)">' + status + '</span></div><div class="hbg-desc">' + b.desc + '</div></div>' +
       '</div>';
   }
   box.innerHTML = h;
@@ -1639,6 +1654,18 @@ function openHomeBgPicker() {
   document.body.appendChild(overlay);
 }
 function selectHomeBg(key) {
+  var p = loadProfile();
+  var owned = getOwnedBgs();
+  if (key !== "default" && owned.indexOf(key) < 0) {
+    // 未拥有：需要 100 积分兑换
+    if ((p.points || 0) < 100) {
+      showToast("积分不足，高级背景需 100 积分");
+      return;
+    }
+    addPoints(-100, "兑换背景");
+    ownBg(key);
+    showToast("已解锁背景 +100积分");
+  }
   options.homeBg = key;
   try { localStorage.setItem("seawhy-lex-opts", JSON.stringify(options)); } catch(e) {}
   applyHomeBg();
