@@ -63,9 +63,9 @@
     .home-bg.bg-starry .star{position:absolute;border-radius:50%;background:#fff;animation:twinkle 2.6s ease-in-out infinite;box-shadow:0 0 6px rgba(255,255,255,.7)}
     .home-bg.bg-starry .star.big{box-shadow:0 0 12px rgba(255,255,255,.9)}
     .home-bg.bg-starry .shooting{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff;opacity:0;animation:shoot 5s linear infinite}
-    .home-bg.bg-starry .shooting::after{content:"";position:absolute;top:0;left:0;width:70px;height:1.5px;background:linear-gradient(90deg,#fff,transparent);transform:rotate(45deg);transform-origin:left center}
+    .home-bg.bg-starry .shooting::after{content:"";position:absolute;top:0;right:0;width:70px;height:1.5px;background:linear-gradient(90deg,transparent,#fff);transform:rotate(-45deg);transform-origin:right center}
     @keyframes twinkle{0%,100%{opacity:.12}50%{opacity:1}}
-    @keyframes shoot{0%{transform:translate(0,0);opacity:0}5%{opacity:1}20%{transform:translate(-70px,70px);opacity:0}100%{opacity:0}}
+    @keyframes shoot{0%{transform:translate(0,0);opacity:0}5%{opacity:1}20%{transform:translate(-70px,-70px);opacity:0}100%{opacity:0}}
     .home-bg.bg-ocean{background:linear-gradient(180deg,#dff2ff,#b5ddff 45%,#8cc8ff 70%,#6db9ff)}
     body.dark .home-bg.bg-ocean{background:linear-gradient(180deg,#062233,#0a3a5c 55%,#06304f)}
     .home-bg.bg-ocean .wave{position:absolute;bottom:-18%;width:200%;height:55%;background:radial-gradient(ellipse at 50% 0%,rgba(255,255,255,.45),transparent 62%);animation:waveMove 9s linear infinite}
@@ -104,7 +104,7 @@
     .quote-card:hover{transform:translateY(-1px);box-shadow:0 8px 26px rgba(0,0,0,0.08)}
     .quote-card:active{transform:scale(.98);box-shadow:0 3px 12px rgba(0,0,0,0.06)}
     body.dark .quote-card{background:rgba(40,40,40,0.8);border:1px solid rgba(255,255,255,0.08);box-shadow:0 4px 24px rgba(0,0,0,0.3)}
-    .quote-text{position:relative;z-index:1;font-family:"SimSun","STSong","Songti SC","Noto Serif CJK SC",serif;font-size:16px;line-height:1.9;color:var(--text);margin-bottom:12px;letter-spacing:1px;transition:opacity .25s ease;display:-webkit-box;-webkit-line-clamp:4;line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
+    .quote-text{position:relative;z-index:1;font-family:"SimSun","STSong","Songti SC","Noto Serif CJK SC",serif;font-size:16px;line-height:1.9;color:#111;margin-bottom:12px;letter-spacing:1px;transition:opacity .25s ease;display:-webkit-box;-webkit-line-clamp:4;line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
     .quote-author{position:relative;z-index:1;font-size:12px;color:var(--text2);text-align:right;opacity:.7;transition:opacity .25s ease;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
     /* home dash cards (打卡 / 今日待办) */
@@ -115,8 +115,8 @@
     .dash-head{display:flex;align-items:center;gap:5px;width:100%;justify-content:flex-start}
     .dash-head .dash-icon{color:var(--accent);width:22px;height:22px;border-radius:7px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;flex-shrink:0}
     .dash-head .dash-icon svg{width:14px;height:14px}
-    .dash-head .dash-name{font-size:11px;font-weight:600;color:var(--text2);letter-spacing:.5px;white-space:nowrap}
-    .dash-main{font-size:16px;font-weight:700;color:var(--text);margin-top:8px;text-align:left;line-height:1.4;word-break:break-word;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .dash-head .dash-name{font-size:11px;font-weight:600;color:#111;letter-spacing:.5px;white-space:nowrap}
+    .dash-main{font-size:16px;font-weight:700;color:#111;margin-top:8px;text-align:left;line-height:1.4;word-break:break-word;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     #checkinStatus{text-align:center}
     .todo-preview{width:100%;display:flex;flex-direction:column;gap:3px;margin-top:8px}
     .todo-preview .tp-item{font-size:11px;color:var(--text);text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 2px;line-height:1.5;max-width:100%}
@@ -2610,26 +2610,28 @@ function exitProfile() {
   fly.style.width = "64px";
   fly.style.height = "64px";
   fly.style.fontSize = "30px";
-  // 同步：个人中心渐隐 + 头像飞回
+  // 个人中心渐隐
   if (profile) { profile.style.transition = "opacity .3s ease"; profile.style.opacity = "0"; }
-  requestAnimationFrame(function() {
-    fly.style.left = endRect.left + "px";
-    fly.style.top = endRect.top + "px";
+  setTimeout(function() {
+    goHome(); // 主页先显示
+    if (profile) { profile.style.transition = ""; profile.style.opacity = ""; }
+    // 主页显示后再定位头像按钮（落点准确）
+    var homeBtn = document.getElementById("homeProfileBtn");
+    var endRect2 = homeBtn ? homeBtn.getBoundingClientRect() : { left: 20, top: 60 };
+    fly.style.left = endRect2.left + "px";
+    fly.style.top = endRect2.top + "px";
     fly.style.width = "40px";
     fly.style.height = "40px";
     fly.style.fontSize = "20px";
-  });
-  setTimeout(function() {
-    goHome();
-    if (profile) { profile.style.transition = ""; profile.style.opacity = ""; }
+    // 主页渐显（与头像飞回同步）
     if (home) {
       home.style.transition = "opacity .3s ease";
       home.style.opacity = "0";
     }
     requestAnimationFrame(function() { if (home) home.style.opacity = "1"; });
-    setTimeout(function() { if (home) { home.style.transition = ""; } }, 300);
+    setTimeout(function() { if (home) home.style.transition = ""; }, 300);
   }, 300);
-  setTimeout(function() { if (fly.parentNode) fly.parentNode.removeChild(fly); }, 620);
+  setTimeout(function() { if (fly.parentNode) fly.parentNode.removeChild(fly); }, 700);
 }
 
 // 徽章轮播渲染
@@ -4247,6 +4249,7 @@ var QUIZ_STATE = {
   chapter: "",
   screen: "subjects", // "subjects" | "chapters" | "quiz"
   subjectHasChapters: false,
+  examCount: 0,
   currentIndex: 0,
   questions: [],
   answers: {},
@@ -4709,6 +4712,37 @@ function startQuizPlay() {
   document.getElementById("quizSubtitle").textContent = QUIZ_STATE.chapter
     ? QUIZ_STATE.subject + " · " + QUIZ_STATE.chapter
     : (QUIZ_STATE.subject === "全部" ? "全部科目 · 随机练习" : QUIZ_STATE.subject + " · 全部章节");
+  if (QUIZ_STATE.mode === "exam") {
+    openExamCountPicker();
+    return;
+  }
+  filterQuizQuestions();
+}
+
+// 考试设置：选择题目个数
+function openExamCountPicker() {
+  var overlay = document.createElement("div");
+  overlay.id = "examCountOverlay";
+  overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:600;display:flex;align-items:center;justify-content:center;padding:16px";
+  var box = document.createElement("div");
+  box.style.cssText = "position:relative;background:var(--card-bg);border-radius:18px;padding:20px;max-width:300px;width:100%;text-align:center";
+  box.innerHTML =
+    '<button class="modal-close" onclick="document.getElementById(\'examCountOverlay\').remove()">✕</button>' +
+    '<p style="font-size:16px;font-weight:700;color:var(--text);margin:0 0 4px">考试设置</p>' +
+    '<p style="font-size:12px;color:var(--text2);margin:0 0 12px">来源：' + escHtml(QUIZ_STATE.subject) + (QUIZ_STATE.chapter ? ' · ' + escHtml(QUIZ_STATE.chapter) : '') + '</p>' +
+    '<div class="pp-grid">' +
+    '<div class="pp-card" onclick="pickExamCount(5)"><div class="pp-name">5 题</div></div>' +
+    '<div class="pp-card" onclick="pickExamCount(10)"><div class="pp-name">10 题</div></div>' +
+    '<div class="pp-card" onclick="pickExamCount(20)"><div class="pp-name">20 题</div></div>' +
+    '<div class="pp-card" onclick="pickExamCount(0)"><div class="pp-name">全部</div></div>' +
+    '</div>';
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+}
+function pickExamCount(n) {
+  QUIZ_STATE.examCount = n;
+  var ov = document.getElementById("examCountOverlay");
+  if (ov) ov.remove();
   filterQuizQuestions();
 }
 
@@ -4833,6 +4867,10 @@ function filterQuizQuestions(noReshuffle) {
       if (ansOrigIdx < 0) q._shuffledAns = q.ans;
       ansCounts[q._shuffledAns] = (ansCounts[q._shuffledAns] || 0) + 1;
     }
+  }
+  // 考试模式：按设定题数截取
+  if (QUIZ_STATE.mode === "exam" && QUIZ_STATE.examCount > 0 && all.length > QUIZ_STATE.examCount) {
+    all = all.slice(0, QUIZ_STATE.examCount);
   }
   QUIZ_STATE.questions = all;
   QUIZ_STATE.currentIndex = 0;
