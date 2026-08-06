@@ -2501,15 +2501,12 @@ function updateLevelDisplay(idx) {
   var total = p.totalPoints || 0;
   var fill = document.getElementById("profileLevelFill");
   var prog = document.getElementById("profileLevelProg");
-  if (idx < LEVELS.length - 1) {
-    var span = LEVELS[idx + 1].min - LEVELS[idx].min;
-    var have = total - LEVELS[idx].min;
-    var pct = Math.max(0, Math.min(100, Math.round(have / span * 100)));
-    if (fill) fill.style.width = pct + "%";
-    if (prog) prog.textContent = "累计 " + total + " 积分 · 距下一级还需 " + Math.max(0, LEVELS[idx + 1].min - total) + " 积分";
-  } else {
-    if (fill) fill.style.width = "100%";
-    if (prog) prog.textContent = "累计 " + total + " 积分 · 已达成最高等级";
+  var need = LEVELS[idx].min; // 到达该等级所需累计积分
+  var pct = need > 0 ? Math.max(0, Math.min(100, Math.round(total / need * 100))) : 100;
+  if (fill) fill.style.width = pct + "%";
+  if (prog) {
+    if (need > 0) prog.textContent = "当前 " + total + " / 需要 " + need + " 积分";
+    else prog.textContent = "当前 " + total + " 积分";
   }
   // 高亮当前查看的徽章
   var items = document.querySelectorAll(".ph-level-item");
