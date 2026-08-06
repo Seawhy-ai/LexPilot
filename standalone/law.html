@@ -45,9 +45,36 @@
     #loginScreen .screen{display:none!important}
     #loginScreen.screen.show{display:flex!important}
     body.dark #loginScreen{background:linear-gradient(180deg,#1a1a1a 0%,#151515 100%)!important}
-    #homeScreen{align-items:center;justify-content:space-between;padding:0;text-align:center;min-height:100dvh;min-height:-webkit-fill-available;background:linear-gradient(180deg,#fff 0%,#f2f5f8 25%,#e8ecf2 60%,#f5f6f8 100%);position:relative}
+    #homeScreen{align-items:center;justify-content:space-between;padding:0;text-align:center;min-height:100dvh;min-height:-webkit-fill-available;background:linear-gradient(180deg,#fff 0%,#f2f5f8 25%,#e8ecf2 60%,#f5f6f8 100%);position:relative;overflow:hidden}
     body.dark #homeScreen{background:linear-gradient(180deg,#1a1a1a 0%,#151515 25%,#111 60%,#1a1a1a 100%)}
     #homeScreen.hide{display:none!important}
+    /* 动态主界面背景 */
+    .home-bg{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+    #homeScreen .profile-btn,#homeScreen .welcome-hero,#homeScreen .home-dash,#homeScreen .quote-card,#homeScreen .bottom-nav{position:relative;z-index:1}
+    .home-bg.bg-aurora .bg-layer{position:absolute;border-radius:50%;filter:blur(55px);opacity:.55;animation:auroraFloat 11s ease-in-out infinite}
+    .home-bg.bg-aurora .bg-layer:nth-child(1){width:62vw;height:62vw;background:radial-gradient(circle,rgba(102,126,234,.85),transparent 70%);top:-18%;left:-12%}
+    .home-bg.bg-aurora .bg-layer:nth-child(2){width:52vw;height:52vw;background:radial-gradient(circle,rgba(240,147,251,.75),transparent 70%);bottom:-12%;right:-6%;animation-delay:-4s}
+    .home-bg.bg-aurora .bg-layer:nth-child(3){width:44vw;height:44vw;background:radial-gradient(circle,rgba(79,172,254,.8),transparent 70%);top:32%;left:58%;animation-delay:-8s}
+    @keyframes auroraFloat{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(9vw,-7vh) scale(1.18)}}
+    .home-bg.bg-starry{background:linear-gradient(180deg,#0b1026,#1a2b52 60%,#0f1a3a)}
+    body.dark .home-bg.bg-starry{background:linear-gradient(180deg,#05070f,#0b1026 60%,#070b18)}
+    .home-bg.bg-starry .star{position:absolute;border-radius:50%;background:#fff;animation:twinkle 2.4s ease-in-out infinite}
+    @keyframes twinkle{0%,100%{opacity:.15}50%{opacity:1}}
+    .home-bg.bg-ocean{background:linear-gradient(180deg,#dff2ff,#b5ddff 45%,#8cc8ff 70%,#6db9ff)}
+    body.dark .home-bg.bg-ocean{background:linear-gradient(180deg,#062233,#0a3a5c 55%,#06304f)}
+    .home-bg.bg-ocean .wave{position:absolute;bottom:-18%;width:200%;height:55%;background:radial-gradient(ellipse at 50% 0%,rgba(255,255,255,.45),transparent 62%);animation:waveMove 9s linear infinite}
+    .home-bg.bg-ocean .wave:nth-child(2){bottom:-28%;opacity:.6;animation-duration:13s}
+    @keyframes waveMove{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+    .hbg-opt{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--card-border);border-radius:12px;margin-bottom:8px;cursor:pointer;transition:all .15s}
+    .hbg-opt:active{background:var(--input-bg)}
+    .hbg-opt.on{border-color:var(--accent);background:var(--accent-light)}
+    .hbg-swatch{width:44px;height:44px;border-radius:10px;flex-shrink:0;overflow:hidden;position:relative;border:1px solid rgba(0,0,0,0.08)}
+    .hbg-swatch.bg-default{background:linear-gradient(180deg,#fff,#e8ecf2)}
+    .hbg-swatch.bg-aurora{background:linear-gradient(135deg,rgba(102,126,234,.8),rgba(240,147,251,.7))}
+    .hbg-swatch.bg-starry{background:linear-gradient(180deg,#0b1026,#1a2b52)}
+    .hbg-swatch.bg-ocean{background:linear-gradient(180deg,#dff2ff,#8cc8ff)}
+    .hbg-name{font-size:14px;font-weight:600;color:var(--text)}
+    .hbg-desc{font-size:11px;color:var(--text2)}
 
     .profile-btn{position:absolute;top:calc(16px + var(--safe-top));left:20px;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);font-size:20px;background:rgba(255,255,255,0.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(0,0,0,0.06);z-index:10;transition:all .15s;overflow:hidden}
     body.dark .profile-btn{background:rgba(40,40,40,0.6);border:1px solid rgba(255,255,255,0.08)}
@@ -519,6 +546,7 @@
     .ph-level-item{flex:0 0 100%;scroll-snap-align:center;display:flex;justify-content:center;align-items:center}
     .ph-level-item .ph-level-img{position:relative;width:min(240px,72vw);height:min(240px,72vw);overflow:hidden;flex-shrink:0;border-radius:4px}
     .ph-level-item .ph-level-img img{position:relative;z-index:1;width:100%;height:100%;object-fit:cover;display:block}
+    .ph-level-item.locked .ph-level-img img{filter:grayscale(100%);opacity:.55}
     .ph-level-progress{height:7px;background:var(--card-border);border-radius:4px;margin:0 20px;overflow:hidden}
     .ph-level-fill{height:100%;background:linear-gradient(90deg,#f7b733,#fc4a1a);border-radius:3px;transition:width .4s ease;width:0%}
     .ph-level-prog{font-size:10px;color:var(--text2);margin-top:4px;text-align:center}
@@ -656,6 +684,7 @@
 
 <!-- ===== HOME SCREEN ===== -->
 <div class="screen" id="homeScreen" style="display:none">
+  <div class="home-bg" id="homeBg"></div>
   <div class="profile-btn" id="homeProfileBtn" onclick="goToProfile()" title="个人中心"></div>
 <div class="welcome-hero">
     <div class="whale-icon">🐋</div>
@@ -891,6 +920,11 @@
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         <span>欢迎语显示昵称</span>
         <span class="pm-toggle on" id="profileNicknameState" aria-label="欢迎语显示昵称开关"></span>
+      </div>
+      <div class="pm-item" onclick="openHomeBgPicker()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="10" rx="2"/><path d="M3 17h18"/><path d="M6 21h12"/><path d="M7 6h2"/><path d="M7 9h6"/></svg>
+        <span>主页背景</span>
+        <span class="pm-arrow">›</span>
       </div>
       <div class="pm-item" onclick="showAbout()">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -1541,6 +1575,62 @@ function toggleShowNickname() {
   showToast(options.showNickname ? "主页欢迎语将显示昵称" : "主页欢迎语不显示昵称");
 }
 
+// ===== 主页动态背景 =====
+var HOME_BGS = [
+  { key: "default", name: "简约白", desc: "经典渐变" },
+  { key: "aurora", name: "极光", desc: "流动光晕" },
+  { key: "starry", name: "星空", desc: "闪烁星辰" },
+  { key: "ocean", name: "海洋", desc: "波纹光影" }
+];
+function applyHomeBg() {
+  var bg = document.getElementById("homeBg");
+  if (!bg) return;
+  var val = options.homeBg || "default";
+  bg.className = "home-bg bg-" + val;
+  if (val === "aurora") {
+    bg.innerHTML = '<div class="bg-layer"></div><div class="bg-layer"></div><div class="bg-layer"></div>';
+  } else if (val === "ocean") {
+    bg.innerHTML = '<div class="wave"></div><div class="wave"></div>';
+  } else if (val === "starry") {
+    var h = "";
+    for (var i = 0; i < 45; i++) {
+      var x = Math.random() * 100, y = Math.random() * 100, s = (Math.random() * 2 + 1).toFixed(1), d = (Math.random() * 2.4).toFixed(2);
+      h += '<div class="star" style="left:' + x + '%;top:' + y + '%;width:' + s + 'px;height:' + s + 'px;animation-delay:' + d + 's"></div>';
+    }
+    bg.innerHTML = h;
+  } else {
+    bg.innerHTML = "";
+  }
+}
+function openHomeBgPicker() {
+  var overlay = document.createElement("div");
+  overlay.id = "homeBgOverlay";
+  overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:600;display:flex;align-items:center;justify-content:center;padding:16px";
+  var box = document.createElement("div");
+  box.style.cssText = "position:relative;background:var(--card-bg);border-radius:18px;padding:18px;max-width:320px;width:100%";
+  var h = '<button class="modal-close" onclick="document.getElementById(\'homeBgOverlay\').remove()">✕</button>' +
+    '<p style="font-size:16px;font-weight:700;color:var(--text);margin:0 0 12px">主页背景</p>';
+  for (var i = 0; i < HOME_BGS.length; i++) {
+    var b = HOME_BGS[i];
+    var cur = (options.homeBg || "default") === b.key;
+    h += '<div class="hbg-opt' + (cur ? " on" : "") + '" onclick="selectHomeBg(\'' + b.key + '\')">' +
+      '<div class="hbg-swatch bg-' + b.key + '"></div>' +
+      '<div><div class="hbg-name">' + b.name + (cur ? ' ✓' : '') + '</div><div class="hbg-desc">' + b.desc + '</div></div>' +
+      '</div>';
+  }
+  box.innerHTML = h;
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+}
+function selectHomeBg(key) {
+  options.homeBg = key;
+  try { localStorage.setItem("seawhy-lex-opts", JSON.stringify(options)); } catch(e) {}
+  applyHomeBg();
+  var ov = document.getElementById("homeBgOverlay");
+  if (ov) ov.remove();
+  showToast("主页背景已切换");
+}
+
 function initWelcome() {
   var el = document.getElementById("typewriter");
   var card = document.getElementById("quoteCard");
@@ -1810,6 +1900,7 @@ function goHomeAfterLogin() {
   var home = document.getElementById("homeScreen");
   home.style.display = "";
   home.classList.add("show");
+  applyHomeBg();
   renderCheckin();
   renderTodoStatus();
   if (!_welcomePlayed) {
@@ -2107,7 +2198,7 @@ try { var s = JSON.parse(localStorage.getItem("seawhy-lex-config") || "{}"); SET
 var userTheme = "light";
 try { userTheme = JSON.parse(localStorage.getItem("seawhy-lex-theme") || '"light"'); } catch(e) {}
 
-var options = { deep: true, multi: false, practical: false, compare: false, quoteAuto: true, showNickname: false };
+var options = { deep: true, multi: false, practical: false, compare: false, quoteAuto: true, showNickname: false, homeBg: "default" };
 try { var o = JSON.parse(localStorage.getItem("seawhy-lex-opts") || "{}"); Object.keys(options).forEach(function(k){ if(k in o) options[k] = o[k]; }); } catch(e) {}
 
 // ============================================================
@@ -2451,39 +2542,50 @@ function makeFlyAvatar() {
 function goToProfile() {
   var btn = document.getElementById("homeProfileBtn");
   if (!btn) { showProfile(); return; }
+  var home = document.getElementById("homeScreen");
+  var profile = document.getElementById("profileView");
   var startRect = btn.getBoundingClientRect();
   var fly = makeFlyAvatar();
   fly.style.left = startRect.left + "px";
   fly.style.top = startRect.top + "px";
-  // 主页渐隐（时长与头像移动相同）
-  var home = document.getElementById("homeScreen");
+  // 个人中心以 fixed 透明覆盖出现，用于测量目标并同时渐显
+  profile.style.position = "fixed";
+  profile.style.inset = "0";
+  profile.style.display = "";
+  profile.classList.add("show");
+  profile.style.opacity = "0";
+  profile.style.transition = "opacity .3s ease";
+  var target = document.querySelector(".profile-card .ph-avatar");
+  var endRect = target ? target.getBoundingClientRect() : { left: 0, top: 0 };
+  if (target) target.style.visibility = "hidden";
+  // 同步开始：主页渐隐 + 个人中心渐显 + 头像飞行（同一时刻）
   if (home) { home.style.transition = "opacity .3s ease"; home.style.opacity = "0"; }
+  requestAnimationFrame(function() {
+    profile.style.opacity = "1";
+    fly.style.left = endRect.left + "px";
+    fly.style.top = endRect.top + "px";
+    fly.style.width = endRect.width + "px";
+    fly.style.height = endRect.height + "px";
+    fly.style.fontSize = "30px";
+  });
   setTimeout(function() {
-    showProfile();
+    hideAllViews();
+    profile.style.position = "";
+    profile.style.opacity = "";
+    profile.classList.add("show");
+    profile.style.display = "";
+    if (target) target.style.visibility = "";
     if (home) { home.style.transition = ""; home.style.opacity = ""; }
-    var profile = document.getElementById("profileView");
-    var target = document.querySelector(".profile-card .ph-avatar");
-    if (target) target.style.visibility = "hidden"; // 头像到达前目标不显示
-    // 个人中心渐显
-    if (profile) { profile.style.opacity = "0"; profile.style.transition = "opacity .3s ease"; }
-    requestAnimationFrame(function() { if (profile) profile.style.opacity = "1"; });
-    if (target) {
-      var endRect = target.getBoundingClientRect();
-      fly.style.left = endRect.left + "px";
-      fly.style.top = endRect.top + "px";
-      fly.style.width = endRect.width + "px";
-      fly.style.height = endRect.height + "px";
-      fly.style.fontSize = "30px";
-    }
-    setTimeout(function() { if (target) target.style.visibility = ""; }, 320);
   }, 300);
-  setTimeout(function() { if (fly.parentNode) fly.parentNode.removeChild(fly); }, 660);
+  setTimeout(function() { if (fly.parentNode) fly.parentNode.removeChild(fly); }, 620);
 }
 
-// 退出个人中心：渐隐 + 头像飞回左上角 + 主页渐显
+// 退出个人中心：渐隐 + 头像飞回 + 主页渐显（同时进行）
 function exitProfile() {
   var target = document.querySelector(".profile-card .ph-avatar");
   var homeBtn = document.getElementById("homeProfileBtn");
+  var profile = document.getElementById("profileView");
+  var home = document.getElementById("homeScreen");
   var fly = makeFlyAvatar();
   var startRect = target ? target.getBoundingClientRect() : { left: 0, top: 0 };
   var endRect = homeBtn ? homeBtn.getBoundingClientRect() : { left: 20, top: 60 };
@@ -2492,24 +2594,26 @@ function exitProfile() {
   fly.style.width = "64px";
   fly.style.height = "64px";
   fly.style.fontSize = "30px";
-  // 个人中心渐隐
-  var profile = document.getElementById("profileView");
+  // 同步：个人中心渐隐 + 头像飞回
   if (profile) { profile.style.transition = "opacity .3s ease"; profile.style.opacity = "0"; }
-  setTimeout(function() {
-    goHome();
-    if (profile) { profile.style.transition = ""; profile.style.opacity = ""; }
-    // 主页渐显
-    var home = document.getElementById("homeScreen");
-    if (home) { home.style.opacity = "0"; home.style.transition = "opacity .3s ease"; }
-    requestAnimationFrame(function() { if (home) home.style.opacity = "1"; });
-    // 头像飞回左上角
+  requestAnimationFrame(function() {
     fly.style.left = endRect.left + "px";
     fly.style.top = endRect.top + "px";
     fly.style.width = "40px";
     fly.style.height = "40px";
     fly.style.fontSize = "20px";
+  });
+  setTimeout(function() {
+    goHome();
+    if (profile) { profile.style.transition = ""; profile.style.opacity = ""; }
+    if (home) {
+      home.style.transition = "opacity .3s ease";
+      home.style.opacity = "0";
+    }
+    requestAnimationFrame(function() { if (home) home.style.opacity = "1"; });
+    setTimeout(function() { if (home) { home.style.transition = ""; } }, 300);
   }, 300);
-  setTimeout(function() { if (fly.parentNode) fly.parentNode.removeChild(fly); }, 660);
+  setTimeout(function() { if (fly.parentNode) fly.parentNode.removeChild(fly); }, 620);
 }
 
 // 徽章轮播渲染
@@ -2517,10 +2621,12 @@ function renderLevelBadges() {
   var scroll = document.getElementById("levelScroll");
   if (!scroll) return;
   var p = loadProfile();
-  var curIdx = getLevelInfo(p.totalPoints || 0).index;
+  var total = p.totalPoints || 0;
+  var curIdx = getLevelInfo(total).index;
   var h = "";
   for (var i = 0; i < LEVELS.length; i++) {
-    h += '<div class="ph-level-item lvl' + i + '"><div class="ph-level-img"><img src="' + LEVELS[i].icon + '" alt="" /></div></div>';
+    var locked = total < LEVELS[i].min ? " locked" : "";
+    h += '<div class="ph-level-item lvl' + i + locked + '"><div class="ph-level-img"><img src="' + LEVELS[i].icon + '" alt="" /></div></div>';
   }
   scroll.innerHTML = h;
   var itemW = scroll.clientWidth;
@@ -2537,19 +2643,34 @@ function updateLevelDisplay(idx) {
   if (idx < 0 || idx >= LEVELS.length) return;
   var p = loadProfile();
   var total = p.totalPoints || 0;
+  var curIdx = getLevelInfo(total).index;
   var fill = document.getElementById("profileLevelFill");
   var prog = document.getElementById("profileLevelProg");
-  var need = LEVELS[idx].min; // 到达该等级所需累计积分
-  var pct = need > 0 ? Math.max(0, Math.min(100, Math.round(total / need * 100))) : 100;
-  if (fill) fill.style.width = pct + "%";
-  if (prog) {
-    if (need > 0) prog.textContent = "当前 " + total + " / 需要 " + need + " 积分";
-    else prog.textContent = "当前 " + total + " 积分";
+  var pct, txt;
+  if (idx === curIdx) {
+    // 当前等级：显示到下一级的进度
+    if (idx < LEVELS.length - 1) {
+      var span = LEVELS[idx + 1].min - LEVELS[idx].min;
+      var have = total - LEVELS[idx].min;
+      pct = Math.max(0, Math.min(100, Math.round(have / span * 100)));
+      txt = "距下一级还需 " + Math.max(0, LEVELS[idx + 1].min - total) + " 积分";
+    } else {
+      pct = 100;
+      txt = "已达成最高等级";
+    }
+  } else {
+    // 其余等级：当前积分 / 该等级需要积分
+    var need = LEVELS[idx].min;
+    pct = need > 0 ? Math.max(0, Math.min(100, Math.round(total / need * 100))) : 100;
+    txt = need > 0 ? "当前 " + total + " / 需要 " + need + " 积分" : "当前 " + total + " 积分";
   }
-  // 高亮当前查看的徽章
+  if (fill) fill.style.width = pct + "%";
+  if (prog) prog.textContent = txt;
+  // 高亮当前查看的徽章 + 保留未解锁灰色
   var items = document.querySelectorAll(".ph-level-item");
   for (var i = 0; i < items.length; i++) {
-    items[i].className = "ph-level-item lvl" + i + (i === idx ? " active" : "");
+    var locked = total < LEVELS[i].min ? " locked" : "";
+    items[i].className = "ph-level-item lvl" + i + locked + (i === idx ? " active" : "");
   }
 }
 
@@ -2893,19 +3014,23 @@ function showSchedule() {
   if (tl && !tl.dataset.bound) {
     tl.dataset.bound = "1";
     tl.addEventListener("scroll", function() {
+      if (_tlLocked) return;
       if (_tlTimer) clearTimeout(_tlTimer);
       var self = this;
       _tlTimer = setTimeout(function() {
         if (self.clientWidth === 0) return;
         var idx = Math.round(self.scrollLeft / self.clientWidth);
-        var week = Math.max(1, Math.min(30, _tlStart + idx));
+        var tiles = self.querySelectorAll(".sch-week");
+        var target = tiles[idx];
+        if (!target) return;
+        var week = parseInt(target.getAttribute("data-week"), 10);
         var d = loadSchedule();
         if (d.currentWeek !== week) {
           d.currentWeek = week;
           saveSchedule(d);
           renderScheduleView();
         }
-      }, 100);
+      }, 80);
     });
   }
   renderScheduleView();
@@ -3119,20 +3244,24 @@ function buildWeekGrid(week) {
 }
 
 // 横向时间轴：本周周日右侧紧贴下周周一，原生滚动跟手无缝切换
-var _tlStart = 1, _tlEnd = 1, _tlTimer = null;
+var _tlStart = 1, _tlEnd = 1, _tlTimer = null, _tlLocked = false;
 function renderScheduleTimeline() {
   var d = loadSchedule();
   var cw = d.currentWeek;
-  _tlStart = Math.max(1, cw - 1);
-  _tlEnd = Math.min(30, cw + 1);
+  _tlStart = Math.max(1, cw - 2);
+  _tlEnd = Math.min(30, cw + 2);
   var tl = document.getElementById("scheduleTimeline");
   if (!tl) return;
+  _tlLocked = true;
   var html = "";
   for (var w = _tlStart; w <= _tlEnd; w++) {
     html += '<div class="sch-week" data-week="' + w + '">' + buildWeekGrid(w) + '</div>';
   }
   tl.innerHTML = html;
-  tl.scrollLeft = (cw - _tlStart) * tl.clientWidth;
+  requestAnimationFrame(function() {
+    tl.scrollLeft = (cw - _tlStart) * tl.clientWidth;
+    _tlLocked = false;
+  });
 }
 
 // ===== 新增/编辑课程表单 =====
@@ -3702,6 +3831,7 @@ function goHome() {
   var home = document.getElementById("homeScreen");
   home.style.display = "";
   home.classList.add("show");
+  applyHomeBg();
   renderCheckin();
   renderTodoStatus();
   renderHomeAvatar();
