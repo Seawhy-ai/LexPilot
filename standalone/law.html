@@ -824,7 +824,7 @@
 <!-- ===== PROFILE VIEW ===== -->
 <div id="profileView" style="display:none">
   <div class="wx-nav">
-    <button class="back" onclick="goHome()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back" onclick="exitProfile()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
     <span class="title">个人中心</span>
   </div>
   <div class="about-body" style="background:var(--bg)">
@@ -2434,11 +2434,8 @@ function renderHomeAvatar() {
 }
 
 // 头像飞向个人中心动画
-function goToProfile() {
-  var btn = document.getElementById("homeProfileBtn");
-  if (!btn) { showProfile(); return; }
+function makeFlyAvatar() {
   var p = loadProfile();
-  var startRect = btn.getBoundingClientRect();
   var fly = document.createElement("div");
   var isImg = p.avatarType === "image" && p.avatarDataUrl;
   if (isImg) {
@@ -2446,32 +2443,73 @@ function goToProfile() {
   } else {
     fly.textContent = p.avatar || "👤";
   }
-  // 头像"飞走"，左上角按钮隐藏（回主页由 renderHomeAvatar 恢复）
-  btn.innerHTML = "";
-  btn.textContent = "";
-  fly.style.cssText = "position:fixed;z-index:999;width:40px;height:40px;border-radius:50%;font-size:22px;display:flex;align-items:center;justify-content:center;background:#fff;overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,0.25);transition:all .3s cubic-bezier(.35,.1,.25,1);left:" + startRect.left + "px;top:" + startRect.top + "px;";
+  fly.style.cssText = "position:fixed;z-index:999;width:40px;height:40px;border-radius:50%;font-size:22px;display:flex;align-items:center;justify-content:center;background:#fff;overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,0.25);transition:all .3s cubic-bezier(.35,.1,.25,1);";
   document.body.appendChild(fly);
-  requestAnimationFrame(function() {
-    requestAnimationFrame(function() {
-      showProfile();
-      var target = document.querySelector(".profile-card .ph-avatar");
-      if (!target) { if (fly.parentNode) fly.parentNode.removeChild(fly); return; }
-      target.style.visibility = "hidden"; // 头像到达前，目标位置不显示
+  return fly;
+}
+
+function goToProfile() {
+  var btn = document.getElementById("homeProfileBtn");
+  if (!btn) { showProfile(); return; }
+  var startRect = btn.getBoundingClientRect();
+  var fly = makeFlyAvatar();
+  fly.style.left = startRect.left + "px";
+  fly.style.top = startRect.top + "px";
+  // 主页渐隐（时长与头像移动相同）
+  var home = document.getElementById("homeScreen");
+  if (home) { home.style.transition = "opacity .3s ease"; home.style.opacity = "0"; }
+  setTimeout(function() {
+    showProfile();
+    if (home) { home.style.transition = ""; home.style.opacity = ""; }
+    var profile = document.getElementById("profileView");
+    var target = document.querySelector(".profile-card .ph-avatar");
+    if (target) target.style.visibility = "hidden"; // 头像到达前目标不显示
+    // 个人中心渐显
+    if (profile) { profile.style.opacity = "0"; profile.style.transition = "opacity .3s ease"; }
+    requestAnimationFrame(function() { if (profile) profile.style.opacity = "1"; });
+    if (target) {
       var endRect = target.getBoundingClientRect();
       fly.style.left = endRect.left + "px";
       fly.style.top = endRect.top + "px";
       fly.style.width = endRect.width + "px";
       fly.style.height = endRect.height + "px";
       fly.style.fontSize = "30px";
-    });
-  });
+    }
+    setTimeout(function() { if (target) target.style.visibility = ""; }, 320);
+  }, 300);
+  setTimeout(function() { if (fly.parentNode) fly.parentNode.removeChild(fly); }, 660);
+}
+
+// 退出个人中心：渐隐 + 头像飞回左上角 + 主页渐显
+function exitProfile() {
+  var target = document.querySelector(".profile-card .ph-avatar");
+  var homeBtn = document.getElementById("homeProfileBtn");
+  var fly = makeFlyAvatar();
+  var startRect = target ? target.getBoundingClientRect() : { left: 0, top: 0 };
+  var endRect = homeBtn ? homeBtn.getBoundingClientRect() : { left: 20, top: 60 };
+  fly.style.left = startRect.left + "px";
+  fly.style.top = startRect.top + "px";
+  fly.style.width = "64px";
+  fly.style.height = "64px";
+  fly.style.fontSize = "30px";
+  // 个人中心渐隐
+  var profile = document.getElementById("profileView");
+  if (profile) { profile.style.transition = "opacity .3s ease"; profile.style.opacity = "0"; }
   setTimeout(function() {
-    var t = document.querySelector(".profile-card .ph-avatar");
-    if (t) t.style.visibility = ""; // 头像飞到，恢复显示
-  }, 320);
-  setTimeout(function() {
-    if (fly.parentNode) fly.parentNode.removeChild(fly);
-  }, 450);
+    goHome();
+    if (profile) { profile.style.transition = ""; profile.style.opacity = ""; }
+    // 主页渐显
+    var home = document.getElementById("homeScreen");
+    if (home) { home.style.opacity = "0"; home.style.transition = "opacity .3s ease"; }
+    requestAnimationFrame(function() { if (home) home.style.opacity = "1"; });
+    // 头像飞回左上角
+    fly.style.left = endRect.left + "px";
+    fly.style.top = endRect.top + "px";
+    fly.style.width = "40px";
+    fly.style.height = "40px";
+    fly.style.fontSize = "20px";
+  }, 300);
+  setTimeout(function() { if (fly.parentNode) fly.parentNode.removeChild(fly); }, 660);
 }
 
 // 徽章轮播渲染
