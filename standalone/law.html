@@ -50,19 +50,29 @@
     #homeScreen.hide{display:none!important}
     /* 动态主界面背景 */
     .home-bg{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}
-    #homeScreen .profile-btn,#homeScreen .welcome-hero,#homeScreen .home-dash,#homeScreen .quote-card,#homeScreen .bottom-nav{position:relative;z-index:1}
+    #homeScreen .welcome-hero,#homeScreen .home-dash,#homeScreen .quote-card,#homeScreen .bottom-nav{position:relative;z-index:1}
+    #homeScreen .profile-btn{z-index:2}
     .home-bg.bg-aurora .bg-layer{position:absolute;border-radius:50%;filter:blur(55px);opacity:.55;animation:auroraFloat 11s ease-in-out infinite}
     .home-bg.bg-aurora .bg-layer:nth-child(1){width:62vw;height:62vw;background:radial-gradient(circle,rgba(102,126,234,.85),transparent 70%);top:-18%;left:-12%}
     .home-bg.bg-aurora .bg-layer:nth-child(2){width:52vw;height:52vw;background:radial-gradient(circle,rgba(240,147,251,.75),transparent 70%);bottom:-12%;right:-6%;animation-delay:-4s}
     .home-bg.bg-aurora .bg-layer:nth-child(3){width:44vw;height:44vw;background:radial-gradient(circle,rgba(79,172,254,.8),transparent 70%);top:32%;left:58%;animation-delay:-8s}
     @keyframes auroraFloat{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(9vw,-7vh) scale(1.18)}}
-    .home-bg.bg-starry{background:linear-gradient(180deg,#0b1026,#1a2b52 60%,#0f1a3a)}
-    body.dark .home-bg.bg-starry{background:linear-gradient(180deg,#05070f,#0b1026 60%,#070b18)}
-    .home-bg.bg-starry .star{position:absolute;border-radius:50%;background:#fff;animation:twinkle 2.4s ease-in-out infinite}
-    @keyframes twinkle{0%,100%{opacity:.15}50%{opacity:1}}
+    .home-bg.bg-starry{background:linear-gradient(180deg,#070c22,#131e45 55%,#0a1230)}
+    body.dark .home-bg.bg-starry{background:linear-gradient(180deg,#04060d,#0a1230 55%,#050b1c)}
+    .home-bg.bg-starry::before{content:"";position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(60% 45% at 20% 20%,rgba(120,90,255,.28),transparent 60%),radial-gradient(55% 40% at 85% 70%,rgba(60,160,255,.25),transparent 60%);filter:blur(10px)}
+    .home-bg.bg-starry .star{position:absolute;border-radius:50%;background:#fff;animation:twinkle 2.6s ease-in-out infinite;box-shadow:0 0 6px rgba(255,255,255,.7)}
+    .home-bg.bg-starry .star.big{box-shadow:0 0 12px rgba(255,255,255,.9)}
+    .home-bg.bg-starry .shooting{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff;opacity:0;animation:shoot 5s linear infinite}
+    .home-bg.bg-starry .shooting::after{content:"";position:absolute;top:0;left:0;width:70px;height:1.5px;background:linear-gradient(90deg,#fff,transparent);transform:rotate(45deg);transform-origin:left center}
+    @keyframes twinkle{0%,100%{opacity:.12}50%{opacity:1}}
+    @keyframes shoot{0%{transform:translate(0,0);opacity:0}5%{opacity:1}20%{transform:translate(-70px,70px);opacity:0}100%{opacity:0}}
     .home-bg.bg-ocean{background:linear-gradient(180deg,#dff2ff,#b5ddff 45%,#8cc8ff 70%,#6db9ff)}
     body.dark .home-bg.bg-ocean{background:linear-gradient(180deg,#062233,#0a3a5c 55%,#06304f)}
     .home-bg.bg-ocean .wave{position:absolute;bottom:-18%;width:200%;height:55%;background:radial-gradient(ellipse at 50% 0%,rgba(255,255,255,.45),transparent 62%);animation:waveMove 9s linear infinite}
+    /* 欢迎语随背景变色 */
+    .home-bg.bg-starry ~ .welcome-hero .typewriter{color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.55)}
+    .home-bg.bg-ocean ~ .welcome-hero .typewriter{color:#12529e}
+    .home-bg.bg-aurora ~ .welcome-hero .typewriter{color:#2a2a72}
     .home-bg.bg-ocean .wave:nth-child(2){bottom:-28%;opacity:.6;animation-duration:13s}
     @keyframes waveMove{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
     .hbg-opt{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--card-border);border-radius:12px;margin-bottom:8px;cursor:pointer;transition:all .15s}
@@ -76,7 +86,8 @@
     .hbg-name{font-size:14px;font-weight:600;color:var(--text)}
     .hbg-desc{font-size:11px;color:var(--text2)}
 
-    .profile-btn{position:absolute;top:calc(16px + var(--safe-top));left:20px;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);font-size:20px;background:rgba(255,255,255,0.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(0,0,0,0.06);z-index:10;transition:all .15s;overflow:hidden}
+    .profile-btn{position:absolute;top:calc(16px + var(--safe-top));left:20px;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);font-size:20px;background:rgba(255,255,255,0.3);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.5);z-index:10;transition:all .15s;overflow:hidden}
+    body.dark .profile-btn{background:rgba(40,40,40,0.35);border:1px solid rgba(255,255,255,0.15)}
     body.dark .profile-btn{background:rgba(40,40,40,0.6);border:1px solid rgba(255,255,255,0.08)}
     .profile-btn:active{transform:scale(.92);opacity:.8}
 
@@ -89,7 +100,7 @@
     @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 
     /* frosted quote card */
-    .quote-card{position:relative;background:rgba(255,255,255,0.72);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.6);border-radius:20px;padding:24px 28px;margin:0 auto 24px;max-width:420px;width:calc(100% - 32px);min-height:170px;height:auto;display:flex;flex-direction:column;justify-content:center;box-shadow:0 4px 24px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.04);transition:opacity .4s,transform .2s ease,box-shadow .2s ease;cursor:pointer;user-select:none;overflow:hidden}
+    .quote-card{position:relative;background:rgba(255,255,255,0.42);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.6);border-radius:20px;padding:24px 28px;margin:0 auto 24px;max-width:420px;width:calc(100% - 32px);min-height:170px;height:auto;display:flex;flex-direction:column;justify-content:center;box-shadow:0 4px 24px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.04);transition:opacity .4s,transform .2s ease,box-shadow .2s ease;cursor:pointer;user-select:none;overflow:hidden}
     .quote-card:hover{transform:translateY(-1px);box-shadow:0 8px 26px rgba(0,0,0,0.08)}
     .quote-card:active{transform:scale(.98);box-shadow:0 3px 12px rgba(0,0,0,0.06)}
     body.dark .quote-card{background:rgba(40,40,40,0.8);border:1px solid rgba(255,255,255,0.08);box-shadow:0 4px 24px rgba(0,0,0,0.3)}
@@ -98,7 +109,7 @@
 
     /* home dash cards (打卡 / 今日待办) */
     .home-dash{display:flex;gap:12px;max-width:420px;width:calc(100% - 32px);margin:0 auto 14px}
-    .dash-card{flex:1;background:rgba(255,255,255,0.72);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.6);border-radius:20px;padding:14px 12px;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:0;cursor:pointer;box-shadow:0 4px 24px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.04);transition:all .15s;min-height:104px;user-select:none}
+    .dash-card{flex:1;background:rgba(255,255,255,0.42);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.6);border-radius:20px;padding:14px 12px;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:0;cursor:pointer;box-shadow:0 4px 24px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.04);transition:all .15s;min-height:104px;user-select:none}
     body.dark .dash-card{background:rgba(40,40,40,0.8);border:1px solid rgba(255,255,255,0.08);box-shadow:0 4px 24px rgba(0,0,0,0.3)}
     .dash-card:active{transform:scale(.97)}
     .dash-head{display:flex;align-items:center;gap:5px;width:100%;justify-content:flex-start}
@@ -113,7 +124,7 @@
     .todo-preview .tp-empty{font-size:11px;color:var(--text2);text-align:left;opacity:.65}
 
     /* frosted bottom nav card */
-    #bottomNav{display:flex;justify-content:space-around;align-items:center;margin:0 auto;margin-bottom:calc(12px + env(safe-area-inset-bottom));padding:10px 12px;background:rgba(255,255,255,0.72);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.6);border-radius:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.04);flex-shrink:0;max-width:380px;width:calc(100% - 48px)}
+    #bottomNav{display:flex;justify-content:space-around;align-items:center;margin:0 auto;margin-bottom:calc(12px + env(safe-area-inset-bottom));padding:10px 12px;background:rgba(255,255,255,0.42);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.6);border-radius:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.04);flex-shrink:0;max-width:380px;width:calc(100% - 48px)}
     body.dark #bottomNav{background:rgba(40,40,40,0.8);border:1px solid rgba(255,255,255,0.08);box-shadow:0 4px 24px rgba(0,0,0,0.3)}
     #bottomNav .nav-item{display:flex;align-items:center;justify-content:center;cursor:pointer;padding:12px;border:none;background:none;color:var(--text2);font-family:inherit;transition:all .15s;border-radius:16px;flex:1}
     #bottomNav .nav-item:active{color:var(--accent);background:rgba(74,144,217,0.08)}
@@ -1593,9 +1604,14 @@ function applyHomeBg() {
     bg.innerHTML = '<div class="wave"></div><div class="wave"></div>';
   } else if (val === "starry") {
     var h = "";
-    for (var i = 0; i < 45; i++) {
-      var x = Math.random() * 100, y = Math.random() * 100, s = (Math.random() * 2 + 1).toFixed(1), d = (Math.random() * 2.4).toFixed(2);
-      h += '<div class="star" style="left:' + x + '%;top:' + y + '%;width:' + s + 'px;height:' + s + 'px;animation-delay:' + d + 's"></div>';
+    for (var i = 0; i < 55; i++) {
+      var x = Math.random() * 100, y = Math.random() * 100, s = (Math.random() * 2.2 + 0.8).toFixed(1), d = (Math.random() * 3).toFixed(2);
+      var big = Math.random() > 0.82 ? " big" : "";
+      h += '<div class="star' + big + '" style="left:' + x + '%;top:' + y + '%;width:' + s + 'px;height:' + s + 'px;animation-delay:' + d + 's"></div>';
+    }
+    for (var si = 0; si < 3; si++) {
+      var sx = Math.random() * 90 + 5, sy = Math.random() * 40 + 5, sd = (Math.random() * 5).toFixed(1);
+      h += '<div class="shooting" style="left:' + sx + '%;top:' + sy + '%;animation-delay:' + sd + 's"></div>';
     }
     bg.innerHTML = h;
   } else {
@@ -4714,7 +4730,21 @@ function quizBack() {
   }
 }
 
-function filterQuizQuestions() {
+var PRACTICE_DONE_KEY = "seawhy-lex-practice-done";
+function loadPracticeDone() {
+  try { return JSON.parse(localStorage.getItem(PRACTICE_DONE_KEY) || "[]"); } catch(e) { return []; }
+}
+function savePracticeDone(p) { try { localStorage.setItem(PRACTICE_DONE_KEY, JSON.stringify(p)); } catch(e) {} }
+function recordPracticeDone(q, answer, isCorrect) {
+  var rec = loadPracticeDone();
+  // 去重
+  for (var i = 0; i < rec.length; i++) if (rec[i].q === q.q) { rec.splice(i, 1); break; }
+  rec.push({ q: q.q, answer: answer, correct: isCorrect });
+  if (rec.length > 200) rec = rec.slice(-200);
+  savePracticeDone(rec);
+}
+
+function filterQuizQuestions(noReshuffle) {
   var all = [];
   if (QUIZ_STATE.subject === "全部") {
     for (var k in QUIZ_DATA) {
@@ -4737,9 +4767,28 @@ function filterQuizQuestions() {
       all.push(q);
     }
   }
-  for (var i = all.length - 1; i > 0; i--) {
-    var j = Math.floor(Math.random() * (i + 1));
-    var tmp = all[i]; all[i] = all[j]; all[j] = tmp;
+  // 练习模式：已做过的题保留记录，排到最后面并标记为已答
+  var doneMap = {};
+  if (QUIZ_STATE.mode === "practice") {
+    var rec = loadPracticeDone();
+    for (var ri = 0; ri < rec.length; ri++) doneMap[rec[ri].q] = rec[ri];
+  }
+  if (QUIZ_STATE.mode === "practice" && !noReshuffle) {
+    var notDone = [], doneList = [];
+    for (var ai = 0; ai < all.length; ai++) {
+      if (doneMap[all[ai].q]) doneList.push(all[ai]); else notDone.push(all[ai]);
+    }
+    // 洗乱未做过的题
+    for (var i = notDone.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = notDone[i]; notDone[i] = notDone[j]; notDone[j] = tmp;
+    }
+    all = notDone.concat(doneList);
+  } else if (!noReshuffle) {
+    for (var i = all.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = all[i]; all[i] = all[j]; all[j] = tmp;
+    }
   }
   // Shuffle options + even distribution of correct answers
   var ansCounts = [0,0,0,0,0,0]; // track correct answer positions
@@ -4755,37 +4804,57 @@ function filterQuizQuestions() {
       var sj = Math.floor(Math.random() * (si + 1));
       var stmp = indices[si]; indices[si] = indices[sj]; indices[sj] = stmp;
     }
-    // Even distribution: find the target position with fewest correct answers
-    // Only consider positions 0-3 (A/B/C/D) for standard 4-option questions
-    var maxPos = Math.min(n, 4);
-    // Find min count among first maxPos positions
-    var minCount = ansCounts[0], bestPos = 0;
-    for (var pi = 1; pi < maxPos; pi++) {
-      if (ansCounts[pi] < minCount) { minCount = ansCounts[pi]; bestPos = pi; }
-    }
-    // Swap: move the index that equals q.ans to bestPos
-    var ansOrigIdx = indices.indexOf(q.ans);
-    if (ansOrigIdx >= 0 && bestPos < n) {
-      var swapTmp = indices[bestPos];
-      indices[bestPos] = indices[ansOrigIdx];
-      indices[ansOrigIdx] = swapTmp;
-    }
-    // Build shuffled options
     var shuffledOpts = [];
     for (var oi = 0; oi < n; oi++) {
       shuffledOpts.push(q.opts[indices[oi]]);
     }
-    q._shuffledOpts = shuffledOpts;
-    q._shuffledAns = bestPos < n ? bestPos : (ansOrigIdx >= 0 ? ansOrigIdx : q.ans);
-    // If bestPos not found, fallback to original position (no shuffle)
-    if (ansOrigIdx < 0) q._shuffledAns = q.ans;
-    ansCounts[q._shuffledAns] = (ansCounts[q._shuffledAns] || 0) + 1;
+    if (q.multi) {
+      // 多选：只打乱，记录正确答案的新位置数组
+      q._shuffledOpts = shuffledOpts;
+      var ansOrig = Array.isArray(q.ans) ? q.ans : [q.ans];
+      q._shuffledAns = ansOrig.map(function(a) { return indices.indexOf(a); });
+    } else {
+      // 单选：均匀分布正确答案位置
+      var maxPos = Math.min(n, 4);
+      var minCount = ansCounts[0], bestPos = 0;
+      for (var pi = 1; pi < maxPos; pi++) {
+        if (ansCounts[pi] < minCount) { minCount = ansCounts[pi]; bestPos = pi; }
+      }
+      var ansOrigIdx = indices.indexOf(q.ans);
+      if (ansOrigIdx >= 0 && bestPos < n) {
+        var swapTmp = indices[bestPos];
+        indices[bestPos] = indices[ansOrigIdx];
+        indices[ansOrigIdx] = swapTmp;
+      }
+      var shuffledOpts2 = [];
+      for (var oi2 = 0; oi2 < n; oi2++) shuffledOpts2.push(q.opts[indices[oi2]]);
+      q._shuffledOpts = shuffledOpts2;
+      q._shuffledAns = bestPos < n ? bestPos : (ansOrigIdx >= 0 ? ansOrigIdx : q.ans);
+      if (ansOrigIdx < 0) q._shuffledAns = q.ans;
+      ansCounts[q._shuffledAns] = (ansCounts[q._shuffledAns] || 0) + 1;
+    }
   }
   QUIZ_STATE.questions = all;
   QUIZ_STATE.currentIndex = 0;
   QUIZ_STATE.answers = {};
   QUIZ_STATE.answered = {};
   QUIZ_STATE.correct = {};
+  QUIZ_STATE._examSubmitted = false;
+  // 练习模式：恢复已做过的题目状态
+  if (QUIZ_STATE.mode === "practice" && !noReshuffle) {
+    var rec2 = loadPracticeDone();
+    for (var qi2 = 0; qi2 < all.length; qi2++) {
+      var qq = all[qi2];
+      for (var r2 = 0; r2 < rec2.length; r2++) {
+        if (rec2[r2].q === qq.q) {
+          QUIZ_STATE.answers[qi2] = rec2[r2].answer;
+          QUIZ_STATE.answered[qi2] = true;
+          QUIZ_STATE.correct[qi2] = rec2[r2].correct;
+          break;
+        }
+      }
+    }
+  }
   renderQuizStats();
   renderQuizPage();
 }
@@ -4795,10 +4864,17 @@ function setQuizMode(mode) {
   document.getElementById("modePractice").classList.toggle("active", mode === "practice");
   document.getElementById("modeExam").classList.toggle("active", mode === "exam");
   QUIZ_STATE.currentIndex = 0;
-  QUIZ_STATE.answers = {};
-  QUIZ_STATE.answered = {};
-  QUIZ_STATE.correct = {};
-  filterQuizQuestions();
+  // 切换模式不重排题目顺序
+  filterQuizQuestions(true);
+}
+
+function submitExam() {
+  QUIZ_STATE._examSubmitted = true;
+  var total = QUIZ_STATE.questions.length;
+  var correct = 0;
+  for (var k in QUIZ_STATE.correct) if (QUIZ_STATE.correct[k]) correct++;
+  if (correct > 0 && !wrongBookMode) awardPoints(vipRate(correct), "考试得分");
+  renderQuizPage();
 }
 
 function renderQuizStats() {
@@ -4849,26 +4925,37 @@ function renderQuizPage() {
     if (q.opts && q.opts.length > 0) {
       h += '<div class="quiz-options">';
       var labels = ["A","B","C","D","E","F"];
+      var examLocked = QUIZ_STATE.mode === "exam" && !QUIZ_STATE._examSubmitted;
       for (var j = 0; j < q.opts.length; j++) {
         var optClass = "";
         if (isAnswered) optClass += " disabled";
-        if (isAnswered && selected === j && j === (q._shuffledAns !== undefined ? q._shuffledAns : q.ans)) optClass += " correct-answer";
-        if (isAnswered && selected === j && j !== (q._shuffledAns !== undefined ? q._shuffledAns : q.ans)) optClass += " wrong-answer";
-        if (isAnswered && j === (q._shuffledAns !== undefined ? q._shuffledAns : q.ans) && selected !== (q._shuffledAns !== undefined ? q._shuffledAns : q.ans)) optClass += " correct-answer";
-        if (!isAnswered && selected === j) optClass += " selected";
+        var selArr = Array.isArray(selected) ? selected : (selected === undefined ? [] : [selected]);
+        var ansArr = Array.isArray(q._shuffledAns) ? q._shuffledAns : (q._shuffledAns !== undefined ? [q._shuffledAns] : (Array.isArray(q.ans) ? q.ans : [q.ans]));
+        var isSel = selArr.indexOf(j) >= 0;
+        var isAns = ansArr.indexOf(j) >= 0;
+        if (isAnswered && !examLocked && isSel && isAns) optClass += " correct-answer";
+        if (isAnswered && !examLocked && isSel && !isAns) optClass += " wrong-answer";
+        if (isAnswered && !examLocked && !isSel && isAns) optClass += " correct-answer";
+        if (isSel) optClass += " selected";
         h += '<div class="quiz-opt' + optClass + '" onclick="selectAnswer(' + globalIdx + ',' + j + ')" id="opt' + globalIdx + '_' + j + '">';
         h += '<span class="quiz-opt-prefix">' + labels[j] + '.</span>';
         h += '<span>' + escHtml(q._shuffledOpts ? q._shuffledOpts[j] : q.opts[j]) + '</span>';
+        if (q.multi) h += '<span style="margin-left:auto;font-size:12px;opacity:.5">' + (isSel ? '✓' : '') + '</span>';
         h += '</div>';
       }
       h += '</div>';
     }
 
-    h += '<div class="quiz-explain' + (isAnswered ? ' show' : '') + '" id="explain' + globalIdx + '">';
-    if (isAnswered) {
+    h += '<div class="quiz-explain' + (isAnswered && !(QUIZ_STATE.mode === "exam" && !QUIZ_STATE._examSubmitted) ? ' show' : '') + '" id="explain' + globalIdx + '">';
+    if (isAnswered && !(QUIZ_STATE.mode === "exam" && !QUIZ_STATE._examSubmitted)) {
       var chk = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#27ae60" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-3px;margin-right:2px"><polyline points="20 6 9 17 4 12"/></svg>';
       var crs = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-3px;margin-right:2px"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
-      h += (isCorrect ? chk + '<strong>回答正确！</strong>' : crs + '<strong>回答错误</strong>（正确答案：' + (q.opts ? (function(){var ai=q._shuffledAns!==undefined?q._shuffledAns:q.ans;var ao=q._shuffledOpts?q._shuffledOpts[ai]:q.opts[ai];return ["A","B","C","D","E","F"][ai]+'. '+ao;})() : "") + '）');
+      var ansLabel = "";
+      if (q.opts) {
+        var aArr = Array.isArray(q._shuffledAns) ? q._shuffledAns : (q._shuffledAns !== undefined ? [q._shuffledAns] : (Array.isArray(q.ans) ? q.ans : [q.ans]));
+        ansLabel = aArr.map(function(ai) { return ["A","B","C","D","E","F"][ai] + '. ' + (q._shuffledOpts ? q._shuffledOpts[ai] : q.opts[ai]); }).join('；');
+      }
+      h += (isCorrect ? chk + '<strong>回答正确！</strong>' : crs + '<strong>回答错误</strong>（正确答案：' + ansLabel + '）');
       if (q.exp) {
         if (canViewQuizExplanation()) {
           var bk = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="vertical-align:-2px;margin-right:3px"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/></svg>';
@@ -4914,7 +5001,10 @@ function renderQuizPage() {
   h += '</div>';
 
   var answered = Object.keys(QUIZ_STATE.answered).length;
-  if (answered >= total && total > 0) {
+  if (QUIZ_STATE.mode === "exam" && !QUIZ_STATE._examSubmitted && answered >= total && total > 0) {
+    h += '<div class="quiz-result"><div class="qr-label">已完成全部题目，点击交卷查看成绩与解析</div>' +
+      '<button class="quiz-btn primary" onclick="submitExam()">交卷查看成绩</button></div>';
+  } else if (answered >= total && total > 0) {
     var correctCount = 0;
     for (var k in QUIZ_STATE.correct) { if (QUIZ_STATE.correct[k]) correctCount++; }
     var pct = correctCount/total;
@@ -4932,29 +5022,53 @@ function renderQuizPage() {
 
 function selectAnswer(qIdx, optIdx) {
   if (QUIZ_STATE.answered[qIdx]) return;
-  QUIZ_STATE.answers[qIdx] = optIdx;
+  var qs = QUIZ_STATE.questions[qIdx];
+  if (qs.multi) {
+    // 多选：点击切换勾选
+    var selArr = QUIZ_STATE.answers[qIdx];
+    if (!Array.isArray(selArr)) selArr = [];
+    var fi = selArr.indexOf(optIdx);
+    if (fi >= 0) selArr.splice(fi, 1); else selArr.push(optIdx);
+    QUIZ_STATE.answers[qIdx] = selArr;
+  } else {
+    QUIZ_STATE.answers[qIdx] = optIdx;
+  }
   renderQuizPage();
+}
+
+function answerSetsEqual(a, b) {
+  if (Array.isArray(a) !== Array.isArray(b)) return false;
+  if (Array.isArray(a)) {
+    if (a.length !== b.length) return false;
+    return a.every(function(x) { return b.indexOf(x) >= 0; });
+  }
+  return a === b;
 }
 
 function submitAnswer(qIdx) {
   if (QUIZ_STATE.answered[qIdx]) return;
-  if (QUIZ_STATE.answers[qIdx] === undefined) {
-    showToast("请先选择一个选项");
+  var sel = QUIZ_STATE.answers[qIdx];
+  if (sel === undefined || (Array.isArray(sel) && sel.length === 0)) {
+    showToast("请先选择选项");
     return;
   }
   var q = QUIZ_STATE.questions[qIdx];
-  var isCorrect = QUIZ_STATE.answers[qIdx] === (q._shuffledAns !== undefined ? q._shuffledAns : q.ans);
+  var ans = q._shuffledAns !== undefined ? q._shuffledAns : q.ans;
+  var isCorrect = answerSetsEqual(sel, ans);
   QUIZ_STATE.answered[qIdx] = true;
   QUIZ_STATE.correct[qIdx] = isCorrect;
-  if (!isCorrect) { addToWrongBook(q, QUIZ_STATE.answers[qIdx]); }
+  if (QUIZ_STATE.mode === "practice" && !wrongBookMode) recordPracticeDone(q, sel, isCorrect);
+  if (!isCorrect) { addToWrongBook(q, sel); }
   else if (wrongBookMode && q._wbIdx !== undefined) { removeFromWrongBook(q.q); }
   recordStudyTime(2, 1);
   if (isCorrect && !wrongBookMode) awardPoints(vipRate(1), "答对");
   renderQuizPage();
-  setTimeout(function() {
-    var el = document.getElementById("explain" + qIdx);
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
-  }, 100);
+  if (QUIZ_STATE.mode !== "exam") {
+    setTimeout(function() {
+      var el = document.getElementById("explain" + qIdx);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 100);
+  }
 }
 
 // ===== 错题本 =====
@@ -4980,7 +5094,8 @@ function addToWrongBook(q, userAns) {
     q: q.q, opts: q.opts, ans: q.ans, exp: q.exp,
     _subject: q._subject || "",
     _userAns: userAns,
-    _time: Date.now()
+    _time: Date.now(),
+    multi: q.multi ? true : false
   });
   saveWrongBook();
 }
