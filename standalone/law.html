@@ -122,8 +122,6 @@
     #checkinStatus{text-align:center;font-size:14px;white-space:normal;overflow:visible;line-height:1.35}
     .todo-preview{width:100%;display:flex;flex-direction:column;gap:3px;margin-top:8px}
     .dash-body .todo-preview{margin-top:0}
-    .dash-card.checked{border:1.5px solid rgba(46,164,79,0.45);background:rgba(46,164,79,0.08)}
-    body.dark .dash-card.checked{background:rgba(46,164,79,0.16)}
     .todo-preview .tp-item{font-size:11px;color:var(--text);text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 2px;line-height:1.5;max-width:100%}
     .todo-preview .tp-item.done{text-decoration:line-through;opacity:.45}
     .todo-preview .tp-empty{font-size:11px;color:var(--text2);text-align:left;opacity:.65;line-height:1.5}
@@ -5188,8 +5186,10 @@ function quizBack() {
     showQuizSubjects();
   } else if (QUIZ_STATE.screen === "examsetup") {
     showQuizModule();
-  } else if (QUIZ_STATE.screen === "subjects" || QUIZ_STATE.screen === "menu") {
+  } else if (QUIZ_STATE.screen === "subjects") {
     showQuizModule();
+  } else if (QUIZ_STATE.screen === "menu") {
+    showLearningCenter();
   } else {
     showLearningCenter();
   }
