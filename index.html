@@ -3,14 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LexPilot · 入口</title>
+  <meta http-equiv="refresh" content="0; url=./standalone/law.html">
+  <title>SeaWhy Lex · 正在跳转…</title>
+  <style>
+    body{font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;background:#f6f8fa;margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;color:#444}
+    .box{text-align:center;padding:24px}
+    .whale{font-size:48px}
+    h1{font-size:20px;margin:14px 0 6px;color:#1a5276}
+    p{margin:6px 0;font-size:14px;color:#888}
+    a{color:#2980b9;text-decoration:none}
+    .spinner{width:28px;height:28px;margin:18px auto 0;border:3px solid #d6e4f0;border-top-color:#2980b9;border-radius:50%;animation:spin 0.9s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+  </style>
 </head>
-<body style="font-family: sans-serif; margin: 40px auto; max-width: 640px; line-height: 1.8; padding: 0 20px;">
-  <h2>项目入口</h2>
-  <ul>
-    <li><a href="/chat">AI Chat</a></li>
-    <li><a href="/lex">SeaWhy Lex / LexPilot</a></li>
-    <li><a href="/standalone">Legacy Standalone</a></li>
-  </ul>
+<body>
+  <div class="box">
+    <div class="whale">🐋</div>
+    <h1>SeaWhy Lex</h1>
+    <p>正在跳转到法学生AI学习助手…</p>
+    <div class="spinner"></div>
+    <p style="margin-top:16px">如果未自动跳转，请点击 <a href="./standalone/law.html">进入 SeaWhy Lex</a></p>
+  </div>
+  <script>window.location.replace("./standalone/law.html");</script>
 </body>
 </html>
