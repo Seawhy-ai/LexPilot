@@ -65,7 +65,7 @@
     .home-bg.bg-starry .shooting{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff;opacity:0;animation:shoot 5s linear infinite}
     .home-bg.bg-starry .shooting::after{content:"";position:absolute;top:0;right:0;width:70px;height:1.5px;background:linear-gradient(90deg,transparent,#fff);transform:rotate(45deg);transform-origin:right center}
     @keyframes twinkle{0%,100%{opacity:.12}50%{opacity:1}}
-    @keyframes shoot{0%{transform:translate(0,0);opacity:0}5%{opacity:1}20%{transform:translate(70px,-70px);opacity:0}100%{opacity:0}}
+    @keyframes shoot{0%{transform:translate(0,0);opacity:0}5%{opacity:1}20%{transform:translate(70px,70px);opacity:0}100%{opacity:0}}
     .home-bg.bg-ocean{background:linear-gradient(180deg,#dff2ff,#b5ddff 45%,#8cc8ff 70%,#6db9ff)}
     body.dark .home-bg.bg-ocean{background:linear-gradient(180deg,#062233,#0a3a5c 55%,#06304f)}
     .home-bg.bg-ocean .wave{position:absolute;bottom:-18%;width:200%;height:55%;background:radial-gradient(ellipse at 50% 0%,rgba(255,255,255,.45),transparent 62%);animation:waveMove 9s linear infinite}
@@ -415,6 +415,7 @@
         .quiz-page-dot.current{background:var(--accent);transform:scale(1.4)}
         .quiz-page-dot.correct-dot{background:#27ae60}
         .quiz-page-dot.wrong-dot{background:#e74c3c}
+        .quiz-page-counter{font-size:12px;font-weight:600;color:var(--text2);background:var(--input-bg);border:1px solid var(--card-border);padding:3px 12px;border-radius:20px;letter-spacing:.5px}
         .quiz-result{text-align:center;padding:24px 18px}
         .quiz-result .qr-score{font-size:48px;font-weight:800;color:var(--accent);line-height:1.2}
         .quiz-result .qr-label{font-size:14px;color:var(--text2);margin-bottom:18px}
@@ -591,7 +592,9 @@
     .es-timing{display:flex;gap:8px}
     .es-timing .quiz-mode-btn{flex:1;max-width:none}
     .quiz-timer-wrap{padding:0 4px 8px;text-align:left}
-    .quiz-timer{display:inline-flex;align-items:center;gap:4px;background:var(--accent);color:#fff;border-radius:999px;padding:4px 12px;font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+    .quiz-timer{display:inline-flex;align-items:center;gap:4px;background:var(--accent);color:#fff;border-radius:999px;padding:4px 14px;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+    .quiz-timer.countup{background:linear-gradient(135deg,#2e9be6,#1f6fd6)}
+    .quiz-timer.countdown{background:linear-gradient(135deg,#f39c12,#e67e22)}
     .quiz-timer.danger{background:#e74c3c;animation:esPulse .8s ease infinite}
     @keyframes esPulse{0%,100%{opacity:1}50%{opacity:.55}}
     #pointsView{flex:1;display:none!important;flex-direction:column;overflow:hidden;background:var(--bg)}
@@ -4282,7 +4285,7 @@ var QUIZ_STATE = {
 // 考试设置（多选来源 + 题数 + 计时方式 + 每题时长）
 var EXAM_SETUP = { subjects: ["全部"], count: 10, timing: "countup", secPerQ: 60 };
 
-var QUIZ_PAGE_SIZE = 5;
+var QUIZ_PAGE_SIZE = 1; // 一页显示一道题
 
 // ============================================================
 // LEARNING CENTER
@@ -5114,7 +5117,7 @@ function startExamTimer() {
   if (spq < 30) spq = 30; if (spq > 180) spq = 180;
   QUIZ_STATE.timerLimit = QUIZ_STATE.timerMode === "countdown" ? Math.max(60, QUIZ_STATE.questions.length * spq) : 0;
   var el = document.getElementById("quizTimer");
-  if (el) { el.style.display = ""; el.classList.remove("danger"); }
+  if (el) { el.style.display = ""; el.classList.remove("danger"); el.classList.remove("countdown"); el.classList.remove("countup"); }
   QUIZ_STATE.timerInterval = setInterval(updateExamTimer, 500);
   updateExamTimer();
 }
@@ -5141,10 +5144,15 @@ function updateExamTimer() {
       if (QUIZ_STATE.mode === "exam") submitExam();
       return;
     }
-    el.textContent = "⏳ " + fmtClock(remain);
-    el.classList.toggle("danger", remain <= 60);
+    el.textContent = "⏳ 剩余 " + fmtClock(remain);
+    el.classList.add("countdown");
+    el.classList.remove("countup");
+    el.classList.toggle("danger", remain <= 120);
   } else {
-    el.textContent = "⏱ " + fmtClock(elapsed);
+    el.textContent = "⏱ 用时 " + fmtClock(elapsed);
+    el.classList.add("countup");
+    el.classList.remove("countdown");
+    el.classList.remove("danger");
   }
 }
 
@@ -5260,10 +5268,14 @@ function renderQuizPage() {
     h += '<div class="quiz-pagination">';
     var totalPages = Math.ceil(total / QUIZ_PAGE_SIZE);
     var curPage = Math.floor(QUIZ_STATE.currentIndex / QUIZ_PAGE_SIZE);
-    for (var p = 0; p < totalPages; p++) {
-      var dotClass = "quiz-page-dot";
-      if (p === curPage) dotClass += " current";
-      h += '<div class="' + dotClass + '" onclick="goToQuizPage(' + (p * QUIZ_PAGE_SIZE) + ')" style="cursor:pointer;width:10px;height:10px"></div>';
+    if (totalPages <= 12) {
+      for (var p = 0; p < totalPages; p++) {
+        var dotClass = "quiz-page-dot";
+        if (p === curPage) dotClass += " current";
+        h += '<div class="' + dotClass + '" onclick="goToQuizPage(' + (p * QUIZ_PAGE_SIZE) + ')" style="cursor:pointer;width:10px;height:10px"></div>';
+      }
+    } else {
+      h += '<span class="quiz-page-counter">第 ' + (curPage + 1) + ' / ' + totalPages + ' 题</span>';
     }
     h += '</div>';
   }
