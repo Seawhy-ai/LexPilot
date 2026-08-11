@@ -112,6 +112,7 @@
     .dash-card{flex:1;background:rgba(255,255,255,0.42);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:20px;padding:14px 12px;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:0;cursor:pointer;box-shadow:0 4px 24px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.04);transition:all .15s;height:148px;overflow:hidden;box-sizing:border-box;user-select:none}
     body.dark .dash-card{background:rgba(40,40,40,0.8);box-shadow:0 4px 24px rgba(0,0,0,0.3)}
     .dash-card:active{transform:scale(.97)}
+    #checkinCard{justify-content:center}
     .dash-head{display:flex;align-items:center;gap:5px;width:100%;justify-content:flex-start}
     .dash-head .dash-icon{color:#111;width:22px;height:22px;border-radius:7px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;flex-shrink:0}
     .dash-head .dash-icon svg{width:14px;height:14px}
@@ -124,8 +125,8 @@
     .todo-preview .tp-empty{font-size:11px;color:var(--text2);text-align:left;opacity:.65;line-height:1.5}
 
     /* frosted bottom nav card */
-    #bottomNav{display:flex;justify-content:space-around;align-items:center;margin:0 auto;margin-bottom:calc(12px + env(safe-area-inset-bottom));padding:10px 12px;background:rgba(255,255,255,0.42);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.6);border-radius:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.04);flex-shrink:0;max-width:380px;width:calc(100% - 48px)}
-    body.dark #bottomNav{background:rgba(40,40,40,0.8);border:1px solid rgba(255,255,255,0.08);box-shadow:0 4px 24px rgba(0,0,0,0.3)}
+    #bottomNav{display:flex;justify-content:space-around;align-items:center;margin:0 auto;margin-bottom:calc(12px + env(safe-area-inset-bottom));padding:10px 12px;background:rgba(255,255,255,0.42);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.04);flex-shrink:0;max-width:380px;width:calc(100% - 48px)}
+    body.dark #bottomNav{background:rgba(40,40,40,0.8);box-shadow:0 4px 24px rgba(0,0,0,0.3)}
     #bottomNav .nav-item{display:flex;align-items:center;justify-content:center;cursor:pointer;padding:12px;border:none;background:none;color:#111;font-family:inherit;transition:all .15s;border-radius:16px;flex:1}
     #bottomNav .nav-item:active{color:var(--accent);background:rgba(74,144,217,0.08)}
     #bottomNav .nav-item svg{width:24px;height:24px}
@@ -593,7 +594,7 @@
     .es-src:active{transform:scale(.95)}
     .es-timing{display:flex;gap:8px}
     .es-timing .quiz-mode-btn{flex:1;max-width:none}
-    .quiz-timer-wrap{padding:0 4px 8px;text-align:left}
+    .quiz-timer-wrap{padding:0 4px 8px;text-align:center}
     .quiz-timer{display:inline-flex;align-items:center;gap:4px;background:var(--accent);color:#fff;border-radius:999px;padding:4px 14px;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;box-shadow:0 2px 8px rgba(0,0,0,.15)}
     .quiz-timer.countup{background:#2e9be6}
     .quiz-timer.countdown{background:#f39c12}
@@ -677,6 +678,7 @@
     .pm-item:last-child{border-bottom:none}
     .pm-item:active{background:var(--input-bg)}
     .pm-arrow{color:#ccc;font-size:18px;margin-left:auto}
+    .pm-val{margin-left:auto;font-size:12px;font-weight:600;color:var(--text);background:var(--input-bg);border:1px solid var(--card-border);border-radius:20px;padding:3px 12px;white-space:nowrap}
     .pm-toggle{position:relative;margin-left:auto;width:52px;height:30px;border-radius:999px;border:1px solid var(--card-border);background:var(--input-bg);transition:all .2s ease;box-shadow:inset 0 0 0 1px rgba(0,0,0,0.04)}
     .pm-toggle::before{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,0.12);transition:all .2s ease}
     .pm-toggle.on{background:var(--accent);border-color:var(--accent)}
@@ -734,6 +736,14 @@
       </div>
       <div class="dash-main" id="todoStatus">暂无待办</div>
       <div class="todo-preview" id="todoPreview"></div>
+    </div>
+    <div class="dash-card" id="scheduleCard" onclick="showSchedule()" title="今日课表" style="display:none">
+      <div class="dash-head">
+        <div class="dash-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        <span class="dash-name">今日课表</span>
+      </div>
+      <div class="dash-main" id="scheduleStatus">暂无课表</div>
+      <div class="todo-preview" id="schedulePreview"></div>
     </div>
   </div>
   <div class="quote-card" id="quoteCard">
@@ -954,6 +964,11 @@
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="10" rx="2"/><path d="M3 17h18"/><path d="M6 21h12"/><path d="M7 6h2"/><path d="M7 9h6"/></svg>
         <span>主页背景</span>
         <span class="pm-arrow">›</span>
+      </div>
+      <div class="pm-item" onclick="cycleHomeCard()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span>主页卡片</span>
+        <span class="pm-val" id="profileHomeCardState">今日待办</span>
       </div>
       <div class="pm-item" onclick="showAbout()">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -1802,6 +1817,82 @@ function renderTodoStatus() {
   pre.innerHTML = h;
 }
 
+// ===== 主页卡片：今日课表（替代/切换 今日待办） =====
+function getUpcomingCoursesToday() {
+  var d = loadSchedule();
+  var week = d.currentWeek || 1;
+  var day = (new Date().getDay() + 6) % 7; // 周一=0
+  var now = new Date();
+  var nowMin = now.getHours() * 60 + now.getMinutes();
+  var list = d.courses.filter(function(c) {
+    if (c.day !== day) return false;
+    if (getCourseWeeks(c).indexOf(week) < 0) return false;
+    var p = c.start;
+    if (!p || p < 1 || p > SCHEDULE_ENDTIMES.length) return false;
+    var et = SCHEDULE_ENDTIMES[p - 1].split(":");
+    var eMin = (+et[0]) * 60 + (+et[1]);
+    return eMin > nowMin; // 还没结束的课（进行中或即将开始）
+  });
+  list.sort(function(a, b) { return (a.start || 1) - (b.start || 1); });
+  return list.slice(0, 2);
+}
+
+function renderScheduleCard() {
+  var stEl = document.getElementById("scheduleStatus");
+  var pre = document.getElementById("schedulePreview");
+  if (!stEl || !pre) return;
+  var d = loadSchedule();
+  if (!d.courses.length) {
+    stEl.textContent = "暂无课表";
+    pre.innerHTML = '<div class="tp-empty">去课表设置导入</div>';
+    return;
+  }
+  var up = getUpcomingCoursesToday();
+  if (!up.length) {
+    stEl.textContent = "今日无课程";
+    pre.innerHTML = '<div class="tp-empty">今天没有课啦</div>';
+    return;
+  }
+  stEl.textContent = "接下来 " + up.length + " 节";
+  var h = "";
+  for (var i = 0; i < up.length; i++) {
+    var c = up[i];
+    var p = c.start || 1;
+    var t = SCHEDULE_TIMES[p - 1];
+    var col = SCHEDULE_COLORS[(c.color == null ? 0 : c.color) % SCHEDULE_COLORS.length];
+    h += '<div class="tp-item" style="color:' + col + '">· ' + escapeHtml(c.name) + ' <span style="color:var(--text2);margin-left:2px">' + t + '</span></div>';
+  }
+  pre.innerHTML = h;
+}
+
+function renderHomeCard() {
+  var todoCard = document.getElementById("todoCard");
+  var schCard = document.getElementById("scheduleCard");
+  if (!todoCard || !schCard) return;
+  var useSch = options.homeCard === "schedule";
+  todoCard.style.display = useSch ? "none" : "";
+  schCard.style.display = useSch ? "" : "none";
+  if (useSch) renderScheduleCard();
+}
+
+function renderHomeCards() {
+  renderHomeCards();
+  renderHomeCard();
+}
+
+function applyHomeCardState() {
+  var el = document.getElementById("profileHomeCardState");
+  if (el) el.textContent = options.homeCard === "schedule" ? "今日课表" : "今日待办";
+}
+
+function cycleHomeCard() {
+  options.homeCard = options.homeCard === "schedule" ? "todo" : "schedule";
+  try { localStorage.setItem("seawhy-lex-opts", JSON.stringify(options)); } catch(e) {}
+  applyHomeCardState();
+  renderHomeCard();
+  showToast(options.homeCard === "schedule" ? "主页卡片已切换为今日课表" : "主页卡片已切换为今日待办");
+}
+
 function openTodoModal() {
   var o = loadTodos();
   var overlay = document.createElement("div");
@@ -1961,8 +2052,7 @@ function goHomeAfterLogin() {
   home.style.display = "";
   home.classList.add("show");
   applyHomeBg();
-  renderCheckin();
-  renderTodoStatus();
+  renderHomeCards();
   if (!_welcomePlayed) {
     var el = document.getElementById("typewriter");
     if (el) { el.innerHTML = ""; initWelcome(); }
@@ -2258,7 +2348,7 @@ try { var s = JSON.parse(localStorage.getItem("seawhy-lex-config") || "{}"); SET
 var userTheme = "light";
 try { userTheme = JSON.parse(localStorage.getItem("seawhy-lex-theme") || '"light"'); } catch(e) {}
 
-var options = { deep: true, multi: false, practical: false, compare: false, quoteAuto: true, showNickname: false, homeBg: "default" };
+var options = { deep: true, multi: false, practical: false, compare: false, quoteAuto: true, showNickname: false, homeBg: "default", homeCard: "todo" };
 try { var o = JSON.parse(localStorage.getItem("seawhy-lex-opts") || "{}"); Object.keys(options).forEach(function(k){ if(k in o) options[k] = o[k]; }); } catch(e) {}
 
 // ============================================================
@@ -3874,8 +3964,7 @@ function goHome() {
   home.style.display = "";
   home.classList.add("show");
   applyHomeBg();
-  renderCheckin();
-  renderTodoStatus();
+  renderHomeCards();
   renderHomeAvatar();
   if (!_welcomePlayed) {
     var el = document.getElementById("typewriter");
@@ -4413,6 +4502,7 @@ function showProfile() {
   if (psc) psc.scrollTop = 0;
   updateProfileUI();
   applyNicknameState();
+  applyHomeCardState();
   setTimeout(bindRedeemButton, 100);
 }
 
@@ -5324,16 +5414,18 @@ function selectAnswer(qIdx, optIdx) {
   if (QUIZ_STATE.answered[qIdx]) return;
   var qs = QUIZ_STATE.questions[qIdx];
   if (qs.multi) {
-    // 多选：点击切换勾选
+    // 多选：点击切换勾选，需手动提交
     var selArr = QUIZ_STATE.answers[qIdx];
     if (!Array.isArray(selArr)) selArr = [];
     var fi = selArr.indexOf(optIdx);
     if (fi >= 0) selArr.splice(fi, 1); else selArr.push(optIdx);
     QUIZ_STATE.answers[qIdx] = selArr;
+    renderQuizPage();
   } else {
+    // 单选题：选择即自动提交
     QUIZ_STATE.answers[qIdx] = optIdx;
+    submitAnswer(qIdx);
   }
-  renderQuizPage();
 }
 
 function answerSetsEqual(a, b) {
