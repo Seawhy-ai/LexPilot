@@ -112,7 +112,6 @@
     .dash-card{flex:1;background:rgba(255,255,255,0.42);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:20px;padding:14px 12px;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:0;cursor:pointer;box-shadow:0 4px 24px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.04);transition:all .15s;height:148px;overflow:hidden;box-sizing:border-box;user-select:none}
     body.dark .dash-card{background:rgba(40,40,40,0.8);box-shadow:0 4px 24px rgba(0,0,0,0.3)}
     .dash-card:active{transform:scale(.97)}
-    #checkinCard{justify-content:center}
     .dash-head{display:flex;align-items:center;gap:5px;width:100%;justify-content:flex-start}
     .dash-head .dash-icon{color:#111;width:22px;height:22px;border-radius:7px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;flex-shrink:0}
     .dash-head .dash-icon svg{width:14px;height:14px}
@@ -237,7 +236,7 @@
 
     ::-webkit-scrollbar{width:0}
     #homeScreen,.screen.show{animation:fadeInUp .35s ease}
-    #chatView.show,#dbView.show,#aboutView.show,#quizView.show,#docView.show,#caseView.show,#learnCenterView.show,#notebookView.show,#plazaView.show,#lawReaderView.show,#pointsView.show,#scheduleView.show,#scheduleSettingsView.show,#videoView.show{animation:fadeIn .25s ease}
+    #chatView.show,#dbView.show,#aboutView.show,#quizView.show,#docView.show,#caseView.show,#learnCenterView.show,#materialsView.show,#notebookView.show,#plazaView.show,#lawReaderView.show,#pointsView.show,#scheduleView.show,#scheduleSettingsView.show,#videoView.show{animation:fadeIn .25s ease}
     @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
     #chatView{animation:fadeInUp .3s ease}
     @keyframes fadeInUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
@@ -386,6 +385,13 @@
         .quiz-card.correct{border-color:#27ae60;background:rgba(39,174,96,0.05)}
         .quiz-card.wrong{border-color:#e74c3c;background:rgba(231,76,60,0.05)}
         .quiz-q-num{font-size:11px;color:var(--text2);margin-bottom:6px;font-weight:600;letter-spacing:.5px}
+        .q-diff{margin-left:8px;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;vertical-align:1px;letter-spacing:0}
+        .q-diff.d1{background:#e8f6ef;color:#1e8449}
+        .q-diff.d2{background:#fef4e4;color:#b9770e}
+        .q-diff.d3{background:#fdecea;color:#c0392b}
+        body.dark .q-diff.d1{background:rgba(39,174,96,.18);color:#58d68d}
+        body.dark .q-diff.d2{background:rgba(243,156,18,.18);color:#f5b34a}
+        body.dark .q-diff.d3{background:rgba(231,76,60,.18);color:#ee9a86}
         .quiz-q-text{font-size:15px;line-height:1.6;margin-bottom:14px;font-weight:500}
         .quiz-options{display:flex;flex-direction:column;gap:8px}
         .quiz-opt{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border:2px solid var(--card-border);border-radius:12px;cursor:pointer;transition:all .15s;font-size:14px;line-height:1.5;background:var(--bg)}
@@ -529,6 +535,33 @@
 .lc-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text)}
 .lc-name{font-size:16px;font-weight:700;margin-bottom:2px}
 .lc-desc{font-size:12px;color:var(--text2);line-height:1.4}
+
+/* ===== MATERIALS (我的资料 · 上传查看) ===== */
+#materialsView{flex:1;display:none!important;flex-direction:column;overflow:hidden;background:var(--bg)}
+#materialsView.show{display:flex!important}
+#materialsView .wx-nav{border-bottom:1px solid var(--card-border)}
+.mat-body{flex:1;overflow-y:auto;padding:14px 18px calc(16px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch;max-width:600px;margin:0 auto;width:100%}
+.mat-tip{font-size:12px;color:var(--text2);background:var(--input-bg);border-radius:10px;padding:10px 14px;margin-bottom:14px;line-height:1.6}
+.mat-empty{text-align:center;padding:44px 20px;color:var(--text2)}
+.mat-empty .me-icon{font-size:40px;margin-bottom:10px}
+.mat-empty .me-btn{margin-top:14px;padding:10px 26px;border:none;border-radius:14px;background:var(--accent);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
+.mat-item{display:flex;align-items:center;gap:12px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:13px 14px;margin-bottom:10px;cursor:pointer;transition:all .15s}
+.mat-item:active{transform:scale(.98);background:var(--input-bg)}
+.mat-ic{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-size:12px;font-weight:700}
+.mat-ic.pdf{background:#e74c3c}.mat-ic.doc{background:#2980b9}.mat-ic.txt{background:#27ae60}
+.mat-info{flex:1;min-width:0}
+.mat-name{font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mat-meta{font-size:11px;color:var(--text2);margin-top:3px}
+.mat-del{color:var(--text2);padding:8px;border:none;background:none;cursor:pointer;flex-shrink:0;font-size:16px}
+.mat-viewer{position:fixed;inset:0;background:var(--bg);z-index:600;display:none;flex-direction:column}
+.mat-viewer.show{display:flex}
+.mat-viewer .mv-body{flex:1;overflow:hidden;position:relative}
+.mat-viewer iframe,.mat-viewer embed{width:100%;height:100%;border:none;background:#fff}
+.mat-viewer pre{white-space:pre-wrap;word-break:break-word;font-family:"PingFang SC","Microsoft YaHei",sans-serif;font-size:14px;line-height:1.9;padding:18px;color:var(--text);margin:0}
+.mat-viewer .mv-body{overflow-y:auto;-webkit-overflow-scrolling:touch}
+.mat-viewer .mv-rich{background:#fff;color:#222;padding:18px 20px;font-size:14px;line-height:1.9;word-break:break-word;min-height:100%}
+.mat-viewer .mv-rich h1,.mat-viewer .mv-rich h2,.mat-viewer .mv-rich h3{color:#1a5276}
+.mat-viewer .mv-loading{text-align:center;color:var(--text2);padding:60px 24px;font-size:14px;line-height:1.8}
 
 /* ===== NOTEBOOK ===== */
 .notebook-body{flex:1;overflow-y:auto;padding:16px 14px calc(16px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch}
@@ -1288,8 +1321,8 @@
       </div>
       <div class="learn-card" onclick="showMaterials()">
         <div class="lc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="14" y2="11"/></svg></div>
-        <div class="lc-name">资料</div>
-        <div class="lc-desc">核心法律 · 案例数据库 · 文书模板</div>
+        <div class="lc-name">我的资料</div>
+        <div class="lc-desc">上传 PDF / Word 文档，随时查看</div>
       </div>
       <div class="learn-card" onclick="showNotebook()">
         <div class="lc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
@@ -1307,6 +1340,19 @@
         <div class="lc-desc">B站法学课程 · 视频学习</div>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- ===== MATERIALS VIEW (我的资料 · 上传查看) ===== -->
+<div id="materialsView" style="display:none">
+  <div class="wx-nav">
+    <button class="back" onclick="closeMaterials()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span class="title">我的资料</span>
+    <button class="right-btn" onclick="uploadMaterial()" title="上传文档" style="font-size:20px">＋</button>
+  </div>
+  <div class="mat-body">
+    <div class="mat-tip">支持上传 <b>PDF</b> / <b>Word (.docx)</b> / <b>纯文本 (.txt)</b> 文档，存储在本机浏览器中，随时查看。</div>
+    <div id="matList"></div>
   </div>
 </div>
 
@@ -2037,7 +2083,7 @@ function checkLoginState() {
 }
 
 function showLoginScreen() {
-  ["homeScreen","chatView","dbView","aboutView","quizView","docView","caseView","caseDetail","learnCenterView","notebookView","plazaView","noteDetailView","profileView","pointsView","scheduleView","scheduleSettingsView","videoView"].forEach(function(id) {
+  ["homeScreen","chatView","dbView","aboutView","quizView","docView","caseView","caseDetail","learnCenterView","materialsView","notebookView","plazaView","noteDetailView","profileView","pointsView","scheduleView","scheduleSettingsView","videoView"].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) { el.classList.remove("show"); el.style.display = "none"; }
   });
@@ -3946,7 +3992,7 @@ function showAbout() {
 // SCREEN MANAGEMENT
 // ============================================================
 function hideAllViews() {
-  ["homeScreen","chatView","dbView","aboutView","quizView","docView","caseView","caseDetail","learnCenterView","notebookView","plazaView","noteDetailView","profileView","pointsView","scheduleView","scheduleSettingsView","videoView"].forEach(function(id) {
+  ["homeScreen","chatView","dbView","aboutView","quizView","docView","caseView","caseDetail","learnCenterView","materialsView","notebookView","plazaView","noteDetailView","profileView","pointsView","scheduleView","scheduleSettingsView","videoView"].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) el.classList.remove("show");
   });
@@ -4482,10 +4528,196 @@ function showQuizModule() {
   showQuizSubjects();
 }
 
+// ============================================================
+// 我的资料：上传 PDF / Word / TXT 文档并查看
+// ============================================================
+var MATERIALS_DB = "seawhy-lex-materials";
+var MATERIALS_STORE = "docs";
+var MATERIALS_META = "seawhy-lex-materials-meta";
+var _matViewerOpen = false;
+
+function loadMaterialsMeta() {
+  try { return JSON.parse(localStorage.getItem(MATERIALS_META) || "[]"); } catch(e) { return []; }
+}
+function saveMaterialsMeta(list) { try { localStorage.setItem(MATERIALS_META, JSON.stringify(list)); } catch(e) {} }
+function openMaterialsDB() {
+  return new Promise(function(resolve, reject) {
+    if (typeof indexedDB === "undefined") { reject(new Error("no-idb")); return; }
+    var req = indexedDB.open(MATERIALS_DB, 1);
+    req.onupgradeneeded = function(e) {
+      var db = e.target.result;
+      if (!db.objectStoreNames.contains(MATERIALS_STORE)) db.createObjectStore(MATERIALS_STORE);
+    };
+    req.onsuccess = function() { resolve(req.result); };
+    req.onerror = function() { reject(req.error); };
+  });
+}
+function idbPut(id, blob) {
+  return openMaterialsDB().then(function(db) {
+    return new Promise(function(resolve, reject) {
+      var tx = db.transaction(MATERIALS_STORE, "readwrite");
+      tx.objectStore(MATERIALS_STORE).put(blob, id);
+      tx.oncomplete = function() { db.close(); resolve(); };
+      tx.onerror = function() { db.close(); reject(tx.error); };
+    });
+  });
+}
+function idbGet(id) {
+  return openMaterialsDB().then(function(db) {
+    return new Promise(function(resolve, reject) {
+      var tx = db.transaction(MATERIALS_STORE, "readonly");
+      var req = tx.objectStore(MATERIALS_STORE).get(id);
+      req.onsuccess = function() { db.close(); resolve(req.result); };
+      req.onerror = function() { db.close(); reject(req.error); };
+    });
+  });
+}
+function idbDel(id) {
+  return openMaterialsDB().then(function(db) {
+    return new Promise(function(resolve, reject) {
+      var tx = db.transaction(MATERIALS_STORE, "readwrite");
+      tx.objectStore(MATERIALS_STORE).delete(id);
+      tx.oncomplete = function() { db.close(); resolve(); };
+      tx.onerror = function() { db.close(); reject(tx.error); };
+    });
+  });
+}
+function matFileType(name) {
+  var ext = (name.split(".").pop() || "").toLowerCase();
+  if (ext === "pdf") return "pdf";
+  if (ext === "docx") return "doc";
+  if (ext === "txt") return "txt";
+  return null;
+}
+function fmtFileSize(bytes) {
+  if (bytes >= 1048576) return (bytes / 1048576).toFixed(1) + " MB";
+  if (bytes >= 1024) return Math.round(bytes / 1024) + " KB";
+  return bytes + " B";
+}
 function showMaterials() {
   hideAllViews();
-  document.getElementById("dbView").classList.add("show");
-  renderDatabase();
+  document.getElementById("materialsView").classList.add("show");
+  renderMaterials();
+}
+function closeMaterials() { showLearningCenter(); }
+function renderMaterials() {
+  var list = loadMaterialsMeta();
+  var el = document.getElementById("matList");
+  if (!el) return;
+  if (!list.length) {
+    el.innerHTML = '<div class="mat-empty"><div class="me-icon">📂</div>还没有上传任何资料<br><button class="me-btn" onclick="uploadMaterial()">上传文档</button></div>';
+    return;
+  }
+  var h = "";
+  for (var i = 0; i < list.length; i++) {
+    var m = list[i];
+    var label = m.type === "pdf" ? "PDF" : m.type === "doc" ? "DOC" : "TXT";
+    h += '<div class="mat-item" onclick="openMaterial(\'' + m.id + '\')">' +
+      '<div class="mat-ic ' + m.type + '">' + label + '</div>' +
+      '<div class="mat-info"><div class="mat-name">' + escapeHtml(m.name) + '</div>' +
+      '<div class="mat-meta">' + fmtFileSize(m.size) + ' · ' + m.date + '</div></div>' +
+      '<button class="mat-del" onclick="event.stopPropagation();deleteMaterial(\'' + m.id + '\')" title="删除">🗑</button>' +
+      '</div>';
+  }
+  el.innerHTML = h;
+}
+function uploadMaterial() {
+  var input = document.createElement("input");
+  input.type = "file";
+  input.accept = ".pdf,.docx,.txt";
+  input.onchange = function() {
+    var f = input.files && input.files[0];
+    if (!f) return;
+    var type = matFileType(f.name);
+    if (!type) { showToast("仅支持 PDF / .docx / .txt 文件"); return; }
+    if (f.size > 30 * 1024 * 1024) { showToast("文件过大，请上传 30MB 以内的文件"); return; }
+    var id = "m" + Date.now() + "_" + Math.floor(Math.random() * 1e6);
+    idbPut(id, f).then(function() {
+      var list = loadMaterialsMeta();
+      var d = new Date();
+      list.unshift({
+        id: id, name: f.name, type: type, size: f.size,
+        date: d.getFullYear() + "." + (d.getMonth() + 1) + "." + d.getDate()
+      });
+      saveMaterialsMeta(list);
+      renderMaterials();
+      showToast("已上传 " + f.name);
+    }).catch(function() {
+      showToast("上传失败，浏览器存储空间不足或不可用");
+    });
+  };
+  input.click();
+}
+function deleteMaterial(id) {
+  var list = loadMaterialsMeta();
+  var m = list.filter(function(x) { return x.id === id; })[0];
+  if (!m) return;
+  if (!confirm("确定删除「" + m.name + "」吗？")) return;
+  idbDel(id).catch(function() {});
+  saveMaterialsMeta(list.filter(function(x) { return x.id !== id; }));
+  renderMaterials();
+  showToast("已删除");
+}
+function openMaterial(id) {
+  var list = loadMaterialsMeta();
+  var m = list.filter(function(x) { return x.id === id; })[0];
+  if (!m) { showToast("文档不存在"); return; }
+  showToast("正在打开…");
+  idbGet(id).then(function(blob) {
+    if (!blob) { showToast("文档内容读取失败"); return; }
+    if (m.type === "pdf") {
+      showMaterialViewer('<iframe src="' + URL.createObjectURL(blob) + '"></iframe>');
+    } else if (m.type === "txt") {
+      blob.text().then(function(text) {
+        showMaterialViewer('<pre>' + escapeHtml(text) + '</pre>');
+      });
+    } else if (m.type === "doc") {
+      showMaterialViewer('<div class="mv-loading">正在解析 Word 文档…</div>');
+      function doParse() {
+        blob.arrayBuffer().then(function(buf) {
+          return mammoth.convertToHtml({ arrayBuffer: buf });
+        }).then(function(result) {
+          setMaterialViewerContent('<div class="mv-rich">' + (result.value || "") + '</div>');
+        }).catch(function() {
+          setMaterialViewerContent('<div class="mv-loading">解析失败：请确认文件为 .docx 格式（.doc 需先另存为 .docx）</div>');
+        });
+      }
+      if (typeof mammoth !== "undefined") { doParse(); }
+      else {
+        loadScript("https://cdn.bootcdn.net/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js", function(err) {
+          if (err) { setMaterialViewerContent('<div class="mv-loading">解析引擎加载失败，请下载后用 Word 查阅</div>'); return; }
+          doParse();
+        });
+      }
+    }
+  }).catch(function() { showToast("文档读取失败"); });
+}
+function showMaterialViewer(html) {
+  _matViewerOpen = true;
+  var v = document.getElementById("matViewer");
+  if (!v) {
+    v = document.createElement("div");
+    v.id = "matViewer";
+    v.className = "mat-viewer";
+    v.innerHTML = '<div class="wx-nav"><button class="back" onclick="closeMaterialViewer()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button><span class="title">资料预览</span></div><div class="mv-body"></div>';
+    document.body.appendChild(v);
+  }
+  v.classList.add("show");
+  v.querySelector(".mv-body").innerHTML = html;
+}
+function setMaterialViewerContent(html) {
+  var v = document.getElementById("matViewer");
+  if (v) v.querySelector(".mv-body").innerHTML = html;
+}
+function closeMaterialViewer() {
+  var v = document.getElementById("matViewer");
+  if (v) {
+    var f = v.querySelector("iframe");
+    if (f && f.src) URL.revokeObjectURL(f.src);
+    v.classList.remove("show");
+    v.querySelector(".mv-body").innerHTML = "";
+  }
+  _matViewerOpen = false;
 }
 
 var _fromPlaza = false;
@@ -5298,7 +5530,9 @@ function renderQuizPage() {
     if (!examLocked && isAnswered && !isCorrect) cardClass = " wrong";
 
     h += '<div class="quiz-card' + cardClass + '" id="quizCard' + globalIdx + '">';
-    h += '<div class="quiz-q-num">#' + (globalIdx + 1) + ' · ' + escHtml(q._subject || "") + (q._chapter ? ' · ' + escHtml(q._chapter) : '') + (QUIZ_STATE.mode === "exam" ? ' · 考试模式' : '') + '</div>';
+    var diffHtml = "";
+    if (q.diff) diffHtml = '<span class="q-diff d' + q.diff + '">' + (q.diff === 3 ? "困难" : q.diff === 2 ? "中等" : "简单") + '</span>';
+    h += '<div class="quiz-q-num">#' + (globalIdx + 1) + ' · ' + escHtml(q._subject || "") + (q._chapter ? ' · ' + escHtml(q._chapter) : '') + (QUIZ_STATE.mode === "exam" ? ' · 考试模式' : '') + diffHtml + '</div>';
     h += '<div class="quiz-q-text">' + escHtml(q.q) + '</div>';
 
     if (q.opts && q.opts.length > 0) {
