@@ -51,8 +51,8 @@ jobs:
           rm -rf Payload
           mkdir Payload
           cp -R "$APP" Payload/
-          # 关键：删除签名相关残留，避免重签名时报错
-          rm -rf Payload/App.app/_CodeSignature
+          # 给二进制打一个 ad-hoc 基础签名（无证书身份），让重签名工具(爱思/Sideloadly)有签名槽可替换
+          codesign --force --deep -s - Payload/App.app && echo "ad-hoc base signature applied" || echo "WARN: ad-hoc sign failed, continuing unsigned"
           rm -f Payload/App.app/embedded.mobileprovision
           zip -r -y SeaWhyLex-unsigned.ipa Payload
 
