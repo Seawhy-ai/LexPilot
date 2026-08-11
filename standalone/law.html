@@ -116,9 +116,14 @@
     .dash-head .dash-icon{color:#111;width:22px;height:22px;border-radius:7px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;flex-shrink:0}
     .dash-head .dash-icon svg{width:14px;height:14px}
     .dash-head .dash-name{font-size:11px;font-weight:600;color:#111;letter-spacing:.5px;white-space:nowrap}
+    .dash-body{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;min-height:0;width:100%}
     .dash-main{font-size:16px;font-weight:700;color:#111;margin-top:8px;text-align:left;line-height:1.4;word-break:break-word;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .dash-body .dash-main{margin-top:0}
     #checkinStatus{text-align:center}
     .todo-preview{width:100%;display:flex;flex-direction:column;gap:3px;margin-top:8px}
+    .dash-body .todo-preview{margin-top:0}
+    .dash-card.checked{border:1.5px solid rgba(46,164,79,0.45);background:rgba(46,164,79,0.08)}
+    body.dark .dash-card.checked{background:rgba(46,164,79,0.16)}
     .todo-preview .tp-item{font-size:11px;color:var(--text);text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 2px;line-height:1.5;max-width:100%}
     .todo-preview .tp-item.done{text-decoration:line-through;opacity:.45}
     .todo-preview .tp-empty{font-size:11px;color:var(--text2);text-align:left;opacity:.65;line-height:1.5}
@@ -377,6 +382,14 @@
         .qcc-name{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
         .qcc-count{font-size:11px;color:var(--text2);flex-shrink:0;white-space:nowrap}
         .qcc-arrow{font-size:16px;color:var(--text2);flex-shrink:0;margin-left:4px;font-weight:300}
+        .quiz-menu-grid{display:flex;flex-direction:column;gap:12px}
+        .quiz-menu-btn{display:flex;align-items:center;gap:14px;background:var(--card-bg);border:1.5px solid var(--card-border);border-radius:18px;padding:18px 18px;cursor:pointer;transition:all .15s;text-align:left;font-family:inherit;width:100%}
+        .quiz-menu-btn:active{transform:scale(.98);background:var(--input-bg)}
+        .qmb-icon{width:46px;height:46px;border-radius:14px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+        .qmb-txt{display:flex;flex-direction:column;gap:3px;min-width:0}
+        .qmb-name{font-size:16px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:6px}
+        .qmb-name .wb-count{background:var(--accent);color:#fff;border-radius:10px;padding:1px 7px;font-size:10px;font-weight:700;line-height:1.5}
+        .qmb-desc{font-size:12px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
         .quiz-mode-bar{display:flex;gap:8px;margin-bottom:16px;justify-content:center}
         .quiz-mode-btn{padding:8px 18px;border:2px solid var(--card-border);border-radius:16px;background:var(--card-bg);color:var(--text);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;flex:1;max-width:160px}
         .quiz-mode-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
@@ -625,6 +638,8 @@
     .es-src{background:var(--input-bg);border:1.5px solid var(--card-border);border-radius:10px;padding:11px 6px;text-align:center;font-size:12px;font-weight:600;color:var(--text);cursor:pointer;transition:all .15s;line-height:1.3;word-break:break-all}
     .es-src.active{background:var(--accent);color:#fff;border-color:var(--accent)}
     .es-src:active{transform:scale(.95)}
+    .es-chips{display:flex;flex-wrap:wrap;gap:6px}
+    .es-chips .es-src{flex:0 0 auto;padding:7px 10px;border-radius:9px;font-size:11px;max-width:100%}
     .es-timing{display:flex;gap:8px}
     .es-timing .quiz-mode-btn{flex:1;max-width:none}
     .quiz-timer-wrap{padding:0 4px 8px;text-align:center}
@@ -760,23 +775,29 @@
         <div class="dash-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg></div>
         <span class="dash-name">打卡</span>
       </div>
-      <div class="dash-main" id="checkinStatus">点我打卡</div>
+      <div class="dash-body">
+        <div class="dash-main" id="checkinStatus">点我打卡</div>
+      </div>
     </div>
     <div class="dash-card" id="todoCard" onclick="openTodoModal()" title="今日待办">
       <div class="dash-head">
         <div class="dash-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8.5 8.5h7"/><path d="M8.5 12.5h7"/><path d="M9 16.5l2 2 4-4"/></svg></div>
         <span class="dash-name">今日待办</span>
       </div>
-      <div class="dash-main" id="todoStatus">暂无待办</div>
-      <div class="todo-preview" id="todoPreview"></div>
+      <div class="dash-body">
+        <div class="dash-main" id="todoStatus">暂无待办</div>
+        <div class="todo-preview" id="todoPreview"></div>
+      </div>
     </div>
     <div class="dash-card" id="scheduleCard" onclick="showSchedule()" title="今日课表" style="display:none">
       <div class="dash-head">
         <div class="dash-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
         <span class="dash-name">今日课表</span>
       </div>
-      <div class="dash-main" id="scheduleStatus">暂无课表</div>
-      <div class="todo-preview" id="schedulePreview"></div>
+      <div class="dash-body">
+        <div class="dash-main" id="scheduleStatus">暂无课表</div>
+        <div class="todo-preview" id="schedulePreview"></div>
+      </div>
     </div>
   </div>
   <div class="quote-card" id="quoteCard">
@@ -1417,18 +1438,64 @@
     <span class="title">题库练习</span>
   </div>
   <div class="quiz-body">
-    <!-- 科目选择 -->
-    <div id="quizSubjectScreen">
+    <!-- 主菜单：练习 / 考试 / 错题本 -->
+    <div id="quizMenuScreen">
+      <div class="quiz-header">
+        <h2>题库练习</h2>
+        <p>选择模式开始学习</p>
+      </div>
+      <div class="quiz-menu-grid">
+        <button class="quiz-menu-btn" onclick="enterPractice()">
+          <div class="qmb-icon" style="color:#2e9be6"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+          <div class="qmb-txt">
+            <div class="qmb-name">练习</div>
+            <div class="qmb-desc">分章节刷题 · 即时解析</div>
+          </div>
+        </button>
+        <button class="quiz-menu-btn" onclick="enterExam()">
+          <div class="qmb-icon" style="color:#e67e22"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <div class="qmb-txt">
+            <div class="qmb-name">考试</div>
+            <div class="qmb-desc">自选科目章节 · 限时答题</div>
+          </div>
+        </button>
+        <button class="quiz-menu-btn" onclick="showWrongBook()">
+          <div class="qmb-icon" style="color:#e74c3c"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+          <div class="qmb-txt">
+            <div class="qmb-name">错题本 <span class="wb-count" id="wbCount">0</span></div>
+            <div class="qmb-desc">回顾薄弱 · 重点突破</div>
+          </div>
+        </button>
+      </div>
+    </div>
+    <!-- 练习：科目选择 -->
+    <div id="quizSubjectScreen" style="display:none">
       <div class="quiz-header">
         <h2>选择科目</h2>
-        <p>先选模式，再选科目和章节开始练习</p>
+        <p>选择科目和章节开始练习</p>
       </div>
-      <div class="quiz-mode-bar" style="margin-bottom:10px">
-        <button class="quiz-mode-btn active" id="subjModePractice" onclick="selectSubjectMode('practice')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:3px"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>练习模式</button>
-        <button class="quiz-mode-btn" id="subjModeExam" onclick="selectSubjectMode('exam')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:3px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>考试模式</button>
-      </div>
-      <button class="quiz-wrongbook-entry" onclick="showWrongBook()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:5px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>错题本 <span class="wb-count" id="wbCount">0</span><span style="margin-left:auto;opacity:.6;font-size:11px">›</span></button>
       <div class="quiz-subject-grid" id="quizSubjectGrid"></div>
+    </div>
+    <!-- 考试：设置界面（来源科目→章节 + 题数 + 计时） -->
+    <div id="quizExamSetupScreen" style="display:none">
+      <div class="quiz-header">
+        <h2>考试设置</h2>
+        <p>选择来源科目与章节，自定义题数与计时方式</p>
+      </div>
+      <div class="es-label">题目来源（可多选，可具体到章节）</div>
+      <div class="es-sources" id="esSources"></div>
+      <div id="esChaptersWrap"></div>
+      <div class="es-label">题目数量 <span style="color:var(--accent);font-size:14px;font-weight:800" id="esCountVal"></span></div>
+      <input type="range" id="esCount" min="3" max="50" step="1" style="width:100%;accent-color:var(--accent)" oninput="document.getElementById('esCountVal').textContent = this.value + ' 题'; EXAM_SETUP.count = +this.value">
+      <div class="es-label" id="esSecLabel" style="display:none">每题时长 <span style="color:var(--accent);font-size:14px;font-weight:800" id="esSecVal"></span></div>
+      <input type="range" id="esSec" min="30" max="180" step="10" style="width:100%;accent-color:var(--accent);display:none" oninput="document.getElementById('esSecVal').textContent = this.value + ' 秒'; EXAM_SETUP.secPerQ = +this.value">
+      <div class="es-label">计时方式</div>
+      <div class="es-timing">
+        <button class="quiz-mode-btn active" id="esTimingUp" onclick="setExamTiming('countup')"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;margin-right:3px"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 10.59 4.05 2.3-.99 1.73L11 13.4V7h2v5.59z"/></svg>计时模式</button>
+        <button class="quiz-mode-btn" id="esTimingDown" onclick="setExamTiming('countdown')"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;margin-right:3px"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 10.59 4.05 2.3-.99 1.73L11 13.4V7h2v5.59z"/></svg>倒计时</button>
+      </div>
+      <p class="es-tip" id="esTimingTip" style="font-size:11px;color:var(--text2);margin:6px 0 0">计时模式：不限时，仅记录用时</p>
+      <button class="quiz-btn primary" style="width:100%;margin-top:14px;padding:12px" onclick="startExamFromSetup()">开始考试</button>
     </div>
     <!-- 章节选择 -->
     <div id="quizChapterScreen" style="display:none">
@@ -1815,7 +1882,7 @@ function renderCheckin() {
   if (!el) return;
   var c = loadCheckin();
   if (c.days[todayStr()]) {
-    el.textContent = "累计打卡 " + (c.count || 0) + " 天";
+    el.textContent = "已打卡 · 累计 " + (c.count || 0) + " 天";
     if (card) card.classList.add("checked");
   } else {
     el.textContent = "点我打卡";
@@ -4525,7 +4592,27 @@ function updateLearnDashboard() {
 function showQuizModule() {
   hideAllViews();
   document.getElementById("quizView").classList.add("show");
+  stopExamTimer();
+  var qte = document.getElementById("quizTimer");
+  if (qte) qte.style.display = "none";
+  setQuizScreen("menu");
+  var wbc = document.getElementById("wbCount");
+  if (wbc) wbc.textContent = wrongBook.length;
+}
+
+// 主菜单三个入口
+function enterPractice() {
+  QUIZ_STATE.mode = "practice";
+  QUIZ_STATE.subject = "全部";
+  QUIZ_STATE.chapter = "";
   showQuizSubjects();
+}
+
+function enterExam() {
+  QUIZ_STATE.mode = "exam";
+  EXAM_SETUP.subjects = ["全部"];
+  EXAM_SETUP.chapters = {};
+  showExamSetupScreen();
 }
 
 // ============================================================
@@ -4616,7 +4703,7 @@ function renderMaterials() {
       '<div class="mat-ic ' + m.type + '">' + label + '</div>' +
       '<div class="mat-info"><div class="mat-name">' + escapeHtml(m.name) + '</div>' +
       '<div class="mat-meta">' + fmtFileSize(m.size) + ' · ' + m.date + '</div></div>' +
-      '<button class="mat-del" onclick="event.stopPropagation();deleteMaterial(\'' + m.id + '\')" title="删除">🗑</button>' +
+      '<button class="mat-del" onclick="event.stopPropagation();deleteMaterial(\'' + m.id + '\')" title="删除"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="vertical-align:-2px"><path d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>' +
       '</div>';
   }
   el.innerHTML = h;
@@ -4926,7 +5013,7 @@ function renderNotes() {
     html += '<div class="note-card" onclick="editNote(' + i + ')" style="cursor:pointer">' +
       '<div style="display:flex;justify-content:space-between;align-items:center">' +
       '<div class="note-date">' + (n.date || "") + '</div>' +
-      '<button onclick="event.stopPropagation();deleteNote(' + i + ')" style="background:none;border:none;color:var(--text2);cursor:pointer;font-size:14px;padding:4px 8px">🗑</button>' +
+      '<button onclick="event.stopPropagation();deleteNote(' + i + ')" style="background:none;border:none;color:var(--text2);cursor:pointer;font-size:14px;padding:4px 8px;display:inline-flex;align-items:center" title="删除"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>' +
       '</div>' +
       '<div class="note-title">' + escHtml(n.title || "无标题") + '</div>' +
       '<div class="note-preview">' + escHtml(preview) + (n.content && n.content.length > 100 ? "..." : "") + '</div>' +
@@ -4988,17 +5075,15 @@ function subjectHasChapters(subject) {
 
 function setQuizScreen(screen) {
   QUIZ_STATE.screen = screen;
-  var s1 = document.getElementById("quizSubjectScreen");
-  var s2 = document.getElementById("quizChapterScreen");
-  var s3 = document.getElementById("quizPlayArea");
-  if (s1) s1.style.display = screen === "subjects" ? "" : "none";
-  if (s2) s2.style.display = screen === "chapters" ? "" : "none";
-  if (s3) s3.style.display = screen === "quiz" ? "" : "none";
+  var screens = { menu: "quizMenuScreen", subjects: "quizSubjectScreen", chapters: "quizChapterScreen", examsetup: "quizExamSetupScreen", quiz: "quizPlayArea" };
+  for (var k in screens) {
+    var el = document.getElementById(screens[k]);
+    if (el) el.style.display = (k === screen) ? "" : "none";
+  }
 }
 
 function showQuizSubjects() {
   setQuizScreen("subjects");
-  selectSubjectMode(QUIZ_STATE.mode, true); // 进入科目页不自动弹考试设置
   var subjects = [];
   var totalAll = 0;
   for (var k in QUIZ_DATA) {
@@ -5045,8 +5130,6 @@ function showQuizChapters() {
 }
 
 function selectQuizSubject(subject) {
-  // 考试模式：直接进考试设置，预选该科目
-  if (QUIZ_STATE.mode === "exam") { openExamSetup(subject); return; }
   QUIZ_STATE.subject = subject;
   QUIZ_STATE.chapter = "";
   QUIZ_STATE.subjectHasChapters = subjectHasChapters(subject);
@@ -5058,7 +5141,6 @@ function selectQuizSubject(subject) {
 }
 
 function selectQuizChapter(chapter) {
-  if (QUIZ_STATE.mode === "exam") { openExamSetup(QUIZ_STATE.subject); return; }
   QUIZ_STATE.chapter = chapter;
   startQuizPlay();
 }
@@ -5072,37 +5154,6 @@ function startQuizPlay() {
   document.getElementById("quizSubtitle").textContent = QUIZ_STATE.chapter
     ? QUIZ_STATE.subject + " · " + QUIZ_STATE.chapter
     : (QUIZ_STATE.subject === "全部" ? "全部科目 · 随机练习" : QUIZ_STATE.subject + " · 全部章节");
-  if (QUIZ_STATE.mode === "exam") {
-    openExamCountPicker();
-    return;
-  }
-  filterQuizQuestions();
-}
-
-// 考试设置：选择题目个数
-function openExamCountPicker() {
-  var overlay = document.createElement("div");
-  overlay.id = "examCountOverlay";
-  overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:600;display:flex;align-items:center;justify-content:center;padding:16px";
-  var box = document.createElement("div");
-  box.style.cssText = "position:relative;background:var(--card-bg);border-radius:18px;padding:20px;max-width:300px;width:100%;text-align:center";
-  box.innerHTML =
-    '<button class="modal-close" onclick="document.getElementById(\'examCountOverlay\').remove()">✕</button>' +
-    '<p style="font-size:16px;font-weight:700;color:var(--text);margin:0 0 4px">考试设置</p>' +
-    '<p style="font-size:12px;color:var(--text2);margin:0 0 12px">来源：' + escHtml(QUIZ_STATE.subject) + (QUIZ_STATE.chapter ? ' · ' + escHtml(QUIZ_STATE.chapter) : '') + '</p>' +
-    '<div class="pp-grid">' +
-    '<div class="pp-card" onclick="pickExamCount(5)"><div class="pp-name">5 题</div></div>' +
-    '<div class="pp-card" onclick="pickExamCount(10)"><div class="pp-name">10 题</div></div>' +
-    '<div class="pp-card" onclick="pickExamCount(20)"><div class="pp-name">20 题</div></div>' +
-    '<div class="pp-card" onclick="pickExamCount(0)"><div class="pp-name">全部</div></div>' +
-    '</div>';
-  overlay.appendChild(box);
-  document.body.appendChild(overlay);
-}
-function pickExamCount(n) {
-  QUIZ_STATE.examCount = n;
-  var ov = document.getElementById("examCountOverlay");
-  if (ov) ov.remove();
   filterQuizQuestions();
 }
 
@@ -5114,14 +5165,17 @@ function quizBack() {
     wrongBookMode = false;
     var btn = document.getElementById("btnWrongBook");
     if (btn) btn.classList.remove("active");
-    showQuizSubjects();
+    showQuizModule();
     return;
   }
   if (QUIZ_STATE.screen === "quiz") {
-    if (QUIZ_STATE.chapter || QUIZ_STATE.subjectHasChapters) showQuizChapters();
+    if (QUIZ_STATE.mode === "exam") showExamSetupScreen();
+    else if (QUIZ_STATE.chapter || QUIZ_STATE.subjectHasChapters) showQuizChapters();
     else showQuizSubjects();
   } else if (QUIZ_STATE.screen === "chapters") {
     showQuizSubjects();
+  } else if (QUIZ_STATE.screen === "examsetup") {
+    showQuizModule();
   } else {
     showLearningCenter();
   }
@@ -5273,16 +5327,6 @@ function filterQuizQuestions(noReshuffle) {
   renderQuizPage();
 }
 
-// 科目选择页的模式切换（练习/考试）；点击考试模式直接进入考试设置
-function selectSubjectMode(mode, silent) {
-  QUIZ_STATE.mode = mode;
-  var sp = document.getElementById("subjModePractice");
-  var se = document.getElementById("subjModeExam");
-  if (sp) sp.classList.toggle("active", mode === "practice");
-  if (se) se.classList.toggle("active", mode === "exam");
-  if (!silent && mode === "exam") openExamSetup();
-}
-
 function submitExam() {
   stopExamTimer();
   QUIZ_STATE._examSubmitted = true;
@@ -5302,45 +5346,24 @@ function getQuizSubjectList() {
   return subs;
 }
 
-function openExamSetup(preSubject) {
-  if (preSubject) EXAM_SETUP.subjects = [preSubject];
+function showExamSetupScreen() {
   if (!EXAM_SETUP.subjects || !EXAM_SETUP.subjects.length) EXAM_SETUP.subjects = ["全部"];
+  if (EXAM_SETUP.chapters === undefined) EXAM_SETUP.chapters = {};
   if (EXAM_SETUP.count < 3) EXAM_SETUP.count = 3;
   if (EXAM_SETUP.count > 50) EXAM_SETUP.count = 50;
-  var ov = document.getElementById("examSetupOverlay");
-  if (ov) ov.remove();
-  ov = document.createElement("div");
-  ov.id = "examSetupOverlay";
-  ov.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:600;display:flex;align-items:center;justify-content:center;padding:16px";
-  var box = document.createElement("div");
-  box.style.cssText = "position:relative;background:var(--card-bg);border-radius:18px;padding:20px;max-width:340px;width:100%;max-height:92dvh;overflow-y:auto";
-  box.innerHTML =
-    '<button class="modal-close" onclick="document.getElementById(\'examSetupOverlay\').remove()">✕</button>' +
-    '<p style="font-size:17px;font-weight:800;color:var(--text);margin:0">考试设置</p>' +
-    '<p style="font-size:12px;color:var(--text2);margin:2px 0 0">可多选科目来源，自定义题数与计时方式</p>' +
-    '<div class="es-label">题目来源（可多选）</div>' +
-    '<div class="es-sources" id="esSources"></div>' +
-    '<div class="es-label">题目数量 <span style="color:var(--accent);font-size:14px;font-weight:800" id="esCountVal"></span></div>' +
-    '<input type="range" id="esCount" min="3" max="50" step="1" style="width:100%;accent-color:var(--accent)" oninput="document.getElementById(\'esCountVal\').textContent = this.value + \' 题\'; EXAM_SETUP.count = +this.value">' +
-    '<div class="es-label" id="esSecLabel" style="display:none">每题时长 <span style="color:var(--accent);font-size:14px;font-weight:800" id="esSecVal"></span></div>' +
-    '<input type="range" id="esSec" min="30" max="180" step="10" style="width:100%;accent-color:var(--accent);display:none" oninput="document.getElementById(\'esSecVal\').textContent = this.value + \' 秒\'; EXAM_SETUP.secPerQ = +this.value">' +
-    '<div class="es-label">计时方式</div>' +
-    '<div class="es-timing">' +
-    '<button class="quiz-mode-btn active" id="esTimingUp" onclick="setExamTiming(\'countup\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;margin-right:3px"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 10.59 4.05 2.3-.99 1.73L11 13.4V7h2v5.59z"/></svg>计时模式</button>' +
-    '<button class="quiz-mode-btn" id="esTimingDown" onclick="setExamTiming(\'countdown\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;margin-right:3px"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 10.59 4.05 2.3-.99 1.73L11 13.4V7h2v5.59z"/></svg>倒计时</button>' +
-    '</div>' +
-    '<p class="es-tip" id="esTimingTip" style="font-size:11px;color:var(--text2);margin:6px 0 0">计时模式：不限时，仅记录用时</p>' +
-    '<button class="quiz-btn primary" style="width:100%;margin-top:14px;padding:12px" onclick="startExamFromSetup()">开始考试</button>';
-  ov.appendChild(box);
-  document.body.appendChild(ov);
   renderExamSources();
-  document.getElementById("esCount").value = EXAM_SETUP.count;
-  document.getElementById("esCountVal").textContent = EXAM_SETUP.count + " 题";
+  var cnt = document.getElementById("esCount");
+  if (cnt) cnt.value = EXAM_SETUP.count;
+  var cntVal = document.getElementById("esCountVal");
+  if (cntVal) cntVal.textContent = EXAM_SETUP.count + " 题";
   if (EXAM_SETUP.secPerQ < 30) EXAM_SETUP.secPerQ = 30;
   if (EXAM_SETUP.secPerQ > 180) EXAM_SETUP.secPerQ = 180;
-  document.getElementById("esSec").value = EXAM_SETUP.secPerQ;
-  document.getElementById("esSecVal").textContent = EXAM_SETUP.secPerQ + " 秒";
+  var sec = document.getElementById("esSec");
+  if (sec) sec.value = EXAM_SETUP.secPerQ;
+  var secVal = document.getElementById("esSecVal");
+  if (secVal) secVal.textContent = EXAM_SETUP.secPerQ + " 秒";
   setExamTiming(EXAM_SETUP.timing, true);
+  setQuizScreen("examsetup");
 }
 
 function renderExamSources() {
@@ -5352,6 +5375,7 @@ function renderExamSources() {
   }
   var el = document.getElementById("esSources");
   if (el) el.innerHTML = h;
+  renderExamChapters();
 }
 
 function toggleExamSource(s) {
@@ -5367,6 +5391,45 @@ function toggleExamSource(s) {
     if (!arr.length) EXAM_SETUP.subjects = ["全部"]; // 全取消时回到全部
   }
   renderExamSources();
+}
+
+// 按科目渲染章节选择（可具体到章节）
+function renderExamChapters() {
+  var wrap = document.getElementById("esChaptersWrap");
+  if (!wrap) return;
+  var subs = EXAM_SETUP.subjects.filter(function (s) {
+    return s !== "全部" && subjectHasChapters(s);
+  });
+  var h = "";
+  for (var i = 0; i < subs.length; i++) {
+    var s = subs[i];
+    var chapters = getQuizChapters(s);
+    var sel = (EXAM_SETUP.chapters || {})[s] || [];
+    h += '<div class="es-label">' + escHtml(s) + ' 章节</div>';
+    h += '<div class="es-chips">';
+    h += '<div class="es-src' + (sel.length ? "" : " active") + '" onclick="toggleExamChapter(\'' + escAttr(s) + '\',\'__all__\')">全部章节</div>';
+    for (var j = 0; j < chapters.length; j++) {
+      var c = chapters[j];
+      h += '<div class="es-src' + (sel.indexOf(c) >= 0 ? " active" : "") + '" onclick="toggleExamChapter(\'' + escAttr(s) + '\',\'' + escAttr(c) + '\')">' + escHtml(c) + '</div>';
+    }
+    h += '</div>';
+  }
+  wrap.innerHTML = h;
+}
+
+function toggleExamChapter(subject, chapter) {
+  if (!EXAM_SETUP.chapters) EXAM_SETUP.chapters = {};
+  var sel = EXAM_SETUP.chapters[subject] || [];
+  if (chapter === "__all__") {
+    delete EXAM_SETUP.chapters[subject];
+  } else {
+    var idx = sel.indexOf(chapter);
+    if (idx >= 0) sel.splice(idx, 1);
+    else sel.push(chapter);
+    if (sel.length) EXAM_SETUP.chapters[subject] = sel;
+    else delete EXAM_SETUP.chapters[subject];
+  }
+  renderExamChapters();
 }
 
 function setExamTiming(t, silent) {
@@ -5392,12 +5455,17 @@ function startExamFromSetup() {
   if (count > 50) count = 50;
   var isAll = srcs.indexOf("全部") >= 0;
   var srcNames = isAll ? getQuizSubjectList() : srcs;
+  var chapters = EXAM_SETUP.chapters || {};
   var all = [];
   for (var si = 0; si < srcNames.length; si++) {
-    var arr = QUIZ_DATA[srcNames[si]] || [];
+    var sName = srcNames[si];
+    var arr = QUIZ_DATA[sName] || [];
+    var chList = chapters[sName] || [];
+    var hasChFilter = chList.length > 0;
     for (var i = 0; i < arr.length; i++) {
       var q = arr[i];
-      q._subject = srcNames[si];
+      if (hasChFilter && chList.indexOf(q.chapter || "") < 0) continue;
+      q._subject = sName;
       q._chapter = q.chapter || "";
       all.push(q);
     }
@@ -5421,8 +5489,6 @@ function startExamFromSetup() {
   QUIZ_STATE.answered = {};
   QUIZ_STATE.correct = {};
   QUIZ_STATE._examSubmitted = false;
-  var ov = document.getElementById("examSetupOverlay");
-  if (ov) ov.remove();
   setQuizScreen("quiz");
   document.getElementById("quizPlayTitle").textContent = "考试模式";
   var spqTxt = EXAM_SETUP.timing === "countdown" ? ("倒计时 · 每题 " + (EXAM_SETUP.secPerQ || 60) + " 秒") : "计时";
@@ -5631,7 +5697,7 @@ function renderQuizPage() {
     var booksSVG = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="vertical-align:-4px;margin-right:3px"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/><circle cx="12" cy="5" r="1.5" fill="currentColor"/><circle cx="12" cy="11" r="1.5" fill="currentColor"/></svg>';
     h += '<div class="quiz-result"><div class="qr-score">' + correctCount + '/' + total + '</div>';
     h += '<div class="qr-label">' + (pct >= 0.8 ? starSVG + '太棒了！你掌握了扎实的法律知识！' : pct >= 0.6 ? thumbSVG + '不错！继续加油！' : booksSVG + '还需努力，多看看法条和解析吧！') + '</div>';
-    var restartOnclick = QUIZ_STATE.mode === "exam" ? 'openExamSetup()' : 'filterQuizQuestions()';
+    var restartOnclick = QUIZ_STATE.mode === "exam" ? 'showExamSetupScreen()' : 'filterQuizQuestions()';
     h += '<button class="quiz-btn primary" onclick="' + restartOnclick + '">' + refSVG + '重新开始</button></div>';
   }
 
@@ -5743,6 +5809,7 @@ function clearWrongBook() {
 
 function showWrongBook() {
   QUIZ_STATE.mode = "practice"; // 错题本复习按练习模式展示答案
+  wrongBookMode = true;
   setQuizScreen("quiz");
   document.getElementById("quizPlayTitle").textContent = "错题本";
   if (wrongBook.length === 0) {
@@ -5751,7 +5818,6 @@ function showWrongBook() {
     renderQuizStats();
     return;
   }
-  wrongBookMode = true;
   document.getElementById("quizSubtitle").textContent = "错题本 · 共 " + wrongBook.length + " 道错题";
 
   // Build questions from wrong book
