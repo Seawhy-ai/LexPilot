@@ -2391,25 +2391,26 @@ function handleRestoreFile(input) {
 }
 
 // ===== INIT: show login on first visit =====
+// 【临时】登录界面已暂时跳过（代码全部保留，恢复时把下面 initApp 换回旧逻辑即可）。
+// 不登录也能进主页，云端备份以 guest 身份运行，不会影响原有账号数据。
 function initApp() {
-  if (checkLoginState()) {
-    // Already logged in, show home
-    document.getElementById("homeScreen").classList.add("show");
-    renderCheckin();
-    renderTodoStatus();
-    initWelcome();
-    updateProfileUI();
+  var acc = loadAccount();
+  if (acc && acc.username) {
+    currentUser = acc.username; // 有账号就用原账号
   } else {
-    // Check if account exists
-    var acc = loadAccount();
-    if (acc && acc.username) {
-      // Account exists but not logged in (after refresh, show login)
-      showLoginScreen();
-      document.getElementById("loginUsername").value = acc.username;
-    } else {
-      // No account yet, show register
-      showLoginScreen();
-    }
+    currentUser = currentUser || "guest"; // 无账号时用 guest，保证云备份不崩
+  }
+  var loginEl = document.getElementById("loginScreen");
+  if (loginEl) { loginEl.classList.remove("show"); loginEl.style.display = "none"; }
+  var home = document.getElementById("homeScreen");
+  if (home) {
+    home.style.display = "";
+    home.classList.add("show");
+    applyHomeBg();
+    renderHomeCards();
+    renderHomeAvatar();
+    updateProfileUI();
+    initWelcome();
   }
 }
 
