@@ -581,6 +581,17 @@
     .pc-minus{color:#e74c3c}
     .modal-close{position:absolute;top:10px;right:10px;width:28px;height:28px;border:none;border-radius:50%;background:var(--input-bg);color:var(--text2);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit;line-height:1;z-index:5}
     .modal-close:active{transform:scale(.9)}
+    .es-label{font-size:13px;font-weight:700;color:var(--text);margin:14px 0 8px}
+    .es-sources{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .es-src{background:var(--input-bg);border:1.5px solid var(--card-border);border-radius:10px;padding:11px 6px;text-align:center;font-size:12px;font-weight:600;color:var(--text);cursor:pointer;transition:all .15s;line-height:1.3;word-break:break-all}
+    .es-src.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .es-src:active{transform:scale(.95)}
+    .es-timing{display:flex;gap:8px}
+    .es-timing .quiz-mode-btn{flex:1;max-width:none}
+    .quiz-timer-wrap{padding:0 4px 8px;text-align:left}
+    .quiz-timer{display:inline-flex;align-items:center;gap:4px;background:var(--accent);color:#fff;border-radius:999px;padding:4px 12px;font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+    .quiz-timer.danger{background:#e74c3c;animation:esPulse .8s ease infinite}
+    @keyframes esPulse{0%,100%{opacity:1}50%{opacity:.55}}
     #pointsView{flex:1;display:none!important;flex-direction:column;overflow:hidden;background:var(--bg)}
     #pointsView.show{display:flex!important}
     .points-body{flex:1;overflow-y:auto;padding:16px 18px calc(16px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch;max-width:600px;margin:0 auto;width:100%}
@@ -1364,11 +1375,8 @@
         <h2 id="quizPlayTitle">法学题库</h2>
         <p id="quizSubtitle">法考真题 · 章节练习 · 错题回顾</p>
       </div>
+      <div class="quiz-timer-wrap"><div class="quiz-timer" id="quizTimer" style="display:none"></div></div>
       <div class="quiz-stats" id="quizStats"></div>
-      <div class="quiz-mode-bar">
-        <button class="quiz-mode-btn active" id="modePractice" onclick="setQuizMode('practice')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:3px"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>练习模式</button>
-        <button class="quiz-mode-btn" id="modeExam" onclick="setQuizMode('exam')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:3px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>考试模式</button>
-      </div>
       <div class="quiz-wrongbook-bar">
         <button class="quiz-wrongbook-btn" id="btnWrongBook" onclick="toggleWrongBook()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:3px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>错题本 <span class="wb-count" id="wbCount">0</span></button>
         <button class="quiz-wrongbook-btn" onclick="clearWrongBook()" style="font-size:11px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:2px"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>清空</button>
@@ -2627,34 +2635,15 @@ function goToProfile() {
   setTimeout(function() { if (fly.parentNode) fly.parentNode.removeChild(fly); }, 620);
 }
 
-// 退出个人中心：渐隐 + 头像飞回 + 主页渐显（同时进行）
+// 退出个人中心：渐隐 + 主页渐显（无头像飞行动画）
 function exitProfile() {
-  var target = document.querySelector(".profile-card .ph-avatar");
-  var homeBtn = document.getElementById("homeProfileBtn");
   var profile = document.getElementById("profileView");
   var home = document.getElementById("homeScreen");
-  var fly = makeFlyAvatar();
-  var startRect = target ? target.getBoundingClientRect() : { left: 0, top: 0 };
-  var endRect = homeBtn ? homeBtn.getBoundingClientRect() : { left: 20, top: 60 };
-  fly.style.left = startRect.left + "px";
-  fly.style.top = startRect.top + "px";
-  fly.style.width = "64px";
-  fly.style.height = "64px";
-  fly.style.fontSize = "30px";
-  // 个人中心渐隐
   if (profile) { profile.style.transition = "opacity .3s ease"; profile.style.opacity = "0"; }
   setTimeout(function() {
     goHome(); // 主页先显示
     if (profile) { profile.style.transition = ""; profile.style.opacity = ""; }
-    // 主页显示后再定位头像按钮（落点准确）
-    var homeBtn = document.getElementById("homeProfileBtn");
-    var endRect2 = homeBtn ? homeBtn.getBoundingClientRect() : { left: 20, top: 60 };
-    fly.style.left = endRect2.left + "px";
-    fly.style.top = endRect2.top + "px";
-    fly.style.width = "40px";
-    fly.style.height = "40px";
-    fly.style.fontSize = "20px";
-    // 主页渐显（与头像飞回同步）
+    // 主页渐显
     if (home) {
       home.style.transition = "opacity .3s ease";
       home.style.opacity = "0";
@@ -2662,7 +2651,6 @@ function exitProfile() {
     requestAnimationFrame(function() { if (home) home.style.opacity = "1"; });
     setTimeout(function() { if (home) home.style.transition = ""; }, 300);
   }, 300);
-  setTimeout(function() { if (fly.parentNode) fly.parentNode.removeChild(fly); }, 700);
 }
 
 // 徽章轮播渲染
@@ -4285,8 +4273,15 @@ var QUIZ_STATE = {
   questions: [],
   answers: {},
   answered: {},
-  correct: {}
+  correct: {},
+  timerMode: "countup",
+  timerStart: 0,
+  timerLimit: 0,
+  timerInterval: null
 };
+
+// 考试设置（多选来源 + 题数 + 计时方式）
+var EXAM_SETUP = { subjects: ["全部"], count: 10, timing: "countup" };
 
 var QUIZ_PAGE_SIZE = 5;
 
@@ -4676,7 +4671,7 @@ function setQuizScreen(screen) {
 
 function showQuizSubjects() {
   setQuizScreen("subjects");
-  selectSubjectMode(QUIZ_STATE.mode);
+  selectSubjectMode(QUIZ_STATE.mode, true); // 进入科目页不自动弹考试设置
   var subjects = [];
   var totalAll = 0;
   for (var k in QUIZ_DATA) {
@@ -4723,6 +4718,8 @@ function showQuizChapters() {
 }
 
 function selectQuizSubject(subject) {
+  // 考试模式：直接进考试设置，预选该科目
+  if (QUIZ_STATE.mode === "exam") { openExamSetup(subject); return; }
   QUIZ_STATE.subject = subject;
   QUIZ_STATE.chapter = "";
   QUIZ_STATE.subjectHasChapters = subjectHasChapters(subject);
@@ -4734,11 +4731,15 @@ function selectQuizSubject(subject) {
 }
 
 function selectQuizChapter(chapter) {
+  if (QUIZ_STATE.mode === "exam") { openExamSetup(QUIZ_STATE.subject); return; }
   QUIZ_STATE.chapter = chapter;
   startQuizPlay();
 }
 
 function startQuizPlay() {
+  stopExamTimer();
+  var qte = document.getElementById("quizTimer");
+  if (qte) qte.style.display = "none";
   setQuizScreen("quiz");
   document.getElementById("quizPlayTitle").textContent = QUIZ_STATE.subject;
   document.getElementById("quizSubtitle").textContent = QUIZ_STATE.chapter
@@ -4779,6 +4780,9 @@ function pickExamCount(n) {
 }
 
 function quizBack() {
+  stopExamTimer();
+  var qte = document.getElementById("quizTimer");
+  if (qte) qte.style.display = "none";
   if (wrongBookMode) {
     wrongBookMode = false;
     var btn = document.getElementById("btnWrongBook");
@@ -4808,6 +4812,53 @@ function recordPracticeDone(q, answer, isCorrect) {
   rec.push({ q: q.q, answer: answer, correct: isCorrect });
   if (rec.length > 200) rec = rec.slice(-200);
   savePracticeDone(rec);
+}
+
+// 洗选项 + 均匀分布正确答案位置
+function shuffleQuestionOptions(list) {
+  var ansCounts = [0,0,0,0,0,0]; // track correct answer positions
+  for (var qi = 0; qi < list.length; qi++) {
+    var q = list[qi];
+    var n = (q.opts && q.opts.length) || 0;
+    if (n === 0) continue;
+    // Create shuffle indices
+    var indices = [];
+    for (var oi = 0; oi < n; oi++) indices.push(oi);
+    // Fisher-Yates shuffle
+    for (var si = n - 1; si > 0; si--) {
+      var sj = Math.floor(Math.random() * (si + 1));
+      var stmp = indices[si]; indices[si] = indices[sj]; indices[sj] = stmp;
+    }
+    var shuffledOpts = [];
+    for (var oi = 0; oi < n; oi++) {
+      shuffledOpts.push(q.opts[indices[oi]]);
+    }
+    if (q.multi) {
+      // 多选：只打乱，记录正确答案的新位置数组
+      q._shuffledOpts = shuffledOpts;
+      var ansOrig = Array.isArray(q.ans) ? q.ans : [q.ans];
+      q._shuffledAns = ansOrig.map(function(a) { return indices.indexOf(a); });
+    } else {
+      // 单选：均匀分布正确答案位置
+      var maxPos = Math.min(n, 4);
+      var minCount = ansCounts[0], bestPos = 0;
+      for (var pi = 1; pi < maxPos; pi++) {
+        if (ansCounts[pi] < minCount) { minCount = ansCounts[pi]; bestPos = pi; }
+      }
+      var ansOrigIdx = indices.indexOf(q.ans);
+      if (ansOrigIdx >= 0 && bestPos < n) {
+        var swapTmp = indices[bestPos];
+        indices[bestPos] = indices[ansOrigIdx];
+        indices[ansOrigIdx] = swapTmp;
+      }
+      var shuffledOpts2 = [];
+      for (var oi2 = 0; oi2 < n; oi2++) shuffledOpts2.push(q.opts[indices[oi2]]);
+      q._shuffledOpts = shuffledOpts2;
+      q._shuffledAns = bestPos < n ? bestPos : (ansOrigIdx >= 0 ? ansOrigIdx : q.ans);
+      if (ansOrigIdx < 0) q._shuffledAns = q.ans;
+      ansCounts[q._shuffledAns] = (ansCounts[q._shuffledAns] || 0) + 1;
+    }
+  }
 }
 
 function filterQuizQuestions(noReshuffle) {
@@ -4856,49 +4907,15 @@ function filterQuizQuestions(noReshuffle) {
       var tmp = all[i]; all[i] = all[j]; all[j] = tmp;
     }
   }
-  // Shuffle options + even distribution of correct answers
-  var ansCounts = [0,0,0,0,0,0]; // track correct answer positions
-  for (var qi = 0; qi < all.length; qi++) {
-    var q = all[qi];
-    var n = (q.opts && q.opts.length) || 0;
-    if (n === 0) continue;
-    // Create shuffle indices
-    var indices = [];
-    for (var oi = 0; oi < n; oi++) indices.push(oi);
-    // Fisher-Yates shuffle
-    for (var si = n - 1; si > 0; si--) {
-      var sj = Math.floor(Math.random() * (si + 1));
-      var stmp = indices[si]; indices[si] = indices[sj]; indices[sj] = stmp;
+  // 洗选项：只有每次进入题目集时洗一次；noReshuffle（切换场景）保持顺序不变
+  if (noReshuffle) {
+    var needOpts = [];
+    for (var qi3 = 0; qi3 < all.length; qi3++) {
+      if (all[qi3].opts && all[qi3].opts.length && all[qi3]._shuffledOpts === undefined) needOpts.push(all[qi3]);
     }
-    var shuffledOpts = [];
-    for (var oi = 0; oi < n; oi++) {
-      shuffledOpts.push(q.opts[indices[oi]]);
-    }
-    if (q.multi) {
-      // 多选：只打乱，记录正确答案的新位置数组
-      q._shuffledOpts = shuffledOpts;
-      var ansOrig = Array.isArray(q.ans) ? q.ans : [q.ans];
-      q._shuffledAns = ansOrig.map(function(a) { return indices.indexOf(a); });
-    } else {
-      // 单选：均匀分布正确答案位置
-      var maxPos = Math.min(n, 4);
-      var minCount = ansCounts[0], bestPos = 0;
-      for (var pi = 1; pi < maxPos; pi++) {
-        if (ansCounts[pi] < minCount) { minCount = ansCounts[pi]; bestPos = pi; }
-      }
-      var ansOrigIdx = indices.indexOf(q.ans);
-      if (ansOrigIdx >= 0 && bestPos < n) {
-        var swapTmp = indices[bestPos];
-        indices[bestPos] = indices[ansOrigIdx];
-        indices[ansOrigIdx] = swapTmp;
-      }
-      var shuffledOpts2 = [];
-      for (var oi2 = 0; oi2 < n; oi2++) shuffledOpts2.push(q.opts[indices[oi2]]);
-      q._shuffledOpts = shuffledOpts2;
-      q._shuffledAns = bestPos < n ? bestPos : (ansOrigIdx >= 0 ? ansOrigIdx : q.ans);
-      if (ansOrigIdx < 0) q._shuffledAns = q.ans;
-      ansCounts[q._shuffledAns] = (ansCounts[q._shuffledAns] || 0) + 1;
-    }
+    if (needOpts.length) shuffleQuestionOptions(needOpts);
+  } else {
+    shuffleQuestionOptions(all);
   }
   // 考试模式：按设定题数截取
   if (QUIZ_STATE.mode === "exam" && QUIZ_STATE.examCount > 0 && all.length > QUIZ_STATE.examCount) {
@@ -4929,35 +4946,192 @@ function filterQuizQuestions(noReshuffle) {
   renderQuizPage();
 }
 
-function setQuizMode(mode) {
-  QUIZ_STATE.mode = mode;
-  document.getElementById("modePractice").classList.toggle("active", mode === "practice");
-  document.getElementById("modeExam").classList.toggle("active", mode === "exam");
-  QUIZ_STATE.currentIndex = 0;
-  // 切换模式不重排题目顺序
-  filterQuizQuestions(true);
-}
-
-// 科目选择页的模式切换（练习/考试）
-function selectSubjectMode(mode) {
+// 科目选择页的模式切换（练习/考试）；点击考试模式直接进入考试设置
+function selectSubjectMode(mode, silent) {
   QUIZ_STATE.mode = mode;
   var sp = document.getElementById("subjModePractice");
   var se = document.getElementById("subjModeExam");
   if (sp) sp.classList.toggle("active", mode === "practice");
   if (se) se.classList.toggle("active", mode === "exam");
-  var mp = document.getElementById("modePractice");
-  var me = document.getElementById("modeExam");
-  if (mp) mp.classList.toggle("active", mode === "practice");
-  if (me) me.classList.toggle("active", mode === "exam");
+  if (!silent && mode === "exam") openExamSetup();
 }
 
 function submitExam() {
+  stopExamTimer();
   QUIZ_STATE._examSubmitted = true;
   var total = QUIZ_STATE.questions.length;
   var correct = 0;
   for (var k in QUIZ_STATE.correct) if (QUIZ_STATE.correct[k]) correct++;
   if (correct > 0 && !wrongBookMode) awardPoints(vipRate(correct), "考试得分");
   renderQuizPage();
+}
+
+// ===== 考试设置界面（多选来源 + 题数横拉条 + 计时方式）=====
+function getQuizSubjectList() {
+  var subs = [];
+  for (var k in QUIZ_DATA) {
+    if (QUIZ_DATA.hasOwnProperty(k) && QUIZ_DATA[k].length > 0) subs.push(k);
+  }
+  return subs;
+}
+
+function openExamSetup(preSubject) {
+  if (preSubject) EXAM_SETUP.subjects = [preSubject];
+  if (!EXAM_SETUP.subjects || !EXAM_SETUP.subjects.length) EXAM_SETUP.subjects = ["全部"];
+  if (EXAM_SETUP.count < 3) EXAM_SETUP.count = 3;
+  if (EXAM_SETUP.count > 50) EXAM_SETUP.count = 50;
+  var ov = document.getElementById("examSetupOverlay");
+  if (ov) ov.remove();
+  ov = document.createElement("div");
+  ov.id = "examSetupOverlay";
+  ov.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:600;display:flex;align-items:center;justify-content:center;padding:16px";
+  var box = document.createElement("div");
+  box.style.cssText = "position:relative;background:var(--card-bg);border-radius:18px;padding:20px;max-width:340px;width:100%;max-height:92dvh;overflow-y:auto";
+  box.innerHTML =
+    '<button class="modal-close" onclick="document.getElementById(\'examSetupOverlay\').remove()">✕</button>' +
+    '<p style="font-size:17px;font-weight:800;color:var(--text);margin:0">考试设置</p>' +
+    '<p style="font-size:12px;color:var(--text2);margin:2px 0 0">可多选科目来源，自定义题数与计时方式</p>' +
+    '<div class="es-label">题目来源（可多选）</div>' +
+    '<div class="es-sources" id="esSources"></div>' +
+    '<div class="es-label">题目数量 <span style="color:var(--accent);font-size:14px;font-weight:800" id="esCountVal"></span></div>' +
+    '<input type="range" id="esCount" min="3" max="50" step="1" style="width:100%;accent-color:var(--accent)" oninput="document.getElementById(\'esCountVal\').textContent = this.value + \' 题\'; EXAM_SETUP.count = +this.value">' +
+    '<div class="es-label">计时方式</div>' +
+    '<div class="es-timing">' +
+    '<button class="quiz-mode-btn active" id="esTimingUp" onclick="setExamTiming(\'countup\')">⏱ 计时模式</button>' +
+    '<button class="quiz-mode-btn" id="esTimingDown" onclick="setExamTiming(\'countdown\')">⏳ 倒计时</button>' +
+    '</div>' +
+    '<p class="es-tip" id="esTimingTip" style="font-size:11px;color:var(--text2);margin:6px 0 0">计时模式：不限时，仅记录用时</p>' +
+    '<button class="quiz-btn primary" style="width:100%;margin-top:14px;padding:12px" onclick="startExamFromSetup()">开始考试</button>';
+  ov.appendChild(box);
+  document.body.appendChild(ov);
+  renderExamSources();
+  document.getElementById("esCount").value = EXAM_SETUP.count;
+  document.getElementById("esCountVal").textContent = EXAM_SETUP.count + " 题";
+  setExamTiming(EXAM_SETUP.timing, true);
+}
+
+function renderExamSources() {
+  var subs = getQuizSubjectList();
+  var h = '<div class="es-src' + (EXAM_SETUP.subjects.indexOf("全部") >= 0 ? ' active' : '') + '" onclick="toggleExamSource(\'全部\')">全部</div>';
+  for (var i = 0; i < subs.length; i++) {
+    var s = subs[i];
+    h += '<div class="es-src' + (EXAM_SETUP.subjects.indexOf(s) >= 0 ? ' active' : '') + '" onclick="toggleExamSource(\'' + escAttr(s) + '\')">' + escHtml(s) + '</div>';
+  }
+  var el = document.getElementById("esSources");
+  if (el) el.innerHTML = h;
+}
+
+function toggleExamSource(s) {
+  var arr = EXAM_SETUP.subjects;
+  var idx = arr.indexOf(s);
+  if (s === "全部") {
+    EXAM_SETUP.subjects = idx >= 0 ? [] : ["全部"];
+  } else {
+    if (idx >= 0) arr.splice(idx, 1);
+    else arr.push(s);
+    var ai = arr.indexOf("全部");
+    if (ai >= 0) arr.splice(ai, 1); // 选了具体科目就取消"全部"
+    if (!arr.length) EXAM_SETUP.subjects = ["全部"]; // 全取消时回到全部
+  }
+  renderExamSources();
+}
+
+function setExamTiming(t, silent) {
+  EXAM_SETUP.timing = t;
+  var up = document.getElementById("esTimingUp");
+  var down = document.getElementById("esTimingDown");
+  if (up) up.classList.toggle("active", t === "countup");
+  if (down) down.classList.toggle("active", t === "countdown");
+  var tip = document.getElementById("esTimingTip");
+  if (tip) tip.textContent = t === "countdown" ? "倒计时模式：每题约 1 分钟，时间到自动交卷" : "计时模式：不限时，仅记录用时";
+}
+
+function startExamFromSetup() {
+  var srcs = EXAM_SETUP.subjects;
+  if (!srcs || !srcs.length) { showToast("请至少选择一个题目来源"); return; }
+  var count = EXAM_SETUP.count || 10;
+  if (count < 3) count = 3;
+  if (count > 50) count = 50;
+  var isAll = srcs.indexOf("全部") >= 0;
+  var srcNames = isAll ? getQuizSubjectList() : srcs;
+  var all = [];
+  for (var si = 0; si < srcNames.length; si++) {
+    var arr = QUIZ_DATA[srcNames[si]] || [];
+    for (var i = 0; i < arr.length; i++) {
+      var q = arr[i];
+      q._subject = srcNames[si];
+      q._chapter = q.chapter || "";
+      all.push(q);
+    }
+  }
+  if (!all.length) { showToast("所选科目暂无题目"); return; }
+  // 洗乱题目
+  for (var i = all.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = all[i]; all[i] = all[j]; all[j] = t;
+  }
+  if (all.length > count) all = all.slice(0, count);
+  shuffleQuestionOptions(all);
+  QUIZ_STATE.mode = "exam";
+  QUIZ_STATE.subject = isAll ? "全部" : srcs.join("、");
+  QUIZ_STATE.chapter = "";
+  QUIZ_STATE.subjectHasChapters = false;
+  QUIZ_STATE.examCount = count;
+  QUIZ_STATE.questions = all;
+  QUIZ_STATE.currentIndex = 0;
+  QUIZ_STATE.answers = {};
+  QUIZ_STATE.answered = {};
+  QUIZ_STATE.correct = {};
+  QUIZ_STATE._examSubmitted = false;
+  var ov = document.getElementById("examSetupOverlay");
+  if (ov) ov.remove();
+  setQuizScreen("quiz");
+  document.getElementById("quizPlayTitle").textContent = "考试模式";
+  document.getElementById("quizSubtitle").textContent = QUIZ_STATE.subject + " · " + count + " 题 · " + (EXAM_SETUP.timing === "countdown" ? "倒计时" : "计时");
+  startExamTimer();
+  renderQuizStats();
+  renderQuizPage();
+}
+
+// ===== 考试计时 =====
+function startExamTimer() {
+  stopExamTimer();
+  QUIZ_STATE.timerMode = EXAM_SETUP.timing;
+  QUIZ_STATE.timerStart = Date.now();
+  QUIZ_STATE.timerLimit = QUIZ_STATE.timerMode === "countdown" ? Math.max(60, QUIZ_STATE.questions.length * 60) : 0;
+  var el = document.getElementById("quizTimer");
+  if (el) { el.style.display = ""; el.classList.remove("danger"); }
+  QUIZ_STATE.timerInterval = setInterval(updateExamTimer, 500);
+  updateExamTimer();
+}
+
+function stopExamTimer() {
+  if (QUIZ_STATE.timerInterval) { clearInterval(QUIZ_STATE.timerInterval); QUIZ_STATE.timerInterval = null; }
+}
+
+function fmtClock(s) {
+  var m = Math.floor(s / 60);
+  var sec = s % 60;
+  return (m < 10 ? "0" : "") + m + ":" + (sec < 10 ? "0" : "") + sec;
+}
+
+function updateExamTimer() {
+  var el = document.getElementById("quizTimer");
+  if (!el) return;
+  var elapsed = Math.floor((Date.now() - QUIZ_STATE.timerStart) / 1000);
+  if (QUIZ_STATE.timerMode === "countdown") {
+    var remain = Math.max(0, QUIZ_STATE.timerLimit - elapsed);
+    if (remain <= 0 && !QUIZ_STATE._examSubmitted) {
+      stopExamTimer();
+      el.textContent = "⏳ 时间到，已自动交卷";
+      if (QUIZ_STATE.mode === "exam") submitExam();
+      return;
+    }
+    el.textContent = "⏳ " + fmtClock(remain);
+    el.classList.toggle("danger", remain <= 60);
+  } else {
+    el.textContent = "⏱ " + fmtClock(elapsed);
+  }
 }
 
 function renderQuizStats() {
@@ -5009,16 +5183,18 @@ function renderQuizPage() {
       h += '<div class="quiz-options">';
       var labels = ["A","B","C","D","E","F"];
       var examLocked = QUIZ_STATE.mode === "exam" && !QUIZ_STATE._examSubmitted;
+      var showResult = QUIZ_STATE.mode === "exam" && QUIZ_STATE._examSubmitted;
       for (var j = 0; j < q.opts.length; j++) {
         var optClass = "";
-        if (isAnswered) optClass += " disabled";
+        var revealOpt = isAnswered || showResult; // 交卷后未答题也标出正确答案
+        if (revealOpt) optClass += " disabled";
         var selArr = Array.isArray(selected) ? selected : (selected === undefined ? [] : [selected]);
         var ansArr = Array.isArray(q._shuffledAns) ? q._shuffledAns : (q._shuffledAns !== undefined ? [q._shuffledAns] : (Array.isArray(q.ans) ? q.ans : [q.ans]));
         var isSel = selArr.indexOf(j) >= 0;
         var isAns = ansArr.indexOf(j) >= 0;
-        if (isAnswered && !examLocked && isSel && isAns) optClass += " correct-answer";
-        if (isAnswered && !examLocked && isSel && !isAns) optClass += " wrong-answer";
-        if (isAnswered && !examLocked && !isSel && isAns) optClass += " correct-answer";
+        if (revealOpt && !examLocked && isSel && isAns) optClass += " correct-answer";
+        if (revealOpt && !examLocked && isSel && !isAns) optClass += " wrong-answer";
+        if (revealOpt && !examLocked && !isSel && isAns) optClass += " correct-answer";
         if (isSel) optClass += " selected";
         h += '<div class="quiz-opt' + optClass + '" onclick="selectAnswer(' + globalIdx + ',' + j + ')" id="opt' + globalIdx + '_' + j + '">';
         h += '<span class="quiz-opt-prefix">' + labels[j] + '.</span>';
@@ -5029,8 +5205,9 @@ function renderQuizPage() {
       h += '</div>';
     }
 
-    h += '<div class="quiz-explain' + (isAnswered && !(QUIZ_STATE.mode === "exam" && !QUIZ_STATE._examSubmitted) ? ' show' : '') + '" id="explain' + globalIdx + '">';
-    if (isAnswered && !(QUIZ_STATE.mode === "exam" && !QUIZ_STATE._examSubmitted)) {
+    var showExplain = isAnswered || (QUIZ_STATE.mode === "exam" && QUIZ_STATE._examSubmitted);
+    h += '<div class="quiz-explain' + (showExplain ? ' show' : '') + '" id="explain' + globalIdx + '">';
+    if (showExplain) {
       var chk = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#27ae60" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-3px;margin-right:2px"><polyline points="20 6 9 17 4 12"/></svg>';
       var crs = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-3px;margin-right:2px"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
       var ansLabel = "";
@@ -5053,7 +5230,7 @@ function renderQuizPage() {
     }
     h += '</div>';
 
-    if (!isAnswered) {
+    if (!isAnswered && !(QUIZ_STATE.mode === "exam" && QUIZ_STATE._examSubmitted)) {
       h += '<div class="quiz-actions"><button class="quiz-btn primary" onclick="submitAnswer(' + globalIdx + ')">提交答案</button></div>';
     }
 
@@ -5080,14 +5257,16 @@ function renderQuizPage() {
     h += '<button class="quiz-btn secondary" onclick="nextQuizPage()">下一页 ▶</button>';
   }
   var refSVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:3px"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>';
-  h += '<button class="quiz-btn secondary" onclick="filterQuizQuestions()">' + refSVG + '重新随机</button>';
+  if (QUIZ_STATE.mode !== "exam") {
+    h += '<button class="quiz-btn secondary" onclick="filterQuizQuestions()">' + refSVG + '重新随机</button>';
+  }
   h += '</div>';
 
   var answered = Object.keys(QUIZ_STATE.answered).length;
   if (QUIZ_STATE.mode === "exam" && !QUIZ_STATE._examSubmitted && answered >= total && total > 0) {
     h += '<div class="quiz-result"><div class="qr-label">已完成全部题目，点击交卷查看成绩与解析</div>' +
       '<button class="quiz-btn primary" onclick="submitExam()">交卷查看成绩</button></div>';
-  } else if (answered >= total && total > 0) {
+  } else if ((answered >= total || QUIZ_STATE._examSubmitted) && total > 0) {
     var correctCount = 0;
     for (var k in QUIZ_STATE.correct) { if (QUIZ_STATE.correct[k]) correctCount++; }
     var pct = correctCount/total;
@@ -5096,7 +5275,8 @@ function renderQuizPage() {
     var booksSVG = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="vertical-align:-4px;margin-right:3px"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/><circle cx="12" cy="5" r="1.5" fill="currentColor"/><circle cx="12" cy="11" r="1.5" fill="currentColor"/></svg>';
     h += '<div class="quiz-result"><div class="qr-score">' + correctCount + '/' + total + '</div>';
     h += '<div class="qr-label">' + (pct >= 0.8 ? starSVG + '太棒了！你掌握了扎实的法律知识！' : pct >= 0.6 ? thumbSVG + '不错！继续加油！' : booksSVG + '还需努力，多看看法条和解析吧！') + '</div>';
-    h += '<button class="quiz-btn primary" onclick="filterQuizQuestions()">' + refSVG + '重新开始</button></div>';
+    var restartOnclick = QUIZ_STATE.mode === "exam" ? 'openExamSetup()' : 'filterQuizQuestions()';
+    h += '<button class="quiz-btn primary" onclick="' + restartOnclick + '">' + refSVG + '重新开始</button></div>';
   }
 
   document.getElementById("quizContent").innerHTML = h;
@@ -5104,6 +5284,7 @@ function renderQuizPage() {
 }
 
 function selectAnswer(qIdx, optIdx) {
+  if (QUIZ_STATE._examSubmitted) return; // 交卷后不可再作答
   if (QUIZ_STATE.answered[qIdx]) return;
   var qs = QUIZ_STATE.questions[qIdx];
   if (qs.multi) {
@@ -5129,6 +5310,7 @@ function answerSetsEqual(a, b) {
 }
 
 function submitAnswer(qIdx) {
+  if (QUIZ_STATE._examSubmitted) return; // 交卷后不可再作答
   if (QUIZ_STATE.answered[qIdx]) return;
   var sel = QUIZ_STATE.answers[qIdx];
   if (sel === undefined || (Array.isArray(sel) && sel.length === 0)) {
