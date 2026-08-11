@@ -35,7 +35,7 @@ jobs:
         working-directory: ios
         run: |
           xcodebuild \
-            -project App/App.xcodeproj \
+            -project ios/App/App.xcodeproj \
             -scheme App \
             -configuration Release \
             -sdk iphoneos \
