@@ -151,9 +151,9 @@
     #chatView{flex:1;display:none!important;flex-direction:column;overflow:hidden;overscroll-behavior:none;background:var(--bg)}
     #chatView.show{display:flex!important}
     .wx-nav{display:flex;align-items:center;padding:var(--safe-top) 8px 0;height:calc(48px + var(--safe-top));background:var(--nav-bg);flex-shrink:0;border-bottom:1px solid var(--card-border);min-height:48px;position:relative}
-    .wx-nav .back{position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--accent);cursor:pointer;padding:8px 4px;flex-shrink:0;white-space:nowrap;border:none;background:none;font-family:inherit;width:44px;display:flex;align-items:center;justify-content:center;z-index:1}
+    .wx-nav .back{position:absolute;left:8px;top:calc(var(--safe-top) + 24px);transform:translateY(-50%);font-size:16px;color:var(--accent);cursor:pointer;padding:8px 4px;flex-shrink:0;white-space:nowrap;border:none;background:none;font-family:inherit;width:44px;display:flex;align-items:center;justify-content:center;z-index:1}
     .wx-nav .title{flex:1;text-align:center;font-size:17px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 56px}
-    .wx-nav .nav-right{position:absolute;right:8px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:2px;z-index:1}
+    .wx-nav .nav-right{position:absolute;right:8px;top:calc(var(--safe-top) + 24px);transform:translateY(-50%);display:flex;align-items:center;gap:2px;z-index:1}
     .wx-nav .right-btn{font-size:20px;color:var(--text);cursor:pointer;padding:8px;width:40px;text-align:center;flex-shrink:0;border:none;background:none;position:relative;display:flex;align-items:center;justify-content:center}
 
     .settings-drop{position:absolute;top:42px;right:4px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:14px 16px;min-width:220px;z-index:100;box-shadow:0 8px 30px rgba(0,0,0,0.12);opacity:0;transform:translateY(-8px) scale(.95);pointer-events:none;transition:opacity .2s ease,transform .2s ease}
@@ -355,7 +355,7 @@
         #quizView.show{display:flex!important}
         #quizView .wx-nav{border-bottom:1px solid var(--card-border)}
         #quizView .quiz-body{flex:1;overflow-y:auto;padding:16px 18px 30px;-webkit-overflow-scrolling:touch;max-width:600px;margin:0 auto;width:100%}
-        #quizView .quiz-body{padding-bottom:90px}
+        #quizView .quiz-body.has-nav{padding-bottom:90px}
         .quiz-header{text-align:center;padding:8px 0 16px}
         .quiz-header h2{font-size:18px;font-weight:700;margin-bottom:4px}
         .quiz-header p{font-size:12px;color:var(--text2)}
@@ -2436,6 +2436,10 @@ if (document.readyState === "loading") {
     var h = vv.height;
     if (h <= 0) return;
     document.body.style.height = h + "px";
+    // 键盘未顶起内容（offsetTop≈0）时复位窗口滚动，避免键盘收起后整体下滑留白
+    if (vv.offsetTop <= 1 && window.scrollY !== 0) {
+      window.scrollTo(0, 0);
+    }
   }
   vv.addEventListener("resize", syncBodyHeight);
   vv.addEventListener("scroll", syncBodyHeight);
@@ -5723,6 +5727,9 @@ function renderQuizPage() {
   var nextBtn = document.getElementById("quizNextBtn");
   var multi = total > QUIZ_PAGE_SIZE;
   if (navbar) navbar.style.display = multi ? "flex" : "none";
+  // 导航栏隐藏时去掉底部 90px 留白
+  var qBody = document.querySelector("#quizView .quiz-body");
+  if (qBody) qBody.classList.toggle("has-nav", multi);
   if (prevBtn) prevBtn.disabled = !multi || startIdx <= 0;
   if (nextBtn) nextBtn.disabled = !multi || endIdx >= total;
 }
