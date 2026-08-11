@@ -63,9 +63,9 @@
     .home-bg.bg-starry .star{position:absolute;border-radius:50%;background:#fff;animation:twinkle 2.6s ease-in-out infinite;box-shadow:0 0 6px rgba(255,255,255,.7)}
     .home-bg.bg-starry .star.big{box-shadow:0 0 12px rgba(255,255,255,.9)}
     .home-bg.bg-starry .shooting{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff;opacity:0;animation:shoot 5s linear infinite}
-    .home-bg.bg-starry .shooting::after{content:"";position:absolute;top:0;right:0;width:70px;height:1.5px;background:linear-gradient(90deg,transparent,#fff);transform:rotate(-45deg);transform-origin:right center}
+    .home-bg.bg-starry .shooting::after{content:"";position:absolute;top:0;right:0;width:70px;height:1.5px;background:linear-gradient(90deg,transparent,#fff);transform:rotate(45deg);transform-origin:right center}
     @keyframes twinkle{0%,100%{opacity:.12}50%{opacity:1}}
-    @keyframes shoot{0%{transform:translate(0,0);opacity:0}5%{opacity:1}20%{transform:translate(-70px,-70px);opacity:0}100%{opacity:0}}
+    @keyframes shoot{0%{transform:translate(0,0);opacity:0}5%{opacity:1}20%{transform:translate(70px,-70px);opacity:0}100%{opacity:0}}
     .home-bg.bg-ocean{background:linear-gradient(180deg,#dff2ff,#b5ddff 45%,#8cc8ff 70%,#6db9ff)}
     body.dark .home-bg.bg-ocean{background:linear-gradient(180deg,#062233,#0a3a5c 55%,#06304f)}
     .home-bg.bg-ocean .wave{position:absolute;bottom:-18%;width:200%;height:55%;background:radial-gradient(ellipse at 50% 0%,rgba(255,255,255,.45),transparent 62%);animation:waveMove 9s linear infinite}
@@ -425,6 +425,8 @@
         .quiz-wrongbook-btn.active{background:#e74c3c;color:#fff;border-color:#e74c3c}
         .quiz-wrongbook-btn .wb-count{background:var(--accent);color:#fff;border-radius:10px;padding:1px 7px;font-size:10px;font-weight:700}
         .quiz-wrongbook-btn.active .wb-count{background:#fff;color:#e74c3c}
+        .quiz-wrongbook-entry{display:flex;align-items:center;width:100%;padding:12px 14px;margin-bottom:12px;border:2px solid var(--card-border);border-radius:14px;background:var(--card-bg);color:var(--text);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
+        .quiz-wrongbook-entry:active{transform:scale(.97);border-color:var(--accent)}
         .quiz-wrongbook-actions{display:flex;gap:6px;justify-content:center;margin-top:12px;flex-wrap:wrap}
         .quiz-wrongbook-empty{text-align:center;padding:40px 20px;color:var(--text2)}
         .quiz-wrongbook-empty svg{margin-bottom:12px;opacity:.3}
@@ -1355,10 +1357,11 @@
         <h2>选择科目</h2>
         <p>先选模式，再选科目和章节开始练习</p>
       </div>
-      <div class="quiz-mode-bar" style="margin-bottom:14px">
+      <div class="quiz-mode-bar" style="margin-bottom:10px">
         <button class="quiz-mode-btn active" id="subjModePractice" onclick="selectSubjectMode('practice')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:3px"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>练习模式</button>
         <button class="quiz-mode-btn" id="subjModeExam" onclick="selectSubjectMode('exam')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:3px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>考试模式</button>
       </div>
+      <button class="quiz-wrongbook-entry" onclick="showWrongBook()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:5px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>错题本 <span class="wb-count" id="wbCount">0</span><span style="margin-left:auto;opacity:.6;font-size:11px">›</span></button>
       <div class="quiz-subject-grid" id="quizSubjectGrid"></div>
     </div>
     <!-- 章节选择 -->
@@ -1377,10 +1380,6 @@
       </div>
       <div class="quiz-timer-wrap"><div class="quiz-timer" id="quizTimer" style="display:none"></div></div>
       <div class="quiz-stats" id="quizStats"></div>
-      <div class="quiz-wrongbook-bar">
-        <button class="quiz-wrongbook-btn" id="btnWrongBook" onclick="toggleWrongBook()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:3px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>错题本 <span class="wb-count" id="wbCount">0</span></button>
-        <button class="quiz-wrongbook-btn" onclick="clearWrongBook()" style="font-size:11px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:2px"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>清空</button>
-      </div>
       <div class="quiz-progress-bar" id="quizProgress"><div class="quiz-progress-fill" id="quizProgressFill" style="width:0%"></div></div>
       <div id="quizContent"></div>
     </div>
@@ -2953,7 +2952,7 @@ function showVipPerks() {
     '<p style="font-size:12px;color:var(--text2);margin:0">' + (isVip() ? "您已是 VIP 会员 🎉" : "开通 VIP 解锁全部特权") + '</p></div>';
   for (var i = 0; i < perks.length; i++) {
     h += '<div style="display:flex;align-items:flex-start;gap:8px;padding:9px 4px;border-bottom:1px solid var(--card-border);font-size:13px;color:var(--text)">' +
-      '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f7b733" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px"><path d="M20 6L9 17l-5-5"/></svg>' +
+      '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px"><path d="M20 6L9 17l-5-5"/></svg>' +
       '<span>' + perks[i] + '</span></div>';
   }
   h += '<button onclick="openPointsPanel()" style="width:100%;margin-top:14px;padding:12px;border:none;border-radius:12px;background:linear-gradient(135deg,#f7b733,#fc4a1a);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">积分兑换 VIP</button>';
@@ -4280,8 +4279,8 @@ var QUIZ_STATE = {
   timerInterval: null
 };
 
-// 考试设置（多选来源 + 题数 + 计时方式）
-var EXAM_SETUP = { subjects: ["全部"], count: 10, timing: "countup" };
+// 考试设置（多选来源 + 题数 + 计时方式 + 每题时长）
+var EXAM_SETUP = { subjects: ["全部"], count: 10, timing: "countup", secPerQ: 60 };
 
 var QUIZ_PAGE_SIZE = 5;
 
@@ -4995,6 +4994,8 @@ function openExamSetup(preSubject) {
     '<div class="es-sources" id="esSources"></div>' +
     '<div class="es-label">题目数量 <span style="color:var(--accent);font-size:14px;font-weight:800" id="esCountVal"></span></div>' +
     '<input type="range" id="esCount" min="3" max="50" step="1" style="width:100%;accent-color:var(--accent)" oninput="document.getElementById(\'esCountVal\').textContent = this.value + \' 题\'; EXAM_SETUP.count = +this.value">' +
+    '<div class="es-label" id="esSecLabel" style="display:none">每题时长 <span style="color:var(--accent);font-size:14px;font-weight:800" id="esSecVal"></span></div>' +
+    '<input type="range" id="esSec" min="30" max="180" step="10" style="width:100%;accent-color:var(--accent);display:none" oninput="document.getElementById(\'esSecVal\').textContent = this.value + \' 秒\'; EXAM_SETUP.secPerQ = +this.value">' +
     '<div class="es-label">计时方式</div>' +
     '<div class="es-timing">' +
     '<button class="quiz-mode-btn active" id="esTimingUp" onclick="setExamTiming(\'countup\')">⏱ 计时模式</button>' +
@@ -5007,6 +5008,10 @@ function openExamSetup(preSubject) {
   renderExamSources();
   document.getElementById("esCount").value = EXAM_SETUP.count;
   document.getElementById("esCountVal").textContent = EXAM_SETUP.count + " 题";
+  if (EXAM_SETUP.secPerQ < 30) EXAM_SETUP.secPerQ = 30;
+  if (EXAM_SETUP.secPerQ > 180) EXAM_SETUP.secPerQ = 180;
+  document.getElementById("esSec").value = EXAM_SETUP.secPerQ;
+  document.getElementById("esSecVal").textContent = EXAM_SETUP.secPerQ + " 秒";
   setExamTiming(EXAM_SETUP.timing, true);
 }
 
@@ -5043,7 +5048,12 @@ function setExamTiming(t, silent) {
   if (up) up.classList.toggle("active", t === "countup");
   if (down) down.classList.toggle("active", t === "countdown");
   var tip = document.getElementById("esTimingTip");
-  if (tip) tip.textContent = t === "countdown" ? "倒计时模式：每题约 1 分钟，时间到自动交卷" : "计时模式：不限时，仅记录用时";
+  if (tip) tip.textContent = t === "countdown" ? "倒计时模式：每题时长可调，时间到自动交卷" : "计时模式：不限时，仅记录用时";
+  // 倒计时模式才显示每题时长滑条
+  var secL = document.getElementById("esSecLabel");
+  var sec = document.getElementById("esSec");
+  if (secL) secL.style.display = t === "countdown" ? "" : "none";
+  if (sec) sec.style.display = t === "countdown" ? "" : "none";
 }
 
 function startExamFromSetup() {
@@ -5087,7 +5097,8 @@ function startExamFromSetup() {
   if (ov) ov.remove();
   setQuizScreen("quiz");
   document.getElementById("quizPlayTitle").textContent = "考试模式";
-  document.getElementById("quizSubtitle").textContent = QUIZ_STATE.subject + " · " + count + " 题 · " + (EXAM_SETUP.timing === "countdown" ? "倒计时" : "计时");
+  var spqTxt = EXAM_SETUP.timing === "countdown" ? ("倒计时 · 每题 " + (EXAM_SETUP.secPerQ || 60) + " 秒") : "计时";
+  document.getElementById("quizSubtitle").textContent = QUIZ_STATE.subject + " · " + count + " 题 · " + spqTxt;
   startExamTimer();
   renderQuizStats();
   renderQuizPage();
@@ -5098,7 +5109,10 @@ function startExamTimer() {
   stopExamTimer();
   QUIZ_STATE.timerMode = EXAM_SETUP.timing;
   QUIZ_STATE.timerStart = Date.now();
-  QUIZ_STATE.timerLimit = QUIZ_STATE.timerMode === "countdown" ? Math.max(60, QUIZ_STATE.questions.length * 60) : 0;
+  // 倒计时总时长 = 题数 × 每题时长（30s-3min）
+  var spq = EXAM_SETUP.secPerQ || 60;
+  if (spq < 30) spq = 30; if (spq > 180) spq = 180;
+  QUIZ_STATE.timerLimit = QUIZ_STATE.timerMode === "countdown" ? Math.max(60, QUIZ_STATE.questions.length * spq) : 0;
   var el = document.getElementById("quizTimer");
   if (el) { el.style.display = ""; el.classList.remove("danger"); }
   QUIZ_STATE.timerInterval = setInterval(updateExamTimer, 500);
@@ -5141,9 +5155,13 @@ function renderQuizStats() {
   for (var k in QUIZ_STATE.correct) { if (QUIZ_STATE.correct[k]) correct++; }
   var h = '<div class="quiz-stat"><div class="qs-num">' + total + '</div><div class="qs-label">总题数</div></div>';
   h += '<div class="quiz-stat"><div class="qs-num">' + answered + '</div><div class="qs-label">已答</div></div>';
-  h += '<div class="quiz-stat"><div class="qs-num">' + correct + '</div><div class="qs-label">正确</div></div>';
-  if (answered > 0) {
-    h += '<div class="quiz-stat"><div class="qs-num">' + Math.round(correct/answered*100) + '%</div><div class="qs-label">正确率</div></div>';
+  // 考试交卷前不显示正确数/正确率（避免泄露答案）
+  var examHidden = QUIZ_STATE.mode === "exam" && !QUIZ_STATE._examSubmitted;
+  if (!examHidden) {
+    h += '<div class="quiz-stat"><div class="qs-num">' + correct + '</div><div class="qs-label">正确</div></div>';
+    if (answered > 0) {
+      h += '<div class="quiz-stat"><div class="qs-num">' + Math.round(correct/answered*100) + '%</div><div class="qs-label">正确率</div></div>';
+    }
   }
   document.getElementById("quizStats").innerHTML = h;
   var pct = total > 0 ? Math.round(answered / total * 100) : 0;
@@ -5170,10 +5188,12 @@ function renderQuizPage() {
     var isAnswered = QUIZ_STATE.answered[globalIdx];
     var isCorrect = QUIZ_STATE.correct[globalIdx];
     var selected = QUIZ_STATE.answers[globalIdx];
+    var examLocked = QUIZ_STATE.mode === "exam" && !QUIZ_STATE._examSubmitted; // 交卷前不透露对错
 
     var cardClass = "";
-    if (isAnswered && isCorrect) cardClass = " correct";
-    if (isAnswered && !isCorrect) cardClass = " wrong";
+    // 考试交卷前不显示正误红绿框
+    if (!examLocked && isAnswered && isCorrect) cardClass = " correct";
+    if (!examLocked && isAnswered && !isCorrect) cardClass = " wrong";
 
     h += '<div class="quiz-card' + cardClass + '" id="quizCard' + globalIdx + '">';
     h += '<div class="quiz-q-num">#' + (globalIdx + 1) + ' · ' + escHtml(q._subject || "") + (q._chapter ? ' · ' + escHtml(q._chapter) : '') + (QUIZ_STATE.mode === "exam" ? ' · 考试模式' : '') + '</div>';
@@ -5182,7 +5202,6 @@ function renderQuizPage() {
     if (q.opts && q.opts.length > 0) {
       h += '<div class="quiz-options">';
       var labels = ["A","B","C","D","E","F"];
-      var examLocked = QUIZ_STATE.mode === "exam" && !QUIZ_STATE._examSubmitted;
       var showResult = QUIZ_STATE.mode === "exam" && QUIZ_STATE._examSubmitted;
       for (var j = 0; j < q.opts.length; j++) {
         var optClass = "";
@@ -5205,11 +5224,11 @@ function renderQuizPage() {
       h += '</div>';
     }
 
-    var showExplain = isAnswered || (QUIZ_STATE.mode === "exam" && QUIZ_STATE._examSubmitted);
+    var showExplain = (isAnswered && !examLocked) || (QUIZ_STATE.mode === "exam" && QUIZ_STATE._examSubmitted);
     h += '<div class="quiz-explain' + (showExplain ? ' show' : '') + '" id="explain' + globalIdx + '">';
     if (showExplain) {
-      var chk = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#27ae60" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-3px;margin-right:2px"><polyline points="20 6 9 17 4 12"/></svg>';
-      var crs = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-3px;margin-right:2px"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+      var chk = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-3px;margin-right:2px"><polyline points="20 6 9 17 4 12"/></svg>';
+      var crs = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-3px;margin-right:2px"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
       var ansLabel = "";
       if (q.opts) {
         var aArr = Array.isArray(q._shuffledAns) ? q._shuffledAns : (q._shuffledAns !== undefined ? [q._shuffledAns] : (Array.isArray(q.ans) ? q.ans : [q.ans]));
@@ -5277,6 +5296,10 @@ function renderQuizPage() {
     h += '<div class="qr-label">' + (pct >= 0.8 ? starSVG + '太棒了！你掌握了扎实的法律知识！' : pct >= 0.6 ? thumbSVG + '不错！继续加油！' : booksSVG + '还需努力，多看看法条和解析吧！') + '</div>';
     var restartOnclick = QUIZ_STATE.mode === "exam" ? 'openExamSetup()' : 'filterQuizQuestions()';
     h += '<button class="quiz-btn primary" onclick="' + restartOnclick + '">' + refSVG + '重新开始</button></div>';
+  }
+
+  if (wrongBookMode) {
+    h += '<div class="quiz-actions" style="justify-content:center;margin-top:10px"><button class="quiz-btn secondary" onclick="clearWrongBook()">清空错题本</button></div>';
   }
 
   document.getElementById("quizContent").innerHTML = h;
@@ -5379,21 +5402,8 @@ function clearWrongBook() {
   showToast("错题本已清空");
 }
 
-function toggleWrongBook() {
-  wrongBookMode = !wrongBookMode;
-  if (wrongBookMode) {
-    showWrongBook();
-  } else {
-    QUIZ_STATE.subject = "全部";
-    QUIZ_STATE.chapter = "";
-    wrongBookMode = false;
-    showQuizSubjects();
-  }
-  var btn = document.getElementById("btnWrongBook");
-  if (btn) btn.classList.toggle("active", wrongBookMode);
-}
-
 function showWrongBook() {
+  QUIZ_STATE.mode = "practice"; // 错题本复习按练习模式展示答案
   setQuizScreen("quiz");
   document.getElementById("quizPlayTitle").textContent = "错题本";
   if (wrongBook.length === 0) {
