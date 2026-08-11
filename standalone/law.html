@@ -100,17 +100,17 @@
     @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 
     /* frosted quote card */
-    .quote-card{position:relative;background:rgba(255,255,255,0.42);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.6);border-radius:20px;padding:24px 28px;margin:0 auto 24px;max-width:420px;width:calc(100% - 32px);min-height:170px;height:auto;display:flex;flex-direction:column;justify-content:center;box-shadow:0 4px 24px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.04);transition:opacity .4s,transform .2s ease,box-shadow .2s ease;cursor:pointer;user-select:none;overflow:hidden}
+    .quote-card{position:relative;background:rgba(255,255,255,0.42);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:20px;padding:24px 28px;margin:0 auto 24px;max-width:420px;width:calc(100% - 32px);min-height:170px;height:auto;display:flex;flex-direction:column;justify-content:center;box-shadow:0 4px 24px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.04);transition:opacity .4s,transform .2s ease,box-shadow .2s ease;cursor:pointer;user-select:none;overflow:hidden}
     .quote-card:hover{transform:translateY(-1px);box-shadow:0 8px 26px rgba(0,0,0,0.08)}
     .quote-card:active{transform:scale(.98);box-shadow:0 3px 12px rgba(0,0,0,0.06)}
-    body.dark .quote-card{background:rgba(40,40,40,0.8);border:1px solid rgba(255,255,255,0.08);box-shadow:0 4px 24px rgba(0,0,0,0.3)}
+    body.dark .quote-card{background:rgba(40,40,40,0.8);box-shadow:0 4px 24px rgba(0,0,0,0.3)}
     .quote-text{position:relative;z-index:1;font-family:"SimSun","STSong","Songti SC","Noto Serif CJK SC",serif;font-size:16px;line-height:1.9;color:#111;margin-bottom:12px;letter-spacing:1px;transition:opacity .25s ease;display:-webkit-box;-webkit-line-clamp:4;line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
     .quote-author{position:relative;z-index:1;font-size:12px;color:#111;text-align:right;opacity:.8;transition:opacity .25s ease;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
     /* home dash cards (打卡 / 今日待办) */
     .home-dash{display:flex;gap:12px;max-width:420px;width:calc(100% - 32px);margin:0 auto 14px}
-    .dash-card{flex:1;background:rgba(255,255,255,0.42);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.6);border-radius:20px;padding:14px 12px;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:0;cursor:pointer;box-shadow:0 4px 24px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.04);transition:all .15s;min-height:104px;user-select:none}
-    body.dark .dash-card{background:rgba(40,40,40,0.8);border:1px solid rgba(255,255,255,0.08);box-shadow:0 4px 24px rgba(0,0,0,0.3)}
+    .dash-card{flex:1;background:rgba(255,255,255,0.42);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:20px;padding:14px 12px;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:0;cursor:pointer;box-shadow:0 4px 24px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.04);transition:all .15s;height:148px;overflow:hidden;box-sizing:border-box;user-select:none}
+    body.dark .dash-card{background:rgba(40,40,40,0.8);box-shadow:0 4px 24px rgba(0,0,0,0.3)}
     .dash-card:active{transform:scale(.97)}
     .dash-head{display:flex;align-items:center;gap:5px;width:100%;justify-content:flex-start}
     .dash-head .dash-icon{color:#111;width:22px;height:22px;border-radius:7px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -121,7 +121,7 @@
     .todo-preview{width:100%;display:flex;flex-direction:column;gap:3px;margin-top:8px}
     .todo-preview .tp-item{font-size:11px;color:var(--text);text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 2px;line-height:1.5;max-width:100%}
     .todo-preview .tp-item.done{text-decoration:line-through;opacity:.45}
-    .todo-preview .tp-empty{font-size:11px;color:var(--text2);text-align:left;opacity:.65}
+    .todo-preview .tp-empty{font-size:11px;color:var(--text2);text-align:left;opacity:.65;line-height:1.5}
 
     /* frosted bottom nav card */
     #bottomNav{display:flex;justify-content:space-around;align-items:center;margin:0 auto;margin-bottom:calc(12px + env(safe-area-inset-bottom));padding:10px 12px;background:rgba(255,255,255,0.42);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.6);border-radius:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.04);flex-shrink:0;max-width:380px;width:calc(100% - 48px)}
@@ -402,6 +402,8 @@
         .quiz-explain strong{color:var(--accent)}
         .quiz-lock-gate{background:rgba(0,0,0,0.04);border:1px dashed var(--card-border);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6;margin-top:10px}
         .quiz-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+        .quiz-nav-actions{gap:36px}
+        .quiz-nav-btn{padding:14px 26px;font-size:15px;font-weight:700;border-radius:14px;min-width:120px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
         .quiz-btn{padding:8px 16px;border:none;border-radius:14px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
         .quiz-btn.primary{background:var(--accent);color:#fff}
         .quiz-btn.secondary{background:var(--input-bg);color:var(--text);border:1px solid var(--card-border)}
@@ -593,8 +595,8 @@
     .es-timing .quiz-mode-btn{flex:1;max-width:none}
     .quiz-timer-wrap{padding:0 4px 8px;text-align:left}
     .quiz-timer{display:inline-flex;align-items:center;gap:4px;background:var(--accent);color:#fff;border-radius:999px;padding:4px 14px;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;box-shadow:0 2px 8px rgba(0,0,0,.15)}
-    .quiz-timer.countup{background:linear-gradient(135deg,#2e9be6,#1f6fd6)}
-    .quiz-timer.countdown{background:linear-gradient(135deg,#f39c12,#e67e22)}
+    .quiz-timer.countup{background:#2e9be6}
+    .quiz-timer.countdown{background:#f39c12}
     .quiz-timer.danger{background:#e74c3c;animation:esPulse .8s ease infinite}
     @keyframes esPulse{0%,100%{opacity:1}50%{opacity:.55}}
     #pointsView{flex:1;display:none!important;flex-direction:column;overflow:hidden;background:var(--bg)}
@@ -1790,12 +1792,13 @@ function renderTodoStatus() {
   }
   var h = "";
   var shown = 0;
-  for (var j = 0; j < o.items.length && shown < 3; j++) {
+  var cap = o.items.length > 3 ? 2 : 3;
+  for (var j = 0; j < o.items.length && shown < cap; j++) {
     var it = o.items[j];
     h += '<div class="tp-item' + (it.done ? ' done' : '') + '">' + (it.done ? '✓ ' : '· ') + escapeHtml(it.text) + '</div>';
     shown++;
   }
-  if (o.items.length > 3) h += '<div class="tp-empty">还有 ' + (o.items.length - 3) + ' 项…</div>';
+  if (o.items.length > 3) h += '<div class="tp-empty">还有 ' + (o.items.length - 2) + ' 项…</div>';
   pre.innerHTML = h;
 }
 
@@ -5001,8 +5004,8 @@ function openExamSetup(preSubject) {
     '<input type="range" id="esSec" min="30" max="180" step="10" style="width:100%;accent-color:var(--accent);display:none" oninput="document.getElementById(\'esSecVal\').textContent = this.value + \' 秒\'; EXAM_SETUP.secPerQ = +this.value">' +
     '<div class="es-label">计时方式</div>' +
     '<div class="es-timing">' +
-    '<button class="quiz-mode-btn active" id="esTimingUp" onclick="setExamTiming(\'countup\')">⏱ 计时模式</button>' +
-    '<button class="quiz-mode-btn" id="esTimingDown" onclick="setExamTiming(\'countdown\')">⏳ 倒计时</button>' +
+    '<button class="quiz-mode-btn active" id="esTimingUp" onclick="setExamTiming(\'countup\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;margin-right:3px"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 10.59 4.05 2.3-.99 1.73L11 13.4V7h2v5.59z"/></svg>计时模式</button>' +
+    '<button class="quiz-mode-btn" id="esTimingDown" onclick="setExamTiming(\'countdown\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;margin-right:3px"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 10.59 4.05 2.3-.99 1.73L11 13.4V7h2v5.59z"/></svg>倒计时</button>' +
     '</div>' +
     '<p class="es-tip" id="esTimingTip" style="font-size:11px;color:var(--text2);margin:6px 0 0">计时模式：不限时，仅记录用时</p>' +
     '<button class="quiz-btn primary" style="width:100%;margin-top:14px;padding:12px" onclick="startExamFromSetup()">开始考试</button>';
@@ -5136,20 +5139,21 @@ function updateExamTimer() {
   var el = document.getElementById("quizTimer");
   if (!el) return;
   var elapsed = Math.floor((Date.now() - QUIZ_STATE.timerStart) / 1000);
+  var solidClock = '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="vertical-align:-2px"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 10.59 4.05 2.3-.99 1.73L11 13.4V7h2v5.59z"/></svg>';
   if (QUIZ_STATE.timerMode === "countdown") {
     var remain = Math.max(0, QUIZ_STATE.timerLimit - elapsed);
     if (remain <= 0 && !QUIZ_STATE._examSubmitted) {
       stopExamTimer();
-      el.textContent = "⏳ 时间到，已自动交卷";
+      el.innerHTML = solidClock + "时间到，已自动交卷";
       if (QUIZ_STATE.mode === "exam") submitExam();
       return;
     }
-    el.textContent = "⏳ 剩余 " + fmtClock(remain);
+    el.innerHTML = solidClock + "剩余 " + fmtClock(remain);
     el.classList.add("countdown");
     el.classList.remove("countup");
     el.classList.toggle("danger", remain <= 120);
   } else {
-    el.textContent = "⏱ 用时 " + fmtClock(elapsed);
+    el.innerHTML = solidClock + "用时 " + fmtClock(elapsed);
     el.classList.add("countup");
     el.classList.remove("countdown");
     el.classList.remove("danger");
@@ -5280,17 +5284,14 @@ function renderQuizPage() {
     h += '</div>';
   }
 
-  h += '<div class="quiz-actions" style="justify-content:center;margin-top:14px">';
+  h += '<div class="quiz-actions quiz-nav-actions" style="justify-content:center;margin-top:16px">';
   if (startIdx > 0) {
-    h += '<button class="quiz-btn secondary" onclick="prevQuizPage()">◀ 上一页</button>';
+    h += '<button class="quiz-btn secondary quiz-nav-btn" onclick="prevQuizPage()">◀ 上一页</button>';
   }
   if (endIdx < total) {
-    h += '<button class="quiz-btn secondary" onclick="nextQuizPage()">下一页 ▶</button>';
+    h += '<button class="quiz-btn secondary quiz-nav-btn" onclick="nextQuizPage()">下一页 ▶</button>';
   }
   var refSVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:3px"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>';
-  if (QUIZ_STATE.mode !== "exam") {
-    h += '<button class="quiz-btn secondary" onclick="filterQuizQuestions()">' + refSVG + '重新随机</button>';
-  }
   h += '</div>';
 
   var answered = Object.keys(QUIZ_STATE.answered).length;
