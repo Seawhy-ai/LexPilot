@@ -76,6 +76,29 @@
     .home-bg.bg-aurora ~ .welcome-hero .typewriter{color:#2a2a72}
     .home-bg.bg-ocean .wave:nth-child(2){bottom:-28%;opacity:.6;animation-duration:13s}
     @keyframes waveMove{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+    /* 全局背景层：fixed 全屏，位于所有内容之下 */
+    #globalBg{position:fixed;inset:0;z-index:-1}
+    /* 启用非默认背景时，各功能视图半透明透出背景（卡片本身不透明，保证可读性） */
+    body.bg-on #chatView,body.bg-on #dbView,body.bg-on #caseView,body.bg-on #quizView,body.bg-on #docView,body.bg-on #learnCenterView,body.bg-on #materialsView,body.bg-on #notebookView,body.bg-on #plazaView,body.bg-on #lawReaderView,body.bg-on #pointsView,body.bg-on #scheduleView,body.bg-on #scheduleSettingsView,body.bg-on #videoView{background:rgba(255,255,255,.85)}
+    body.dark.bg-on #chatView,body.dark.bg-on #dbView,body.dark.bg-on #caseView,body.dark.bg-on #quizView,body.dark.bg-on #docView,body.dark.bg-on #learnCenterView,body.dark.bg-on #materialsView,body.dark.bg-on #notebookView,body.dark.bg-on #plazaView,body.dark.bg-on #lawReaderView,body.dark.bg-on #pointsView,body.dark.bg-on #scheduleView,body.dark.bg-on #scheduleSettingsView,body.dark.bg-on #videoView{background:rgba(16,18,26,.85)}
+    /* 森林 */
+    .home-bg.bg-forest{background:linear-gradient(180deg,#e9f8ee,#cdeedd 45%,#a7e0c3 75%,#8ed4b2)}
+    body.dark .home-bg.bg-forest{background:linear-gradient(180deg,#072317,#0b3a28 55%,#083325)}
+    .home-bg.bg-forest .bg-layer{position:absolute;border-radius:50%;filter:blur(60px);opacity:.5;animation:forestFloat 12s ease-in-out infinite}
+    .home-bg.bg-forest .bg-layer:nth-child(1){width:60vw;height:60vw;background:radial-gradient(circle,rgba(46,196,120,.75),transparent 70%);top:-15%;left:-10%}
+    .home-bg.bg-forest .bg-layer:nth-child(2){width:48vw;height:48vw;background:radial-gradient(circle,rgba(34,160,120,.7),transparent 70%);bottom:-10%;right:-8%;animation-delay:-5s}
+    .home-bg.bg-forest .bg-layer:nth-child(3){width:40vw;height:40vw;background:radial-gradient(circle,rgba(122,214,132,.65),transparent 70%);top:35%;left:55%;animation-delay:-9s}
+    @keyframes forestFloat{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-7vw,6vh) scale(1.15)}}
+    .home-bg.bg-forest ~ .welcome-hero .typewriter{color:#0e5c40}
+    /* 日落 */
+    .home-bg.bg-sunset{background:linear-gradient(180deg,#fff3e0,#ffd9b3 35%,#ffb27d 65%,#ff8c5a)}
+    body.dark .home-bg.bg-sunset{background:linear-gradient(180deg,#2a1705,#4a2410 55%,#3a1c08)}
+    .home-bg.bg-sunset .bg-layer{position:absolute;border-radius:50%;filter:blur(60px);opacity:.5;animation:sunsetFloat 13s ease-in-out infinite}
+    .home-bg.bg-sunset .bg-layer:nth-child(1){width:58vw;height:58vw;background:radial-gradient(circle,rgba(255,140,66,.75),transparent 70%);top:-12%;right:-8%}
+    .home-bg.bg-sunset .bg-layer:nth-child(2){width:46vw;height:46vw;background:radial-gradient(circle,rgba(255,90,90,.6),transparent 70%);bottom:-12%;left:-6%;animation-delay:-5s}
+    .home-bg.bg-sunset .bg-layer:nth-child(3){width:38vw;height:38vw;background:radial-gradient(circle,rgba(255,200,90,.65),transparent 70%);top:38%;left:50%;animation-delay:-9s}
+    @keyframes sunsetFloat{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(6vw,-7vh) scale(1.18)}}
+    .home-bg.bg-sunset ~ .welcome-hero .typewriter{color:#8a4a12}
     .hbg-opt{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--card-border);border-radius:12px;margin-bottom:8px;cursor:pointer;transition:all .15s}
     .hbg-opt:active{background:var(--input-bg)}
     .hbg-opt.on{border-color:var(--accent);background:var(--accent-light)}
@@ -84,6 +107,8 @@
     .hbg-swatch.bg-aurora{background:linear-gradient(135deg,rgba(102,126,234,.8),rgba(240,147,251,.7))}
     .hbg-swatch.bg-starry{background:linear-gradient(180deg,#0b1026,#1a2b52)}
     .hbg-swatch.bg-ocean{background:linear-gradient(180deg,#dff2ff,#8cc8ff)}
+    .hbg-swatch.bg-forest{background:linear-gradient(180deg,#e9f8ee,#8ed4b2)}
+    .hbg-swatch.bg-sunset{background:linear-gradient(180deg,#fff3e0,#ff8c5a)}
     .hbg-name{font-size:14px;font-weight:600;color:var(--text)}
     .hbg-desc{font-size:11px;color:var(--text2)}
 
@@ -214,6 +239,25 @@
     .btn-copy{background:var(--card-bg);border:1px solid var(--card-border);color:var(--text2);font-size:10px;cursor:pointer;padding:3px 10px;border-radius:12px;font-family:inherit;transition:all .15s}
     .btn-copy:active{background:var(--accent);color:#fff;border-color:var(--accent)}
 
+    /* ===== AI 咨询聊天气泡样式 ===== */
+    .bubble-swatches{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap}
+    .bubble-swatch{width:36px;height:26px;border-radius:9px;cursor:pointer;border:2px solid var(--card-border);transition:all .15s;flex-shrink:0;padding:0;background:var(--ai-bubble)}
+    .bubble-swatch.on{border-color:var(--accent);transform:scale(1.1);box-shadow:0 0 0 2px var(--accent-light)}
+    .bubble-swatch.s-law{background:linear-gradient(135deg,#eef6ff,#d5e9ff)}
+    .bubble-swatch.s-mint{background:linear-gradient(135deg,#e9f8f2,#cdf0df)}
+    .bubble-swatch.s-sunset{background:linear-gradient(135deg,#fff3e4,#ffdcc0)}
+    .bubble-swatch.s-aurora{background:linear-gradient(135deg,#667eea,#a26df0)}
+    .bubble-swatch.s-ocean{background:linear-gradient(135deg,#1a5276,#2f6fb0)}
+    body.bubble-classic .msg.ai .msg-content{background:var(--ai-bubble)}
+    body.bubble-law .msg.ai .msg-content{background:linear-gradient(135deg,#eef6ff,#d5e9ff);color:#173a5e}
+    body.bubble-mint .msg.ai .msg-content{background:linear-gradient(135deg,#e9f8f2,#cdf0df);color:#1a5c43}
+    body.bubble-sunset .msg.ai .msg-content{background:linear-gradient(135deg,#fff3e4,#ffdcc0);color:#6b3a12}
+    body.bubble-aurora .msg.ai .msg-content{background:linear-gradient(135deg,#667eea,#a26df0);color:#fff}
+    body.bubble-ocean .msg.ai .msg-content{background:linear-gradient(135deg,#1a5276,#2f6fb0);color:#fff}
+    body.bubble-aurora .msg.ai .msg-content strong,body.bubble-aurora .msg.ai .msg-content a,body.bubble-ocean .msg.ai .msg-content strong,body.bubble-ocean .msg.ai .msg-content a{color:#fff}
+    body.bubble-aurora .msg.ai .msg-content :not(pre)>code,body.bubble-ocean .msg.ai .msg-content :not(pre)>code{background:rgba(255,255,255,.16);color:#fff}
+    body.bubble-aurora .msg.ai .msg-content blockquote,body.bubble-ocean .msg.ai .msg-content blockquote{border-left-color:rgba(255,255,255,.5);color:rgba(255,255,255,.85)}
+    body.bubble-aurora .msg.ai .msg-content th,body.bubble-ocean .msg.ai .msg-content th{background:rgba(255,255,255,.14)}
     .typing-dots{display:flex;gap:5px;padding:8px 4px 8px 46px;align-items:center}
     .typing-dots.no-avatar{padding-left:8px}
     .typing-dots span{width:7px;height:7px;border-radius:50%;background:#aaa;opacity:.5;animation:bounce 1.2s infinite}
@@ -299,8 +343,13 @@
     .lr-search-wrap button{padding:10px 16px;border:none;border-radius:14px;background:var(--accent);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s}
     .lr-search-wrap button:active{opacity:.85}
     .lr-search-info{font-size:11px;color:var(--text2);margin-bottom:12px}
-    .lr-content{font-size:14px;line-height:1.85;white-space:pre-wrap;word-break:break-word}
+    .lr-content{font-size:14px;line-height:1.85;word-break:break-word}
     .lr-content .highlight{background:rgba(255,200,0,0.35);padding:1px 2px;border-radius:3px}
+    .lr-chapter{font-size:15px;font-weight:700;color:var(--accent);margin:24px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--accent-light)}
+    .lr-article{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:10px 13px;margin-bottom:8px;line-height:1.85;font-size:14px}
+    .lr-article .lr-art-num{font-weight:700;color:var(--accent);margin-right:8px;white-space:nowrap}
+    .lr-article .lr-art-text{color:var(--text);word-break:break-word}
+    .lr-para{color:var(--text2);margin:8px 2px;line-height:1.75;font-size:13px}
     .lr-result-nav{display:flex;gap:6px;margin-bottom:10px;overflow-x:auto;flex-wrap:wrap}
     .lr-result-nav button{padding:5px 12px;border:1px solid var(--card-border);border-radius:14px;background:var(--card-bg);color:var(--text);font-size:11px;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s}
     .lr-result-nav button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
@@ -402,10 +451,12 @@
         .q-diff.d2{background:#fef4e4;color:#b9770e}
         .q-diff.d3{background:#fdecea;color:#c0392b}
         .q-diff.case{background:#f0e8fb;color:#8e44ad}
+        .q-diff.multi{background:#e4f6f6;color:#0e7c86}
         body.dark .q-diff.d1{background:rgba(39,174,96,.18);color:#58d68d}
         body.dark .q-diff.d2{background:rgba(243,156,18,.18);color:#f5b34a}
         body.dark .q-diff.d3{background:rgba(231,76,60,.18);color:#ee9a86}
         body.dark .q-diff.case{background:rgba(155,89,182,.18);color:#c39ade}
+        body.dark .q-diff.multi{background:rgba(14,124,134,.18);color:#4db8c0}
         .quiz-case{background:var(--accent-light);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:10px 12px;margin-bottom:12px;font-size:13px;line-height:1.7;color:var(--text);white-space:pre-line}
         .quiz-q-text{font-size:15px;line-height:1.6;margin-bottom:14px;font-weight:500}
         .quiz-options{display:flex;flex-direction:column;gap:8px}
@@ -510,6 +561,7 @@
 .case-card .case-num{flex-shrink:0;width:42px;height:42px;border-radius:12px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;color:var(--accent)}
 .case-card .case-info{flex:1;min-width:0}
 .case-card .case-title{font-size:13px;color:var(--text);line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.case-card .case-sub{font-size:11px;color:var(--text2);line-height:1.5;margin-top:3px;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .case-card .case-arrow{color:var(--text2);flex-shrink:0;font-size:18px}
 .case-detail{position:fixed;top:0;left:0;right:0;bottom:0;z-index:200;background:var(--bg);overflow-y:auto;display:none;flex-direction:column}
 .case-detail.show{display:flex}
@@ -520,6 +572,13 @@
 .case-detail .cd-section{margin-bottom:16px}
 .case-detail .cd-section h5{font-size:13px;font-weight:600;color:var(--accent);margin-bottom:6px}
 .case-detail .cd-section p{font-size:13px;line-height:1.75;color:var(--text);margin:0;white-space:pre-wrap}
+.case-detail .cd-head{background:var(--accent);color:#fff;border-radius:14px;padding:14px 16px;margin-bottom:14px}
+.case-detail .cd-head .cd-cat{display:inline-block;font-size:10px;font-weight:700;padding:2px 9px;border-radius:9px;background:rgba(255,255,255,.25);margin-bottom:7px;letter-spacing:.5px}
+.case-detail .cd-head .cd-t{font-size:14px;font-weight:600;line-height:1.55}
+.case-detail .cd-section.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:12px 14px;margin-bottom:12px;border-left:3px solid var(--accent)}
+.case-detail .cd-section.card h5{font-size:12px;font-weight:700;color:var(--accent);margin-bottom:7px;display:flex;align-items:center;gap:5px;letter-spacing:.3px}
+.case-detail .cd-section.card p{font-size:13px;line-height:1.8;color:var(--text);margin:0 0 6px;white-space:pre-wrap;word-break:break-word}
+.case-detail .cd-section.card p:last-child{margin-bottom:0}
 
 .api-config{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:14px 16px;margin-bottom:16px}
 .api-config h5{font-size:13px;font-weight:600;margin:0 0 8px;color:var(--text);display:flex;align-items:center;gap:6px}
@@ -747,6 +806,8 @@
 </style>
 </head>
 <body>
+<!-- 全局动态背景层（全页面可见，背景选择后由 applyHomeBg 驱动） -->
+<div class="home-bg" id="globalBg"></div>
 
 <!-- ===== LOGIN SCREEN ===== -->
 <div class="screen" id="loginScreen" style="align-items:center;justify-content:center;padding:40px 24px;text-align:center;background:linear-gradient(180deg,#fff 0%,#f2f5f8 100%)">
@@ -859,6 +920,15 @@
         <div class="s-row" style="margin-top:8px;justify-content:space-between">
           <span class="s-label" style="margin:0">自动切换</span>
           <button class="s-btn active" id="sQuoteAuto" onclick="toggleQuoteAuto()">开启</button>
+        </div>
+        <div class="s-label" style="margin-top:8px">AI 气泡样式</div>
+        <div class="bubble-swatches" id="bubbleSwatches">
+          <button class="bubble-swatch s-classic" title="经典白" onclick="selectBubbleStyle('classic')"></button>
+          <button class="bubble-swatch s-law" title="法条蓝" onclick="selectBubbleStyle('law')"></button>
+          <button class="bubble-swatch s-mint" title="薄荷绿" onclick="selectBubbleStyle('mint')"></button>
+          <button class="bubble-swatch s-sunset" title="暖橙" onclick="selectBubbleStyle('sunset')"></button>
+          <button class="bubble-swatch s-aurora" title="极光紫" onclick="selectBubbleStyle('aurora')"></button>
+          <button class="bubble-swatch s-ocean" title="深海蓝" onclick="selectBubbleStyle('ocean')"></button>
         </div>
         <div class="s-row" style="margin-top:8px">
           <button class="s-btn danger" onclick="clearHistory()">清空对话</button>
@@ -1504,6 +1574,13 @@
       <div class="es-label">题目来源（可多选，可具体到章节）</div>
       <div class="es-sources" id="esSources"></div>
       <div id="esChaptersWrap"></div>
+      <div class="es-label">题目难度</div>
+      <div class="es-timing">
+        <button class="quiz-mode-btn active" id="esDiff0" onclick="setExamDiff(0)">全部</button>
+        <button class="quiz-mode-btn" id="esDiff1" onclick="setExamDiff(1)">简单</button>
+        <button class="quiz-mode-btn" id="esDiff2" onclick="setExamDiff(2)">中等</button>
+        <button class="quiz-mode-btn" id="esDiff3" onclick="setExamDiff(3)">困难</button>
+      </div>
       <div class="es-label">题目数量 <span style="color:var(--accent);font-size:14px;font-weight:800" id="esCountVal"></span></div>
       <input type="range" id="esCount" min="3" max="50" step="1" style="width:100%;accent-color:var(--accent)" oninput="document.getElementById('esCountVal').textContent = this.value + ' 题'; EXAM_SETUP.count = +this.value">
       <div class="es-label" id="esSecLabel" style="display:none">每题时长 <span style="color:var(--accent);font-size:14px;font-weight:800" id="esSecVal"></span></div>
@@ -1763,36 +1840,64 @@ function toggleShowNickname() {
   showToast(options.showNickname ? "主页欢迎语将显示昵称" : "主页欢迎语不显示昵称");
 }
 
+// ===== AI 咨询聊天气泡样式 =====
+var BUBBLE_STYLES = ["classic", "law", "mint", "sunset", "aurora", "ocean"];
+function applyBubbleStyle() {
+  var val = options.bubbleStyle || "classic";
+  if (BUBBLE_STYLES.indexOf(val) < 0) val = "classic";
+  if (document.body) {
+    for (var i = 0; i < BUBBLE_STYLES.length; i++) document.body.classList.remove("bubble-" + BUBBLE_STYLES[i]);
+    document.body.classList.add("bubble-" + val);
+  }
+  var sws = document.querySelectorAll("#bubbleSwatches .bubble-swatch");
+  for (var j = 0; j < sws.length; j++) sws[j].classList.toggle("on", sws[j].className.indexOf("s-" + val) >= 0);
+}
+function selectBubbleStyle(key) {
+  options.bubbleStyle = key;
+  try { localStorage.setItem("seawhy-lex-opts", JSON.stringify(options)); } catch(e) {}
+  applyBubbleStyle();
+  showToast("AI 气泡样式已切换");
+}
+
 // ===== 主页动态背景 =====
 var HOME_BGS = [
   { key: "default", name: "简约白", desc: "经典渐变" },
   { key: "aurora", name: "极光", desc: "流动光晕" },
   { key: "starry", name: "星空", desc: "闪烁星辰" },
-  { key: "ocean", name: "海洋", desc: "波纹光影" }
+  { key: "ocean", name: "海洋", desc: "波纹光影" },
+  { key: "forest", name: "森林", desc: "绿意流光" },
+  { key: "sunset", name: "日落", desc: "暖霞余晖" }
 ];
 function applyHomeBg() {
-  var bg = document.getElementById("homeBg");
-  if (!bg) return;
   var val = options.homeBg || "default";
-  bg.className = "home-bg bg-" + val;
-  if (val === "aurora") {
-    bg.innerHTML = '<div class="bg-layer"></div><div class="bg-layer"></div><div class="bg-layer"></div>';
-  } else if (val === "ocean") {
-    bg.innerHTML = '<div class="wave"></div><div class="wave"></div>';
-  } else if (val === "starry") {
+  if (document.body) document.body.classList.toggle("bg-on", val !== "default");
+  // 同时驱动首页背景层(主页内)与全局背景层(全页面固定)
+  var bg = document.getElementById("homeBg");
+  var gb = document.getElementById("globalBg");
+  var els = [];
+  if (bg) els.push(bg);
+  if (gb) els.push(gb);
+  if (!els.length) return;
+  for (var e = 0; e < els.length; e++) {
+    var el = els[e];
+    el.className = "home-bg bg-" + val;
     var h = "";
-    for (var i = 0; i < 55; i++) {
-      var x = Math.random() * 100, y = Math.random() * 100, s = (Math.random() * 2.2 + 0.8).toFixed(1), d = (Math.random() * 3).toFixed(2);
-      var big = Math.random() > 0.82 ? " big" : "";
-      h += '<div class="star' + big + '" style="left:' + x + '%;top:' + y + '%;width:' + s + 'px;height:' + s + 'px;animation-delay:' + d + 's"></div>';
+    if (val === "aurora" || val === "forest" || val === "sunset") {
+      h = '<div class="bg-layer"></div><div class="bg-layer"></div><div class="bg-layer"></div>';
+    } else if (val === "ocean") {
+      h = '<div class="wave"></div><div class="wave"></div>';
+    } else if (val === "starry") {
+      for (var i = 0; i < 55; i++) {
+        var x = Math.random() * 100, y = Math.random() * 100, s = (Math.random() * 2.2 + 0.8).toFixed(1), d = (Math.random() * 3).toFixed(2);
+        var big = Math.random() > 0.82 ? " big" : "";
+        h += '<div class="star' + big + '" style="left:' + x + '%;top:' + y + '%;width:' + s + 'px;height:' + s + 'px;animation-delay:' + d + 's"></div>';
+      }
+      for (var si = 0; si < 3; si++) {
+        var sx = Math.random() * 90 + 5, sy = Math.random() * 40 + 5, sd = (Math.random() * 5).toFixed(1);
+        h += '<div class="shooting" style="left:' + sx + '%;top:' + sy + '%;animation-delay:' + sd + 's"></div>';
+      }
     }
-    for (var si = 0; si < 3; si++) {
-      var sx = Math.random() * 90 + 5, sy = Math.random() * 40 + 5, sd = (Math.random() * 5).toFixed(1);
-      h += '<div class="shooting" style="left:' + sx + '%;top:' + sy + '%;animation-delay:' + sd + 's"></div>';
-    }
-    bg.innerHTML = h;
-  } else {
-    bg.innerHTML = "";
+    el.innerHTML = h;
   }
 }
 function getOwnedBgs() {
@@ -2439,23 +2544,63 @@ if (document.readyState === "loading") {
   initApp();
 }
 
-// 移动端键盘适配：body 高度跟随可视视口，防止整体上移/滚动
+// 移动端键盘适配：视觉视口跟随 + 聚焦定位 + 失焦复位，解决 iOS 输入时页面上下滑/下移不复原
 (function() {
   if (!window.visualViewport) return;
   var vv = window.visualViewport;
-  function syncBodyHeight() {
-    var h = vv.height;
+  var body = document.body;
+  var syncTimer = null, focusTimer = null, restoreTimer = null;
+  var kbShown = false;
+
+  function isEditable(el) {
+    return !!el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable);
+  }
+  function setBodyH(h) {
     if (h <= 0) return;
-    document.body.style.height = h + "px";
-    // 键盘未顶起内容（offsetTop≈0）时复位窗口滚动，避免键盘收起后整体下滑留白
-    if (vv.offsetTop <= 1 && window.scrollY !== 0) {
+    if (Math.abs((body.__lexH || 0) - h) < 1) return;
+    body.__lexH = h;
+    body.style.height = h + "px";
+  }
+  function resetView() {
+    // 键盘收起后把 body 高度复位为完整视口，并清掉可能残留的窗口滚动
+    setBodyH(window.innerHeight);
+    if (vv.offsetTop <= 1 && (window.scrollY !== 0 || window.pageXOffset !== 0)) {
       window.scrollTo(0, 0);
     }
   }
-  vv.addEventListener("resize", syncBodyHeight);
-  vv.addEventListener("scroll", syncBodyHeight);
-  window.addEventListener("orientationchange", function() {
-    setTimeout(syncBodyHeight, 120);
+  function keepFocusVisible() {
+    var el = document.activeElement;
+    if (!isEditable(el)) return;
+    clearTimeout(focusTimer);
+    focusTimer = setTimeout(function() {
+      try { el.scrollIntoView({ block: "nearest" }); } catch(e2) { el.scrollIntoView(); }
+    }, 60);
+  }
+  function sync() {
+    var ih = window.innerHeight, vh = vv.height;
+    if (vh <= 0 || ih <= 0) return;
+    // 键盘弹出时视觉视口明显矮于布局视口；resizes-content 模式下二者同步缩小，靠失焦复位兜底
+    var kb = (ih - vh) > 60;
+    if (kb) {
+      setBodyH(vh);
+      if (!kbShown) { kbShown = true; keepFocusVisible(); }
+    } else {
+      kbShown = false;
+      resetView();
+    }
+  }
+  vv.addEventListener("resize", function() { clearTimeout(syncTimer); syncTimer = setTimeout(sync, 50); });
+  vv.addEventListener("scroll", function() { clearTimeout(syncTimer); syncTimer = setTimeout(sync, 50); });
+  window.addEventListener("orientationchange", function() { setTimeout(sync, 150); });
+  // 输入框聚焦：确定性滚动到可视区，避免 iOS 自动滚动上下抖动
+  document.addEventListener("focusin", keepFocusVisible);
+  // 输入框失焦：等键盘收起动画结束后复位，修复「整个界面下移不能复原」
+  document.addEventListener("focusout", function(e) {
+    if (!isEditable(e.target)) return;
+    clearTimeout(restoreTimer);
+    restoreTimer = setTimeout(function() {
+      if (!isEditable(document.activeElement)) { kbShown = false; resetView(); }
+    }, 350);
   });
 })();
 
@@ -2488,8 +2633,11 @@ try { var s = JSON.parse(localStorage.getItem("seawhy-lex-config") || "{}"); SET
 var userTheme = "light";
 try { userTheme = JSON.parse(localStorage.getItem("seawhy-lex-theme") || '"light"'); } catch(e) {}
 
-var options = { deep: true, multi: false, practical: false, compare: false, quoteAuto: true, showNickname: false, homeBg: "default" };
+var options = { deep: true, multi: false, practical: false, compare: false, quoteAuto: true, showNickname: false, homeBg: "default", bubbleStyle: "classic" };
 try { var o = JSON.parse(localStorage.getItem("seawhy-lex-opts") || "{}"); Object.keys(options).forEach(function(k){ if(k in o) options[k] = o[k]; }); } catch(e) {}
+// 立即应用已保存的背景与气泡样式（不等 DOMContentLoaded，避免外部脚本加载慢导致重开后恢复默认）
+try { applyHomeBg(); } catch(e) {}
+try { applyBubbleStyle(); } catch(e) {}
 
 // ============================================================
 // AUTO CHANGELOG — 自动更新日志系统
@@ -3994,6 +4142,47 @@ document.getElementById("lawModal").addEventListener("click", function(e) {
 // ============================================================
 var lawReaderText = "";
 var lawReaderName = "";
+var lawMatchNodes = [];
+
+// 法条阅读器可视化：按「第X章」分节、「第X条」分卡渲染，替代纯文本
+function renderLawVisual() {
+  var text = lawReaderText;
+  if (!text) return;
+  var lines = text.split("\n").map(function(s) { return s.trim(); }).filter(Boolean);
+  var CH = /^第[一二三四五六七八九十百千零\d]+章/;
+  var ART = /^(第[一二三四五六七八九十百千零\d]+条)[\s:：]*(.*)/;
+  var h = "", plainBuf = [], i, j, artIdx = 0;
+  function flushPlain() {
+    if (plainBuf.length) {
+      h += '<div class="lr-para">' + escHtml(plainBuf.join("\n")).replace(/\n/g, "<br>") + '</div>';
+      plainBuf = [];
+    }
+  }
+  for (i = 0; i < lines.length; i++) {
+    var ln = lines[i];
+    if (CH.test(ln)) {
+      flushPlain();
+      h += '<div class="lr-chapter">' + escHtml(ln) + '</div>';
+    } else {
+      var m = ART.exec(ln);
+      if (m) {
+        flushPlain();
+        var body = m[2];
+        for (j = i + 1; j < lines.length; j++) {
+          if (CH.test(lines[j]) || ART.test(lines[j])) break;
+          body += lines[j];
+        }
+        i = j - 1;
+        h += '<div class="lr-article" id="lrArt' + artIdx + '"><span class="lr-art-num">' + escHtml(m[1]) + '</span><span class="lr-art-text">' + escHtml(body) + '</span></div>';
+        artIdx++;
+      } else {
+        plainBuf.push(ln);
+      }
+    }
+  }
+  flushPlain();
+  document.getElementById("lrContent").innerHTML = h;
+}
 
 function openLawReader(file, name) {
   lawReaderName = name; lawReaderText = "";
@@ -4011,7 +4200,7 @@ function openLawReader(file, name) {
     }).then(function(result) {
       lawReaderText = (result.value || "").trim();
       if (!lawReaderText) throw new Error("empty");
-      document.getElementById("lrContent").textContent = lawReaderText;
+      renderLawVisual();
       document.getElementById("lrInfo").textContent = "全文共约 " + Math.round(lawReaderText.length/1000) + " 千字";
     }).catch(function() {
       document.getElementById("lrContent").textContent = "无法加载文本。请下载 .docx 文件后用 Word 查阅。";
@@ -4035,57 +4224,40 @@ function closeLawReader() {
 
 function searchInLaw() {
   var q = document.getElementById("lrSearch").value.trim();
-  if (!q || !lawReaderText) return;
-  var paragraphs = lawReaderText.split(/\n{2,}/);
-  var results = [];
-  for (var i = 0; i < paragraphs.length; i++) {
-    if (paragraphs[i].indexOf(q) !== -1) results.push({ idx: i, text: paragraphs[i] });
+  if (!q || !lawReaderText) { renderLawVisual(); document.getElementById("lrInfo").textContent = ""; document.getElementById("lrNav").innerHTML = ""; return; }
+  lawMatchNodes = [];
+  var arts = document.querySelectorAll("#lrContent .lr-article");
+  for (var i = 0; i < arts.length; i++) {
+    var te = arts[i].querySelector(".lr-art-text");
+    if (te && te.textContent.indexOf(q) !== -1) lawMatchNodes.push(arts[i]);
   }
-  if (results.length === 0) {
-    document.getElementById("lrInfo").textContent = "未找到包含「" + q + "」的段落";
-    document.getElementById("lrNav").innerHTML = "";
+  document.getElementById("lrNav").innerHTML = "";
+  if (lawMatchNodes.length === 0) {
+    document.getElementById("lrInfo").textContent = "未找到包含「" + q + "」的条文";
     return;
   }
-  document.getElementById("lrInfo").textContent = "找到 " + results.length + " 处匹配";
-
-  // Build nav
+  document.getElementById("lrInfo").textContent = "找到 " + lawMatchNodes.length + " 处匹配";
   var navHtml = "";
-  for (var j = 0; j < Math.min(results.length, 20); j++) {
-    navHtml += '<button onclick="jumpToResult(' + results[j].idx + ')" id="lrNavBtn' + j + '">第' + (j+1) + '处</button>';
+  for (var k = 0; k < Math.min(lawMatchNodes.length, 20); k++) {
+    navHtml += '<button onclick="jumpToArt(' + k + ')" id="lrNavBtn' + k + '">第' + (k+1) + '处</button>';
   }
   document.getElementById("lrNav").innerHTML = navHtml;
-
-  // Show first result
-  jumpToResult(results[0].idx);
-  // Highlight all in nav
-  setTimeout(function() {
-    var firstBtn = document.getElementById("lrNavBtn0");
-    if (firstBtn) firstBtn.classList.add("active");
-  }, 50);
+  jumpToArt(0);
 }
 
-function jumpToResult(idx) {
-  var paragraphs = lawReaderText.split(/\n{2,}/);
-  if (idx >= paragraphs.length) return;
+function jumpToArt(k) {
+  if (!lawMatchNodes || !lawMatchNodes[k]) return;
   var q = document.getElementById("lrSearch").value.trim();
-  var displayText = paragraphs.slice(Math.max(0, idx - 1), idx + 3).join("\n\n");
-  if (q) {
+  var art = lawMatchNodes[k];
+  var textEl = art.querySelector(".lr-art-text");
+  if (q && textEl) {
     var re = new RegExp("(" + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ")", "gi");
-    displayText = displayText.replace(re, '<span class="highlight">$1</span>');
+    textEl.innerHTML = textEl.textContent.replace(re, '<span class="highlight">$1</span>');
   }
-  document.getElementById("lrContent").innerHTML = displayText.replace(/\n/g, "<br>");
-  // Update active nav
+  try { art.scrollIntoView({ behavior: "smooth", block: "center" }); } catch(e2) { art.scrollIntoView(); }
   document.querySelectorAll("#lrNav button").forEach(function(b) { b.classList.remove("active"); });
-  for (var j = 0; j < 20; j++) {
-    var btn = document.getElementById("lrNavBtn" + j);
-    if (btn && btn.textContent.indexOf("第" + (j+1) + "处") !== -1) {
-      var results = [];
-      for (var i = 0; i < paragraphs.length; i++) {
-        if (paragraphs[i].indexOf(q) !== -1) results.push(i);
-      }
-      if (results[j] === idx) btn.classList.add("active");
-    }
-  }
+  var btn = document.getElementById("lrNavBtn" + k);
+  if (btn) btn.classList.add("active");
 }
 
 // ============================================================
@@ -4407,8 +4579,9 @@ var currentCaseCat = 0;
 function showCaseDatabase(){hideAllViews();document.getElementById("caseView").classList.add("show");if(typeof CASE_DATA!=='undefined'&&CASE_DATA.length>0){currentCaseCat=0;renderCaseCategories();renderCaseList();}}
 function renderCaseCategories(){var h='';for(var i=0;i<CASE_DATA.length;i++){h+='<button class="case-cat-btn'+(i===currentCaseCat?' active':'')+'" onclick="switchCaseCat('+i+')">'+escHtml(CASE_DATA[i].name)+'</button>';}document.getElementById("caseCats").innerHTML=h;}
 function switchCaseCat(idx){currentCaseCat=idx;renderCaseCategories();renderCaseList();document.getElementById("caseList").scrollTop=0;}
-function renderCaseList(){var cat=CASE_DATA[currentCaseCat];var h='';for(var i=0;i<cat.cases.length;i++){var c=cat.cases[i];var t=c.t.replace(/^案例[一二三四五六七八九十\d]+[\s:：]*/,'').replace(/[:：]\s*$/,'');h+='<div class="case-card" onclick="openCaseDetail('+i+')"><div class="case-num">'+(i+1)+'</div><div class="case-info"><div class="case-title">'+escHtml(t)+'</div></div><div class="case-arrow">›</div></div>';}document.getElementById("caseList").innerHTML=h;}
-function openCaseDetail(idx){var c=CASE_DATA[currentCaseCat].cases[idx];var t=c.t.replace(/^案例[一二三四五六七八九十\d]+[\s:：]*/,'').replace(/[:：]\s*$/,'');document.getElementById("cdTitle").textContent=t;var h='';if(c.f)h+='<div class="cd-section"><h5>基本案情</h5><p>'+escHtml(c.f).replace(/\n/g,'<br>')+'</p></div>';if(c.p)h+='<div class="cd-section"><h5>裁判/处理</h5><p>'+escHtml(c.p).replace(/\n/g,'<br>')+'</p></div>';if(c.s)h+='<div class="cd-section"><h5>典型意义</h5><p>'+escHtml(c.s).replace(/\n/g,'<br>')+'</p></div>';document.getElementById("cdContent").innerHTML=h;document.getElementById("caseDetail").classList.add("show");document.getElementById("caseDetail").scrollTop=0;}
+function renderCaseList(){var cat=CASE_DATA[currentCaseCat];var h='';for(var i=0;i<cat.cases.length;i++){var c=cat.cases[i];var t=c.t.replace(/^案例[一二三四五六七八九十\d]+[\s:：]*/,'').replace(/[:：]\s*$/,'');var ex=(c.f||'').replace(/\s+/g,' ').slice(0,50);if((c.f||'').replace(/\s+/g,' ').length>50)ex+='…';h+='<div class="case-card" onclick="openCaseDetail('+i+')"><div class="case-num">'+(i+1)+'</div><div class="case-info"><div class="case-title">'+escHtml(t)+'</div><div class="case-sub">'+escHtml(ex)+'</div></div><div class="case-arrow">›</div></div>';}document.getElementById("caseList").innerHTML=h;}
+function caseParas(s){var parts=s.split(/\n+/).map(function(x){return x.trim();}).filter(Boolean);return parts.map(function(p){return '<p>'+escHtml(p)+'</p>';}).join('');}
+function openCaseDetail(idx){var c=CASE_DATA[currentCaseCat].cases[idx];var t=c.t.replace(/^案例[一二三四五六七八九十\d]+[\s:：]*/,'').replace(/[:：]\s*$/,'');document.getElementById("cdTitle").textContent=t;var h='';h+='<div class="cd-head"><span class="cd-cat">'+escHtml(CASE_DATA[currentCaseCat].name)+'</span><div class="cd-t">'+escHtml(t)+'</div></div>';if(c.f)h+='<div class="cd-section card"><h5><span>📋</span> 基本案情</h5>'+caseParas(c.f)+'</div>';if(c.p)h+='<div class="cd-section card"><h5><span>⚖️</span> 裁判 / 处理</h5>'+caseParas(c.p)+'</div>';if(c.s)h+='<div class="cd-section card"><h5><span>💡</span> 典型意义</h5>'+caseParas(c.s)+'</div>';document.getElementById("cdContent").innerHTML=h;document.getElementById("caseDetail").classList.add("show");document.getElementById("caseDetail").scrollTop=0;}
 function closeCaseDetail(){document.getElementById("caseDetail").classList.remove("show");}
 
 
@@ -4531,7 +4704,7 @@ var QUIZ_STATE = {
 };
 
 // 考试设置（多选来源 + 题数 + 计时方式 + 每题时长）
-var EXAM_SETUP = { subjects: ["全部"], count: 10, timing: "countup", secPerQ: 60 };
+var EXAM_SETUP = { subjects: ["全部"], count: 10, timing: "countup", secPerQ: 60, diff: 0 };
 
 var QUIZ_PAGE_SIZE = 1; // 一页显示一道题
 
@@ -5481,7 +5654,21 @@ function showExamSetupScreen() {
   var secVal = document.getElementById("esSecVal");
   if (secVal) secVal.textContent = EXAM_SETUP.secPerQ + " 秒";
   setExamTiming(EXAM_SETUP.timing, true);
+  // 难度偏好状态
+  if (EXAM_SETUP.diff === undefined) EXAM_SETUP.diff = 0;
+  for (var d = 0; d <= 3; d++) {
+    var db = document.getElementById("esDiff" + d);
+    if (db) db.classList.toggle("active", d === EXAM_SETUP.diff);
+  }
   setQuizScreen("examsetup");
+}
+
+function setExamDiff(v) {
+  EXAM_SETUP.diff = v;
+  for (var d = 0; d <= 3; d++) {
+    var b = document.getElementById("esDiff" + d);
+    if (b) b.classList.toggle("active", d === v);
+  }
 }
 
 function renderExamSources() {
@@ -5583,6 +5770,7 @@ function startExamFromSetup() {
     for (var i = 0; i < arr.length; i++) {
       var q = arr[i];
       if (hasChFilter && chList.indexOf(q.chapter || "") < 0) continue;
+      if (EXAM_SETUP.diff && q.diff !== EXAM_SETUP.diff) continue;
       q._subject = sName;
       q._chapter = q.chapter || "";
       all.push(q);
@@ -5610,7 +5798,8 @@ function startExamFromSetup() {
   setQuizScreen("quiz");
   document.getElementById("quizPlayTitle").textContent = "考试模式";
   var spqTxt = EXAM_SETUP.timing === "countdown" ? ("倒计时 · 每题 " + (EXAM_SETUP.secPerQ || 60) + " 秒") : "计时";
-  document.getElementById("quizSubtitle").textContent = QUIZ_STATE.subject + " · " + count + " 题 · " + spqTxt;
+  var diffTxt = EXAM_SETUP.diff ? (EXAM_SETUP.diff === 3 ? "困难" : EXAM_SETUP.diff === 2 ? "中等" : "简单") : "全部难度";
+  document.getElementById("quizSubtitle").textContent = QUIZ_STATE.subject + " · " + count + " 题 · " + spqTxt + " · " + diffTxt;
   startExamTimer();
   renderQuizStats();
   renderQuizPage();
@@ -5718,6 +5907,7 @@ function renderQuizPage() {
     h += '<div class="quiz-card' + cardClass + '" id="quizCard' + globalIdx + '">';
     var diffHtml = "";
     if (q.diff) diffHtml = '<span class="q-diff d' + q.diff + '">' + (q.diff === 3 ? "困难" : q.diff === 2 ? "中等" : "简单") + '</span>';
+    if (q.multi) diffHtml += '<span class="q-diff multi">多选</span>';
     if (q.type === "case") diffHtml += '<span class="q-diff case">案例分析</span>';
     h += '<div class="quiz-q-num">#' + (globalIdx + 1) + ' · ' + escHtml(q._subject || "") + (q._chapter ? ' · ' + escHtml(q._chapter) : '') + (QUIZ_STATE.mode === "exam" ? ' · 考试模式' : '') + diffHtml + '</div>';
     if (q.type === "case" && q.case) h += '<div class="quiz-case">' + escHtml(q.case) + '</div>';
