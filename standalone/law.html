@@ -117,15 +117,14 @@
     .dash-head .dash-icon{color:#111;width:22px;height:22px;border-radius:7px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;flex-shrink:0}
     .dash-head .dash-icon svg{width:14px;height:14px}
     .dash-head .dash-name{font-size:11px;font-weight:600;color:#111;letter-spacing:.5px;white-space:nowrap}
-    .dash-body{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;min-height:0;width:100%}
-    .dash-main{font-size:16px;font-weight:700;color:#111;margin-top:8px;text-align:left;line-height:1.4;word-break:break-word;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .dash-body{flex:1;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;gap:6px;min-height:0;width:100%;padding-top:12px}
+    .dash-main{font-size:14px;font-weight:700;color:#111;margin-top:8px;text-align:center;line-height:1.4;word-break:break-word;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .dash-body .dash-main{margin-top:0}
-    #checkinStatus{text-align:center;font-size:14px;white-space:normal;overflow:visible;line-height:1.35}
     .todo-preview{width:100%;display:flex;flex-direction:column;gap:3px;margin-top:8px}
     .dash-body .todo-preview{margin-top:0}
     .todo-preview .tp-item{font-size:11px;color:var(--text);text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 2px;line-height:1.5;max-width:100%}
     .todo-preview .tp-item.done{text-decoration:line-through;opacity:.45}
-    .todo-preview .tp-empty{font-size:11px;color:var(--text2);text-align:left;opacity:.65;line-height:1.5}
+    .todo-preview .tp-empty{font-size:11px;color:var(--text2);text-align:center;opacity:.65;line-height:1.5}
 
     /* frosted bottom nav card */
     #bottomNav{display:flex;justify-content:space-around;align-items:center;margin:0 auto;margin-bottom:calc(12px + env(safe-area-inset-bottom));padding:10px 12px;background:rgba(255,255,255,0.42);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.04);flex-shrink:0;max-width:380px;width:calc(100% - 48px)}
@@ -402,9 +401,12 @@
         .q-diff.d1{background:#e8f6ef;color:#1e8449}
         .q-diff.d2{background:#fef4e4;color:#b9770e}
         .q-diff.d3{background:#fdecea;color:#c0392b}
+        .q-diff.case{background:#f0e8fb;color:#8e44ad}
         body.dark .q-diff.d1{background:rgba(39,174,96,.18);color:#58d68d}
         body.dark .q-diff.d2{background:rgba(243,156,18,.18);color:#f5b34a}
         body.dark .q-diff.d3{background:rgba(231,76,60,.18);color:#ee9a86}
+        body.dark .q-diff.case{background:rgba(155,89,182,.18);color:#c39ade}
+        .quiz-case{background:var(--accent-light);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:10px 12px;margin-bottom:12px;font-size:13px;line-height:1.7;color:var(--text);white-space:pre-line}
         .quiz-q-text{font-size:15px;line-height:1.6;margin-bottom:14px;font-weight:500}
         .quiz-options{display:flex;flex-direction:column;gap:8px}
         .quiz-opt{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border:2px solid var(--card-border);border-radius:12px;cursor:pointer;transition:all .15s;font-size:14px;line-height:1.5;background:var(--bg)}
@@ -534,9 +536,15 @@
 
 /* ===== LEARNING CENTER ===== */
 .learn-body{flex:1;overflow-y:auto;padding:16px 14px calc(16px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch}
-.learn-report{background:linear-gradient(135deg,#667eea,#4A90D9);border-radius:18px;padding:20px 18px;margin-bottom:28px;color:#fff;box-shadow:0 4px 20px rgba(74,144,217,0.3)}
+.learn-report{background:#4A90D9;border-radius:18px;padding:20px 18px;margin-bottom:28px;color:#fff;box-shadow:0 4px 20px rgba(74,144,217,0.3)}
 .learn-report-header h2{font-size:20px;font-weight:700;margin-bottom:2px;color:#fff}
 .learn-report-header p{font-size:11px;opacity:.8;margin-bottom:14px}
+.learn-smart{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.16);border-radius:12px;padding:10px 12px;font-size:12px;line-height:1.5;margin-bottom:14px}
+.learn-smart .ls-emoji{font-size:18px;flex-shrink:0}
+.learn-goal{margin-bottom:14px}
+.learn-goal-top{display:flex;justify-content:space-between;align-items:center;font-size:10px;opacity:.85;margin-bottom:5px}
+.learn-goal-track{height:8px;background:rgba(255,255,255,0.22);border-radius:5px;overflow:hidden}
+.learn-goal-fill{height:100%;width:0;border-radius:5px;background:#fff;transition:width .4s ease}
 .learn-stats-row{display:flex;gap:10px;margin-bottom:16px}
 .learn-stat-card{flex:1;background:rgba(255,255,255,0.18);border-radius:14px;padding:14px 10px;text-align:center;backdrop-filter:blur(4px)}
 .lsc-icon{font-size:22px;margin-bottom:4px}
@@ -1023,11 +1031,6 @@
         <span>主页背景</span>
         <span class="pm-arrow">›</span>
       </div>
-      <div class="pm-item" onclick="cycleHomeCard()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        <span>主页卡片</span>
-        <span class="pm-val" id="profileHomeCardState">今日待办</span>
-      </div>
       <div class="pm-item" onclick="showAbout()">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         <span>设置</span>
@@ -1315,7 +1318,18 @@
     <div class="learn-report">
       <div class="learn-report-header">
         <h2>今日学习报告</h2>
-
+        <p id="learnTodayDate">今日</p>
+      </div>
+      <div class="learn-smart">
+        <span class="ls-emoji" id="learnSmartEmoji">📖</span>
+        <span id="learnSmart">今天还没有学习记录，从题库开始吧</span>
+      </div>
+      <div class="learn-goal">
+        <div class="learn-goal-top">
+          <span>今日目标 · 学习 30 分钟</span>
+          <span id="learnGoalTxt">0 / 30 分钟</span>
+        </div>
+        <div class="learn-goal-track"><div class="learn-goal-fill" id="learnGoalFill"></div></div>
       </div>
       <div class="learn-stats-row">
         <div class="learn-stat-card">
@@ -1478,6 +1492,7 @@
         <h2>选择科目</h2>
         <p>选择科目和章节开始练习</p>
       </div>
+      <div class="quiz-subject-filter" id="quizDiffFilter"></div>
       <div class="quiz-subject-grid" id="quizSubjectGrid"></div>
     </div>
     <!-- 考试：设置界面（来源科目→章节 + 题数 + 计时） -->
@@ -1507,6 +1522,7 @@
         <h2 id="quizChapterTitle">选择章节</h2>
         <p id="quizChapterSub">按章节练习</p>
       </div>
+      <div class="quiz-subject-filter" id="quizChapterDiffFilter"></div>
       <div class="quiz-chapter-grid" id="quizChapterGrid"></div>
     </div>
     <!-- 答题界面 -->
@@ -1580,10 +1596,19 @@
 <script src="templates.js?v=1.2.6"></script>
 <script src="quiz_data.js?v=1.5.0"></script>
 <script src="case_data.js?v=1.2.6"></script>
+<script src="quiz_extra.js?v=1.0.0"></script>
 <script>
 // ============================================================
 // TYPWRITER + LEGAL QUOTES
 // ============================================================
+// 合并题库扩展（新增题以案例分析题为主，含难度分级）
+if (typeof QUIZ_EXTRA_ADD === "object" && QUIZ_EXTRA_ADD) {
+  for (var __ek in QUIZ_EXTRA_ADD) {
+    if (QUIZ_EXTRA_ADD.hasOwnProperty(__ek)) {
+      QUIZ_DATA[__ek] = (QUIZ_DATA[__ek] || []).concat(QUIZ_EXTRA_ADD[__ek]);
+    }
+  }
+}
 function getGreeting() {
   var h = new Date().getHours();
   var base;
@@ -1964,14 +1989,14 @@ function renderScheduleCard() {
   if (!stEl || !pre) return;
   var d = loadSchedule();
   if (!d.courses.length) {
-    stEl.textContent = "暂无课表";
+    stEl.textContent = "今日无课程";
     pre.innerHTML = '<div class="tp-empty">去课表设置导入</div>';
     return;
   }
   var up = getUpcomingCoursesToday();
   if (!up.length) {
     stEl.textContent = "今日无课程";
-    pre.innerHTML = '<div class="tp-empty">今天没有课啦</div>';
+    pre.innerHTML = '<div class="tp-empty">今天没有课了</div>';
     return;
   }
   stEl.textContent = "接下来 " + up.length + " 节";
@@ -1989,30 +2014,16 @@ function renderScheduleCard() {
 function renderHomeCard() {
   var todoCard = document.getElementById("todoCard");
   var schCard = document.getElementById("scheduleCard");
-  if (!todoCard || !schCard) return;
-  var useSch = options.homeCard === "schedule";
-  todoCard.style.display = useSch ? "none" : "";
-  schCard.style.display = useSch ? "" : "none";
-  if (useSch) renderScheduleCard();
+  // 打卡 / 待办 / 课表 三卡同排同时显示
+  if (todoCard) todoCard.style.display = "";
+  if (schCard) schCard.style.display = "";
+  renderScheduleCard();
 }
 
 function renderHomeCards() {
   renderCheckin();
   renderTodoStatus();
   renderHomeCard();
-}
-
-function applyHomeCardState() {
-  var el = document.getElementById("profileHomeCardState");
-  if (el) el.textContent = options.homeCard === "schedule" ? "今日课表" : "今日待办";
-}
-
-function cycleHomeCard() {
-  options.homeCard = options.homeCard === "schedule" ? "todo" : "schedule";
-  try { localStorage.setItem("seawhy-lex-opts", JSON.stringify(options)); } catch(e) {}
-  applyHomeCardState();
-  renderHomeCard();
-  showToast(options.homeCard === "schedule" ? "主页卡片已切换为今日课表" : "主页卡片已切换为今日待办");
 }
 
 function openTodoModal() {
@@ -2477,7 +2488,7 @@ try { var s = JSON.parse(localStorage.getItem("seawhy-lex-config") || "{}"); SET
 var userTheme = "light";
 try { userTheme = JSON.parse(localStorage.getItem("seawhy-lex-theme") || '"light"'); } catch(e) {}
 
-var options = { deep: true, multi: false, practical: false, compare: false, quoteAuto: true, showNickname: false, homeBg: "default", homeCard: "todo" };
+var options = { deep: true, multi: false, practical: false, compare: false, quoteAuto: true, showNickname: false, homeBg: "default" };
 try { var o = JSON.parse(localStorage.getItem("seawhy-lex-opts") || "{}"); Object.keys(options).forEach(function(k){ if(k in o) options[k] = o[k]; }); } catch(e) {}
 
 // ============================================================
@@ -2855,6 +2866,11 @@ function goToProfile() {
     profile.style.display = "";
     if (target) target.style.visibility = "";
     if (home) { home.style.transition = ""; home.style.opacity = ""; }
+    updateProfileUI();
+    // 等布局完成后把徽章滚动到当前等级
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() { scrollLevelToCurrent(); });
+    });
   }, 300);
   setTimeout(function() { if (fly.parentNode) fly.parentNode.removeChild(fly); }, 620);
 }
@@ -2890,13 +2906,23 @@ function renderLevelBadges() {
     h += '<div class="ph-level-item lvl' + i + locked + '"><div class="ph-level-img"><img src="' + LEVELS[i].icon + '" alt="" /></div></div>';
   }
   scroll.innerHTML = h;
-  var itemW = scroll.clientWidth;
-  scroll.scrollLeft = curIdx * itemW;
   scroll.onscroll = function() {
     var idx = Math.round(this.scrollLeft / this.clientWidth);
     idx = Math.max(0, Math.min(LEVELS.length - 1, idx));
     updateLevelDisplay(idx);
   };
+  scrollLevelToCurrent();
+}
+
+// 将徽章轮播滚动到当前等级(需视图已可见,否则 clientWidth 为 0)
+function scrollLevelToCurrent() {
+  var scroll = document.getElementById("levelScroll");
+  if (!scroll) return;
+  var p = loadProfile();
+  var total = p.totalPoints || 0;
+  var curIdx = getLevelInfo(total).index;
+  var itemW = scroll.clientWidth;
+  if (itemW > 0) scroll.scrollLeft = curIdx * itemW;
   updateLevelDisplay(curIdx);
 }
 
@@ -4491,6 +4517,7 @@ var QUIZ_STATE = {
   chapter: "",
   screen: "subjects", // "subjects" | "chapters" | "quiz"
   subjectHasChapters: false,
+  diff: 0, // 0=全部, 1=简单, 2=中等, 3=困难
   examCount: 0,
   currentIndex: 0,
   questions: [],
@@ -4579,6 +4606,9 @@ function updateLearnDashboard() {
   var todayData = stats.days[today] || { min: 0, q: 0 };
   var streak = getStreak(stats);
 
+  var dNow = new Date();
+  var dateEl = document.getElementById("learnTodayDate");
+  if (dateEl) dateEl.textContent = (dNow.getMonth() + 1) + "." + dNow.getDate();
 
   var elMin = document.getElementById("learnTodayMin");
   if (elMin) elMin.textContent = todayData.min;
@@ -4586,6 +4616,33 @@ function updateLearnDashboard() {
   if (elQ) elQ.textContent = todayData.q;
   var elStreak = document.getElementById("learnStreak");
   if (elStreak) elStreak.textContent = streak;
+
+  // 智能文案 + 今日目标进度（目标 30 分钟）
+  var goal = 30;
+  var min = todayData.min || 0, q = todayData.q || 0;
+  var smartEl = document.getElementById("learnSmart");
+  var emojiEl = document.getElementById("learnSmartEmoji");
+  var smartTxt, emoji;
+  if (min >= goal) {
+    smartTxt = "今日学习 " + min + " 分钟，达成今日目标 🎯" + (streak > 0 ? "，连续学习 " + streak + " 天" : "");
+    emoji = "🏆";
+  } else if (min > 0) {
+    smartTxt = "今日学习 " + min + " 分钟，距今日目标还差 " + (goal - min) + " 分钟，继续加油";
+    emoji = "🔥";
+  } else if (q > 0) {
+    smartTxt = "今日做了 " + q + " 道题，再学满 30 分钟更高效";
+    emoji = "📝";
+  } else {
+    smartTxt = "今天还没有学习记录，从题库开始吧";
+    emoji = "📖";
+  }
+  if (smartEl) smartEl.textContent = smartTxt;
+  if (emojiEl) emojiEl.textContent = emoji;
+  var gFill = document.getElementById("learnGoalFill");
+  var gTxt = document.getElementById("learnGoalTxt");
+  var gPct = Math.max(0, Math.min(100, Math.round(min / goal * 100)));
+  if (gFill) gFill.style.width = gPct + "%";
+  if (gTxt) gTxt.textContent = min + " / " + goal + " 分钟";
 
   var weekBar = document.getElementById("learnWeekBar");
   if (weekBar) {
@@ -4837,8 +4894,11 @@ function showProfile() {
   if (psc) psc.scrollTop = 0;
   updateProfileUI();
   applyNicknameState();
-  applyHomeCardState();
   setTimeout(bindRedeemButton, 100);
+  // 等布局完成后把徽章滚动到当前等级
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() { scrollLevelToCurrent(); });
+  });
 }
 
 // ============================================================
@@ -5098,14 +5158,49 @@ function setQuizScreen(screen) {
   }
 }
 
+// ===== 题库难度筛选（全部/简单/中等/困难）=====
+var QUIZ_DIFF_OPTS = [
+  { v: 0, label: "全部" },
+  { v: 1, label: "简单" },
+  { v: 2, label: "中等" },
+  { v: 3, label: "困难" }
+];
+
+function quizMatchesDiff(q) {
+  return QUIZ_STATE.diff === 0 || (q.diff === QUIZ_STATE.diff);
+}
+
+function countQuizQuestions(arr) {
+  var c = 0;
+  for (var i = 0; i < arr.length; i++) if (quizMatchesDiff(arr[i])) c++;
+  return c;
+}
+
+function renderDiffFilter(id) {
+  var h = "";
+  for (var i = 0; i < QUIZ_DIFF_OPTS.length; i++) {
+    var o = QUIZ_DIFF_OPTS[i];
+    h += '<button class="' + (QUIZ_STATE.diff === o.v ? 'active' : '') + '" onclick="selectDiff(' + o.v + ')">' + o.label + '</button>';
+  }
+  var el = document.getElementById(id);
+  if (el) el.innerHTML = h;
+}
+
+function selectDiff(v) {
+  QUIZ_STATE.diff = v;
+  if (QUIZ_STATE.screen === "chapters") showQuizChapters();
+  else showQuizSubjects();
+}
+
 function showQuizSubjects() {
   setQuizScreen("subjects");
+  renderDiffFilter("quizDiffFilter");
   var subjects = [];
   var totalAll = 0;
   for (var k in QUIZ_DATA) {
     if (QUIZ_DATA.hasOwnProperty(k) && QUIZ_DATA[k].length > 0) {
       subjects.push(k);
-      totalAll += QUIZ_DATA[k].length;
+      totalAll += countQuizQuestions(QUIZ_DATA[k]);
     }
   }
   var h = '<div class="quiz-subject-card" onclick="selectQuizSubject(\'全部\')">' +
@@ -5114,7 +5209,7 @@ function showQuizSubjects() {
     '<div class="qsc-count">' + totalAll + ' 题</div></div>';
   for (var i = 0; i < subjects.length; i++) {
     var s = subjects[i];
-    var cnt = QUIZ_DATA[s].length;
+    var cnt = countQuizQuestions(QUIZ_DATA[s]);
     var tag = subjectHasChapters(s) ? ' <span class="qsc-tag">' + getQuizChapters(s).length + '章</span>' : '';
     h += '<div class="quiz-subject-card" onclick="selectQuizSubject(\'' + escAttr(s) + '\')">' +
       '<div class="qsc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' + getQuizIcon(s) + '</svg></div>' +
@@ -5126,18 +5221,19 @@ function showQuizSubjects() {
 
 function showQuizChapters() {
   setQuizScreen("chapters");
+  renderDiffFilter("quizChapterDiffFilter");
   document.getElementById("quizChapterTitle").textContent = QUIZ_STATE.subject;
   var chapters = getQuizChapters(QUIZ_STATE.subject);
   document.getElementById("quizChapterSub").textContent = QUIZ_STATE.subject + " · 共 " + chapters.length + " 个章节";
   var chIcon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/></svg>';
   var h = '<div class="quiz-chapter-card" onclick="selectQuizChapter(\'\')">' +
     '<div class="qcc-left"><div class="qcc-icon">' + chIcon + '</div><div class="qcc-name">全部章节</div></div>' +
-    '<div class="qcc-count">' + QUIZ_DATA[QUIZ_STATE.subject].length + ' 题</div></div>';
+    '<div class="qcc-count">' + countQuizQuestions(QUIZ_DATA[QUIZ_STATE.subject]) + ' 题</div></div>';
   for (var i = 0; i < chapters.length; i++) {
     var c = chapters[i];
     var cnt = 0;
     var arr = QUIZ_DATA[QUIZ_STATE.subject];
-    for (var j = 0; j < arr.length; j++) { if (arr[j].chapter === c) cnt++; }
+    for (var j = 0; j < arr.length; j++) { if (arr[j].chapter === c && quizMatchesDiff(arr[j])) cnt++; }
     h += '<div class="quiz-chapter-card" onclick="selectQuizChapter(\'' + escAttr(c) + '\')">' +
       '<div class="qcc-left"><div class="qcc-icon">' + chIcon + '</div><div class="qcc-name">' + escHtml(c) + '</div></div>' +
       '<div class="qcc-count">' + cnt + ' 题 <span class="qcc-arrow">›</span></div></div>';
@@ -5269,6 +5365,7 @@ function filterQuizQuestions(noReshuffle) {
       if (QUIZ_DATA.hasOwnProperty(k)) {
         for (var i = 0; i < QUIZ_DATA[k].length; i++) {
           var q = QUIZ_DATA[k][i];
+          if (!quizMatchesDiff(q)) continue;
           q._subject = k;
           q._chapter = q.chapter || "";
           all.push(q);
@@ -5280,6 +5377,7 @@ function filterQuizQuestions(noReshuffle) {
     for (var i = 0; i < arr.length; i++) {
       var q = arr[i];
       if (QUIZ_STATE.chapter && q.chapter !== QUIZ_STATE.chapter) continue;
+      if (!quizMatchesDiff(q)) continue;
       q._subject = QUIZ_STATE.subject;
       q._chapter = q.chapter || "";
       all.push(q);
@@ -5620,7 +5718,9 @@ function renderQuizPage() {
     h += '<div class="quiz-card' + cardClass + '" id="quizCard' + globalIdx + '">';
     var diffHtml = "";
     if (q.diff) diffHtml = '<span class="q-diff d' + q.diff + '">' + (q.diff === 3 ? "困难" : q.diff === 2 ? "中等" : "简单") + '</span>';
+    if (q.type === "case") diffHtml += '<span class="q-diff case">案例分析</span>';
     h += '<div class="quiz-q-num">#' + (globalIdx + 1) + ' · ' + escHtml(q._subject || "") + (q._chapter ? ' · ' + escHtml(q._chapter) : '') + (QUIZ_STATE.mode === "exam" ? ' · 考试模式' : '') + diffHtml + '</div>';
+    if (q.type === "case" && q.case) h += '<div class="quiz-case">' + escHtml(q.case) + '</div>';
     h += '<div class="quiz-q-text">' + escHtml(q.q) + '</div>';
 
     if (q.opts && q.opts.length > 0) {
