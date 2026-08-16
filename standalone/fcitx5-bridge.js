@@ -63,6 +63,104 @@
     } catch (e) {}
   }
 
+  // ---------- fcitx5 键盘改版(移动端简化:iOS 式) ----------
+  // 结构(实测):#fcitx-virtual-keyboard > .fcitx-keyboard-container > 子元素
+  //   .fcitx-keyboard-toolbar   顶部一排按钮(撤销/编辑/剪贴板…)
+  //   .fcitx-keyboard > .fcitx-keyboard-row > .fcitx-keyboard-key-container
+  //     > .fcitx-keyboard-key(字母键带 .fcitx-keyboard-sub-label 数字/符号角标)
+  //   底部行:.fcitx-keyboard-symbol(#+=) / "," / .fcitx-keyboard-globe /
+  //     .fcitx-keyboard-space(标签即当前输入法"拼音",flex:4) / "." / .fcitx-keyboard-enter
+  // 键盘按层重建(shift/符号):.fcitx-keyboard.innerHTML 被清空重画 → 需 MutationObserver 重应用。
+  var _kbdStyled = false;
+  var _kbdObs = null;
+
+  function installKbdStyle() {
+    if (_kbdStyled) return;
+    _kbdStyled = true;
+    if (document.getElementById('lexpilot-fcitx-kbd-style')) return;
+    var s = document.createElement('style');
+    s.id = 'lexpilot-fcitx-kbd-style';
+    s.textContent = [
+      '/* LexPilot 简化:去掉顶部一排按钮 */',
+      '.fcitx-keyboard-toolbar{display:none!important}',
+      '/* 字母键只显示字母,隐藏数字/符号角标 */',
+      '.fcitx-keyboard-key .fcitx-keyboard-sub-label{display:none!important}',
+      '/* 空格键(原"拼音"键)标为"空格",固定字号(压过库的 inline cqw 字号) */',
+      '.fcitx-keyboard-space{font-size:clamp(16px,5vw,22px)!important;font-weight:500;letter-spacing:.5px}',
+      '/* iOS 式按下反馈:缩放 + 加深(库已加 .fcitx-keyboard-pressed 类) */',
+      '.fcitx-keyboard-key-container.fcitx-keyboard-pressed .fcitx-keyboard-key{transform:scale(.92)!important;filter:brightness(.88)}',
+      '.fcitx-keyboard-key{transition:transform .05s ease,filter .05s ease,background-color .05s ease}',
+    ].join('\n');
+    document.head.appendChild(s);
+  }
+
+  function styleFcitxKbd() {
+    if (!isActive()) return;
+    var root = document.getElementById('fcitx-virtual-keyboard');
+    if (!root) return;
+    installKbdStyle();
+    var r = root.shadowRoot || root;
+    // 底部"拼音"键(即空格键)→ 固定显示"空格"(库在 IM 切换时回写"拼音"/"EN")
+    var space = r.querySelector('.fcitx-keyboard-space');
+    if (space && space.textContent.trim() !== '空格') {
+      space.textContent = '空格';
+    }
+  }
+
+  function watchKbdRebuild() {
+    if (_kbdObs) return;
+    var root = document.getElementById('fcitx-virtual-keyboard');
+    if (!root || !window.MutationObserver) return;
+    var kbd = (root.shadowRoot || root).querySelector('.fcitx-keyboard');
+    if (!kbd) return;
+    var timer = null;
+    _kbdObs = new MutationObserver(function () {
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(styleFcitxKbd, 0); // 层切换/空格标签回写后重应用
+    });
+    _kbdObs.observe(kbd, { childList: true, subtree: true });
+    styleFcitxKbd();
+  }
+
+  function installKbdHaptics() {
+    if (window._lexKbdHaptics) return;
+    window._lexKbdHaptics = true;
+    // 触屏输入由 .fcitx-keyboard-mask 统一分发,touch 的 target 是 mask 而非按键,
+    // 库内部按坐标命中按键容器。这里同样按坐标判定:命中任一按键容器即触发短震动,
+    // 与按下时刻(视觉反馈)同步。
+    function hitKey(e) {
+      if (!isActive()) return;
+      var root = document.getElementById('fcitx-virtual-keyboard');
+      if (!root) return;
+      var r = root.shadowRoot || root;
+      var containers = r.querySelectorAll('.fcitx-keyboard-key-container');
+      for (var i = 0; i < containers.length; i++) {
+        var box = containers[i].getBoundingClientRect();
+        if (e.clientX >= box.left && e.clientX <= box.right && e.clientY >= box.top && e.clientY <= box.bottom) {
+          try { if (navigator.vibrate) navigator.vibrate(8); } catch (err) {}
+          return;
+        }
+      }
+    }
+    // touchstart 用 capture:先于键盘容器的 preventDefault,保证触屏也触发
+    document.addEventListener('touchstart', function (e) {
+      var t = e.changedTouches && e.changedTouches[0];
+      if (!t) return;
+      hitKey(t);
+    }, { capture: true, passive: true });
+    // 混合设备/桌面鼠标兜底
+    document.addEventListener('mousedown', hitKey, { capture: true, passive: true });
+  }
+
+  function initKbdRestyle() {
+    if (_state !== 'ready') return;
+    try {
+      watchKbdRebuild();
+      installKbdHaptics();
+      styleFcitxKbd();
+    } catch (e) {}
+  }
+
   // ---------- 状态通知 ----------
   function fireState() {
     for (var i = 0; i < _listeners.length; i++) {
@@ -199,6 +297,7 @@
         _state = 'ready';
         fireState();
         configure(_mode); // 应用当前模式(含键盘切换与只读)
+        initKbdRestyle(); // 键盘简化 + 触感(幂等)
       } catch (err) {
         console.error('[fcitx5] 加载失败,回退内置键盘:', err);
         _state = 'failed';
@@ -221,6 +320,7 @@
       } else {
         hideBuiltinIme();                  // 收起内置键盘
         sweepReadonly(true);
+        initKbdRestyle();                  // 键盘简化 + 触感
         // 若正聚焦受管输入框,blur+refocus 让 fcitx 立即接管
         try {
           var ae2 = document.activeElement;

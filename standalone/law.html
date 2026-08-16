@@ -139,6 +139,8 @@
 
     /* home dash cards (打卡 / 今日待办) */
     .home-dash{display:flex;gap:12px;max-width:420px;width:calc(100% - 32px);margin:0 auto 14px}
+    .home-dash-right{flex:1;height:148px;position:relative;overflow:hidden;border-radius:20px;touch-action:none}
+    .home-dash-right .dash-swipe-card{position:absolute;left:0;top:0;right:0;bottom:0;width:100%;height:148px;transition:transform .28s cubic-bezier(.2,.7,.3,1);will-change:transform}
     .dash-card{flex:1;background:rgba(255,255,255,0.42);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:20px;padding:14px 12px;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:0;cursor:pointer;box-shadow:0 4px 24px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.04);transition:all .15s;height:148px;overflow:hidden;box-sizing:border-box;user-select:none}
     body.dark .dash-card{background:rgba(40,40,40,0.8);box-shadow:0 4px 24px rgba(0,0,0,0.3)}
     .dash-card:active{transform:scale(.97)}
@@ -626,6 +628,19 @@
 .learn-week-dot.active{background:rgba(255,255,255,0.45)}
 .learn-week-dot.today{background:#fff;color:#4A90D9;box-shadow:0 2px 10px rgba(255,255,255,0.35)}
 .learn-cards{display:flex;flex-direction:column;gap:12px}
+.learn-clock{background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:14px 14px 12px;margin-bottom:14px}
+.lc-clock-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.lc-clock-title{font-size:13px;font-weight:700;color:var(--text)}
+.lc-clock-done{font-size:11px;color:var(--text2)}
+.lc-clock-main{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px}
+.lc-clock-mode{font-size:12px;color:var(--accent);background:var(--accent-light);border-radius:10px;padding:3px 10px}
+.lc-clock-time{font-size:42px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;letter-spacing:1px;line-height:1.1}
+.lc-clock-ctl{display:flex;gap:8px;justify-content:center;margin-bottom:8px}
+.lc-clock-btn{border:none;background:var(--accent-light);color:var(--accent);border-radius:12px;padding:9px 0;font-size:14px;cursor:pointer;font-family:inherit;flex:1;max-width:120px;transition:all .15s}
+.lc-clock-btn.primary{background:var(--accent);color:#fff}
+.lc-clock-btn:active{transform:scale(.96)}
+.lc-clock-set{display:flex;gap:16px;justify-content:center;font-size:12px;color:var(--text2)}
+.lc-clock-set input{width:48px;box-sizing:border-box;padding:4px 6px;border:1px solid var(--card-border);border-radius:8px;background:var(--input-bg);color:var(--text);text-align:center;font-size:12px;font-family:inherit}
 .learn-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:18px;padding:18px 16px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .15s}
 .learn-card:active{transform:scale(.98);background:var(--input-bg)}
 .lc-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text)}
@@ -770,6 +785,27 @@
     .video-empty svg{margin-bottom:12px;opacity:.3}
     .video-empty p{font-size:13px;line-height:1.6}
     .vid-form-input{width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid var(--card-border);border-radius:10px;background:var(--input-bg);color:var(--text);font-size:14px;outline:none;margin-bottom:10px;font-family:inherit}
+    .bili-login{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text2);margin-bottom:10px}
+    .bili-login-state{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .bili-login-btn{border:none;background:var(--accent);color:#fff;border-radius:20px;padding:5px 14px;font-size:12px;cursor:pointer;font-family:inherit;flex-shrink:0}
+    .bili-login-check{border:none;background:none;color:var(--accent);font-size:12px;cursor:pointer;font-family:inherit;flex-shrink:0;padding:0}
+    .bili-search{display:flex;gap:8px;margin-bottom:12px}
+    .bili-search-input{flex:1;min-width:0;box-sizing:border-box;padding:10px 12px;border:1px solid var(--card-border);border-radius:10px;background:var(--input-bg);color:var(--text);font-size:14px;outline:none;font-family:inherit;-webkit-appearance:none}
+    .bili-search-btn{border:none;background:var(--accent);color:#fff;border-radius:10px;padding:0 16px;font-size:14px;cursor:pointer;font-family:inherit;flex-shrink:0}
+    .bili-res{display:flex;gap:10px;align-items:center;background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:8px;margin-bottom:8px;cursor:pointer}
+    .bili-res-thumb{width:92px;height:56px;border-radius:8px;object-fit:cover;flex-shrink:0;background:#333}
+    .bili-res-thumb-ph{flex-shrink:0;background:linear-gradient(135deg,#fb7299,#e9a6f0)}
+    .bili-res-info{flex:1;min-width:0}
+    .bili-res-title{font-size:13px;font-weight:600;color:var(--text);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .bili-res-meta{font-size:11px;color:var(--text2);margin-top:4px}
+    .bili-res-add{border:none;background:var(--accent-light);color:var(--accent);border-radius:8px;width:28px;height:28px;font-size:16px;line-height:1;cursor:pointer;flex-shrink:0}
+    .bili-res-loading,.bili-res-empty{text-align:center;color:var(--text2);font-size:13px;padding:24px 12px;line-height:1.7}
+    .bili-pager{text-align:center;margin:10px 0 4px}
+    .bili-pager button{border:1px solid var(--card-border);background:var(--card-bg);color:var(--text);border-radius:8px;padding:6px 18px;font-size:13px;cursor:pointer;font-family:inherit}
+    .bili-player{margin-bottom:14px}
+    .bili-player iframe{width:100%;aspect-ratio:16/9;border:none;border-radius:10px;background:#000}
+    .bili-player-title{font-size:13px;color:var(--text);font-weight:600;margin:8px 4px 0;line-height:1.4}
+    .video-sec-hd{font-size:13px;font-weight:700;color:var(--text);margin:4px 2px 10px}
     .ss-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:16px;margin-bottom:14px}
     .ss-val{font-size:20px;font-weight:700;color:var(--accent);text-align:center;margin-top:6px}
     .ss-save{width:100%;padding:13px;border:none;border-radius:12px;background:linear-gradient(135deg,#667eea,#4A90D9);color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
@@ -946,7 +982,8 @@
         <div class="todo-preview" id="checkinPreview"></div>
       </div>
     </div>
-    <div class="dash-card" id="todoCard" onclick="openTodoModal()" title="今日待办">
+    <div class="home-dash-right" id="homeDashRight">
+    <div class="dash-card dash-swipe-card" id="todoCard" onclick="openTodoModal()" title="今日待办">
       <div class="dash-head">
         <div class="dash-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8.5 8.5h7"/><path d="M8.5 12.5h7"/><path d="M9 16.5l2 2 4-4"/></svg></div>
         <span class="dash-name">今日待办</span>
@@ -957,7 +994,7 @@
         <div class="todo-preview" id="todoPreview"></div>
       </div>
     </div>
-    <div class="dash-card" id="scheduleCard" onclick="showSchedule()" title="今日课表" style="display:none">
+    <div class="dash-card dash-swipe-card" id="scheduleCard" onclick="showSchedule()" title="今日课表">
       <div class="dash-head">
         <div class="dash-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
         <span class="dash-name">今日课表</span>
@@ -967,6 +1004,7 @@
         <div class="dash-main" id="scheduleStatus">暂无课表</div>
         <div class="todo-preview" id="schedulePreview"></div>
       </div>
+    </div>
     </div>
   </div>
   <div class="quote-card" id="quoteCard">
@@ -1442,7 +1480,21 @@
       </button>
     </div>
   </div>
-  <div class="video-body" id="videoList"></div>
+  <div class="video-body">
+    <div class="bili-login" id="biliLoginRow">
+      <span class="bili-login-state" id="biliLoginState">哔哩哔哩</span>
+      <span class="bili-login-btn" id="biliLoginBtn" onclick="biliDoLogin()">登录</span>
+      <span class="bili-login-check" id="biliCheckBtn" onclick="biliCheckLogin(true)">检测登录</span>
+    </div>
+    <div class="bili-search">
+      <input id="biliSearchInput" type="search" class="bili-search-input" placeholder="搜索哔哩哔哩视频，如：刑法 车润海" onkeydown="if(event.key==='Enter')biliSearch()" />
+      <button class="bili-search-btn" onclick="biliSearch()">搜索</button>
+    </div>
+    <div id="biliResults" style="display:none"></div>
+    <div id="biliPlayer" style="display:none"></div>
+    <div class="video-sec-hd" id="videoSecHd">我的视频</div>
+    <div id="videoList"></div>
+  </div>
 </div>
 
 <!-- ===== ABOUT VIEW ===== -->
@@ -1631,6 +1683,27 @@
         <span class="learn-goal-txt" id="learnGoalTxt">0/30 分钟</span>
       </div>
       <div class="learn-week" id="learnWeekBar"></div>
+    </div>
+
+    <!-- 学习时钟 -->
+    <div class="learn-clock">
+      <div class="lc-clock-hd">
+        <span class="lc-clock-title">⏱ 学习时钟</span>
+        <span class="lc-clock-done" id="clockDone">今日 0 番茄</span>
+      </div>
+      <div class="lc-clock-main">
+        <span class="lc-clock-mode" id="clockMode">专注</span>
+        <span class="lc-clock-time" id="clockTime">25:00</span>
+      </div>
+      <div class="lc-clock-ctl">
+        <button class="lc-clock-btn primary" id="clockToggle" onclick="clockToggle()">开始</button>
+        <button class="lc-clock-btn" onclick="clockReset()">重置</button>
+        <button class="lc-clock-btn" onclick="clockSkip()">跳过</button>
+      </div>
+      <div class="lc-clock-set">
+        <label>专注 <input id="clockFocusMin" type="number" min="1" max="120" value="25" onchange="clockSetDur()" /> 分</label>
+        <label>休息 <input id="clockRestMin" type="number" min="1" max="60" value="5" onchange="clockSetDur()" /> 分</label>
+      </div>
     </div>
 
     <!-- 功能卡片 -->
@@ -2338,9 +2411,9 @@ function renderHomeCard() {
   var schCard = document.getElementById("scheduleCard");
   var mode = options.homeWidget || "todo";
   var isSchedule = mode === "schedule";
-  // 两卡同排：打卡 + 待办(可切换为课表)
-  if (todoCard) todoCard.style.display = isSchedule ? "none" : "";
-  if (schCard) schCard.style.display = isSchedule ? "" : "none";
+  // 上下滑动切换：两卡堆叠，激活卡在可视区，另一卡在下方(隐藏溢出)
+  if (todoCard) { todoCard.style.transition = ""; todoCard.style.transform = isSchedule ? "translateY(-100%)" : "translateY(0)"; }
+  if (schCard) { schCard.style.transition = ""; schCard.style.transform = isSchedule ? "translateY(0)" : "translateY(100%)"; }
   renderScheduleCard(); // 课表内容始终刷新，切到时即为最新
 }
 function toggleHomeWidget() {
@@ -2354,6 +2427,79 @@ function renderHomeCards() {
   renderCheckin();
   renderTodoStatus();
   renderHomeCard();
+}
+
+// 首页「今日待办/今日课表」上下滑动切换(pointer 事件,兼容鼠标+触摸)
+function homeDashSwipeInit() {
+  var wrap = document.getElementById("homeDashRight");
+  if (!wrap || wrap.dataset.swipeInit) return;
+  wrap.dataset.swipeInit = "1";
+  var todoCard = document.getElementById("todoCard");
+  var schCard = document.getElementById("scheduleCard");
+  var startY = 0, curY = 0, effDy = 0, dragging = false, suppressClick = false;
+  var CARD_H = 148, TH = 50; // 卡高 / 触发阈值(px)
+
+  function resetTrans() {
+    if (todoCard) todoCard.style.transition = "";
+    if (schCard) schCard.style.transition = "";
+  }
+  function liveTransform(dy) {
+    // 拖拽中关闭过渡,实时跟随;dx 仅在有效方向上有阻力延伸
+    if (todoCard) todoCard.style.transition = "none";
+    if (schCard) schCard.style.transition = "none";
+    var isSched = (options.homeWidget || "todo") === "schedule";
+    var t0, t1;
+    if (isSched) { t0 = -CARD_H + dy; t1 = dy; }
+    else { t0 = dy; t1 = CARD_H + dy; }
+    if (todoCard) todoCard.style.transform = "translateY(" + t0 + "px)";
+    if (schCard) schCard.style.transform = "translateY(" + t1 + "px)";
+  }
+  function clampDrag(dy) {
+    var isSched = (options.homeWidget || "todo") === "schedule";
+    var min = isSched ? 0 : -CARD_H;
+    var max = isSched ? CARD_H : 0;
+    if (dy < min) dy = min + (dy - min) * 0.3; // 反向阻力
+    if (dy > max) dy = max + (dy - max) * 0.3;
+    return dy;
+  }
+  wrap.addEventListener("pointerdown", function(e) {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    dragging = true;
+    startY = curY = e.clientY;
+    try { wrap.setPointerCapture(e.pointerId); } catch(err) {}
+  }, { passive: true });
+  wrap.addEventListener("pointermove", function(e) {
+    if (!dragging) return;
+    curY = e.clientY;
+    effDy = clampDrag(curY - startY); // 记录实际可视位移(反向有阻力)
+    liveTransform(effDy);
+  }, { passive: true });
+  wrap.addEventListener("pointerup", function(e) {
+    if (!dragging) return;
+    dragging = false;
+    // 用可视位移判定:反向滑动(如 todo 激活时下划)仅产生小位移 → 回弹不切换
+    if (Math.abs(effDy) >= TH) {
+      suppressClick = true; // 拖动后吞掉卡片自身的 onclick
+      toggleHomeWidget();
+      setTimeout(function() { suppressClick = false; }, 400);
+    } else {
+      resetTrans();
+      renderHomeCard(); // 回弹
+    }
+  }, { passive: true });
+  wrap.addEventListener("pointercancel", function() {
+    dragging = false;
+    resetTrans();
+    renderHomeCard();
+  }, { passive: true });
+  // 捕获阶段拦截:拖动后的 click 不触发 openTodoModal / showSchedule
+  wrap.addEventListener("click", function(e) {
+    if (suppressClick) {
+      suppressClick = false;
+      e.stopPropagation();
+      e.preventDefault();
+    }
+  }, true);
 }
 
 function openTodoModal() {
@@ -2735,6 +2881,7 @@ function handleRestoreFile(input) {
 // 【临时】登录界面已暂时跳过（代码全部保留，恢复时把下面 initApp 换回旧逻辑即可）。
 // 不登录也能进主页，云端备份以 guest 身份运行，不会影响原有账号数据。
 function initApp() {
+  clockStartLoop(); // 学习时钟秒级心跳(跨页面/刷新续算)
   var acc = loadAccount();
   if (acc && acc.username) {
     currentUser = acc.username; // 有账号就用原账号
@@ -2749,6 +2896,7 @@ function initApp() {
     home.classList.add("show");
     applyHomeBg();
     renderHomeCards();
+    homeDashSwipeInit(); // 今日待办/课表卡片上下滑动切换
     renderHomeAvatar();
     updateProfileUI();
     initWelcome();
@@ -2867,11 +3015,12 @@ try { applyBubbleStyle(); } catch(e) {}
 // ============================================================
 // AUTO CHANGELOG — 自动更新日志系统
 // ============================================================
-var APP_VERSION = "v3.2.0";
+var APP_VERSION = "v3.3.0";
 var APP_VERSION_DATE = "2026.08.16";
 var CHANGELOG_KEY = "seawhy-lex-changelog";
 
 var DEFAULT_CHANGELOG = [
+  { ver: "v3.3.0", date: "2026.08.16", notes: "新增哔哩哔哩登录与视频搜索播放、学习时钟(番茄钟)、首页待办/课表上下滑动切换、输入法升级(iOS式触感、字母键简洁化)" },
   { ver: "v3.2.0", date: "2026.08.16", notes: "课程表升级：课表外观高度自定义（背景/文字/边框/字体/贴纸/深色模式）、多学期管理与节次时间自定义、JSON/分享码导入导出与数据备份" },
   { ver: "v3.1.0", date: "2026.08.09", notes: "新增课程表，支持自定义创建大学课程表" },
   { ver: "v3.0.0", date: "2026.08.08", notes: "新增等级与积分系统，支持完成任务赚积分、积分升级换好礼；VIP权益正式上线；主页欢迎语优化升级" },
@@ -4283,6 +4432,8 @@ function showVideoCenter() {
   hideAllViews();
   document.getElementById("videoView").style.display = "";
   document.getElementById("videoView").classList.add("show");
+  renderBiliLogin();
+  biliCheckLogin(false);
   renderVideos();
 }
 function renderVideos() {
@@ -4351,6 +4502,236 @@ function addVideo() {
   if (ov) ov.remove();
   renderVideos();
   showToast("视频已添加");
+}
+
+// ===== 哔哩哔哩 登录 / 搜索 / 播放 =====
+var BILI_KEY = "seawhy-lex-bili";
+var BILI_WBI_CACHE = null, BILI_WBI_AT = 0, BILI_LAST_CHECK = 0, BILI_CB_ID = 1;
+window._biliResList = [];
+
+// —— MD5(Paul Johnston 紧凑实现),WBI 签名需要 ——
+function md5(s) {
+  function add32(a, b) { return (a + b) & 0xFFFFFFFF; }
+  function md5cycle(x, k) {
+    var a = x[0], b = x[1], c = x[2], d = x[3];
+    a = ff(a,b,c,d,k[0],7,-680876936); d = ff(d,a,b,c,k[1],12,-389564586); c = ff(c,d,a,b,k[2],17,606105819);
+    b = ff(b,c,d,a,k[3],22,-1044525330); a = ff(a,b,c,d,k[4],7,-176418897); d = ff(d,a,b,c,k[5],12,1200080426);
+    c = ff(c,d,a,b,k[6],17,-1473231341); b = ff(b,c,d,a,k[7],22,-45705983); a = ff(a,b,c,d,k[8],7,1770035416);
+    d = ff(d,a,b,c,k[9],12,-1958414417); c = ff(c,d,a,b,k[10],17,-42063); b = ff(b,c,d,a,k[11],22,-1990404162);
+    a = ff(a,b,c,d,k[12],7,1804603682); d = ff(d,a,b,c,k[13],12,-40341101); c = ff(c,d,a,b,k[14],17,-1502002290);
+    b = ff(b,c,d,a,k[15],22,1236535329); a = gg(a,b,c,d,k[1],5,-165796510); d = gg(d,a,b,c,k[6],9,-1069501632);
+    c = gg(c,d,a,b,k[11],14,643717713); b = gg(b,c,d,a,k[0],20,-373897302); a = gg(a,b,c,d,k[5],5,-701558691);
+    d = gg(d,a,b,c,k[10],9,38016083); c = gg(c,d,a,b,k[15],14,-660478335); b = gg(b,c,d,a,k[4],20,-405537848);
+    a = gg(a,b,c,d,k[9],5,568446438); d = gg(d,a,b,c,k[14],9,-1019803690); c = gg(c,d,a,b,k[3],14,-187363961);
+    b = gg(b,c,d,a,k[8],20,1163531501); a = gg(a,b,c,d,k[13],5,-1444681467); d = gg(d,a,b,c,k[2],9,-51403784);
+    c = gg(c,d,a,b,k[7],14,1735328473); b = gg(b,c,d,a,k[12],20,-1926607734); a = hh(a,b,c,d,k[5],4,-378558);
+    d = hh(d,a,b,c,k[8],11,-2022574463); c = hh(c,d,a,b,k[11],16,1839030562); b = hh(b,c,d,a,k[14],23,-35309556);
+    a = hh(a,b,c,d,k[1],4,-1530992060); d = hh(d,a,b,c,k[4],11,1272893353); c = hh(c,d,a,b,k[7],16,-155497632);
+    b = hh(b,c,d,a,k[10],23,-1094730640); a = hh(a,b,c,d,k[13],4,681279174); d = hh(d,a,b,c,k[0],11,-358537222);
+    c = hh(c,d,a,b,k[3],16,-722521979); b = hh(b,c,d,a,k[6],23,76029189); a = hh(a,b,c,d,k[9],4,-640364487);
+    d = hh(d,a,b,c,k[12],11,-421815835); c = hh(c,d,a,b,k[15],16,530742520); b = hh(b,c,d,a,k[2],23,-995338651);
+    a = ii(a,b,c,d,k[0],6,-198630844); d = ii(d,a,b,c,k[7],10,1126891415); c = ii(c,d,a,b,k[14],15,-1416354905);
+    b = ii(b,c,d,a,k[5],21,-57434055); a = ii(a,b,c,d,k[12],6,1700485571); d = ii(d,a,b,c,k[3],10,-1894986606);
+    c = ii(c,d,a,b,k[10],15,-1051523); b = ii(b,c,d,a,k[1],21,-2054922799); a = ii(a,b,c,d,k[8],6,1873313359);
+    d = ii(d,a,b,c,k[15],10,-30611744); c = ii(c,d,a,b,k[6],15,-1560198380); b = ii(b,c,d,a,k[13],21,1309151649);
+    a = ii(a,b,c,d,k[4],6,-145523070); d = ii(d,a,b,c,k[11],10,-1120210379); c = ii(c,d,a,b,k[2],15,718787259);
+    b = ii(b,c,d,a,k[9],21,-343485551);
+    x[0] = add32(a,x[0]); x[1] = add32(b,x[1]); x[2] = add32(c,x[2]); x[3] = add32(d,x[3]);
+  }
+  function cmn(q,a,b,x,s,t) { a = add32(add32(a,q),add32(x,t)); return add32((a << s) | (a >>> (32 - s)), b); }
+  function ff(a,b,c,d,x,s,t) { return cmn((b & c) | ((~b) & d), a,b,x,s,t); }
+  function gg(a,b,c,d,x,s,t) { return cmn((b & d) | (c & (~d)), a,b,x,s,t); }
+  function hh(a,b,c,d,x,s,t) { return cmn(b ^ c ^ d, a,b,x,s,t); }
+  function ii(a,b,c,d,x,s,t) { return cmn(c ^ (b | (~d)), a,b,x,s,t); }
+  function md51(s) {
+    var n = s.length, state = [1732584193, -271733879, -1732584194, 271733878], i;
+    for (i = 64; i <= s.length; i += 64) md5cycle(state, md5blk(s.substring(i - 64, i)));
+    s = s.substring(i - 64);
+    var tail = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+    for (i = 0; i < s.length; i++) tail[i >> 2] |= s.charCodeAt(i) << ((i % 4) << 3);
+    tail[i >> 2] |= 0x80 << ((i % 4) << 3);
+    if (i > 55) { md5cycle(state, tail); tail = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]; }
+    tail[14] = n * 8;
+    md5cycle(state, tail);
+    return state;
+  }
+  function md5blk(s) {
+    var md5blks = [], i;
+    for (i = 0; i < 64; i += 4) md5blks[i >> 2] = s.charCodeAt(i) + (s.charCodeAt(i + 1) << 8) + (s.charCodeAt(i + 2) << 16) + (s.charCodeAt(i + 3) << 24);
+    return md5blks;
+  }
+  function hexMD5(s) {
+    var hex_chr = "0123456789abcdef", state = md51(s), str = "", j;
+    for (j = 0; j < 4; j++) str += hex_chr.charAt((state[j] >> (j * 8 + 4)) & 0x0F) + hex_chr.charAt((state[j] >> (j * 8)) & 0x0F);
+    return str;
+  }
+  return hexMD5(s);
+}
+
+// —— WBI 编码:不编码 ' ! * ( ) 五个字符 ——
+function encWbi(s) {
+  var filter = ["'", "!", "*", "(", ")"];
+  var res = "";
+  for (var i = 0; i < s.length; i++) {
+    var c = s[i];
+    if (filter.indexOf(c) >= 0) { res += c; continue; }
+    res += "%" + c.charCodeAt(0).toString(16).toUpperCase();
+  }
+  return res;
+}
+
+// —— 通用 JSONP(URL 已含 jsonp=cbName)——
+function biliJsonp(fullUrl, cbName, onData, onErr) {
+  var scr = document.createElement("script");
+  var done = false;
+  window[cbName] = function(data) { cleanup(); if (onData) onData(data); };
+  function cleanup() {
+    done = true;
+    try { delete window[cbName]; } catch(e) {}
+    if (scr.parentNode) scr.parentNode.removeChild(scr);
+  }
+  scr.src = fullUrl;
+  scr.onerror = function() { cleanup(); if (onErr) onErr(); };
+  setTimeout(function() { if (!done) { cleanup(); if (onErr) onErr(); } }, 20000);
+  document.head.appendChild(scr);
+}
+
+// —— 取 WBI mixin key(nav 响应,缓存 6h)——
+function biliWbiKeys(cb) {
+  var now = Date.now();
+  if (BILI_WBI_CACHE && now - BILI_WBI_AT < 6 * 3600 * 1000) { cb(BILI_WBI_CACHE); return; }
+  var cbName = "lexbili_k" + (BILI_CB_ID++);
+  biliJsonp("https://api.bilibili.com/x/web-interface/nav?jsonp=" + cbName, cbName, function(d) {
+    if (!d || d.code !== 0 || !d.data || !d.data.wbi_img) { cb(null); return; }
+    var img = (d.data.wbi_img.img_url || "").split("/").pop().split(".")[0];
+    var sub = (d.data.wbi_img.sub_url || "").split("/").pop().split(".")[0];
+    if (!img || !sub) { cb(null); return; }
+    var MIXIN = [46,47,18,44,33,40,27,7];
+    var origin = (img + sub).split("");
+    var key = "";
+    for (var i = 0; i < origin.length; i++) if (MIXIN.indexOf(i) < 0) key += origin[i];
+    key = key.slice(0, 32);
+    BILI_WBI_CACHE = key; BILI_WBI_AT = now;
+    cb(key);
+  }, function() { cb(null); });
+}
+
+// —— 搜索 ——
+function biliSearch(page) {
+  page = page || 1;
+  var kw = (document.getElementById("biliSearchInput").value || "").trim();
+  if (!kw) { showToast("请输入搜索关键词"); return; }
+  var box = document.getElementById("biliResults");
+  if (!box) return;
+  box.style.display = "block";
+  box.innerHTML = '<div class="bili-res-loading">搜索「' + escHtml(kw) + '」…</div>';
+  biliWbiKeys(function(key) {
+    if (!key) { box.innerHTML = '<div class="bili-res-empty">获取搜索密钥失败，请检查网络后重试</div>'; return; }
+    var cbName = "lexbili_s" + (BILI_CB_ID++);
+    var params = { search_type: "video", keyword: kw, page: page, page_size: 20, wts: Math.round(Date.now() / 1000) };
+    var keys = Object.keys(params).sort();
+    var q = "";
+    for (var i = 0; i < keys.length; i++) q += (i ? "&" : "") + encWbi(keys[i]) + "=" + encWbi(String(params[keys[i]]));
+    var w_rid = md5(q + key);
+    var url = "https://api.bilibili.com/x/web-interface/search/type?" + q + "&w_rid=" + w_rid + "&jsonp=" + cbName;
+    biliJsonp(url, cbName, function(d) {
+      if (!d || d.code !== 0 || !d.data || !d.data.result || !d.data.result.length) {
+        box.innerHTML = '<div class="bili-res-empty">未找到相关视频，或搜索被风控拦截<br><span style="font-size:12px;opacity:.7">请先在哔哩哔哩登录 / 打开一次 bilibili.com 后重试</span></div>';
+        return;
+      }
+      renderBiliResults(d.data.result, page);
+    }, function() {
+      box.innerHTML = '<div class="bili-res-empty">搜索失败（网络或风控），请稍后重试</div>';
+    });
+  });
+}
+
+function stripBiliTags(s) { return String(s || "").replace(/<[^>]+>/g, ""); }
+function fmtBiliPlay(n) {
+  n = Number(n) || 0;
+  if (n >= 100000000) return (n / 100000000).toFixed(1).replace(/\.0$/, "") + "亿";
+  if (n >= 10000) return (n / 10000).toFixed(1).replace(/\.0$/, "") + "万";
+  return String(n);
+}
+function renderBiliResults(list, page) {
+  window._biliResList = list;
+  var box = document.getElementById("biliResults");
+  if (!box) return;
+  var h = '<div class="video-sec-hd">搜索结果</div>';
+  for (var i = 0; i < list.length; i++) {
+    var v = list[i];
+    if (!v || !v.bvid) continue;
+    var meta = (v.author || "未知UP主") + " · " + fmtBiliPlay(v.play) + " 播放";
+    if (v.duration) meta += " · " + escHtml(v.duration);
+    h += '<div class="bili-res" onclick="playBiliResult(' + i + ')">' +
+      (v.pic ? '<img class="bili-res-thumb" loading="lazy" src="' + escAttr(v.pic) + '" alt="" />' : '<div class="bili-res-thumb bili-res-thumb-ph"></div>') +
+      '<div class="bili-res-info">' +
+        '<div class="bili-res-title">' + escHtml(stripBiliTags(v.title)) + '</div>' +
+        '<div class="bili-res-meta">' + meta + '</div>' +
+      '</div>' +
+      '<button class="bili-res-add" onclick="event.stopPropagation();addToMyVideos(' + i + ')" title="添加到我的视频">＋</button>' +
+    '</div>';
+  }
+  h += '<div class="bili-pager"><button onclick="biliSearch(' + (page + 1) + ')">下一页</button></div>';
+  box.innerHTML = h;
+  box.style.display = "block";
+}
+function playBiliResult(i) {
+  var v = window._biliResList[i];
+  if (!v || !v.bvid) return;
+  var box = document.getElementById("biliPlayer");
+  if (!box) return;
+  var src = "https://player.bilibili.com/player.html?bvid=" + encodeURIComponent(v.bvid) + "&high_quality=1&danmaku=0&autoplay=1";
+  box.style.display = "block";
+  box.innerHTML = '<div class="bili-player"><iframe src="' + src + '" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe></div>' +
+    '<div class="bili-player-title">' + escHtml(stripBiliTags(v.title)) + '</div>' +
+    '<div class="bili-res-meta">清晰度 / 倍速请在播放器右下角「设置」中调整</div>';
+  box.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+function addToMyVideos(i) {
+  var v = window._biliResList[i];
+  if (!v || !v.bvid) return;
+  var vids = loadVideos();
+  for (var j = 0; j < vids.length; j++) if (vids[j].bvid === v.bvid) { showToast("已在你的视频列表中"); return; }
+  vids.push({ title: stripBiliTags(v.title) || "B站视频", bvid: v.bvid });
+  saveVideos(vids);
+  renderVideos();
+  showToast("已添加到我的视频");
+}
+
+// —— 登录(新窗口)——
+function biliDoLogin() {
+  window.open("https://passport.bilibili.com/login", "_blank");
+  showToast("请在打开的窗口完成哔哩哔哩登录，返回后点「检测登录」");
+}
+function biliCheckLogin(force) {
+  if (!force && Date.now() - BILI_LAST_CHECK < 30000) return;
+  BILI_LAST_CHECK = Date.now();
+  var cbName = "lexbili_n" + (BILI_CB_ID++);
+  biliJsonp("https://api.bilibili.com/x/web-interface/nav?jsonp=" + cbName, cbName, function(d) {
+    if (d && d.code === 0 && d.data && d.data.isLogin) {
+      var snap = { uname: d.data.uname || "", mid: d.data.mid || 0, checkedAt: Date.now() };
+      try { localStorage.setItem(BILI_KEY, JSON.stringify(snap)); } catch(e) {}
+      renderBiliLogin();
+      showToast("已登录哔哩哔哩：" + snap.uname);
+    } else {
+      renderBiliLogin();
+    }
+  }, function() { renderBiliLogin(); });
+}
+function renderBiliLogin() {
+  var st = document.getElementById("biliLoginState");
+  var btn = document.getElementById("biliLoginBtn");
+  if (!st) return;
+  var snap = null;
+  try { snap = JSON.parse(localStorage.getItem(BILI_KEY) || "null"); } catch(e) {}
+  if (snap && snap.uname) {
+    st.textContent = "已登录：" + snap.uname;
+    if (btn) btn.style.display = "none";
+  } else {
+    st.textContent = "哔哩哔哩";
+    if (btn) btn.style.display = "";
+  }
 }
 
 function getScheduleTimes(d) {
@@ -5806,6 +6187,111 @@ function getTodayStr() {
   return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
 }
 
+// ===== 学习时钟(番茄钟) =====
+var CLOCK_KEY = "seawhy-lex-clock";
+var _clockTimer = null;
+function loadClock() {
+  var def = { focusMin: 25, restMin: 5, mode: "focus", running: false, endAt: 0, doneToday: 0 };
+  try {
+    var c = JSON.parse(localStorage.getItem(CLOCK_KEY) || "null");
+    if (c && typeof c === "object") {
+      for (var k in def) if (typeof c[k] === "undefined") c[k] = def[k];
+      return c;
+    }
+  } catch(e) {}
+  return def;
+}
+function saveClock(c) { try { localStorage.setItem(CLOCK_KEY, JSON.stringify(c)); } catch(e) {} }
+function clockLeftSec(c) {
+  if (c.running && c.endAt) return Math.max(0, Math.round((c.endAt - Date.now()) / 1000));
+  return (c.mode === "focus" ? c.focusMin : c.restMin) * 60;
+}
+function clockRender() {
+  var c = loadClock();
+  var el = document.getElementById("clockTime");
+  if (el) {
+    var s = clockLeftSec(c);
+    el.textContent = (s < 600 ? "0" : "") + Math.floor(s / 60) + ":" + (s % 60 < 10 ? "0" : "") + (s % 60);
+  }
+  var mode = document.getElementById("clockMode");
+  if (mode) mode.textContent = c.mode === "focus" ? "专注" : "休息";
+  var tog = document.getElementById("clockToggle");
+  if (tog) tog.textContent = c.running ? "暂停" : "开始";
+  var done = document.getElementById("clockDone");
+  if (done) done.textContent = "今日 " + (c.doneToday || 0) + " 番茄";
+  var fm = document.getElementById("clockFocusMin"), rm = document.getElementById("clockRestMin");
+  if (fm) fm.value = c.focusMin;
+  if (rm) rm.value = c.restMin;
+}
+function clockToggle() {
+  var c = loadClock();
+  if (c.running) {
+    c.running = false; c.endAt = 0;
+    saveClock(c);
+    clockRender();
+    return;
+  }
+  c.running = true;
+  c.endAt = Date.now() + clockLeftSec(c) * 1000;
+  saveClock(c);
+  clockRender();
+}
+function clockReset() {
+  var c = loadClock();
+  c.running = false; c.endAt = 0;
+  saveClock(c);
+  clockRender();
+}
+function clockSkip() {
+  var c = loadClock();
+  c.running = false; c.endAt = 0;
+  clockComplete(c, true);
+}
+function clockSetDur() {
+  var c = loadClock();
+  var fm = parseInt(document.getElementById("clockFocusMin").value, 10);
+  var rm = parseInt(document.getElementById("clockRestMin").value, 10);
+  if (fm >= 1 && fm <= 120) c.focusMin = fm;
+  if (rm >= 1 && rm <= 60) c.restMin = rm;
+  saveClock(c);
+  clockRender();
+}
+function clockComplete(c, skip) {
+  var msg;
+  if (c.mode === "focus") {
+    c.doneToday = (c.doneToday || 0) + 1;
+    msg = skip ? "已跳过专注" : "专注完成！休息一下";
+  } else {
+    msg = skip ? "已跳过休息" : "休息结束，开始专注吧";
+  }
+  c.mode = c.mode === "focus" ? "rest" : "focus";
+  c.running = false; c.endAt = 0;
+  saveClock(c);
+  if (!skip) clockNotify();
+  clockRender();
+  showToast(msg);
+}
+function clockNotify() {
+  try { if (navigator.vibrate) navigator.vibrate([200, 100, 200]); } catch(e) {}
+  try {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    var o = ctx.createOscillator(), g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.frequency.value = 880; g.gain.value = 0.2;
+    o.start();
+    setTimeout(function() { try { o.stop(); ctx.close(); } catch(e) {} }, 500);
+  } catch(e) {}
+}
+function clockTick() {
+  var c = loadClock();
+  if (c.running && c.endAt && Date.now() >= c.endAt) clockComplete(c, false);
+  else clockRender();
+}
+function clockStartLoop() {
+  if (_clockTimer) return;
+  _clockTimer = setInterval(clockTick, 1000);
+}
+
 function loadLearnStats() {
   try {
     var s = JSON.parse(localStorage.getItem(LEARN_STATS_KEY) || "{}");
@@ -5915,6 +6401,7 @@ function showLearningCenter() {
 }
 
 function updateLearnDashboard() {
+  clockRender(); // 学习时钟同步显示
   var stats = loadLearnStats();
   var today = getTodayStr();
   var todayData = stats.days[today] || {};
