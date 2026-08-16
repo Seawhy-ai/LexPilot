@@ -994,6 +994,11 @@
           <button class="bubble-swatch s-aurora" title="极光紫" onclick="selectBubbleStyle('aurora')"></button>
           <button class="bubble-swatch s-ocean" title="深海蓝" onclick="selectBubbleStyle('ocean')"></button>
         </div>
+        <div class="s-label" style="margin-top:8px">输入法</div>
+        <div class="s-row">
+          <button class="s-btn" id="sImeFcitx" onclick="setImeEngine('fcitx',this)">fcitx5 拼音</button>
+          <button class="s-btn" id="sImeBuiltin" onclick="setImeEngine('builtin',this)">内置键盘</button>
+        </div>
         <div class="s-row" style="margin-top:8px">
           <button class="s-btn danger" onclick="clearHistory()">清空对话</button>
         </div>
@@ -1736,6 +1741,7 @@
 <script src="case_data.js?v=1.2.6"></script>
 <script src="quiz_extra.js?v=1.0.0"></script>
 <script src="ime_data.js?v=1.0.0"></script>
+<script src="fcitx5-bridge.js?v=1.0.0"></script>
 <script>
 // ============================================================
 // TYPWRITER + LEGAL QUOTES
@@ -2706,7 +2712,7 @@ try { var s = JSON.parse(localStorage.getItem("seawhy-lex-config") || "{}"); SET
 var userTheme = "light";
 try { userTheme = JSON.parse(localStorage.getItem("seawhy-lex-theme") || '"light"'); } catch(e) {}
 
-var options = { deep: true, multi: false, practical: false, compare: false, quoteAuto: true, showNickname: false, homeBg: "default", bubbleStyle: "classic", homeWidget: "todo" };
+var options = { deep: true, multi: false, practical: false, compare: false, quoteAuto: true, showNickname: false, homeBg: "default", bubbleStyle: "classic", homeWidget: "todo", imeEngine: "fcitx" };
 try { var o = JSON.parse(localStorage.getItem("seawhy-lex-opts") || "{}"); Object.keys(options).forEach(function(k){ if(k in o) options[k] = o[k]; }); } catch(e) {}
 // 立即应用已保存的背景与气泡样式（不等 DOMContentLoaded，避免外部脚本加载慢导致重开后恢复默认）
 try { applyHomeBg(); } catch(e) {}
@@ -4632,6 +4638,14 @@ function updateOptUI() {
       if (sEl) sEl.textContent = options[k] ? "开启" : "关闭";
     }
   });
+  // 输入法引擎(非布尔开关,单独处理)
+  var ime = options.imeEngine === "builtin" ? "builtin" : "fcitx";
+  var imeF = document.getElementById("sImeFcitx"), imeB = document.getElementById("sImeBuiltin");
+  if (imeF) {
+    imeF.classList.toggle("active", ime === "fcitx");
+    imeF.disabled = !!(window.FCITX5 && window.FCITX5.state === "failed");
+  }
+  if (imeB) imeB.classList.toggle("active", ime === "builtin");
 }
 
 function clearHistory() {
@@ -4977,6 +4991,8 @@ function imeAct(key) {
   document.addEventListener("focusin", function (e) {
     var el = e.target;
     if (!el || !el.tagName) return;
+    // fcitx5 已接管(就绪且处于 fcitx 模式):内置键盘不弹出,交由 fcitx 引擎/键盘处理
+    if (window.FCITX5 && window.FCITX5.isActive()) return;
     var tag = el.tagName;
     var isText = tag === "TEXTAREA" || (tag === "INPUT" && (el.type === "text" || el.type === "search"));
     if (!isText) return;
@@ -4997,6 +5013,17 @@ function imeAct(key) {
 })();
 
 // ============================================================
+// 输入法引擎切换(fcitx5 拼音 / 内置键盘)
+// ============================================================
+function setImeEngine(engine, btn) {
+  options.imeEngine = engine === "builtin" ? "builtin" : "fcitx";
+  try { localStorage.setItem("seawhy-lex-opts", JSON.stringify(options)); } catch(e) {}
+  if (window.FCITX5) window.FCITX5.configure(options.imeEngine);
+  updateOptUI();
+  showToast(options.imeEngine === "fcitx" ? "✓ fcitx5 拼音引擎" : "✓ 内置键盘");
+}
+
+// ============================================================
 // INIT
 // ============================================================
 (function init() {
@@ -5004,6 +5031,11 @@ function imeAct(key) {
   bindEvents();
   renderAllMessages();
   renderDatabase();
+  // fcitx5 引擎:按保存的模式接管/保持内置;状态变化时刷新设置 UI(如加载失败禁用 fcitx5 按钮)
+  if (window.FCITX5) {
+    window.FCITX5.configure(options.imeEngine || "fcitx");
+    window.FCITX5.onState(function () { try { updateOptUI(); } catch(e) {} });
+  }
   // 内置键盘：静态输入框预置只读（真正输入交给 IME，避免 iOS 原生键盘整页滚动）
   (function imeInitStatic() {
     var ids = ["userInput","noteTitle","noteContent","noteTags","noteDetailTitleInput","noteDetailContentInput","noteDetailTagsInput","dbSearch","lrSearch","todoInput"];

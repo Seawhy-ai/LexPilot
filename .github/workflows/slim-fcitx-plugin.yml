@@ -1,0 +1,41 @@
+name: Slim fcitx5 Chinese-addons Plugin
+
+# 手动触发:在 Linux CI 上下载官方 chinese-addons.zip,裁成拼音专用,
+# 提交 standalone/fcitx5/chinese-addons-slim.zip 回仓库。
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  slim:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download official chinese-addons.zip
+        run: |
+          curl -fL --retry 3 -o chinese-addons.zip \
+            https://github.com/fcitx-contrib/fcitx5-plugins/releases/download/js/chinese-addons.zip
+          ls -la chinese-addons.zip
+
+      - name: Run slim script
+        run: |
+          python3 scripts/slim_fcitx_plugin.py chinese-addons.zip chinese-addons-slim.zip
+          ls -la chinese-addons-slim.zip
+
+      - name: Commit slim plugin
+        run: |
+          mkdir -p standalone/fcitx5
+          cp chinese-addons-slim.zip standalone/fcitx5/chinese-addons-slim.zip
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add standalone/fcitx5/chinese-addons-slim.zip
+          if git diff --cached --quiet; then
+            echo "插件未变化,无需提交"
+          else
+            git commit -m "build: 更新 fcitx5 拼音专用插件(chinese-addons-slim.zip)"
+            git push
+          fi
