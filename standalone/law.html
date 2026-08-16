@@ -3054,11 +3054,12 @@ try { applyBubbleStyle(); } catch(e) {}
 // ============================================================
 // AUTO CHANGELOG — 自动更新日志系统
 // ============================================================
-var APP_VERSION = "v3.4.0";
+var APP_VERSION = "v3.4.1";
 var APP_VERSION_DATE = "2026.08.16";
 var CHANGELOG_KEY = "seawhy-lex-changelog";
 
 var DEFAULT_CHANGELOG = [
+  { ver: "v3.4.1", date: "2026.08.16", notes: "课程表支持教务系统一键导入（hash 桥接）：在教务系统课表页运行 tools/swun-import.js 后可一键跳转并预填导入弹层" },
   { ver: "v3.4.0", date: "2026.08.16", notes: "课程表升级：卡片长度/透明度/圆角移至外观设置（改为半屏弹层）、一次课默认两节、可设一天节数与显示周六日/非本周(幽灵课)/授课教师、修复非白背景下白色格子" },
   { ver: "v3.3.0", date: "2026.08.16", notes: "新增哔哩哔哩登录与视频搜索播放、学习时钟(番茄钟)、首页待办/课表上下滑动切换、输入法升级(iOS式触感、字母键简洁化)" },
   { ver: "v3.2.0", date: "2026.08.16", notes: "课程表升级：课表外观高度自定义（背景/文字/边框/字体/贴纸/深色模式）、多学期管理与节次时间自定义、JSON/分享码导入导出与数据备份" },
@@ -6288,6 +6289,28 @@ function setImeEngine(engine, btn) {
     banner.innerHTML = '<span>📲 安装 SeaWhy Lex 到桌面</span><span style="display:flex;gap:6px;flex-shrink:0"><button onclick="installApp()" style="background:#fff;color:var(--accent);border:none;padding:6px 14px;border-radius:14px;font-weight:700;cursor:pointer;font-size:12px;font-family:inherit">安装</button><button onclick="this.parentElement.parentElement.remove()" style="background:transparent;border:none;color:#fff;cursor:pointer;font-size:16px;padding:2px 6px;font-family:inherit">×</button></span>';
     document.body.prepend(banner);
   });
+})();
+
+// ===== 教务系统一键导入（hash 桥接）：tools/swun-import.js 提取后以 #kbcx=<encodeURIComponent(文本)> 跳转，这里预填导入弹层 =====
+(function lexHashImport() {
+  var m = location.hash.match(/[#&]kbcx=([\s\S]*)/);
+  if (!m) return;
+  var text;
+  try { text = decodeURIComponent(m[1]); } catch (e) { return; }
+  if (history.replaceState) {
+    try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
+  }
+  setTimeout(function() {
+    try {
+      openScheduleImport();
+      var ta = document.getElementById("impText");
+      if (ta) {
+        ta.value = text;
+        var res = document.getElementById("impResult");
+        if (res) res.textContent = "✅ 已从教务系统载入课表数据，确认无误后点【追加导入】";
+      }
+    } catch (e) {}
+  }, 400);
 })();
 function installApp() {
   if (window._installPrompt) {

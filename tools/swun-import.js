@@ -8,6 +8,8 @@
 // ============================================================
 (function () {
   "use strict";
+  // LexPilot 部署地址(自行部署请改这里)
+  var LEX_URL = "https://seawhy-ai.github.io/LexPilot/standalone/law.html";
   function clean(s) { return String(s || "").replace(/\s+/g, " ").trim(); }
   function stripNBSP(s) { return String(s || "").replace(/ /g, "").trim(); }
 
@@ -189,6 +191,9 @@
       btns.appendChild(b);
     };
     mk("复制文本", function () { ta.select(); document.execCommand("copy"); alert("已复制"); }, "background:#111;color:#fff");
+    mk("📲 一键导入 LexPilot", function () {
+      window.open(LEX_URL + "#kbcx=" + encodeURIComponent(lines.join("\n")), "_blank");
+    }, "background:#2980b9;color:#fff");
     mk("下载 .txt", function () {
       var a = document.createElement("a");
       a.href = "data:text/plain;charset=utf-8," + encodeURIComponent(ta.value);
