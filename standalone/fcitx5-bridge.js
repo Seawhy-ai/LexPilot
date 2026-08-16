@@ -73,6 +73,7 @@
   // 键盘按层重建(shift/符号):.fcitx-keyboard.innerHTML 被清空重画 → 需 MutationObserver 重应用。
   var _kbdStyled = false;
   var _kbdObs = null;
+  var _symObs = null;
 
   function installKbdStyle() {
     if (_kbdStyled) return;
@@ -90,6 +91,13 @@
       '/* iOS 式按下反馈:缩放 + 加深(库已加 .fcitx-keyboard-pressed 类) */',
       '.fcitx-keyboard-key-container.fcitx-keyboard-pressed .fcitx-keyboard-key{transform:scale(.92)!important;filter:brightness(.88)}',
       '.fcitx-keyboard-key{transition:transform .05s ease,filter .05s ease,background-color .05s ease}',
+      '/* 符号面板:常用符号网格(替换库自带拼音声调/希腊字母) */',
+      '.fcitx-keyboard-symbol-panel{display:grid!important;grid-template-columns:repeat(5,1fr);gap:6px;padding:10px 12px;max-height:190px;overflow-y:auto}',
+      '.fcitx-keyboard-symbol-item{display:flex!important;align-items:center;justify-content:center;height:42px;border-radius:10px;background:rgba(127,127,127,.14);color:var(--text,#111);font-size:20px;cursor:pointer;user-select:none;-webkit-user-select:none}',
+      '.fcitx-keyboard-symbol-item:active{background:rgba(26,82,118,.25)}',
+      '.fcitx-keyboard-symbol-categories{display:flex!important;gap:6px;padding:8px 12px 0;flex-wrap:wrap}',
+      '.fcitx-keyboard-symbol-category{padding:6px 14px;border-radius:14px;font-size:13px;background:rgba(127,127,127,.16);color:var(--text,#111);cursor:pointer}',
+      '.fcitx-keyboard-symbol-category.fcitx-keyboard-pressed{background:#1a5276;color:#fff;font-weight:600}',
     ].join('\n');
     document.head.appendChild(s);
   }
@@ -122,12 +130,92 @@
     styleFcitxKbd();
   }
 
+  // ---------- 符号面板:常用符号(替换库自带拼音声调/希腊字母) ----------
+  var LEX_SYMBOL_CATS = [
+    { key: "常用", symbols: ["，","。","、","；","：","？","！","…","—","·","～","“","”","‘","’","（","）","《","》","【","】","〈","〉"] },
+    { key: "标点", symbols: [".",",",";",":","?","!","'","\"","-","_","/","\\","|","[","]","{","}","<",">","^","~","`"] },
+    { key: "数学", symbols: ["＋","－","×","÷","＝","≠","≈","±","≤","≥","√","∞","％","‰","∑","℃","§"] },
+    { key: "序号", symbols: ["①","②","③","④","⑤","⑥","⑦","⑧","⑨","⑩","⑪","⑫","⑬","⑭","⑮","⑯","⑰"] },
+    { key: "特殊", symbols: ["＃","＠","＆","＊","＄","￥","€","£","©","®","™","→","←","↑","↓","▲","▼","♥"] }
+  ];
+
+  function styleFcitxSymbols() {
+    if (!isActive()) return;
+    var root = document.getElementById('fcitx-virtual-keyboard');
+    if (!root) return;
+    var r = root.shadowRoot || root;
+    var sel = r.querySelector('.fcitx-keyboard-symbol-selector') || document.querySelector('.fcitx-keyboard-symbol-selector');
+    if (!sel) return;
+    var cats = sel.querySelector('.fcitx-keyboard-symbol-categories');
+    var panel = sel.querySelector('.fcitx-keyboard-symbol-panel');
+    if (!cats || !panel) return;
+    if (panel.querySelector('.lex-sym-item')) return; // 已重建,避免自触发循环
+    installKbdStyle();
+    cats.innerHTML = '';
+    panel.innerHTML = '';
+    function mkItem(sym) {
+      var it = document.createElement('div');
+      it.className = 'fcitx-keyboard-symbol-item lex-sym-item';
+      it.textContent = sym;
+      it.addEventListener('click', function () { lexFcitxCommit(sym); });
+      return it;
+    }
+    function fill(i) {
+      panel.innerHTML = '';
+      var cat = LEX_SYMBOL_CATS[i];
+      for (var j = 0; j < cat.symbols.length; j++) panel.appendChild(mkItem(cat.symbols[j]));
+      var cbs = cats.querySelectorAll('.fcitx-keyboard-symbol-category');
+      for (var k = 0; k < cbs.length; k++) cbs[k].classList.toggle('fcitx-keyboard-pressed', k === i);
+    }
+    LEX_SYMBOL_CATS.forEach(function (cat, i) {
+      var cb = document.createElement('div');
+      cb.className = 'fcitx-keyboard-symbol-category' + (i === 0 ? ' fcitx-keyboard-pressed' : '');
+      cb.textContent = cat.key;
+      cb.addEventListener('click', function () { fill(i); });
+      cats.appendChild(cb);
+    });
+    fill(0);
+  }
+
+  // 向 fcitx 提交符号:优先库的 commit(若暴露),否则仿 changeInput 直接写值
+  function lexFcitxCommit(sym) {
+    try { if (typeof window.fcitx.commit === 'function') { window.fcitx.commit(sym); return; } } catch (e) {}
+    var input = document.activeElement;
+    if (!input || (input.tagName !== 'TEXTAREA' && input.tagName !== 'INPUT')) return;
+    var start = input.selectionStart || 0;
+    var end = input.selectionEnd || 0;
+    input.value = input.value.slice(0, start) + sym + input.value.slice(end);
+    input.selectionStart = input.selectionEnd = start + sym.length;
+    try { input.dispatchEvent(new Event('change')); } catch (e) {}
+  }
+
+  function watchFcitxSymbols() {
+    if (_symObs) return;
+    var root = document.getElementById('fcitx-virtual-keyboard');
+    if (!root || !window.MutationObserver) return;
+    var r = root.shadowRoot || root;
+    var timer = null;
+    _symObs = new MutationObserver(function () {
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(styleFcitxSymbols, 0);
+    });
+    _symObs.observe(r, { childList: true, subtree: true });
+    styleFcitxSymbols();
+  }
+
   function installKbdHaptics() {
     if (window._lexKbdHaptics) return;
     window._lexKbdHaptics = true;
     // 触屏输入由 .fcitx-keyboard-mask 统一分发,touch 的 target 是 mask 而非按键,
     // 库内部按坐标命中按键容器。这里同样按坐标判定:命中任一按键容器即触发短震动,
-    // 与按下时刻(视觉反馈)同步。
+    // 与按下时刻(视觉反馈)同步。时间戳去重避免 touch+mouse 双震。
+    var _lastBuzz = 0;
+    function buzz() {
+      var now = Date.now();
+      if (now - _lastBuzz < 40) return; // 40ms 内忽略重复触发
+      _lastBuzz = now;
+      try { if (navigator.vibrate) navigator.vibrate(15); } catch (err) {}
+    }
     function hitKey(e) {
       if (!isActive()) return;
       var root = document.getElementById('fcitx-virtual-keyboard');
@@ -137,7 +225,7 @@
       for (var i = 0; i < containers.length; i++) {
         var box = containers[i].getBoundingClientRect();
         if (e.clientX >= box.left && e.clientX <= box.right && e.clientY >= box.top && e.clientY <= box.bottom) {
-          try { if (navigator.vibrate) navigator.vibrate(8); } catch (err) {}
+          buzz();
           return;
         }
       }
@@ -157,6 +245,7 @@
     try {
       watchKbdRebuild();
       installKbdHaptics();
+      watchFcitxSymbols();
       styleFcitxKbd();
     } catch (e) {}
   }

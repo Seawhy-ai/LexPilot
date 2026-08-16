@@ -39,6 +39,8 @@
     }
     html{height:100%}
     body{display:flex;flex-direction:column;background:var(--bg);height:100dvh;overflow:hidden;overscroll-behavior:none}
+    /* v3.5.0:启用自定义背景时 body 变透明,透出 #globalBg(否则 body 不透明背景被提升到画布,盖住 z-index:-1 的 globalBg) */
+    body.bg-on{background:transparent}
 
     /* ===== SCREENS ===== */
     .screen{flex:1;display:none!important;flex-direction:column;overflow-y:auto;background:var(--invite-bg);-webkit-overflow-scrolling:touch}
@@ -79,10 +81,10 @@
     .home-bg.bg-ocean .wave:nth-child(2){bottom:-28%;opacity:.6;animation-duration:13s}
     @keyframes waveMove{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
     /* 全局背景层：fixed 全屏，位于所有内容之下 */
-    #globalBg{position:fixed;inset:0;z-index:-1}
+    #globalBg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1}
     /* 启用非默认背景时，各功能视图半透明透出背景（卡片本身不透明，保证可读性） */
-    body.bg-on #chatView,body.bg-on #dbView,body.bg-on #caseView,body.bg-on #quizView,body.bg-on #docView,body.bg-on #learnCenterView,body.bg-on #materialsView,body.bg-on #notebookView,body.bg-on #plazaView,body.bg-on #lawReaderView,body.bg-on #pointsView,body.bg-on #scheduleView,body.bg-on #scheduleSettingsView,body.bg-on #videoView,body.bg-on #noteDetailView,body.bg-on #profileView,body.bg-on #aboutView,body.bg-on .case-detail,body.bg-on .mat-viewer{background:rgba(255,255,255,.85)}
-    body.dark.bg-on #chatView,body.dark.bg-on #dbView,body.dark.bg-on #caseView,body.dark.bg-on #quizView,body.dark.bg-on #docView,body.dark.bg-on #learnCenterView,body.dark.bg-on #materialsView,body.dark.bg-on #notebookView,body.dark.bg-on #plazaView,body.dark.bg-on #lawReaderView,body.dark.bg-on #pointsView,body.dark.bg-on #scheduleView,body.dark.bg-on #scheduleSettingsView,body.dark.bg-on #videoView,body.dark.bg-on #noteDetailView,body.dark.bg-on #profileView,body.dark.bg-on #aboutView,body.dark.bg-on .case-detail,body.dark.bg-on .mat-viewer{background:rgba(16,18,26,.85)}
+    body.bg-on #chatView,body.bg-on #dbView,body.bg-on #caseView,body.bg-on #quizView,body.bg-on #docView,body.bg-on #learnCenterView,body.bg-on #materialsView,body.bg-on #notebookView,body.bg-on #plazaView,body.bg-on #lawReaderView,body.bg-on #pointsView,body.bg-on #scheduleView,body.bg-on #scheduleSettingsView,body.bg-on #videoView,body.bg-on #noteDetailView,body.bg-on #profileView,body.bg-on #aboutView,body.bg-on #clockView,body.bg-on .case-detail,body.bg-on .mat-viewer{background:rgba(255,255,255,.85)}
+    body.dark.bg-on #chatView,body.dark.bg-on #dbView,body.dark.bg-on #caseView,body.dark.bg-on #quizView,body.dark.bg-on #docView,body.dark.bg-on #learnCenterView,body.dark.bg-on #materialsView,body.dark.bg-on #notebookView,body.dark.bg-on #plazaView,body.dark.bg-on #lawReaderView,body.dark.bg-on #pointsView,body.dark.bg-on #scheduleView,body.dark.bg-on #scheduleSettingsView,body.dark.bg-on #videoView,body.dark.bg-on #noteDetailView,body.dark.bg-on #profileView,body.dark.bg-on #aboutView,body.dark.bg-on #clockView,body.dark.bg-on .case-detail,body.dark.bg-on .mat-viewer{background:rgba(16,18,26,.85)}
     /* 内部滚动容器 / 导航条在非默认背景下透明，让半透明视图真正透出背景（卡片本身仍不透明） */
     body.bg-on .wx-nav,body.bg-on .chat-area,body.bg-on .lr-search-wrap,body.bg-on .cd-nav{background:transparent}
     /* 森林 */
@@ -120,6 +122,18 @@
     body.dark .profile-btn{background:rgba(40,40,40,0.35);border:1px solid rgba(255,255,255,0.15)}
     body.dark .profile-btn{background:rgba(40,40,40,0.6);border:1px solid rgba(255,255,255,0.08)}
     .profile-btn:active{transform:scale(.92);opacity:.8}
+    .clock-fab{position:absolute!important;top:calc(16px + var(--safe-top));right:16px!important;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);font-size:19px;background:rgba(255,255,255,0.3);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.5);z-index:10;transition:all .15s;overflow:hidden}
+    body.dark .clock-fab{background:rgba(40,40,40,0.6);border:1px solid rgba(255,255,255,0.08)}
+    .clock-fab:active{transform:scale(.92);opacity:.8}
+    /* 学习时钟独立界面 */
+    #clockView{flex:1;display:none!important;flex-direction:column;overflow:hidden;background:var(--bg)}
+    #clockView.show{display:flex!important}
+    .clock-screen{flex:1;overflow-y:auto;padding:24px 20px calc(24px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch;max-width:600px;margin:0 auto;width:100%}
+    #clockView .learn-clock{margin:0;border-radius:20px;padding:26px 20px}
+    #clockView .lc-clock-time{font-size:64px}
+    #clockView .lc-clock-set{flex-wrap:wrap;gap:12px}
+    #clockView .lc-clock-set input{width:56px;padding:8px 6px;font-size:16px}
+    #clockView .lc-clock-apply{flex:1;max-width:150px;padding:9px 0;border:none;border-radius:12px;background:var(--accent);color:#fff;font-size:13px;cursor:pointer;font-family:inherit}
 
     /* ===== WELCOME SCREEN ===== */
     .welcome-hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;padding-top:calc(50px + var(--safe-top))}
@@ -227,6 +241,9 @@
     .msg.ai .msg-body{align-items:flex-start}
     .msg-content{font-size:16px;line-height:1.55;word-break:break-word;padding:11px 14px;border-radius:20px;position:relative}
     .msg.ai .msg-content{background:var(--ai-bubble);border-radius:4px 20px 20px 20px;box-shadow:var(--bubble-shadow)}
+    /* v3.5.0：AI 回复去掉气泡、全屏宽（用户消息保持气泡不变） */
+    .msg.ai .msg-body{max-width:100%;width:100%;align-items:flex-start}
+    .msg.ai .msg-content{background:transparent!important;border-radius:0!important;box-shadow:none!important;width:100%;box-sizing:border-box;padding:2px}
     .msg.user .msg-content{background:var(--user-bubble);border-radius:20px 4px 20px 20px}
     .msg-content p{margin:0}.msg-content p+p{margin-top:4px}
     .msg-content h1,.msg-content h2,.msg-content h3{font-weight:600;margin:10px 0 4px;color:var(--accent)}
@@ -469,7 +486,7 @@
         .quiz-q-text{font-size:15px;line-height:1.6;margin-bottom:14px;font-weight:500}
         .quiz-options{display:flex;flex-direction:column;gap:8px}
         .quiz-opt{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border:2px solid var(--card-border);border-radius:12px;cursor:pointer;transition:all .15s;font-size:14px;line-height:1.5;background:var(--bg)}
-        .quiz-opt:hover{border-color:var(--accent)}
+        .quiz-opt:hover{border-color:var(--input-border);background:var(--input-bg)}
         .quiz-opt:active{transform:scale(.98)}
         .quiz-opt.selected{border-color:var(--accent);background:var(--accent-light)}
         .quiz-opt.correct-answer{border-color:#27ae60;background:rgba(39,174,96,0.08)}
@@ -837,7 +854,8 @@
     .sf-week{width:34px;height:34px;border-radius:50%;border:1px solid var(--card-border);background:var(--input-bg);color:var(--text);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;display:flex;align-items:center;justify-content:center}
     .sf-week.on{background:var(--accent);color:#fff;border-color:var(--accent)}
     .sf-week:active{transform:scale(.94)}
-    #scheduleAppearanceView{position:fixed;left:0;right:0;bottom:0;height:52vh;max-height:520px;z-index:700;display:none!important;flex-direction:column;overflow:hidden;background:var(--bg);border-radius:18px 18px 0 0;box-shadow:0 -4px 28px rgba(0,0,0,.18)}
+    #scheduleAppearanceView{position:fixed;left:0;right:0;bottom:0;height:52vh;max-height:520px;z-index:700;display:none!important;flex-direction:column;overflow:hidden;background:rgba(255,255,255,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:18px 18px 0 0;box-shadow:0 -4px 28px rgba(0,0,0,.18)}
+    body.dark #scheduleAppearanceView{background:rgba(17,17,17,.88)}
     #scheduleAppearanceView.show{display:flex!important}
     .sheet-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:690;display:none;-webkit-tap-highlight-color:transparent}
     .sheet-backdrop.show{display:block}
@@ -846,10 +864,6 @@
     .app-btn-row{display:flex;gap:8px;flex-wrap:wrap}
     .app-btn{flex:1;min-width:0;padding:9px 10px;border:1px solid var(--card-border);border-radius:10px;background:var(--input-bg);color:var(--text);font-size:13px;cursor:pointer;font-family:inherit;white-space:nowrap}
     .app-btn.on{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600}
-    .app-preview-grid{display:grid;grid-template-columns:repeat(5,1fr);grid-auto-rows:30px;gap:3px;padding:6px;border-radius:12px;margin-top:6px}
-    .app-pv-head{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#666;background:rgba(255,255,255,0.6);border-radius:6px}
-    .app-pv-cell{display:flex;align-items:center;justify-content:center;font-size:10px;box-shadow:0 1px 3px rgba(0,0,0,.12)}
-    .app-pv-empty{background:rgba(255,255,255,0.35);border-radius:6px}
     .ss-time-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
     .ss-time-idx{width:44px;flex-shrink:0;font-size:12px;color:var(--text2)}
     .ss-time-input{flex:1;min-width:0;padding:8px;border:1px solid var(--card-border);border-radius:10px;background:var(--input-bg);color:var(--text);font-size:13px;font-family:inherit}
@@ -975,6 +989,7 @@
 <div class="screen" id="homeScreen" style="display:none">
   <div class="home-bg" id="homeBg"></div>
   <div class="profile-btn" id="homeProfileBtn" onclick="goToProfile()" title="个人中心"></div>
+  <button class="clock-fab" id="homeClockBtn" onclick="showClock()" title="学习时钟">⏱</button>
 <div class="welcome-hero">
     <div class="whale-icon">🐋</div>
     <h1 class="typewriter" id="typewriter"></h1>
@@ -995,7 +1010,6 @@
       <div class="dash-head">
         <div class="dash-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8.5 8.5h7"/><path d="M8.5 12.5h7"/><path d="M9 16.5l2 2 4-4"/></svg></div>
         <span class="dash-name">今日待办</span>
-        <button class="dash-swap" onclick="event.stopPropagation();toggleHomeWidget()" title="切换为今日课表">⇄</button>
       </div>
       <div class="dash-body">
         <div class="dash-main" id="todoStatus">暂无待办</div>
@@ -1006,7 +1020,6 @@
       <div class="dash-head">
         <div class="dash-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
         <span class="dash-name">今日课表</span>
-        <button class="dash-swap" onclick="event.stopPropagation();toggleHomeWidget()" title="切换为今日待办">⇄</button>
       </div>
       <div class="dash-body">
         <div class="dash-main" id="scheduleStatus">暂无课表</div>
@@ -1310,6 +1323,37 @@
   </div>
 </div>
 
+<!-- ===== 学习时钟(独立界面) ===== -->
+<div id="clockView" style="display:none">
+  <div class="wx-nav">
+    <button class="back" onclick="goHome()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span class="title">学习时钟</span>
+  </div>
+  <div class="clock-screen">
+    <div class="learn-clock">
+      <div class="lc-clock-hd">
+        <span class="lc-clock-title">⏱ 学习时钟</span>
+        <span class="lc-clock-done" id="clockDone">今日 0 番茄</span>
+      </div>
+      <div class="lc-clock-main">
+        <span class="lc-clock-mode" id="clockMode">专注</span>
+        <span class="lc-clock-time" id="clockTime">25:00</span>
+      </div>
+      <div class="lc-clock-ctl">
+        <button class="lc-clock-btn primary" id="clockToggle" onclick="clockToggle()">开始</button>
+        <button class="lc-clock-btn" onclick="clockReset()">重置</button>
+        <button class="lc-clock-btn" onclick="clockSkip()">跳过</button>
+      </div>
+      <div class="lc-clock-set">
+        <label>专注 <input id="clockFocusMin" type="text" inputmode="numeric" maxlength="3" value="25" /> 分</label>
+        <label>休息 <input id="clockRestMin" type="text" inputmode="numeric" maxlength="3" value="5" /> 分</label>
+        <button class="lc-clock-apply" onclick="clockSetDur()">确定</button>
+      </div>
+      <div style="text-align:center;font-size:11px;color:var(--text2);margin-top:10px">专注计时计入今日学习时长；完成一个番茄计 1 个</div>
+    </div>
+  </div>
+</div>
+
 <!-- ===== SCHEDULE VIEW ===== -->
 <div id="scheduleView" style="display:none">
   <div class="wx-nav schedule-nav">
@@ -1417,10 +1461,6 @@
     <span class="title">课表外观</span>
   </div>
   <div class="points-body">
-    <div class="ss-card">
-      <label class="sf-label">实时预览</label>
-      <div id="appPreview"></div>
-    </div>
     <div class="ss-card">
       <label class="sf-label">卡片长度</label>
       <input type="range" id="appCardHeight" min="60" max="140" step="4" value="96" style="width:100%;accent-color:var(--accent)" oninput="appCardHeightIn()" />
@@ -1720,27 +1760,6 @@
         <span class="learn-goal-txt" id="learnGoalTxt">0/30 分钟</span>
       </div>
       <div class="learn-week" id="learnWeekBar"></div>
-    </div>
-
-    <!-- 学习时钟 -->
-    <div class="learn-clock">
-      <div class="lc-clock-hd">
-        <span class="lc-clock-title">⏱ 学习时钟</span>
-        <span class="lc-clock-done" id="clockDone">今日 0 番茄</span>
-      </div>
-      <div class="lc-clock-main">
-        <span class="lc-clock-mode" id="clockMode">专注</span>
-        <span class="lc-clock-time" id="clockTime">25:00</span>
-      </div>
-      <div class="lc-clock-ctl">
-        <button class="lc-clock-btn primary" id="clockToggle" onclick="clockToggle()">开始</button>
-        <button class="lc-clock-btn" onclick="clockReset()">重置</button>
-        <button class="lc-clock-btn" onclick="clockSkip()">跳过</button>
-      </div>
-      <div class="lc-clock-set">
-        <label>专注 <input id="clockFocusMin" type="number" min="1" max="120" value="25" onchange="clockSetDur()" /> 分</label>
-        <label>休息 <input id="clockRestMin" type="number" min="1" max="60" value="5" onchange="clockSetDur()" /> 分</label>
-      </div>
     </div>
 
     <!-- 功能卡片 -->
@@ -2270,7 +2289,7 @@ function selectHomeBg(key) {
     }
     addPoints(-100, "兑换背景");
     ownBg(key);
-    showToast("已解锁背景 +100积分");
+    showToast("已解锁背景");
   }
   options.homeBg = key;
   try { localStorage.setItem("seawhy-lex-opts", JSON.stringify(options)); } catch(e) {}
@@ -2335,7 +2354,7 @@ function checkinToday() {
   renderCheckin();
   var pts = isVip() ? 5 + Math.floor(Math.random() * 6) : 1 + Math.floor(Math.random() * 3);
   addPoints(pts, "每日打卡");
-  showToast("打卡成功 ✔ 累计 " + c.count + " 天 +" + pts + "积分");
+  showToast("打卡成功 ✔ 累计 " + c.count + " 天");
 }
 
 function renderCheckin() {
@@ -2475,7 +2494,7 @@ function homeDashSwipeInit() {
   wrap.dataset.swipeInit = "1";
   var todoCard = document.getElementById("todoCard");
   var schCard = document.getElementById("scheduleCard");
-  var startY = 0, curY = 0, effDy = 0, dragging = false, suppressClick = false;
+  var startY = 0, curY = 0, effDy = 0, rawDy = 0, dragging = false, suppressClick = false;
   var CARD_H = 148, TH = 50; // 卡高 / 触发阈值(px)
 
   function resetTrans() {
@@ -2510,14 +2529,15 @@ function homeDashSwipeInit() {
   wrap.addEventListener("pointermove", function(e) {
     if (!dragging) return;
     curY = e.clientY;
-    effDy = clampDrag(curY - startY); // 记录实际可视位移(反向有阻力)
+    rawDy = curY - startY; // 原始位移（判定用）
+    effDy = clampDrag(rawDy); // 可视位移（反向有阻力）
     liveTransform(effDy);
   }, { passive: true });
   wrap.addEventListener("pointerup", function(e) {
     if (!dragging) return;
     dragging = false;
-    // 用可视位移判定:反向滑动(如 todo 激活时下划)仅产生小位移 → 回弹不切换
-    if (Math.abs(effDy) >= TH) {
+    // 双向滑动达到阈值都切换：两张卡循环切换
+    if (Math.abs(rawDy) >= TH) {
       suppressClick = true; // 拖动后吞掉卡片自身的 onclick
       toggleHomeWidget();
       setTimeout(function() { suppressClick = false; }, 400);
@@ -2571,7 +2591,6 @@ function openTodoModal() {
     renderTodoStatus();
     if (isFirst) {
       var tb = oneTimeBonus("todo", 5, "首次创建待办");
-      if (tb) showToast("首次创建待办 +" + tb + "积分");
     }
   }
   var addBtn = document.getElementById("todoAddBtn");
@@ -2685,7 +2704,7 @@ function checkLoginState() {
 }
 
 function showLoginScreen() {
-  ["homeScreen","chatView","dbView","aboutView","quizView","docView","caseView","caseDetail","learnCenterView","materialsView","notebookView","plazaView","noteDetailView","profileView","pointsView","scheduleView","scheduleSettingsView","scheduleAppearanceView","videoView"].forEach(function(id) {
+  ["homeScreen","chatView","dbView","aboutView","quizView","docView","caseView","caseDetail","learnCenterView","materialsView","notebookView","plazaView","noteDetailView","profileView","pointsView","scheduleView","scheduleSettingsView","scheduleAppearanceView","videoView","clockView"].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) { el.classList.remove("show"); el.style.display = "none"; }
   });
@@ -3054,11 +3073,12 @@ try { applyBubbleStyle(); } catch(e) {}
 // ============================================================
 // AUTO CHANGELOG — 自动更新日志系统
 // ============================================================
-var APP_VERSION = "v3.4.1";
+var APP_VERSION = "v3.5.0";
 var APP_VERSION_DATE = "2026.08.16";
 var CHANGELOG_KEY = "seawhy-lex-changelog";
 
 var DEFAULT_CHANGELOG = [
+  { ver: "v3.5.0", date: "2026.08.16", notes: "批量优化：输入法加按键触感与左右方向键、符号键改为常用标点；学习时钟独立为首页按钮；主页卡片上下循环滑动（去掉切换按钮）；去掉所有获得积分弹窗；修复多选题取消后仍显示蓝框；考试模式交卷前可更改答案；B站登录检测优化（明确提示/可重试）；修复自定义背景覆盖不到、底部留白；AI咨询改为用户气泡并扣除积分（VIP免费）、AI回复无气泡全宽；课表外观弹窗半透明并去掉实时预览" },
   { ver: "v3.4.1", date: "2026.08.16", notes: "课程表支持教务系统一键导入（hash 桥接）：在教务系统课表页运行 tools/swun-import.js 后可一键跳转并预填导入弹层" },
   { ver: "v3.4.0", date: "2026.08.16", notes: "课程表升级：卡片长度/透明度/圆角移至外观设置（改为半屏弹层）、一次课默认两节、可设一天节数与显示周六日/非本周(幽灵课)/授课教师、修复非白背景下白色格子" },
   { ver: "v3.3.0", date: "2026.08.16", notes: "新增哔哩哔哩登录与视频搜索播放、学习时钟(番茄钟)、首页待办/课表上下滑动切换、输入法升级(iOS式触感、字母键简洁化)" },
@@ -3264,7 +3284,7 @@ function setAvatar(emoji) {
   var overlay = document.getElementById("avatarPickOverlay");
   if (overlay) overlay.remove();
   var bonus = oneTimeBonus("avatar", 5, "更换头像");
-  showToast("头像已更新" + (bonus ? " +" + bonus + "积分" : ""));
+  showToast("头像已更新");
 }
 
 function handleAvatarUpload(input) {
@@ -3285,7 +3305,7 @@ function handleAvatarUpload(input) {
     var overlay = document.getElementById("avatarPickOverlay");
     if (overlay) overlay.remove();
     var bonus = oneTimeBonus("avatar", 5, "更换头像");
-    showToast("头像已更新" + (bonus ? " +" + bonus + "积分" : ""));
+    showToast("头像已更新");
   };
   reader.readAsDataURL(file);
 }
@@ -3303,7 +3323,7 @@ function editNickname() {
   saveProfile(p);
   updateProfileUI();
   var bonus = oneTimeBonus("nickname", 5, "更换昵称");
-  showToast("昵称已更新" + (bonus ? " +" + bonus + "积分" : ""));
+  showToast("昵称已更新");
 }
 
 function rechargeVip() {
@@ -3539,8 +3559,7 @@ function addPoints(amount, label) {
 function awardPoints(amount, msg) {
   if (!amount || amount <= 0) return;
   addPoints(amount, msg || "");
-  if (msg) showToast(msg + " +" + amount + " 积分");
-  else showToast("+" + amount + " 积分");
+  // v3.5.0：去掉所有“获得积分”弹窗（积分只静默累计）
 }
 function vipRate(base) { return isVip() ? base * 2 : base; }
 
@@ -4356,7 +4375,6 @@ function renderAppearanceView() {
     }
     sel.value = (ap.stickers && ap.stickers[i]) || "";
   }
-  renderAppearancePreview();
 }
 function setAppField(key, value) {
   var d = loadSchedule();
@@ -4470,38 +4488,6 @@ function resetScheduleAppearance() {
   if (sv && sv.classList.contains("show")) renderScheduleView();
   showToast("已恢复默认外观");
 }
-function renderAppearancePreview() {
-  var el = document.getElementById("appPreview");
-  if (!el) return;
-  var d = loadSchedule();
-  var ap = d;
-  var font = SCHEDULE_FONTS[ap.fontFamily] || "inherit";
-  var bgStyle = ap.bgType === "color" && ap.bgColor ? "background:" + ap.bgColor + ";"
-    : ap.bgType === "image" && ap.bgImage ? "background-image:url('" + ap.bgImage + "');background-size:cover;background-position:center;"
-    : "background:#f5f6f8;";
-  var txtCol = ap.textColor || "#FFFFFF";
-  var txtSize = ap.textSize || 13;
-  var rd = d.cardRadius != null ? d.cardRadius : 8;
-  var bd = (ap.borderStyle && ap.borderStyle !== "none" && ap.borderWidth > 0) ? ("border:" + ap.borderWidth + "px " + ap.borderStyle + " " + (ap.borderColor || "#FFFFFF") + ";box-sizing:border-box;") : "";
-  var c1 = (ap.colorMode === "unified" && ap.unifiedColor) ? ap.unifiedColor : "#4CAF50";
-  var c2 = (ap.colorMode === "unified" && ap.unifiedColor) ? ap.unifiedColor : "#FFB300";
-  var head = "";
-  for (var i = 0; i < 5; i++) head += '<div class="app-pv-head">' + SCHEDULE_DAYS[i] + '</div>';
-  var op = d.cardOpacity != null ? d.cardOpacity : 100;
-  var cell = function(bg, name, span) {
-    var b = op >= 100 ? bg : hexToRgba(bg, op / 100);
-    return '<div class="app-pv-cell" style="background:' + b + ';color:' + txtCol + ';' + bd + ';border-radius:' + rd + 'px' + (span ? ';grid-row:span 2' : '') + '"><span style="font-size:' + txtSize + 'px;font-weight:700">' + name + '</span></div>';
-  };
-  el.innerHTML = '<div class="app-preview-grid" style="' + bgStyle + 'font-family:' + font + '">' +
-    head +
-    cell(c1, "宪法", true) +
-    cell(c2, "刑法", false) +
-    '<div class="app-pv-empty"></div><div class="app-pv-empty"></div><div class="app-pv-empty"></div>' +
-    '<div class="app-pv-empty"></div><div class="app-pv-empty"></div><div class="app-pv-empty"></div>' +
-    '<div class="app-pv-empty"></div>' +
-    '</div>';
-}
-
 // ===== 视频中心（B站嵌入） =====
 var VIDEO_KEY = "seawhy-lex-videos";
 var DEFAULT_VIDEOS = [
@@ -4793,19 +4779,29 @@ function biliDoLogin() {
   showToast("请在打开的窗口完成哔哩哔哩登录，返回后点「检测登录」");
 }
 function biliCheckLogin(force) {
-  if (!force && Date.now() - BILI_LAST_CHECK < 30000) return;
-  BILI_LAST_CHECK = Date.now();
+  // v3.5.0:失败/超时不写 BILI_LAST_CHECK,避免压住重试;仅在成功时记录节流。
   var cbName = "lexbili_n" + (BILI_CB_ID++);
   biliJsonp("https://api.bilibili.com/x/web-interface/nav?jsonp=" + cbName, cbName, function(d) {
     if (d && d.code === 0 && d.data && d.data.isLogin) {
+      BILI_LAST_CHECK = Date.now();
       var snap = { uname: d.data.uname || "", mid: d.data.mid || 0, checkedAt: Date.now() };
       try { localStorage.setItem(BILI_KEY, JSON.stringify(snap)); } catch(e) {}
       renderBiliLogin();
       showToast("已登录哔哩哔哩：" + snap.uname);
-    } else {
+    } else if (d && d.code === 0) {
+      // 明确未登录:清除陈旧登录态展示
+      try { localStorage.removeItem(BILI_KEY); } catch(e) {}
       renderBiliLogin();
+      if (force) showToast("未检测到登录：请先在弹出窗口完成登录，再点「检测登录」");
+    } else {
+      // 接口被拦截(code!==0)或超时:第三方网页受浏览器 Cookie/风控限制
+      renderBiliLogin();
+      if (force) showToast(d ? ("检测被拦截(code " + d.code + ")：受浏览器第三方 Cookie 限制，可能无法检测；搜索/播放无需登录") : "检测超时：网络或风控原因，请稍后重试");
     }
-  }, function() { renderBiliLogin(); });
+  }, function() {
+    renderBiliLogin();
+    if (force) showToast("检测超时：网络或风控原因，请稍后重试");
+  });
 }
 function renderBiliLogin() {
   var st = document.getElementById("biliLoginState");
@@ -5301,7 +5297,7 @@ function redeemVipCode() {
     addPoints(100, "兑换码999");
     updateProfileUI();
     if (msgEl) msgEl.textContent = "";
-    showToast("兑换成功！+100 积分");
+    showToast("兑换成功！");
     input.value = "";
   } else {
     if (msgEl) msgEl.textContent = "兑换码无效";
@@ -5583,13 +5579,13 @@ function showAbout() {
 // SCREEN MANAGEMENT
 // ============================================================
 function hideAllViews() {
-  ["homeScreen","chatView","dbView","aboutView","quizView","docView","caseView","caseDetail","learnCenterView","materialsView","notebookView","plazaView","noteDetailView","profileView","pointsView","scheduleView","scheduleSettingsView","scheduleAppearanceView","videoView"].forEach(function(id) {
+  ["homeScreen","chatView","dbView","aboutView","quizView","docView","caseView","caseDetail","learnCenterView","materialsView","notebookView","plazaView","noteDetailView","profileView","pointsView","scheduleView","scheduleSettingsView","scheduleAppearanceView","videoView","clockView"].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) el.classList.remove("show");
   });
   window.scrollTo(0, 0);
   // 新界面默认滚到最顶端（聊天保留阅读位置）
-  var scs = document.querySelectorAll(".about-body,.points-body,.video-body,.learn-body,.quiz-body,.db-body,.doc-body,.case-body,.notebook-body,.schedule-scroll,.lr-body,.plaza-body,.note-detail-body,.screen,.case-detail");
+  var scs = document.querySelectorAll(".about-body,.points-body,.video-body,.learn-body,.quiz-body,.db-body,.doc-body,.case-body,.notebook-body,.schedule-scroll,.lr-body,.plaza-body,.note-detail-body,.screen,.case-detail,.clock-screen");
   for (var si = 0; si < scs.length; si++) scs[si].scrollTop = 0;
 }
 
@@ -5758,15 +5754,21 @@ function sendMsg(text) {
   text = text.trim(); if (!text) return;
   if (!SETTINGS.apiKey) { showError('API配置错误，请先前往关于我们中完成配置'); return; }
 
+  // v3.5.0：AI 咨询扣积分（VIP 免费），不足则拦截；去掉原来的对话奖励
+  if (!isVip()) {
+    var _cp = loadProfile();
+    if ((_cp.points || 0) < 2) {
+      showToast("积分不足：AI 咨询每次需 2 积分（VIP 免费）");
+      return;
+    }
+    addPoints(-2, "AI咨询");
+  }
+
   var sessionId = ++chatSessionId;
   streaming = true; dom.btnSend.disabled = true; dom.typing.style.display = "flex"; scrollBottom();
 
   messages.push({ role: "user", content: text, _time: Date.now() });
   renderMsg("user", text); persist();
-  // 积分：与AI对话（每日限10次）+ 首次体验 +20
-  if (dailyCount("chat") < 10) { dailyInc("chat"); awardPoints(vipRate(1), "AI对话"); }
-  var chatBonus = oneTimeBonus("chat", 20, "首次体验AI聊天");
-  if (chatBonus) showToast("首次体验AI聊天 +" + chatBonus + "积分");
 
   var sysP = buildSystemPrompt();
   var apiMsgs = [{ role: "system", content: sysP }];
@@ -6136,6 +6138,10 @@ function imeOpenFor(el) {
   if (!el) return;
   IME.target = el; IME.open = true;
   try { el.setAttribute("readonly", "readonly"); } catch (e) {}
+  // 数字类输入框自动切到 123 键盘层
+  if (el.inputMode === "numeric" || el.inputMode === "decimal" || el.type === "number") {
+    IME.layout = "123"; IME.py = ""; IME.shift = false;
+  }
   var ime = document.getElementById("ime");
   if (ime) ime.classList.add("show");
   imeRenderKeys(); imeUpdateTools(); imeRefresh();
@@ -6181,6 +6187,8 @@ function imeRenderKeys() {
     ["1","2","3","4","5","6","7","8","9","0"].forEach(function (k) { make(k, "letter", k); });
     ["-","/",":",";","(",")","¥","@","\"","'"].forEach(function (k) { make(k, "letter", k); });
     [".",",","?","!","…","·"].forEach(function (k) { make(k, "letter", k); });
+    make("←", "left", null, "fn");
+    make("→", "right", null, "fn");
     make("⌫", "back", null, "fn");
   } else {
     "qwertyuiop".split("").forEach(function (k) { make(IME.shift && IME.lang === "en" ? k.toUpperCase() : k, "letter", k); });
@@ -6201,6 +6209,35 @@ function imeAct(key) {
   else if (a === "lang") imeSwitchLang();
   else if (a === "layout") imeSwitchLayout();
   else if (a === "done") imeDone();
+  else if (a === "left") imeMoveCaret(-1);
+  else if (a === "right") imeMoveCaret(1);
+}
+function imeMoveCaret(dir) {
+  // 拼音组合中不移动光标（候选交由候选条处理）
+  if (IME.lang === "cn" && IME.py) return;
+  var el = IME.target;
+  if (!el) return;
+  var v = el.value || "";
+  var p = (typeof el.selectionStart === "number") ? el.selectionStart : v.length;
+  p += dir;
+  if (p < 0) p = 0;
+  if (p > v.length) p = v.length;
+  imeSetCaret(p);
+}
+var _imeBeepCtx = null;
+function imeHaptic() {
+  try { if (navigator.vibrate) { navigator.vibrate(12); return; } } catch (e) {}
+  // iOS 无震动 API：极低声点击音兜底
+  try {
+    _imeBeepCtx = _imeBeepCtx || new (window.AudioContext || window.webkitAudioContext)();
+    var o = _imeBeepCtx.createOscillator(), g = _imeBeepCtx.createGain();
+    o.connect(g); g.connect(_imeBeepCtx.destination);
+    o.frequency.value = 1000;
+    var t0 = _imeBeepCtx.currentTime;
+    g.gain.setValueAtTime(0.02, t0);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.03);
+    o.start(t0); o.stop(t0 + 0.04);
+  } catch (e) {}
 }
 (function imeBind() {
   var ime = document.getElementById("ime");
@@ -6210,6 +6247,7 @@ function imeAct(key) {
   ime.addEventListener("pointerdown", function (e) {
     if (e.target.closest(".ime-cands")) return; // 候选条可横向滚动
     e.preventDefault();
+    imeHaptic(); // 触感：安卓震动 / iOS 提示音
     var key = e.target.closest(".ime-key");
     if (key) { imeAct(key); return; }
     var tool = e.target.closest(".ime-tool");
@@ -6484,7 +6522,7 @@ function saveLearnStats(stats) {
 }
 
 // ===== 学习时长：实时计时（仅统计处于学习界面且应用可见的时间） =====
-var STUDY_VIEWS = ["quizView","chatView","docView","dbView","caseView","learnCenterView","materialsView","notebookView"];
+var STUDY_VIEWS = ["quizView","chatView","docView","dbView","caseView","learnCenterView","materialsView","notebookView","clockView"];
 var _studyOn = false;
 var _studySegStart = 0;
 var _studySegSec = 0;
@@ -6573,6 +6611,16 @@ function showLearningCenter() {
   el.style.display = "";
   el.classList.add("show");
   updateLearnDashboard();
+}
+
+// 学习时钟独立界面：主页 ⏱ 按钮进入
+function showClock() {
+  hideAllViews();
+  var el = document.getElementById("clockView");
+  el.style.display = "";
+  el.classList.add("show");
+  clockRender();
+  clockStartLoop();
 }
 
 function updateLearnDashboard() {
@@ -6962,7 +7010,7 @@ function saveCurrentNote() {
       date: nowStr
     });
     var nb = oneTimeBonus("note", 5, "首次创建笔记");
-    showToast("笔记已保存" + (nb ? " +" + nb + "积分" : "") + (isVip() ? "" : " -5积分"));
+    showToast("笔记已保存");
   }
   saveNotes(notes);
   clearEditor();
@@ -7441,6 +7489,20 @@ function submitExam() {
   stopExamTimer();
   QUIZ_STATE._examSubmitted = true;
   var total = QUIZ_STATE.questions.length;
+  // 交卷时对尚未锁定的题目统一判分（考试模式交卷前可更改答案）
+  for (var gi = 0; gi < total; gi++) {
+    if (QUIZ_STATE.answered[gi]) continue;
+    var sel = QUIZ_STATE.answers[gi];
+    if (sel === undefined || (Array.isArray(sel) && sel.length === 0)) continue; // 未作答
+    var q = QUIZ_STATE.questions[gi];
+    var ans = q._shuffledAns !== undefined ? q._shuffledAns : q.ans;
+    var isCorr = answerSetsEqual(sel, ans);
+    QUIZ_STATE.answered[gi] = true;
+    QUIZ_STATE.correct[gi] = isCorr;
+    if (!isCorr) addToWrongBook(q, sel);
+    else if (wrongBookMode && q._wbIdx !== undefined) removeFromWrongBook(q.q);
+    recordStudyTime(0, 1);
+  }
   var correct = 0;
   for (var k in QUIZ_STATE.correct) if (QUIZ_STATE.correct[k]) correct++;
   if (correct > 0 && !wrongBookMode) awardPoints(vipRate(correct), "考试得分");
@@ -7801,7 +7863,8 @@ function renderQuizPage() {
     }
     h += '</div>';
 
-    if (!isAnswered && q.multi && !(QUIZ_STATE.mode === "exam" && QUIZ_STATE._examSubmitted)) {
+    // 考试模式交卷前可自由勾选/更改，不显示“提交答案”锁定；练习模式保留提交
+    if (!isAnswered && q.multi && QUIZ_STATE.mode !== "exam") {
       h += '<div class="quiz-actions"><button class="quiz-btn primary" onclick="submitAnswer(' + globalIdx + ')">提交答案</button></div>';
     }
 
@@ -7875,9 +7938,13 @@ function selectAnswer(qIdx, optIdx) {
     QUIZ_STATE.answers[qIdx] = selArr;
     renderQuizPage();
   } else {
-    // 单选题：选择即自动提交
+    // 单选题：练习模式选择即提交；考试模式交卷前可更改，不锁定
     QUIZ_STATE.answers[qIdx] = optIdx;
-    submitAnswer(qIdx);
+    if (QUIZ_STATE.mode === "exam" && !QUIZ_STATE._examSubmitted) {
+      renderQuizPage();
+    } else {
+      submitAnswer(qIdx);
+    }
   }
 }
 
