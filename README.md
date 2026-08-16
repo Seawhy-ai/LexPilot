@@ -9,7 +9,7 @@
 > 源自《AI法律工具失效模式与规制路径研究》(2026)——对 DeepSeek 与千问双模型实证测试驱动，
 > 覆盖 8 类法律案例 × 2 轮测试 × 4 维测评，归纳 10 大 AI 法律工具失效模式并针对性优化。
 
-[🚀 在线使用](https://seawhy-ai.github.io/LexPilot/) · [⭐ 功能一览](#-功能一览) · [⚡ 快速开始](#-快速开始) · [🛠 技术栈](#-技术栈) · [📄 更新日志](#-更新日志)
+[🚀 在线使用](https://seawhy-ai.github.io/LexPilot/) · [🎬 宣传片](#-宣传片) · [⭐ 功能一览](#-功能一览) · [📱 界面截图](#-界面截图) · [⚡ 快速开始](#-快速开始) · [🛠 技术栈](#-技术栈) · [📄 更新日志](#-更新日志)
 
 ![last commit](https://img.shields.io/github/last-commit/Seawhy-ai/LexPilot?style=flat-square&color=2980b9)
 ![repo size](https://img.shields.io/github/repo-size/Seawhy-ai/LexPilot?style=flat-square&color=27ae60)
@@ -18,6 +18,24 @@
 </div>
 
 ---
+
+## 🎬 宣传片
+
+[![SeaWhy Lex 宣传片](docs/promo/poster.jpg)](docs/promo/lexpilot-promo.mp4)
+
+> 📹 **[点击观看 30 秒宣传片](docs/promo/lexpilot-promo.mp4)**（1920×1080 · H.264）· [GIF 预览](docs/promo/lexpilot-promo-preview.gif) · [渲染器源码](docs/promo/promo.html)
+
+## 📱 界面截图
+
+<p align="center">
+  <img src="docs/screenshots/app-mockup-grid.png" alt="SeaWhy Lex 界面总览" width="800" />
+</p>
+
+| | | |
+| --- | --- | --- |
+| ![首页](docs/screenshots/home.png) | ![AI 咨询](docs/screenshots/chat.png) | ![法典库](docs/screenshots/database.png) |
+| ![题库](docs/screenshots/quiz.png) | ![课表](docs/screenshots/schedule.png) | ![笔记](docs/screenshots/notebook.png) |
+| ![文书](docs/screenshots/doc.png) | ![案例](docs/screenshots/case.png) | ![个人中心](docs/screenshots/profile.png) |
 
 ## ✨ 功能一览
 

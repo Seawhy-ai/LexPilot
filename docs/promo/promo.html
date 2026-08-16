@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<title>SeaWhy Lex · 宣传片渲染器</title>
+<title>SeaWhy Lex · 宣传片渲染器 V2 (手机 + 真实截图)</title>
 <style>
   html,body{margin:0;padding:0;width:1920px;height:1080px;overflow:hidden;background:#000;}
   canvas{display:block;}
@@ -14,10 +14,11 @@
 <div id="ui"></div>
 <script>
 /* ============================================================
-   SeaWhy Lex — 宣传片渲染器 (确定性时间轴)
+   SeaWhy Lex — 宣传片渲染器 V2 (确定性时间轴 · 手机 + 真实截图)
    画幅 1920×1080 · 时长 30s · 30fps
    每帧画面完全由时间 t 决定 → 可逐帧截图合成视频
    window.setPromoTime(t) 在浏览器里也能逐帧驱动
+   截图源: appshots/*.png (由 appshots.js 从真实 App 截取)
    ============================================================ */
 const W = 1920, H = 1080, FPS = 30, DUR = 30;
 const ctx = document.getElementById('c').getContext('2d');
@@ -33,16 +34,21 @@ const C = {
   chip:'rgba(255,255,255,.10)', chipStroke:'rgba(255,255,255,.22)',
 };
 
+/* ---------- 真实 App 截图 (appshots.js 截取) ---------- */
+const SHOT_NAMES = ['home','chat','database','quiz','schedule','notebook','doc','case','profile','learning'];
+const SHOTS = {};
+SHOT_NAMES.forEach(n=>{ const im=new Image(); im.src='appshots/'+n+'.png'; SHOTS[n]=im; });
+
 /* ---------- 功能模块数据 (8 个) ---------- */
 const FEATURES = [
-  { icon:'chat',   grad:['#1668b8','#5dade2'], name:'AI 法律咨询', desc:'智能问答 · 多角色人格化服务',     chips:['AI 对话','人格化','随时问'] },
-  { icon:'book',   grad:['#0e7490','#2dd4bf'], name:'法典数据库', desc:'民法典 · 刑法 · 诉讼法全文检索',  chips:['法典全文','在线检索','随时查'] },
-  { icon:'target', grad:['#b45309','#f59e0b'], name:'学习题库',   desc:'493 道真题 · 按教材章节分组',      chips:['章节练习','考试模式','错题本'] },
-  { icon:'cal',    grad:['#15803d','#4ade80'], name:'学习规划',   desc:'课表管理 · 每日打卡 · 今日待办',   chips:['周视图','每日打卡','待办清单'] },
-  { icon:'note',   grad:['#7c3aed','#a78bfa'], name:'学习笔记',   desc:'标签分类 · 云端同步',              chips:['标签管理','云同步'] },
-  { icon:'doc',    grad:['#be185d','#f472b6'], name:'法律文书',   desc:'常用文书模板 · 一键生成',          chips:['文书模板','一键生成'] },
-  { icon:'case',   grad:['#0f766e','#34d399'], name:'案例分析',   desc:'判例检索与深度解析',               chips:['判例检索','深度解析'] },
-  { icon:'user',   grad:['#1d4ed8','#60a5fa'], name:'个人中心',   desc:'积分体系 · VIP 特权 · 云端备份',   chips:['积分体系','VIP','云备份'] },
+  { img:'chat',     icon:'chat',   grad:['#1668b8','#5dade2'], name:'AI 法律咨询', desc:'智能问答 · 多角色人格化服务',     chips:['AI 对话','人格化','随时问'] },
+  { img:'database', icon:'book',   grad:['#0e7490','#2dd4bf'], name:'法典数据库', desc:'民法典 · 刑法 · 诉讼法全文检索',  chips:['法典全文','在线检索','随时查'] },
+  { img:'quiz',     icon:'target', grad:['#b45309','#f59e0b'], name:'学习题库',   desc:'493 道真题 · 按教材章节分组',      chips:['章节练习','考试模式','错题本'] },
+  { img:'schedule', icon:'cal',    grad:['#15803d','#4ade80'], name:'学习规划',   desc:'课表管理 · 每日打卡 · 今日待办',   chips:['周视图','每日打卡','待办清单'] },
+  { img:'notebook', icon:'note',   grad:['#7c3aed','#a78bfa'], name:'学习笔记',   desc:'标签分类 · 云端同步',              chips:['标签管理','云同步'] },
+  { img:'doc',      icon:'doc',    grad:['#be185d','#f472b6'], name:'法律文书',   desc:'常用文书模板 · 一键生成',          chips:['文书模板','一键生成'] },
+  { img:'case',     icon:'case',   grad:['#0f766e','#34d399'], name:'案例分析',   desc:'判例检索与深度解析',               chips:['判例检索','深度解析'] },
+  { img:'profile',  icon:'user',   grad:['#1d4ed8','#60a5fa'], name:'个人中心',   desc:'积分体系 · VIP 特权 · 云端备份',   chips:['积分体系','VIP','云备份'] },
 ];
 
 /* ---------- 数学工具 ---------- */
@@ -52,14 +58,13 @@ const smooth=(a,b,x)=>{let t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t);};
 const easeOutCubic = x=>1-Math.pow(1-x,3);
 const easeOutBack  = x=>{const c=1.70158,c3=c+1;x-=1;return 1+c3*x*x*x+c*x*x;};
 const easeInQuad   = x=>x*x;
-// 确定性伪随机
 function rnd(i){const s=Math.sin(i*127.1+311.7)*43758.5453123;return s-Math.floor(s);}
 
 /* ---------- 背景粒子 (气泡, 确定性) ---------- */
 const N_BUB=46;
 const bub = Array.from({length:N_BUB},(_,i)=>({
   x: rnd(i)*W, y0: rnd(i+50)*H,
-  sp: 0.03+rnd(i+100)*0.06,      // 秒速上升 (0.03~0.09 屏/s)
+  sp: 0.03+rnd(i+100)*0.06,
   r: 3+rnd(i+150)*20,
   ph: rnd(i+200)*6.2832,
   dr: 30+rnd(i+250)*120,
@@ -74,7 +79,7 @@ function drawIcon(id,cx,cy,s){
   ctx.lineCap = 'round'; ctx.lineJoin='round';
   ctx.beginPath();
   switch(id){
-    case 'chat': { // 气泡
+    case 'chat': {
       const r=s*0.28;
       ctx.roundRect(cx-s,cy-s*0.78,2*s,s*0.78+s*0.48,r);
       ctx.moveTo(cx-s*0.7,cy+s*0.48); ctx.lineTo(cx-s*1.15,cy+s*0.95); ctx.lineTo(cx-s*0.1,cy+s*0.48);
@@ -85,7 +90,7 @@ function drawIcon(id,cx,cy,s){
       ctx.beginPath(); ctx.arc(cx+s*0.42,cy-s*0.15,s*0.09,0,7); ctx.fill();
       break;
     }
-    case 'book': { // 打开的书籍
+    case 'book': {
       ctx.moveTo(cx-s,cy-s*0.55);
       ctx.quadraticCurveTo(cx-s*0.42,cy-s*0.75,cx,cy-s*0.42);
       ctx.quadraticCurveTo(cx+s*0.42,cy-s*0.75,cx+s,cy-s*0.55);
@@ -96,13 +101,13 @@ function drawIcon(id,cx,cy,s){
       ctx.beginPath(); ctx.moveTo(cx,cy-s*0.42); ctx.lineTo(cx,cy+s*0.32); ctx.stroke();
       break;
     }
-    case 'target': { // 靶心
+    case 'target': {
       ctx.arc(cx,cy,s,0,7); ctx.moveTo(cx+s*0.6,cy); ctx.arc(cx,cy,s*0.6,0,7);
       ctx.moveTo(cx+s*0.2,cy); ctx.arc(cx,cy,s*0.2,0,7); ctx.stroke();
       ctx.beginPath(); ctx.arc(cx,cy,s*0.08,0,7); ctx.fill();
       break;
     }
-    case 'cal': { // 日历 + 对勾
+    case 'cal': {
       ctx.roundRect(cx-s*0.9,cy-s*0.78,1.8*s,s*0.78+s*0.74,s*0.18);
       ctx.moveTo(cx-s*0.55,cy-s*1.05); ctx.lineTo(cx-s*0.55,cy-s*0.6);
       ctx.moveTo(cx+s*0.55,cy-s*1.05); ctx.lineTo(cx+s*0.55,cy-s*0.6);
@@ -113,7 +118,7 @@ function drawIcon(id,cx,cy,s){
       ctx.stroke();
       break;
     }
-    case 'note': { // 便签 + 铅笔
+    case 'note': {
       ctx.roundRect(cx-s*0.82,cy-s*0.95,1.64*s,s*0.95+s*0.95,s*0.14);
       ctx.moveTo(cx-s*0.82,cy-s*0.95); ctx.lineTo(cx+s*0.82,cy-s*0.95);
       ctx.stroke();
@@ -127,7 +132,7 @@ function drawIcon(id,cx,cy,s){
       ctx.closePath(); ctx.stroke();
       break;
     }
-    case 'doc': { // 文书 (卷角)
+    case 'doc': {
       ctx.beginPath();
       ctx.moveTo(cx-s*0.7,cy-s*0.95); ctx.lineTo(cx+s*0.35,cy-s*0.95);
       ctx.lineTo(cx+s*0.75,cy-s*0.55); ctx.lineTo(cx+s*0.75,cy+s*0.95);
@@ -142,14 +147,14 @@ function drawIcon(id,cx,cy,s){
       ctx.stroke();
       break;
     }
-    case 'case': { // 放大镜
+    case 'case': {
       ctx.beginPath();
       ctx.arc(cx-s*0.18,cy-s*0.2,s*0.55,0,7); ctx.stroke();
       ctx.beginPath();
       ctx.moveTo(cx+s*0.22,cy+s*0.22); ctx.lineTo(cx+s*0.9,cy+s*0.9); ctx.stroke();
       break;
     }
-    case 'user': { // 人像
+    case 'user': {
       ctx.beginPath(); ctx.arc(cx,cy-s*0.35,s*0.34,0,7); ctx.stroke();
       ctx.beginPath();
       ctx.moveTo(cx-s*0.82,cy+s*0.95);
@@ -170,14 +175,58 @@ CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){
   return this;
 };
 
+/* ---------- 手机 Mockup ---------- */
+// cx,cy 机身中心; w 机身宽; img 截图对象; alpha; breath 呼吸浮动
+function drawPhone(cx,cy,w,img,alpha){
+  const h = w * 2.1;                 // 机身高 (390:844 ≈ 2.16)
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  const r = w*0.18;
+  // 机身阴影
+  ctx.shadowColor='rgba(0,10,30,.65)'; ctx.shadowBlur=70; ctx.shadowOffsetY=26;
+  const body = ctx.createLinearGradient(0,cy-h/2,0,cy+h/2);
+  body.addColorStop(0,'#3a4a66'); body.addColorStop(0.08,'#222d42');
+  body.addColorStop(0.5,'#0f1626'); body.addColorStop(1,'#080d18');
+  ctx.fillStyle=body;
+  ctx.beginPath(); ctx.roundRect(cx-w/2,cy-h/2,w,h,r); ctx.fill();
+  ctx.shadowBlur=0;
+  // 边框高光
+  ctx.strokeStyle='rgba(160,200,255,.35)'; ctx.lineWidth=2.2;
+  ctx.beginPath(); ctx.roundRect(cx-w/2,cy-h/2,w,h,r); ctx.stroke();
+  // 屏幕 (内缩)
+  const pad = w*0.045, sw=w-2*pad, sh=h-2*pad, sr=sw*0.07;
+  ctx.save();
+  ctx.beginPath(); ctx.roundRect(cx-sw/2,cy-sh/2,sw,sh,sr); ctx.clip();
+  ctx.fillStyle='#0d1424'; ctx.fillRect(cx-sw/2,cy-sh/2,sw,sh);
+  if(img && img.complete && img.naturalWidth>0){
+    ctx.drawImage(img, cx-sw/2, cy-sh/2, sw, sh);
+  }
+  // 屏幕玻璃反光 (顶部柔光带)
+  const gl=ctx.createLinearGradient(0,cy-sh/2,0,cy-sh/2+sh*0.42);
+  gl.addColorStop(0,'rgba(255,255,255,.085)'); gl.addColorStop(0.5,'rgba(255,255,255,.015)'); gl.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.fillStyle=gl; ctx.fillRect(cx-sw/2,cy-sh/2,sw,sh*0.42);
+  // 底部内阴影
+  const di=ctx.createLinearGradient(0,cy+sh/2-sh*0.2,0,cy+sh/2);
+  di.addColorStop(0,'rgba(0,0,0,0)'); di.addColorStop(1,'rgba(0,0,0,.28)');
+  ctx.fillStyle=di; ctx.fillRect(cx-sw/2,cy+sh/2-sh*0.2,sw,sh*0.2);
+  ctx.restore();
+  // 灵动岛
+  const iw=w*0.30, ih=w*0.048;
+  ctx.fillStyle='#05070d';
+  ctx.beginPath(); ctx.roundRect(cx-iw/2,cy-h/2+pad*0.9,iw,ih,ih/2); ctx.fill();
+  // Home 指示条
+  ctx.fillStyle='rgba(255,255,255,.5)';
+  const bw=w*0.34, bh=w*0.013;
+  ctx.beginPath(); ctx.roundRect(cx-bw/2,cy+h/2-pad*0.85,bw,bh,bh/2); ctx.fill();
+  ctx.restore();
+}
+
 /* ---------- Logo 图片 ---------- */
 const logo = new Image();
 logo.src = 'icon.png';
-
 function drawLogo(cx,cy,size,alpha){
   ctx.save();
   ctx.globalAlpha = alpha;
-  // 白底圆角卡片
   ctx.shadowColor='rgba(0,30,60,.55)'; ctx.shadowBlur=60;
   ctx.fillStyle='#fff';
   ctx.beginPath(); ctx.roundRect(cx-size/2,cy-size/2,size,size,size*0.22); ctx.fill();
@@ -227,18 +276,15 @@ function chip(x,y,txt){
 const SC = {intro:0, tag:3, feat:5.5, sum:23.5, outro:26, end:30};
 
 function drawBackground(t){
-  // 海洋渐变
   const g=ctx.createLinearGradient(0,0,0,H);
   g.addColorStop(0,C.bgTop); g.addColorStop(0.5,C.bgMid); g.addColorStop(1,C.bgBot);
   ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
-  // 柔光
   let rg=ctx.createRadialGradient(W*0.22+Math.sin(t*0.09)*160,H*0.26,40, W*0.22+Math.sin(t*0.09)*160,H*0.26,680);
   rg.addColorStop(0,'rgba(50,120,200,.28)'); rg.addColorStop(1,'rgba(50,120,200,0)');
   ctx.fillStyle=rg; ctx.fillRect(0,0,W,H);
   rg=ctx.createRadialGradient(W*0.82+Math.cos(t*0.07)*140,H*0.8,60, W*0.82+Math.cos(t*0.07)*140,H*0.8,760);
   rg.addColorStop(0,'rgba(30,90,160,.22)'); rg.addColorStop(1,'rgba(30,90,160,0)');
   ctx.fillStyle=rg; ctx.fillRect(0,0,W,H);
-  // 气泡
   for(const b of bub){
     const y=((b.y0 - t*b.sp*H)%H+H)%H;
     const x=b.x+Math.sin(t*0.4+b.ph)*b.dr*0.12;
@@ -246,7 +292,6 @@ function drawBackground(t){
     ctx.beginPath(); ctx.arc(x,y,b.r,0,7);
     ctx.fillStyle='rgba(255,255,255,'+a.toFixed(3)+')'; ctx.fill();
   }
-  // 暗角
   const v=ctx.createRadialGradient(W/2,H/2,H*0.45,W/2,H/2,H*0.78);
   v.addColorStop(0,'rgba(0,10,24,0)'); v.addColorStop(1,'rgba(0,10,24,.55)');
   ctx.fillStyle=v; ctx.fillRect(0,0,W,H);
@@ -261,16 +306,20 @@ function watermark(t){
 /* --- 场景 0: 封面 (0-3s) --- */
 function drawIntro(t){
   const l=t;
-  const a0=smooth(0,0.25,l), a1=1-smooth(2.55,2.9,l);
+  const a0=smooth(0,0.25,l), a1=1-smooth(2.6,2.95,l);
   const A=a0*a1;
+  // 手机从底部升起 (home 截图)
+  const phy=lerp(H+620,540,easeOutCubic(smooth(0.4,1.4,l)));
+  const phA=smooth(0.3,0.9,l);
+  drawPhone(1280,phy,410,SHOTS.home,phA*A);
   // logo
   const scale=easeOutBack(clamp(l/0.9,0,1));
   const oy=Math.sin(t*0.9)*7;
-  drawLogo(960,420+oy,250*scale,0.95*A);
+  drawLogo(600,380+oy,200*scale,0.95*A);
   // 标题
-  text('SeaWhy Lex',960,650,96,'#ffffff',{alpha:A*smooth(0.9,1.25,l),spacing:8});
+  text('SeaWhy Lex',600,620,96,'#ffffff',{alpha:A*smooth(0.9,1.25,l),spacing:8});
   // 副标题
-  text('法学生 AI 学习助手',960,742,44,C.soft,{alpha:A*smooth(1.3,1.6,l),weight:500,spacing:4});
+  text('法学生 AI 学习助手',600,712,44,C.soft,{alpha:A*smooth(1.3,1.6,l),weight:500,spacing:4});
   // 标签胶囊
   const chipsT=['AI 智能学习','法学实证驱动','开源 · 免费'];
   ctx.save(); ctx.globalAlpha=A;
@@ -278,51 +327,70 @@ function drawIntro(t){
     const ca=smooth(1.7+i*0.22,2.0+i*0.22,l);
     if(ca<=0)continue;
     ctx.save(); ctx.globalAlpha=A*ca;
-    chip(960+(i-1)*230,826,chipsT[i]);
+    chip(600+(i-1)*230,800,chipsT[i]);
     ctx.restore();
   }
   ctx.restore();
   // 底部研究依据
-  text('源自《AI法律工具失效模式与规制路径研究》',960,992,26,C.faint,
+  text('源自《AI法律工具失效模式与规制路径研究》',600,980,26,C.faint,
     {alpha:A*smooth(2.2,2.5,l),weight:400});
+  // 指向手机的标注线(手机侧)
+  const la=smooth(1.2,1.8,l);
+  if(la>0&&la<1){
+    ctx.save(); ctx.globalAlpha=A*la*0.5;
+    ctx.strokeStyle='#9bd1ff'; ctx.lineWidth=2; ctx.setLineDash([8,10]);
+    ctx.beginPath();
+    ctx.moveTo(940,430); ctx.quadraticCurveTo(1120,430,1150,560);
+    ctx.stroke(); ctx.setLineDash([]);
+    text('真实界面',1050,430,28,'#9bd1ff',{weight:500,align:'center'});
+    ctx.restore();
+  }
 }
 
 /* --- 场景 1: 核心标语 (3-5.5s) --- */
 function drawTag(t){
   const l=t-SC.tag, A=smooth(0,0.3,l)*(1-smooth(2.15,2.5,l));
+  // 手机持续展示 home 截图,轻微呼吸
+  drawPhone(1280,540+Math.sin(t*1.4)*8,430,SHOTS.home,A);
   // 主标题
-  text('让法律学习',960,470,148,'#ffffff',{alpha:A*smooth(0.15,0.55,l),spacing:6});
+  text('让法律学习',600,470,130,'#ffffff',{alpha:A*smooth(0.15,0.55,l),spacing:6});
   const g2=ctx.createLinearGradient(0,560,0,700);
   g2.addColorStop(0,'#9bd1ff'); g2.addColorStop(1,'#5dade2');
-  text('更 简 单',960,642,148,g2,{alpha:A*smooth(0.55,0.95,l),spacing:16});
+  text('更 简 单',600,634,130,g2,{alpha:A*smooth(0.55,0.95,l),spacing:16});
   // 下划线
-  const uw=lerp(0,560,easeOutCubic(smooth(0.85,1.3,l)));
+  const uw=lerp(0,520,easeOutCubic(smooth(0.85,1.3,l)));
   if(uw>0){ctx.save();ctx.globalAlpha=A*0.9;
     ctx.fillStyle='#5dade2';
-    ctx.beginPath();ctx.roundRect(960-uw/2,700,uw,8,4);ctx.fill();ctx.restore();}
+    ctx.beginPath();ctx.roundRect(600-uw/2,692,uw,8,4);ctx.fill();ctx.restore();}
   // 副标题
-  text('AI 时代 · 法学生的智能学习助手',960,800,46,C.soft,{alpha:A*smooth(1.3,1.65,l),weight:500,spacing:3});
+  text('AI 时代 · 法学生的智能学习助手',600,800,46,C.soft,{alpha:A*smooth(1.3,1.65,l),weight:500,spacing:3});
   // 三个小点
   const pts=['实证驱动','多角色人格','随时可用'];
   for(let i=0;i<3;i++){
     const a=smooth(1.55+i*0.2,1.8+i*0.2,l)*A;
     if(a<=0)continue;
     ctx.save(); ctx.globalAlpha=a;
-    text('· '+pts[i],960+(i-1)*250,880,32,C.bright,{weight:500,align:'center'});
+    text('· '+pts[i],600+(i-1)*240,872,32,C.bright,{weight:500,align:'center'});
     ctx.restore();
   }
 }
 
-/* --- 场景 2: 功能模块 (5.5-23.5s) --- */
+/* --- 场景 2: 功能模块 (5.5-23.5s) 手机 + 真实截图 --- */
 function drawFeature(t){
   const base=SC.feat, span=2.25;
   const idx=Math.min(7,Math.floor((t-base)/span));
   const l=t-base-idx*span;
   const f=FEATURES[idx];
-  const cx=lerp(1240,960,easeOutCubic(smooth(0,0.45,l)));
-  const yB=560-smooth(1.85,2.25,l)*34;
   const cardA=smooth(0,0.3,l)*(1-smooth(1.95,2.25,l));
-  const wCard=1080,hCard=430;
+  const slide=easeOutCubic(smooth(0.25,0.8,l));        // 手机自下方滑入
+  const breathe=1+Math.sin(t*1.3)*0.006;
+  // 手机:居中偏右,切图时给一个轻微缩放脉冲(新截图直接呈现)
+  const pulse=1+0.015*Math.sin(Math.min(1,l/0.35)*Math.PI);
+  const phY=lerp(H+560,540,slide);
+  drawPhone(1250,phY,440*pulse,SHOTS[f.img],cardA);
+  const cx=740;
+  const yB=560-smooth(1.85,2.25,l)*34;
+  const wCard=980,hCard=430;
   // 卡片
   ctx.save(); ctx.globalAlpha=cardA;
   ctx.shadowColor='rgba(0,20,45,.5)'; ctx.shadowBlur=48;
@@ -336,7 +404,6 @@ function drawFeature(t){
   const sTile=200;
   const tilePop=easeOutBack(clamp((l-0.22)/0.42,0,1));
   const ringP=smooth(0.22,1.3,l);
-  // 脉冲环
   if(ringP>0&&ringP<1){ctx.save();ctx.globalAlpha=cardA*(1-ringP)*0.5;
     ctx.strokeStyle='#9bd1ff';ctx.lineWidth=3;
     ctx.beginPath();ctx.arc(cx-wCard/2+sTile/2,yB,sTile*0.62*ringP+8,0,7);ctx.stroke();ctx.restore();}
@@ -384,14 +451,19 @@ function drawFeature(t){
 /* --- 场景 3: 总结汇聚 (23.5-26s) --- */
 function drawSummary(t){
   const l=t-SC.sum, A=smooth(0,0.3,l)*(1-smooth(2.15,2.5,l));
+  // 手机缩小居中
+  const pA=smooth(0,0.4,l)*(1-smooth(2.0,2.4,l));
+  drawPhone(1380,540,300*pA+430*(1-pA),SHOTS.home,A);
+  // 8 个功能小图标汇聚到左侧卡片墙
   const p=easeOutCubic(smooth(0.4,1.7,l));
   for(let i=0;i<8;i++){
     const f=FEATURES[i];
-    const dstX=960+(i-3.5)*150, dstY=470;
+    const col=i%4, row=Math.floor(i/4);
+    const dstX=180+col*210, dstY=470+(row-0.5)*220;
     const srcX=i<4? -180-i*150 : W+180+(7-i)*150;
     const srcY=390+rnd(i)*120-60;
     const x=lerp(srcX,dstX,p), y=lerp(srcY,dstY,p);
-    const s=86;
+    const s=96;
     const tg=ctx.createLinearGradient(0,y-s/2,0,y+s/2);
     tg.addColorStop(0,f.grad[0]); tg.addColorStop(1,f.grad[1]);
     ctx.save(); ctx.globalAlpha=A*p;
@@ -399,19 +471,19 @@ function drawSummary(t){
     ctx.fillStyle=tg;
     ctx.beginPath(); ctx.roundRect(x-s/2,y-s/2,s,s,24); ctx.fill();
     ctx.shadowBlur=0;
-    drawIcon(f.icon,x,y,26);
+    drawIcon(f.icon,x,y,28);
     ctx.restore();
   }
-  text('一站式法学生态',960,760,96,'#ffffff',{alpha:A*smooth(1.15,1.55,l),spacing:6,weight:800});
-  text('从法条到案例 · 从题海到实战',960,856,42,C.soft,{alpha:A*smooth(1.5,1.85,l),weight:500,spacing:3});
+  text('一站式法学生态',1040,620,96,'#ffffff',{alpha:A*smooth(1.15,1.55,l),spacing:6,weight:800});
+  text('从法条到案例 · 从题海到实战',1040,716,42,C.soft,{alpha:A*smooth(1.5,1.85,l),weight:500,spacing:3});
 }
 
 /* --- 场景 4: 收尾 (26-30s) --- */
 function drawOutro(t){
   const l=t-SC.outro, A=smooth(0,0.25,l);
-  drawLogo(960,400,210,easeOutBack(clamp(l/0.5,0,1))*0.95*A);
-  text('SeaWhy Lex',960,592,96,'#ffffff',{alpha:A*smooth(0.4,0.75,l),spacing:8});
-  text('免费 · 开源 · 即刻体验',960,686,44,C.soft,{alpha:A*smooth(0.7,1.0,l),weight:500,spacing:4});
+  drawLogo(960,380,210,easeOutBack(clamp(l/0.5,0,1))*0.95*A);
+  text('SeaWhy Lex',960,572,96,'#ffffff',{alpha:A*smooth(0.4,0.75,l),spacing:8});
+  text('免费 · 开源 · 即刻体验',960,666,44,C.soft,{alpha:A*smooth(0.7,1.0,l),weight:500,spacing:4});
   // URL 胶囊
   const ua=A*smooth(1.0,1.3,l);
   if(ua>0){
@@ -420,14 +492,13 @@ function drawOutro(t){
     const uw=ctx.measureText('seawhy-ai.github.io/LexPilot').width+70;
     ctx.fillStyle='rgba(10,35,66,.75)';
     ctx.strokeStyle='rgba(255,255,255,.25)'; ctx.lineWidth=2;
-    ctx.beginPath(); ctx.roundRect(960-uw/2,740-34,uw,68,34); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.roundRect(960-uw/2,720-34,uw,68,34); ctx.fill(); ctx.stroke();
     ctx.fillStyle='#9bd1ff';
     ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText('seawhy-ai.github.io/LexPilot',960,744);
+    ctx.fillText('seawhy-ai.github.io/LexPilot',960,724);
     ctx.restore();
   }
   text('Made with ❤️ for 法学生',960,992,28,C.faint,{alpha:A*smooth(1.6,1.9,l),weight:400});
-  // 结尾淡出黑幕
   const fad=smooth(3.35,3.95,l);
   if(fad>0){ctx.fillStyle='rgba(2,8,18,'+fad.toFixed(3)+')';ctx.fillRect(0,0,W,H);}
 }
@@ -442,7 +513,6 @@ function frame(t){
   else if(t<SC.outro)     drawSummary(t);
   else                    drawOutro(t);
   watermark(t);
-  // 底部总进度
   const pw=(t/DUR)*W;
   ctx.fillStyle='rgba(255,255,255,.08)'; ctx.fillRect(0,H-6,W,6);
   const pg=ctx.createLinearGradient(0,0,W,0);
@@ -455,13 +525,14 @@ function frame(t){
 let curT=0;
 function setPromoTime(t){ frame(Number(t)); return curT; }
 window.setPromoTime=setPromoTime;
+window.SHOTS_READY = ()=> SHOT_NAMES.every(n=>SHOTS[n].complete && SHOTS[n].naturalWidth>0);
 
 /* ---------- 浏览器实时预览 (无 ?t= 时自动播放) ---------- */
 const ui=document.getElementById('ui');
 let playing=true, last=0;
 const params=new URLSearchParams(location.search);
 if(params.get('t')!=null){ setPromoTime(parseFloat(params.get('t'))); playing=false; }
-if(params.get('render')!=null){ ui.style.display='none'; }   // 视频渲染时隐藏调试 UI
+if(params.get('render')!=null){ ui.style.display='none'; }
 function loop(ts){
   if(playing){ setPromoTime(((ts/1000)%(DUR+1.2))); }
   const fr=Math.floor(curT*FPS);
