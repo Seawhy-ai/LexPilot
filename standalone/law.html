@@ -795,6 +795,38 @@
     .sf-week{width:34px;height:34px;border-radius:50%;border:1px solid var(--card-border);background:var(--input-bg);color:var(--text);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;display:flex;align-items:center;justify-content:center}
     .sf-week.on{background:var(--accent);color:#fff;border-color:var(--accent)}
     .sf-week:active{transform:scale(.94)}
+    #scheduleAppearanceView{flex:1;display:none!important;flex-direction:column;overflow:hidden;background:var(--bg)}
+    #scheduleAppearanceView.show{display:flex!important}
+    .sch-week{position:relative}
+    .sch-sticker{user-select:none;-webkit-user-select:none}
+    .app-btn-row{display:flex;gap:8px;flex-wrap:wrap}
+    .app-btn{flex:1;min-width:0;padding:9px 10px;border:1px solid var(--card-border);border-radius:10px;background:var(--input-bg);color:var(--text);font-size:13px;cursor:pointer;font-family:inherit;white-space:nowrap}
+    .app-btn.on{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600}
+    .app-preview-grid{display:grid;grid-template-columns:repeat(5,1fr);grid-auto-rows:30px;gap:3px;padding:6px;border-radius:12px;margin-top:6px}
+    .app-pv-head{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#666;background:rgba(255,255,255,0.6);border-radius:6px}
+    .app-pv-cell{display:flex;align-items:center;justify-content:center;font-size:10px;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+    .app-pv-empty{background:rgba(255,255,255,0.35);border-radius:6px}
+    .ss-time-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+    .ss-time-idx{width:44px;flex-shrink:0;font-size:12px;color:var(--text2)}
+    .ss-time-input{flex:1;min-width:0;padding:8px;border:1px solid var(--card-border);border-radius:10px;background:var(--input-bg);color:var(--text);font-size:13px;font-family:inherit}
+    .ss-time-sep{color:var(--text2);font-size:12px}
+    .ss-note{font-size:11px;color:var(--text2);line-height:1.5}
+    /* 课表深色模式 */
+    #scheduleView.sch-dark{background:#16181d}
+    #scheduleView.sch-dark .schedule-nav{background:#1f232b;border-bottom-color:#2a2f3a}
+    #scheduleView.sch-dark .schedule-nav .sch-week-label{color:#e8ebf2}
+    #scheduleView.sch-dark .sch-week-date,#scheduleView.sch-dark .sch-today-date{color:#8a92a3}
+    #scheduleView.sch-dark .sch-set-btn{background:#2a2f3a;color:#cbd3e0}
+    #scheduleView.sch-dark .sch-set-btn:active{background:#353b48}
+    #scheduleView.sch-dark .sch-add-btn{background:#e8ebf2;color:#111}
+    #scheduleView.sch-dark .schedule-grid{background:#1f232b}
+    #scheduleView.sch-dark .sch-corner,#scheduleView.sch-dark .sch-dayhead,#scheduleView.sch-dark .sch-time,#scheduleView.sch-dark .sch-empty{background:#1f232b}
+    #scheduleView.sch-dark .sch-corner{color:#8a92a3}
+    #scheduleView.sch-dark .sch-dayhead{color:#e8ebf2}
+    #scheduleView.sch-dark .sch-dayhead span{color:#7c8495}
+    #scheduleView.sch-dark .sch-time{color:#b7bfce}
+    #scheduleView.sch-dark .sch-time span{color:#6a7180}
+    #scheduleView.sch-dark .sch-empty:active{background:#2a2f3a}
     .sf-save{flex:1;padding:10px;border:none;border-radius:10px;background:#111;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
     .sf-cancel{flex:1;padding:10px;border:1px solid var(--card-border);border-radius:10px;background:var(--input-bg);color:var(--text);font-size:13px;cursor:pointer;font-family:inherit}
     .sf-del{flex:1;padding:10px;border:none;border-radius:10px;background:#e74c3c;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
@@ -1247,6 +1279,7 @@
     <div class="nav-right">
       <button class="sch-add-btn" onclick="addScheduleCourse(0,1)">＋新增</button>
       <button class="sch-set-btn" onclick="openScheduleImport()" title="导入课表"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
+      <button class="sch-set-btn" onclick="openScheduleAppearance()" title="课表外观"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a10 10 0 1 1 10-10c0 1.66-1.34 3-3 3h-2a3 3 0 0 0-3 3c0 .72.27 1.45.8 2 .53.55.2 2-1.8 2z"/><circle cx="7.5" cy="11.5" r="1"/><circle cx="11" cy="7.5" r="1"/><circle cx="16.5" cy="9.5" r="1"/></svg></button>
       <button class="sch-set-btn" onclick="openScheduleSettings()" title="课表设置"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
     </div>
   </div>
@@ -1281,7 +1314,120 @@
       <label class="sf-label">学期开始日期（第1周周一）</label>
       <input type="date" id="ssSemesterStart" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid var(--card-border);border-radius:10px;background:var(--input-bg);color:var(--text);font-size:14px;font-family:inherit" />
     </div>
+    <div class="ss-card">
+      <label class="sf-label">学期管理</label>
+      <select id="ssSemSelect" onchange="switchScheduleSem(this.value)" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid var(--card-border);border-radius:10px;background:var(--input-bg);color:var(--text);font-size:14px;font-family:inherit;margin-bottom:8px"></select>
+      <div style="display:flex;gap:8px">
+        <input id="ssSemName" type="text" maxlength="20" placeholder="学期名称，如：2025-2026学年第一学期" style="flex:1;min-width:0;box-sizing:border-box;padding:9px 12px;border:1px solid var(--card-border);border-radius:10px;background:var(--input-bg);color:var(--text);font-size:13px;outline:none;font-family:inherit" />
+        <button class="sf-save" style="flex:0 0 auto;padding:8px 14px" onclick="saveScheduleSemName()">重命名</button>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="sf-save" style="flex:1;padding:8px;font-size:12px" onclick="addScheduleSem()">＋ 新增学期</button>
+        <button class="sf-del" style="flex:1;padding:8px;font-size:12px" onclick="delScheduleSem()">删除当前</button>
+      </div>
+      <div class="ss-note" id="ssSemInfo" style="font-size:11px;color:var(--text2);margin-top:8px"></div>
+    </div>
+    <div class="ss-card">
+      <label class="sf-label">节次时间（自定义每节起止，影响课表显示）</label>
+      <div id="ssTimesList"></div>
+    </div>
+    <div class="ss-card">
+      <label class="sf-label">强调色</label>
+      <div id="ssAccentSwatches" style="display:flex;flex-wrap:wrap;gap:5px"></div>
+    </div>
+    <div class="ss-card">
+      <label class="sf-label">数据管理</label>
+      <button class="sf-save" style="width:100%;padding:10px;font-size:13px;margin-bottom:8px;background:#111" onclick="exportScheduleBackup()">💾 导出全部数据备份</button>
+      <button class="sf-save" style="width:100%;padding:10px;font-size:13px;margin-bottom:8px;background:#111" onclick="document.getElementById('ssBackupInput').click()">📥 导入备份文件</button>
+      <input type="file" id="ssBackupInput" accept=".json" style="display:none" onchange="importScheduleBackup(this)" />
+      <button class="sf-del" style="width:100%;padding:10px;font-size:13px" onclick="clearAllCourses()">🗑 一键清空当前学期课程</button>
+    </div>
     <button class="ss-save" onclick="saveScheduleSettings()">保存设置</button>
+  </div>
+</div>
+
+<!-- ===== SCHEDULE APPEARANCE VIEW ===== -->
+<div id="scheduleAppearanceView" style="display:none">
+  <div class="wx-nav">
+    <button class="back" onclick="closeScheduleAppearance()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span class="title">课表外观</span>
+  </div>
+  <div class="points-body">
+    <div class="ss-card">
+      <label class="sf-label">实时预览</label>
+      <div id="appPreview"></div>
+    </div>
+    <div class="ss-card">
+      <label class="sf-label">背景</label>
+      <div class="app-btn-row" id="appBgGroup">
+        <button class="app-btn" data-val="default" onclick="setAppField('bgType','default')">默认</button>
+        <button class="app-btn" data-val="color" onclick="setAppField('bgType','color')">纯色</button>
+        <button class="app-btn" data-val="image" onclick="setAppField('bgType','image')">图片</button>
+      </div>
+      <div id="appBgSwatches" style="display:flex;flex-wrap:wrap;gap:5px;margin-top:8px"></div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="sf-save" style="flex:1;padding:8px;font-size:12px" onclick="appPickBgImage()">🖼 选择图片</button>
+        <button class="sf-cancel" style="flex:1;padding:8px;font-size:12px" onclick="appClearBgImage()">移除图片</button>
+      </div>
+      <input type="file" id="appBgInput" accept="image/*" style="display:none" onchange="appBgImageChanged(this)" />
+    </div>
+    <div class="ss-card">
+      <label class="sf-label">课程文字颜色</label>
+      <div id="appTextSwatches" style="display:flex;flex-wrap:wrap;gap:5px"></div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:6px">
+        <label class="sf-label" style="margin:0">自定义</label>
+        <input type="color" id="appTextCustom" style="width:32px;height:32px;border:none;background:none;cursor:pointer;padding:0" onchange="appTextCustomPick()" />
+      </div>
+      <label class="sf-label" style="margin-top:12px">课程文字大小</label>
+      <input type="range" id="appTextSize" min="12" max="24" step="1" value="13" style="width:100%;accent-color:var(--accent)" oninput="appTextSizeIn()" />
+      <div class="ss-val" id="appTextSizeVal">13px</div>
+      <label class="sf-label" style="margin-top:12px">颜色来源</label>
+      <div class="app-btn-row" id="appColorModeGroup">
+        <button class="app-btn" data-val="course" onclick="setAppField('colorMode','course')">跟随课程色</button>
+        <button class="app-btn" data-val="unified" onclick="setAppField('colorMode','unified')">统一颜色</button>
+      </div>
+      <div id="appUnifiedSwatches" style="display:flex;flex-wrap:wrap;gap:5px;margin-top:8px"></div>
+    </div>
+    <div class="ss-card">
+      <label class="sf-label">格子边框</label>
+      <div class="app-btn-row" id="appBorderStyleGroup">
+        <button class="app-btn" data-val="none" onclick="setAppField('borderStyle','none')">无边框</button>
+        <button class="app-btn" data-val="solid" onclick="setAppField('borderStyle','solid')">实线</button>
+        <button class="app-btn" data-val="dashed" onclick="setAppField('borderStyle','dashed')">虚线</button>
+      </div>
+      <div id="appBorderSwatches" style="display:flex;flex-wrap:wrap;gap:5px;margin-top:8px"></div>
+      <label class="sf-label" style="margin-top:12px">边框粗细</label>
+      <input type="range" id="appBorderWidth" min="0" max="4" step="0.5" value="0" style="width:100%;accent-color:var(--accent)" oninput="appBorderWidthIn()" />
+      <div class="ss-val" id="appBorderWidthVal">0dp</div>
+    </div>
+    <div class="ss-card">
+      <label class="sf-label">字体</label>
+      <div class="app-btn-row" id="appFontGroup">
+        <button class="app-btn" data-val="default" onclick="setAppField('fontFamily','default')">系统默认</button>
+        <button class="app-btn" data-val="sans" onclick="setAppField('fontFamily','sans')">无衬线</button>
+        <button class="app-btn" data-val="serif" onclick="setAppField('fontFamily','serif')">衬线</button>
+        <button class="app-btn" data-val="mono" onclick="setAppField('fontFamily','mono')">等宽</button>
+      </div>
+    </div>
+    <div class="ss-card">
+      <label class="sf-label">贴纸（固定四角）</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <select id="appSticker0" onchange="appStickerIn(0)" style="flex:1;min-width:64px;padding:8px;border:1px solid var(--card-border);border-radius:10px;background:var(--input-bg);color:var(--text);font-size:14px;font-family:inherit"></select>
+        <select id="appSticker1" onchange="appStickerIn(1)" style="flex:1;min-width:64px;padding:8px;border:1px solid var(--card-border);border-radius:10px;background:var(--input-bg);color:var(--text);font-size:14px;font-family:inherit"></select>
+        <select id="appSticker2" onchange="appStickerIn(2)" style="flex:1;min-width:64px;padding:8px;border:1px solid var(--card-border);border-radius:10px;background:var(--input-bg);color:var(--text);font-size:14px;font-family:inherit"></select>
+        <select id="appSticker3" onchange="appStickerIn(3)" style="flex:1;min-width:64px;padding:8px;border:1px solid var(--card-border);border-radius:10px;background:var(--input-bg);color:var(--text);font-size:14px;font-family:inherit"></select>
+      </div>
+      <div class="ss-note" style="font-size:11px;color:var(--text2);margin-top:8px">依次对应课表 左上 / 右上 / 左下 / 右下 角</div>
+    </div>
+    <div class="ss-card">
+      <label class="sf-label">深色模式</label>
+      <div class="app-btn-row" id="appThemeGroup">
+        <button class="app-btn" data-val="auto" onclick="setAppField('themeMode','auto')">跟随系统</button>
+        <button class="app-btn" data-val="light" onclick="setAppField('themeMode','light')">始终浅色</button>
+        <button class="app-btn" data-val="dark" onclick="setAppField('themeMode','dark')">始终深色</button>
+      </div>
+    </div>
+    <button class="ss-save" style="background:linear-gradient(135deg,#e04f4f,#c0392b);margin-top:4px" onclick="resetScheduleAppearance()">恢复默认外观</button>
   </div>
 </div>
 
@@ -2354,7 +2500,7 @@ function checkLoginState() {
 }
 
 function showLoginScreen() {
-  ["homeScreen","chatView","dbView","aboutView","quizView","docView","caseView","caseDetail","learnCenterView","materialsView","notebookView","plazaView","noteDetailView","profileView","pointsView","scheduleView","scheduleSettingsView","videoView"].forEach(function(id) {
+  ["homeScreen","chatView","dbView","aboutView","quizView","docView","caseView","caseDetail","learnCenterView","materialsView","notebookView","plazaView","noteDetailView","profileView","pointsView","scheduleView","scheduleSettingsView","scheduleAppearanceView","videoView"].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) { el.classList.remove("show"); el.style.display = "none"; }
   });
@@ -2721,11 +2867,12 @@ try { applyBubbleStyle(); } catch(e) {}
 // ============================================================
 // AUTO CHANGELOG — 自动更新日志系统
 // ============================================================
-var APP_VERSION = "v3.1.0";
-var APP_VERSION_DATE = "2026.08.09";
+var APP_VERSION = "v3.2.0";
+var APP_VERSION_DATE = "2026.08.16";
 var CHANGELOG_KEY = "seawhy-lex-changelog";
 
 var DEFAULT_CHANGELOG = [
+  { ver: "v3.2.0", date: "2026.08.16", notes: "课程表升级：课表外观高度自定义（背景/文字/边框/字体/贴纸/深色模式）、多学期管理与节次时间自定义、JSON/分享码导入导出与数据备份" },
   { ver: "v3.1.0", date: "2026.08.09", notes: "新增课程表，支持自定义创建大学课程表" },
   { ver: "v3.0.0", date: "2026.08.08", notes: "新增等级与积分系统，支持完成任务赚积分、积分升级换好礼；VIP权益正式上线；主页欢迎语优化升级" },
   { ver: "v2.5.5", date: "2026.08.05", notes: "新增主界面打卡和每日待办功能" },
@@ -3447,6 +3594,26 @@ var SCHEDULE_DAYS = ["周一", "周二", "周三", "周四", "周五", "周六",
 var SCHEDULE_TIMES = ["08:30", "09:20", "10:25", "11:15", "14:00", "14:50", "15:55", "16:45", "19:00", "19:50"];
 var SCHEDULE_ENDTIMES = ["09:15", "10:05", "11:10", "12:00", "14:45", "15:35", "16:40", "17:30", "19:45", "20:35"];
 var SCHEDULE_COLORS = ["#FFB300", "#4CAF50", "#7E57C2", "#EC407A", "#29B6F6", "#FF7043", "#E53935", "#00897B", "#F06292", "#8D6E63", "#5C6BC0", "#26A69A"];
+var SCHEDULE_BG_COLORS = ["#FFFFFF", "#FFF3E0", "#FFEBEE", "#F3E5F5", "#E8F5E9", "#E3F2FD", "#FFF8E1", "#FBE9E7", "#E0F7FA", "#EFEBE9", "#F1F8E9", "#FCE4EC"];
+var SCHEDULE_TEXT_COLORS = ["#FFFFFF", "#111111", "#E53935", "#4CAF50", "#1565C0", "#7E57C2", "#FF8F00", "#00897B"];
+var SCHEDULE_ACCENT_COLORS = ["#667EEA", "#4A90D9", "#4CAF50", "#FF7043", "#EC407A", "#FFB300", "#7E57C2", "#26A69A"];
+var SCHEDULE_STICKERS = ["📚", "✏️", "🎯", "💡", "⭐", "🎨", "🏆", "🔥"];
+var SCHEDULE_FONTS = {
+  "default": "inherit",
+  "sans": "system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif",
+  "serif": "Georgia, 'Times New Roman', 'Songti SC', 'SimSun', serif",
+  "mono": "'Courier New', Consolas, monospace"
+};
+var SCHEDULE_APPEAR_DEFAULTS = {
+  bgType: "default", bgColor: "#FFFFFF", bgImage: "",
+  textColor: "#FFFFFF", textSize: 13,
+  colorMode: "course", unifiedColor: "#FFB300",
+  borderStyle: "none", borderColor: "#FFFFFF", borderWidth: 0,
+  fontFamily: "default",
+  stickers: ["", "", "", ""],
+  themeMode: "auto",
+  accentColor: ""
+};
 
 function loadSchedule() {
   try {
@@ -3475,8 +3642,23 @@ function loadSchedule() {
       }
     }
     if (!d.currentWeek) d.currentWeek = 1;
+    // 多学期迁移:无 semesters 时建默认学期,旧课程补 semId
+    if (!Array.isArray(d.semesters) || !d.semesters.length) {
+      d.semesters = [{ id: 1, name: d.semesterName || "默认学期" }];
+      delete d.semesterName;
+      d.currentSem = 1;
+      for (var si2 = 0; si2 < d.courses.length; si2++) if (d.courses[si2].semId == null) d.courses[si2].semId = 1;
+    }
+    if (d.currentSem == null) d.currentSem = d.semesters[0].id;
+    // 外观字段默认值合并(向后兼容)
+    var apK = Object.keys(SCHEDULE_APPEAR_DEFAULTS);
+    for (var ak = 0; ak < apK.length; ak++) if (d[apK[ak]] === undefined) d[apK[ak]] = SCHEDULE_APPEAR_DEFAULTS[apK[ak]];
     return d;
-  } catch (e) { return { courses: [], currentWeek: 1 }; }
+  } catch (e) {
+    var e0 = { courses: [], currentWeek: 1 };
+    for (var ek in SCHEDULE_APPEAR_DEFAULTS) e0[ek] = SCHEDULE_APPEAR_DEFAULTS[ek];
+    return e0;
+  }
 }
 function saveSchedule(s) { try { localStorage.setItem(SCHEDULE_KEY, JSON.stringify(s)); } catch (e) {} }
 function hexToRgba(hex, a) {
@@ -3490,7 +3672,9 @@ function getCourseWeeks(c) {
   return w;
 }
 function getVisibleCourses(d, week) {
+  var sem = d.currentSem;
   return d.courses.filter(function(c) {
+    if (c.semId != null && c.semId !== sem) return false;
     return getCourseWeeks(c).indexOf(week) >= 0;
   });
 }
@@ -3523,6 +3707,8 @@ function showSchedule() {
   hideAllViews();
   document.getElementById("scheduleView").style.display = "";
   document.getElementById("scheduleView").classList.add("show");
+  applyScheduleTheme();
+  applyScheduleAccent();
   // 时间轴横向滚动：滑动到哪个周，顶部栏跟随更新（原生滚动跟手无缝）
   var tl = document.getElementById("scheduleTimeline");
   if (tl && !tl.dataset.bound) {
@@ -3567,6 +3753,8 @@ function renderScheduleView() {
   var d = loadSchedule();
   var week = d.currentWeek;
   var dates = getWeekDates(week);
+  applyScheduleTheme();
+  applyScheduleAccent();
   document.getElementById("scheduleWeekLabel").textContent = "第 " + week + " 周";
   document.getElementById("scheduleDateRange").textContent = fmtSchDate(dates[0]) + " — " + fmtSchDate(dates[6]);
   var st = getTodayWeekStatus();
@@ -3606,6 +3794,10 @@ function renderScheduleSettings() {
       dEl.value = dt.getFullYear() + "-" + ("0" + (dt.getMonth() + 1)).slice(-2) + "-" + ("0" + dt.getDate()).slice(-2);
     } else { dEl.value = ""; }
   }
+  renderSemesterControls();
+  renderScheduleTimes();
+  renderAccentSwatches();
+  applyScheduleAccent();
 }
 function saveScheduleSettings() {
   var d = loadSchedule();
@@ -3617,9 +3809,460 @@ function saveScheduleSettings() {
   if (!isNaN(rd)) d.cardRadius = rd;
   var dEl = document.getElementById("ssSemesterStart");
   if (dEl && dEl.value) d.semesterStart = new Date(dEl.value + "T00:00:00").getTime();
+  var nt = [];
+  for (var ti = 0; ti < 10; ti++) {
+    var sEl = document.getElementById("ssT" + ti + "S");
+    var eEl = document.getElementById("ssT" + ti + "E");
+    if (sEl && eEl) nt.push([sEl.value || SCHEDULE_TIMES[ti], eEl.value || SCHEDULE_ENDTIMES[ti]]);
+  }
+  if (nt.length === 10) d.times = nt;
   saveSchedule(d);
   showToast("课表设置已保存");
   closeScheduleSettings();
+}
+
+// ===== 课表外观 + 学期 + 节次时间 + 数据管理 =====
+function applyScheduleTheme() {
+  var d = loadSchedule();
+  var dark = d.themeMode === "dark" || (d.themeMode === "auto" && userTheme === "dark");
+  var el = document.getElementById("scheduleView");
+  if (el) el.classList.toggle("sch-dark", dark);
+}
+function applyScheduleAccent() {
+  var d = loadSchedule();
+  var accent = d.accentColor || "";
+  ["scheduleView", "scheduleSettingsView", "scheduleAppearanceView"].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    if (accent) el.style.setProperty("--accent", accent);
+    else el.style.removeProperty("--accent");
+  });
+}
+function downloadFile(name, content, mime) {
+  var blob = new Blob([content], { type: mime || "application/json" });
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(function() { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+}
+
+// ---- 学期管理 ----
+function getScheduleSem(d, id) {
+  for (var i = 0; i < d.semesters.length; i++) if (d.semesters[i].id === id) return d.semesters[i];
+  return d.semesters[0];
+}
+function renderSemesterControls() {
+  var d = loadSchedule();
+  var sel = document.getElementById("ssSemSelect");
+  if (sel) {
+    var html = "";
+    for (var i = 0; i < d.semesters.length; i++) {
+      var s = d.semesters[i];
+      html += '<option value="' + s.id + '"' + (s.id === d.currentSem ? " selected" : "") + '>' + escHtml(s.name) + '</option>';
+    }
+    sel.innerHTML = html;
+  }
+  var cur = getScheduleSem(d, d.currentSem);
+  var nameEl = document.getElementById("ssSemName");
+  if (nameEl) nameEl.value = cur ? cur.name : "";
+  var info = document.getElementById("ssSemInfo");
+  if (info) {
+    var cnt = 0;
+    for (var j = 0; j < d.courses.length; j++) if (d.courses[j].semId === d.currentSem) cnt++;
+    info.textContent = "当前学期课程 " + cnt + " 门" + (d.semesters.length > 1 ? " · 共 " + d.semesters.length + " 个学期" : "");
+  }
+}
+function switchScheduleSem(id) {
+  var d = loadSchedule();
+  d.currentSem = parseInt(id, 10);
+  saveSchedule(d);
+  renderSemesterControls();
+  showToast("已切换学期");
+}
+function saveScheduleSemName() {
+  var d = loadSchedule();
+  var s = getScheduleSem(d, d.currentSem);
+  var nameEl = document.getElementById("ssSemName");
+  var name = nameEl ? nameEl.value.trim() : "";
+  if (!name) { showToast("请输入学期名称"); return; }
+  if (s) s.name = name;
+  saveSchedule(d);
+  renderSemesterControls();
+  showToast("学期已重命名");
+}
+function addScheduleSem() {
+  var d = loadSchedule();
+  var maxId = 0;
+  for (var i = 0; i < d.semesters.length; i++) if (d.semesters[i].id > maxId) maxId = d.semesters[i].id;
+  var id = maxId + 1;
+  d.semesters.push({ id: id, name: "新学期" + id });
+  saveSchedule(d);
+  renderSemesterControls();
+  showToast("已新增学期");
+}
+function delScheduleSem() {
+  var d = loadSchedule();
+  if (d.semesters.length <= 1) { showToast("至少保留一个学期"); return; }
+  if (!confirm("删除当前学期及其全部课程？")) return;
+  var id = d.currentSem;
+  d.semesters = d.semesters.filter(function(s) { return s.id !== id; });
+  d.courses = d.courses.filter(function(c) { return c.semId !== id; });
+  if (d.semesters.length) d.currentSem = d.semesters[0].id;
+  saveSchedule(d);
+  renderSemesterControls();
+  showToast("学期已删除");
+}
+
+// ---- 节次时间 ----
+function renderScheduleTimes() {
+  var d = loadSchedule();
+  var el = document.getElementById("ssTimesList");
+  if (!el) return;
+  var times = getScheduleTimes(d);
+  var html = "";
+  for (var ti = 0; ti < 10; ti++) {
+    html += '<div class="ss-time-row">' +
+      '<span class="ss-time-idx">第' + (ti + 1) + '节</span>' +
+      '<input type="time" id="ssT' + ti + 'S" value="' + times[ti][0] + '" class="ss-time-input" />' +
+      '<span class="ss-time-sep">—</span>' +
+      '<input type="time" id="ssT' + ti + 'E" value="' + times[ti][1] + '" class="ss-time-input" />' +
+      '</div>';
+  }
+  el.innerHTML = html;
+}
+function renderAccentSwatches() {
+  var d = loadSchedule();
+  var el = document.getElementById("ssAccentSwatches");
+  if (!el) return;
+  var active = d.accentColor || "";
+  var html = "";
+  for (var i = 0; i < SCHEDULE_ACCENT_COLORS.length; i++) {
+    var col = SCHEDULE_ACCENT_COLORS[i];
+    html += '<button type="button" data-col="' + col + '" style="width:26px;height:26px;border-radius:50%;border:2px solid ' + (col === active ? "#111" : "transparent") + ';background:' + col + ';cursor:pointer;margin:3px"></button>';
+  }
+  el.innerHTML = html;
+  var btns = el.querySelectorAll("button");
+  for (var j = 0; j < btns.length; j++) btns[j].onclick = function() { pickScheduleAccent(this.getAttribute("data-col")); };
+}
+function pickScheduleAccent(col) {
+  var d = loadSchedule();
+  d.accentColor = col;
+  saveSchedule(d);
+  renderAccentSwatches();
+  applyScheduleAccent();
+  showToast("强调色已更新");
+}
+
+// ---- 数据管理 ----
+function exportScheduleJson() {
+  var d = loadSchedule();
+  var courses = d.courses.filter(function(c) { return c.semId === d.currentSem; });
+  var name = (getScheduleSem(d, d.currentSem).name || "课表").replace(/[\\/:*?"<>|]/g, "_");
+  downloadFile("课表_" + name + "_" + new Date().toISOString().slice(0, 10) + ".json", JSON.stringify(courses, null, 2));
+  showToast("已导出 " + courses.length + " 门课程");
+}
+function exportScheduleBackup() {
+  var d = loadSchedule();
+  downloadFile("课表备份_" + new Date().toISOString().slice(0, 10) + ".json", JSON.stringify(d, null, 2));
+  showToast("备份已导出");
+}
+function importScheduleBackup(input) {
+  var file = input.files && input.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function() {
+    try {
+      var obj = JSON.parse(reader.result);
+      if (!obj || !Array.isArray(obj.courses)) { showToast("备份文件格式不正确"); return; }
+      if (!confirm("导入备份将覆盖当前全部课表数据，是否继续？")) return;
+      localStorage.setItem(SCHEDULE_KEY, JSON.stringify(obj));
+      loadSchedule();
+      showToast("备份已导入");
+      closeScheduleSettings();
+      showSchedule();
+    } catch (e) { showToast("备份导入失败：" + e.message); }
+  };
+  reader.readAsText(file);
+}
+function clearAllCourses() {
+  if (!confirm("确定清空当前学期全部课程？此操作不可恢复。")) return;
+  var d = loadSchedule();
+  d.courses = d.courses.filter(function(c) { return c.semId !== d.currentSem; });
+  saveSchedule(d);
+  renderScheduleSettings();
+  showToast("当前学期课程已清空");
+}
+
+// ---- 数据导入导出（适配器模式：Json / 分享码 / 文本 / HTML占位） ----
+function b64EncodeJson(obj) { return btoa(unescape(encodeURIComponent(JSON.stringify(obj)))); }
+function b64DecodeJson(str) { return JSON.parse(decodeURIComponent(escape(atob(str.replace(/\s+/g, ""))))); }
+var ScheduleImporter = {
+  fromJson: function(jsonStr) {
+    var arr = JSON.parse(jsonStr);
+    if (!Array.isArray(arr)) throw new Error("JSON 不是课程数组");
+    var d = loadSchedule();
+    var out = [];
+    for (var i = 0; i < arr.length; i++) {
+      var c = arr[i];
+      if (!c || c.name == null || c.day == null) continue;
+      var start = Math.max(1, Math.min(10, parseInt(c.start, 10) || 1));
+      var end = Math.max(start, Math.min(10, parseInt(c.end, 10) || start));
+      out.push({
+        day: Math.max(0, Math.min(6, parseInt(c.day, 10) || 0)),
+        start: start, end: end,
+        name: String(c.name || "").slice(0, 20),
+        loc: String(c.loc || "").slice(0, 12),
+        color: parseInt(c.color, 10) || 0,
+        weeks: Array.isArray(c.weeks) && c.weeks.length ? c.weeks.map(function(w) { return Math.max(1, Math.min(20, parseInt(w, 10) || 1)); }) : allWeeks(),
+        semId: d.currentSem
+      });
+    }
+    return out;
+  },
+  fromShareCode: function(code) {
+    var obj = b64DecodeJson(code);
+    var arr = Array.isArray(obj) ? obj : (Array.isArray(obj.courses) ? obj.courses : null);
+    if (!arr) throw new Error("分享码解析失败");
+    return ScheduleImporter.fromJson(JSON.stringify(arr));
+  },
+  fromText: function(text) { return parseScheduleText(text); },
+  fromHtml: function(html) {
+    // 待实现：各校教务系统 HTML 结构差异大，预留接口
+    return [];
+  }
+};
+function applyImportCourses(courses, overwrite) {
+  var d = loadSchedule();
+  if (overwrite) d.courses = d.courses.filter(function(c) { return c.semId !== d.currentSem; });
+  for (var i = 0; i < courses.length; i++) courses[i].semId = d.currentSem;
+  d.courses = d.courses.concat(courses);
+  saveSchedule(d);
+  renderScheduleView();
+  return courses.length;
+}
+function importScheduleJsonFile(input) {
+  var file = input.files && input.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function() {
+    try {
+      var courses = ScheduleImporter.fromJson(reader.result);
+      if (!courses.length) { showToast("未识别到有效课程"); return; }
+      if (!confirm("将覆盖当前学期全部课程，是否继续？")) return;
+      var n = applyImportCourses(courses, true);
+      showToast("已导入 " + n + " 门课程");
+      var ov = document.getElementById("scheduleImportOverlay");
+      if (ov) ov.remove();
+    } catch (e) { showToast("导入失败：" + e.message); }
+  };
+  reader.readAsText(file);
+}
+function importScheduleShareCode() {
+  var ta = document.getElementById("impShareCode");
+  var code = ta ? ta.value.trim() : "";
+  if (!code) { showToast("请输入分享码"); return; }
+  try {
+    var courses = ScheduleImporter.fromShareCode(code);
+    if (!courses.length) { showToast("分享码内没有有效课程"); return; }
+    if (!confirm("将覆盖当前学期全部课程，是否继续？")) return;
+    var n = applyImportCourses(courses, true);
+    showToast("已导入 " + n + " 门课程");
+    var ov = document.getElementById("scheduleImportOverlay");
+    if (ov) ov.remove();
+  } catch (e) { showToast("分享码解析失败：" + e.message); }
+}
+function exportScheduleShareCode() {
+  var d = loadSchedule();
+  var courses = d.courses.filter(function(c) { return c.semId === d.currentSem; });
+  var code = b64EncodeJson(courses);
+  var ta = document.getElementById("impShareCode");
+  if (ta) ta.value = code;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(code).then(function() { showToast("分享码已复制"); }).catch(function() {});
+  } else if (ta) {
+    ta.select();
+    try { document.execCommand("copy"); } catch (e) {}
+  }
+  showToast("已生成分享码，可复制分享");
+}
+
+// ---- 课表外观 ----
+function openScheduleAppearance() {
+  hideAllViews();
+  document.getElementById("scheduleAppearanceView").style.display = "";
+  document.getElementById("scheduleAppearanceView").classList.add("show");
+  applyScheduleAccent();
+  renderAppearanceView();
+}
+function closeScheduleAppearance() { showSchedule(); }
+function setBtnGroup(id, activeVal) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  var btns = el.querySelectorAll("[data-val]");
+  for (var i = 0; i < btns.length; i++) btns[i].classList.toggle("on", btns[i].getAttribute("data-val") === activeVal);
+}
+function renderSwatches(id, colors, active, pickFn) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  var html = "";
+  for (var i = 0; i < colors.length; i++) {
+    var col = colors[i];
+    html += '<button type="button" data-col="' + col + '" style="width:24px;height:24px;border-radius:50%;border:2px solid ' + (col.toLowerCase() === (active || "").toLowerCase() ? "#111" : "transparent") + ';background:' + col + ';cursor:pointer;margin:3px"></button>';
+  }
+  el.innerHTML = html;
+  if (pickFn) {
+    var btns = el.querySelectorAll("button");
+    for (var j = 0; j < btns.length; j++) btns[j].onclick = function() { pickFn(this.getAttribute("data-col")); };
+  }
+}
+function renderAppearanceView() {
+  var d = loadSchedule();
+  var ap = d;
+  setBtnGroup("appBgGroup", ap.bgType);
+  setBtnGroup("appColorModeGroup", ap.colorMode);
+  setBtnGroup("appBorderStyleGroup", ap.borderStyle);
+  setBtnGroup("appFontGroup", ap.fontFamily);
+  setBtnGroup("appThemeGroup", ap.themeMode);
+  renderSwatches("appBgSwatches", SCHEDULE_BG_COLORS, ap.bgColor, appBgColorPick);
+  renderSwatches("appTextSwatches", SCHEDULE_TEXT_COLORS, ap.textColor, appTextColorPick);
+  renderSwatches("appUnifiedSwatches", SCHEDULE_COLORS, ap.unifiedColor, appUnifiedColorPick);
+  renderSwatches("appBorderSwatches", SCHEDULE_TEXT_COLORS, ap.borderColor, appBorderColorPick);
+  var tc = document.getElementById("appTextCustom");
+  if (tc) tc.value = ap.textColor;
+  var ts = document.getElementById("appTextSize");
+  var tv = document.getElementById("appTextSizeVal");
+  if (ts) ts.value = ap.textSize;
+  if (tv) tv.textContent = ap.textSize + "px";
+  var bw = document.getElementById("appBorderWidth");
+  var bv = document.getElementById("appBorderWidthVal");
+  if (bw) bw.value = ap.borderWidth;
+  if (bv) bv.textContent = ap.borderWidth + "dp";
+  for (var i = 0; i < 4; i++) {
+    var sel = document.getElementById("appSticker" + i);
+    if (!sel) continue;
+    if (sel.options.length === 0) {
+      var opts = '<option value="">无</option>';
+      for (var ei = 0; ei < SCHEDULE_STICKERS.length; ei++) opts += '<option value="' + SCHEDULE_STICKERS[ei] + '">' + SCHEDULE_STICKERS[ei] + '</option>';
+      sel.innerHTML = opts;
+    }
+    sel.value = (ap.stickers && ap.stickers[i]) || "";
+  }
+  renderAppearancePreview();
+}
+function setAppField(key, value) {
+  var d = loadSchedule();
+  d[key] = value;
+  saveSchedule(d);
+  renderAppearanceView();
+}
+function appBgColorPick(col) { setAppField("bgColor", col); }
+function appTextColorPick(col) { setAppField("textColor", col); }
+function appTextCustomPick() {
+  var el = document.getElementById("appTextCustom");
+  if (el) setAppField("textColor", el.value);
+}
+function appUnifiedColorPick(col) { setAppField("unifiedColor", col); }
+function appBorderColorPick(col) { setAppField("borderColor", col); }
+function appTextSizeIn() {
+  var el = document.getElementById("appTextSize");
+  if (!el) return;
+  var v = parseInt(el.value, 10);
+  document.getElementById("appTextSizeVal").textContent = v + "px";
+  setAppField("textSize", v);
+}
+function appBorderWidthIn() {
+  var el = document.getElementById("appBorderWidth");
+  if (!el) return;
+  var v = parseFloat(el.value);
+  document.getElementById("appBorderWidthVal").textContent = v + "dp";
+  setAppField("borderWidth", v);
+}
+function appStickerIn(idx) {
+  var sel = document.getElementById("appSticker" + idx);
+  if (!sel) return;
+  var d = loadSchedule();
+  if (!Array.isArray(d.stickers)) d.stickers = ["", "", "", ""];
+  d.stickers[idx] = sel.value;
+  saveSchedule(d);
+  renderAppearanceView();
+}
+function appPickBgImage() {
+  var inp = document.getElementById("appBgInput");
+  if (inp) inp.click();
+}
+function appBgImageChanged(input) {
+  var file = input.files && input.files[0];
+  if (!file) return;
+  if (file.type.indexOf("image/") !== 0) { showToast("请选择图片文件"); return; }
+  var reader = new FileReader();
+  reader.onload = function() {
+    var img = new Image();
+    img.onload = function() {
+      var maxW = 1280, maxH = 1280, w = img.width, h = img.height;
+      if (w > maxW || h > maxH) {
+        var r = Math.min(maxW / w, maxH / h);
+        w = Math.round(w * r); h = Math.round(h * r);
+      }
+      var cv = document.createElement("canvas");
+      cv.width = w; cv.height = h;
+      cv.getContext("2d").drawImage(img, 0, 0, w, h);
+      var d = loadSchedule();
+      d.bgImage = cv.toDataURL("image/jpeg", 0.85);
+      d.bgType = "image";
+      saveSchedule(d);
+      renderAppearanceView();
+      showToast("背景图片已设置");
+    };
+    img.onerror = function() { showToast("图片读取失败"); };
+    img.src = reader.result;
+  };
+  reader.readAsDataURL(file);
+}
+function appClearBgImage() {
+  var d = loadSchedule();
+  d.bgImage = "";
+  d.bgType = "default";
+  saveSchedule(d);
+  renderAppearanceView();
+}
+function resetScheduleAppearance() {
+  var d = loadSchedule();
+  var def = SCHEDULE_APPEAR_DEFAULTS;
+  for (var k in def) d[k] = (Array.isArray(def[k]) ? def[k].slice() : def[k]);
+  saveSchedule(d);
+  renderAppearanceView();
+  showToast("已恢复默认外观");
+}
+function renderAppearancePreview() {
+  var el = document.getElementById("appPreview");
+  if (!el) return;
+  var d = loadSchedule();
+  var ap = d;
+  var font = SCHEDULE_FONTS[ap.fontFamily] || "inherit";
+  var bgStyle = ap.bgType === "color" && ap.bgColor ? "background:" + ap.bgColor + ";"
+    : ap.bgType === "image" && ap.bgImage ? "background-image:url('" + ap.bgImage + "');background-size:cover;background-position:center;"
+    : "background:#f5f6f8;";
+  var txtCol = ap.textColor || "#FFFFFF";
+  var txtSize = ap.textSize || 13;
+  var rd = d.cardRadius != null ? d.cardRadius : 8;
+  var bd = (ap.borderStyle && ap.borderStyle !== "none" && ap.borderWidth > 0) ? ("border:" + ap.borderWidth + "px " + ap.borderStyle + " " + (ap.borderColor || "#FFFFFF") + ";box-sizing:border-box;") : "";
+  var c1 = (ap.colorMode === "unified" && ap.unifiedColor) ? ap.unifiedColor : "#4CAF50";
+  var c2 = (ap.colorMode === "unified" && ap.unifiedColor) ? ap.unifiedColor : "#FFB300";
+  var head = "";
+  for (var i = 0; i < 5; i++) head += '<div class="app-pv-head">' + SCHEDULE_DAYS[i] + '</div>';
+  var cell = function(bg, name, span) {
+    return '<div class="app-pv-cell" style="background:' + bg + ';color:' + txtCol + ';' + bd + ';border-radius:' + rd + 'px' + (span ? ';grid-row:span 2' : '') + '"><span style="font-size:' + txtSize + 'px;font-weight:700">' + name + '</span></div>';
+  };
+  el.innerHTML = '<div class="app-preview-grid" style="' + bgStyle + 'font-family:' + font + '">' +
+    head +
+    cell(c1, "宪法", true) +
+    cell(c2, "刑法", false) +
+    '<div class="app-pv-empty"></div><div class="app-pv-empty"></div><div class="app-pv-empty"></div>' +
+    '<div class="app-pv-empty"></div><div class="app-pv-empty"></div><div class="app-pv-empty"></div>' +
+    '<div class="app-pv-empty"></div>' +
+    '</div>';
 }
 
 // ===== 视频中心（B站嵌入） =====
@@ -3710,22 +4353,41 @@ function addVideo() {
   showToast("视频已添加");
 }
 
+function getScheduleTimes(d) {
+  if (Array.isArray(d.times) && d.times.length === 10) {
+    var ok = true;
+    for (var i = 0; i < 10; i++) if (!Array.isArray(d.times[i]) || d.times[i].length !== 2) { ok = false; break; }
+    if (ok) return d.times;
+  }
+  var t = [];
+  for (var j = 0; j < 10; j++) t.push([SCHEDULE_TIMES[j], SCHEDULE_ENDTIMES[j]]);
+  return t;
+}
+
 function buildWeekGrid(week) {
   var d = loadSchedule();
   var cardH = d.cardHeight || 96;
   var courses = getVisibleCourses(d, week);
   var dates = getWeekDates(week);
-  var html = '<div class="schedule-grid" style="grid-auto-rows:' + cardH + 'px">';
+  var times = getScheduleTimes(d);
+  var ap = d; // 外观字段(loadSchedule 已合并默认值)
+  var font = SCHEDULE_FONTS[ap.fontFamily] || "inherit";
+  var bgStyle = "";
+  if (ap.bgType === "color" && ap.bgColor) bgStyle = "background:" + ap.bgColor + ";";
+  else if (ap.bgType === "image" && ap.bgImage) bgStyle = "background-image:url('" + ap.bgImage + "');background-size:cover;background-position:center;";
+  var html = '<div class="schedule-grid" style="grid-auto-rows:' + cardH + 'px;' + bgStyle + 'font-family:' + font + '">';
   // 表头
   html += '<div class="sch-corner" style="grid-column:1;grid-row:1">节次</div>';
   for (var day = 0; day < 7; day++) {
     html += '<div class="sch-dayhead" style="grid-column:' + (day + 2) + ';grid-row:1">' + SCHEDULE_DAYS[day] + '<span>' + fmtSchDate(dates[day]) + '</span></div>';
   }
-  // 时间列
+  // 时间列（读自定义节次时间）
   for (var p = 1; p <= 10; p++) {
-    html += '<div class="sch-time" style="grid-column:1;grid-row:' + (p + 1) + '">' + p + '<span>' + SCHEDULE_TIMES[p - 1] + '<br>' + SCHEDULE_ENDTIMES[p - 1] + '</span></div>';
+    html += '<div class="sch-time" style="grid-column:1;grid-row:' + (p + 1) + '">' + p + '<span>' + times[p - 1][0] + '<br>' + times[p - 1][1] + '</span></div>';
   }
   // 课程块（带跨行）
+  var txtCol = ap.textColor || "#FFFFFF";
+  var txtSize = ap.textSize || 13;
   var occupied = {};
   for (var day = 0; day < 7; day++) {
     var dayCourses = [];
@@ -3736,12 +4398,16 @@ function buildWeekGrid(week) {
       var c = dayCourses[i].c;
       var start = c.start, end = c.end || start;
       for (var pp = start; pp <= end; pp++) occupied[day + "_" + pp] = true;
-      var color = SCHEDULE_COLORS[(c.color == null ? 0 : c.color) % SCHEDULE_COLORS.length];
+      var color = (ap.colorMode === "unified" && ap.unifiedColor) ? ap.unifiedColor : SCHEDULE_COLORS[(c.color == null ? 0 : c.color) % SCHEDULE_COLORS.length];
       var op = d.cardOpacity != null ? d.cardOpacity : 100;
       var rd = d.cardRadius != null ? d.cardRadius : 8;
       var bg = op >= 100 ? color : hexToRgba(color, op / 100);
-      html += '<div class="sch-course" style="grid-column:' + (day + 2) + ';grid-row:' + (start + 1) + '/' + (end + 2) + ';background:' + bg + ';border-radius:' + rd + 'px" onclick="editScheduleCourse(' + week + ',' + dayCourses[i].idx + ')">' +
-        '<div class="sc-name">' + escHtml(c.name || "课程") + '</div>' +
+      var bd = "";
+      if (ap.borderStyle && ap.borderStyle !== "none" && ap.borderWidth > 0) {
+        bd = "border:" + ap.borderWidth + "px " + ap.borderStyle + " " + (ap.borderColor || "#FFFFFF") + ";box-sizing:border-box;";
+      }
+      html += '<div class="sch-course" style="grid-column:' + (day + 2) + ';grid-row:' + (start + 1) + '/' + (end + 2) + ';background:' + bg + ';border-radius:' + rd + 'px;color:' + txtCol + ';' + bd + '" onclick="editScheduleCourse(' + week + ',' + dayCourses[i].idx + ')">' +
+        '<div class="sc-name" style="font-size:' + txtSize + 'px;color:' + txtCol + '">' + escHtml(c.name || "课程") + '</div>' +
         (c.loc ? '<div class="sc-loc">' + escHtml(c.loc) + '</div>' : '') +
         '</div>';
     }
@@ -3754,6 +4420,19 @@ function buildWeekGrid(week) {
     }
   }
   html += '</div>';
+  // 贴纸（固定四角，不做自由拖拽）
+  var stk = Array.isArray(ap.stickers) ? ap.stickers : ["", "", "", ""];
+  var hasStk = false;
+  for (var si = 0; si < 4; si++) if (stk[si]) { hasStk = true; break; }
+  if (hasStk) {
+    html += '<div class="sch-stickers">';
+    var pos = [["top:2px;left:6px", "top:2px;right:6px"], ["bottom:2px;left:6px", "bottom:2px;right:6px"]];
+    for (var si2 = 0; si2 < 4; si2++) {
+      if (!stk[si2]) continue;
+      html += '<span class="sch-sticker" style="position:absolute;' + pos[si2 >> 1][si2 & 1] + ';font-size:22px;opacity:.75;pointer-events:none;z-index:5">' + stk[si2] + '</span>';
+    }
+    html += '</div>';
+  }
   return html;
 }
 
@@ -3880,7 +4559,7 @@ function saveScheduleCourse() {
   var weeks = window._schedForm ? window._schedForm.getWeeks() : allWeeks();
   if (!weeks.length) { showToast("请至少选择一个上课周次"); return; }
   var color = window._schedForm ? window._schedForm.getColor() : 0;
-  var course = { day: day, start: start, end: end, name: name, loc: loc, color: color, weeks: weeks };
+  var course = { day: day, start: start, end: end, name: name, loc: loc, color: color, weeks: weeks, semId: d.currentSem };
   if (_schedEditRef) {
     if (_schedEditRef.realIdx >= 0 && _schedEditRef.realIdx < d.courses.length) d.courses[_schedEditRef.realIdx] = course;
   } else {
@@ -3911,23 +4590,41 @@ function openScheduleImport() {
   overlay.id = "scheduleImportOverlay";
   overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:600;display:flex;align-items:center;justify-content:center;padding:16px";
   var box = document.createElement("div");
-  box.style.cssText = "position:relative;background:var(--card-bg);border-radius:18px;padding:18px;max-width:360px;width:100%";
+  box.style.cssText = "position:relative;background:var(--card-bg);border-radius:18px;padding:18px;max-width:360px;width:100%;max-height:84vh;overflow-y:auto;box-sizing:border-box";
   box.innerHTML =
     '<button class="modal-close" onclick="document.getElementById(\'scheduleImportOverlay\').remove()">✕</button>' +
-    '<p style="font-size:16px;font-weight:700;color:var(--text);margin:0 0 8px">导入课表</p>' +
-    '<p style="font-size:11px;color:var(--text2);line-height:1.6;margin:0 0 10px">每行一条课程，行首可写<b>第几周</b>有课：<b>第1-8周 周一 第1-2节 国际法 A教201</b><br>不写则每周都有。支持：周次 + 周几 + 节次 + 课程名 + 地点</p>' +
+    '<p style="font-size:16px;font-weight:700;color:var(--text);margin:0 0 8px">导入/导出课表</p>' +
+    '<div style="font-size:12px;font-weight:700;color:var(--text);margin:4px 0 6px">① 文本导入</div>' +
     '<button class="ss-save" style="width:100%;padding:9px;font-size:13px;margin-bottom:10px" onclick="document.getElementById(\'impPdfInput\').click()">📄 上传 PDF 提取文字</button>' +
     '<input type="file" id="impPdfInput" accept=".pdf,application/pdf" style="display:none" />' +
-    '<textarea id="impText" placeholder="第1-8周 周一 第1-2节 国际法 A教201&#10;第3,5,7周 周二 第5节 刑法 B305&#10;周三 第3-4节 民法..." style="width:100%;box-sizing:border-box;height:150px;padding:10px;border:1px solid var(--card-border);border-radius:10px;background:var(--input-bg);color:var(--text);font-size:13px;font-family:inherit;outline:none;resize:vertical"></textarea>' +
+    '<textarea id="impText" placeholder="第1-8周 周一 第1-2节 国际法 A教201&#10;第3,5,7周 周二 第5节 刑法 B305&#10;周三 第3-4节 民法..." style="width:100%;box-sizing:border-box;height:110px;padding:10px;border:1px solid var(--card-border);border-radius:10px;background:var(--input-bg);color:var(--text);font-size:13px;font-family:inherit;outline:none;resize:vertical"></textarea>' +
     '<div id="impResult" style="font-size:11px;color:var(--text2);margin:8px 0;min-height:14px"></div>' +
-    '<div style="display:flex;gap:8px">' +
-    '<button class="sf-save" onclick="importScheduleText()">解析并导入</button>' +
+    '<div style="display:flex;gap:8px;margin-bottom:12px">' +
+    '<button class="sf-save" onclick="importScheduleText()">追加导入</button>' +
     '<button class="sf-cancel" onclick="document.getElementById(\'scheduleImportOverlay\').remove()">取消</button>' +
+    '</div>' +
+    '<div style="border-top:1px solid var(--card-border);padding-top:10px">' +
+    '<div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:6px">② JSON 备份文件（覆盖当前学期）</div>' +
+    '<div style="display:flex;gap:8px">' +
+    '<button class="sf-save" onclick="document.getElementById(\'impJsonInput\').click()">导入 .json</button>' +
+    '<button class="sf-cancel" onclick="exportScheduleJson()">导出 JSON</button>' +
+    '</div>' +
+    '<input type="file" id="impJsonInput" accept=".json" style="display:none" />' +
+    '</div>' +
+    '<div style="border-top:1px solid var(--card-border);padding-top:10px;margin-top:10px">' +
+    '<div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:6px">③ 分享码（Base64 口令，覆盖当前学期）</div>' +
+    '<textarea id="impShareCode" placeholder="粘贴分享码…" style="width:100%;box-sizing:border-box;height:64px;padding:10px;border:1px solid var(--card-border);border-radius:10px;background:var(--input-bg);color:var(--text);font-size:13px;font-family:inherit;outline:none;resize:vertical;margin-bottom:8px"></textarea>' +
+    '<div style="display:flex;gap:8px">' +
+    '<button class="sf-save" onclick="importScheduleShareCode()">导入分享码</button>' +
+    '<button class="sf-cancel" onclick="exportScheduleShareCode()">生成分享码</button>' +
+    '</div>' +
     '</div>';
   overlay.appendChild(box);
   document.body.appendChild(overlay);
   var inp = document.getElementById("impPdfInput");
   if (inp) inp.onchange = function() { extractPdfText(this); };
+  var jinp = document.getElementById("impJsonInput");
+  if (jinp) jinp.onchange = function() { importScheduleJsonFile(this); };
 }
 
 function parseWeekSpec(line) {
@@ -4352,7 +5049,7 @@ function showAbout() {
 // SCREEN MANAGEMENT
 // ============================================================
 function hideAllViews() {
-  ["homeScreen","chatView","dbView","aboutView","quizView","docView","caseView","caseDetail","learnCenterView","materialsView","notebookView","plazaView","noteDetailView","profileView","pointsView","scheduleView","scheduleSettingsView","videoView"].forEach(function(id) {
+  ["homeScreen","chatView","dbView","aboutView","quizView","docView","caseView","caseDetail","learnCenterView","materialsView","notebookView","plazaView","noteDetailView","profileView","pointsView","scheduleView","scheduleSettingsView","scheduleAppearanceView","videoView"].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) el.classList.remove("show");
   });
