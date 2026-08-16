@@ -826,13 +826,21 @@
     .sc-loc{font-size:11px;opacity:.9;margin-top:3px;word-break:break-word}
     .sch-empty{background:#fff;cursor:pointer}
     .sch-empty:active{background:#f5f5f5}
+    .sc-teacher{font-size:11px;opacity:.9;margin-top:2px;word-break:break-word}
+    /* 非白背景(纯色/图片)时表头/时间/空格子不再保留白色底 */
+    .schedule-grid.sch-bg-custom .sch-corner,
+    .schedule-grid.sch-bg-custom .sch-dayhead,
+    .schedule-grid.sch-bg-custom .sch-time,
+    .schedule-grid.sch-bg-custom .sch-empty{background:transparent!important}
     .sf-label{display:block;font-size:11px;color:#999;margin-bottom:4px}
     .sf-week-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px;justify-items:center}
     .sf-week{width:34px;height:34px;border-radius:50%;border:1px solid var(--card-border);background:var(--input-bg);color:var(--text);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;display:flex;align-items:center;justify-content:center}
     .sf-week.on{background:var(--accent);color:#fff;border-color:var(--accent)}
     .sf-week:active{transform:scale(.94)}
-    #scheduleAppearanceView{flex:1;display:none!important;flex-direction:column;overflow:hidden;background:var(--bg)}
+    #scheduleAppearanceView{position:fixed;left:0;right:0;bottom:0;height:52vh;max-height:520px;z-index:700;display:none!important;flex-direction:column;overflow:hidden;background:var(--bg);border-radius:18px 18px 0 0;box-shadow:0 -4px 28px rgba(0,0,0,.18)}
     #scheduleAppearanceView.show{display:flex!important}
+    .sheet-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:690;display:none;-webkit-tap-highlight-color:transparent}
+    .sheet-backdrop.show{display:block}
     .sch-week{position:relative}
     .sch-sticker{user-select:none;-webkit-user-select:none}
     .app-btn-row{display:flex;gap:8px;flex-wrap:wrap}
@@ -1334,19 +1342,36 @@
   </div>
   <div class="points-body">
     <div class="ss-card">
-      <label class="sf-label">卡片长度（拖动滑块调整）</label>
-      <input type="range" id="ssCardHeight" min="60" max="140" step="4" value="96" style="width:100%;accent-color:var(--accent)" oninput="document.getElementById('ssCardHeightVal').textContent = this.value + 'px'" />
-      <div class="ss-val" id="ssCardHeightVal">96px</div>
+      <label class="sf-label">一天有几节课</label>
+      <div class="app-btn-row" id="ssPeriodsPerDay">
+        <button class="app-btn" data-val="6" onclick="setScheduleSetting('periodsPerDay',6)">6 节</button>
+        <button class="app-btn" data-val="8" onclick="setScheduleSetting('periodsPerDay',8)">8 节</button>
+        <button class="app-btn" data-val="10" onclick="setScheduleSetting('periodsPerDay',10)">10 节</button>
+        <button class="app-btn" data-val="12" onclick="setScheduleSetting('periodsPerDay',12)">12 节</button>
+      </div>
+      <div class="ss-note" style="font-size:11px;color:var(--text2);margin-top:6px">改变后课表只显示前 N 节,节次时间在下方对应调整</div>
     </div>
     <div class="ss-card">
-      <label class="sf-label">卡片颜色透明度</label>
-      <input type="range" id="ssCardOpacity" min="25" max="100" step="5" value="100" style="width:100%;accent-color:var(--accent)" oninput="document.getElementById('ssCardOpacityVal').textContent = this.value + '%'" />
-      <div class="ss-val" id="ssCardOpacityVal">100%</div>
+      <label class="sf-label">显示周六/周日课程</label>
+      <div class="app-btn-row" id="ssShowWeekend">
+        <button class="app-btn" data-val="true" onclick="setScheduleSetting('showWeekend',true)">显示</button>
+        <button class="app-btn" data-val="false" onclick="setScheduleSetting('showWeekend',false)">隐藏</button>
+      </div>
     </div>
     <div class="ss-card">
-      <label class="sf-label">卡片圆角</label>
-      <input type="range" id="ssCardRadius" min="0" max="24" step="1" value="8" style="width:100%;accent-color:var(--accent)" oninput="document.getElementById('ssCardRadiusVal').textContent = this.value + 'px'" />
-      <div class="ss-val" id="ssCardRadiusVal">8px</div>
+      <label class="sf-label">显示非本周课程（幽灵课）</label>
+      <div class="app-btn-row" id="ssShowOtherWeeks">
+        <button class="app-btn" data-val="true" onclick="setScheduleSetting('showOtherWeeks',true)">显示</button>
+        <button class="app-btn" data-val="false" onclick="setScheduleSetting('showOtherWeeks',false)">隐藏</button>
+      </div>
+      <div class="ss-note" style="font-size:11px;color:var(--text2);margin-top:6px">当前周内以半透明显示其他周的课程,便于看到整学期固定安排</div>
+    </div>
+    <div class="ss-card">
+      <label class="sf-label">显示授课教师</label>
+      <div class="app-btn-row" id="ssShowTeacher">
+        <button class="app-btn" data-val="true" onclick="setScheduleSetting('showTeacher',true)">显示</button>
+        <button class="app-btn" data-val="false" onclick="setScheduleSetting('showTeacher',false)">隐藏</button>
+      </div>
     </div>
     <div class="ss-card">
       <label class="sf-label">学期开始日期（第1周周一）</label>
@@ -1384,7 +1409,8 @@
   </div>
 </div>
 
-<!-- ===== SCHEDULE APPEARANCE VIEW ===== -->
+<!-- ===== SCHEDULE APPEARANCE VIEW(半屏底部弹层) ===== -->
+<div id="appSheetBackdrop" class="sheet-backdrop" onclick="closeScheduleAppearance()"></div>
 <div id="scheduleAppearanceView" style="display:none">
   <div class="wx-nav">
     <button class="back" onclick="closeScheduleAppearance()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
@@ -1394,6 +1420,17 @@
     <div class="ss-card">
       <label class="sf-label">实时预览</label>
       <div id="appPreview"></div>
+    </div>
+    <div class="ss-card">
+      <label class="sf-label">卡片长度</label>
+      <input type="range" id="appCardHeight" min="60" max="140" step="4" value="96" style="width:100%;accent-color:var(--accent)" oninput="appCardHeightIn()" />
+      <div class="ss-val" id="appCardHeightVal">96px</div>
+      <label class="sf-label" style="margin-top:12px">卡片颜色透明度</label>
+      <input type="range" id="appCardOpacity" min="25" max="100" step="5" value="100" style="width:100%;accent-color:var(--accent)" oninput="appCardOpacityIn()" />
+      <div class="ss-val" id="appCardOpacityVal">100%</div>
+      <label class="sf-label" style="margin-top:12px">卡片圆角</label>
+      <input type="range" id="appCardRadius" min="0" max="24" step="1" value="8" style="width:100%;accent-color:var(--accent)" oninput="appCardRadiusIn()" />
+      <div class="ss-val" id="appCardRadiusVal">8px</div>
     </div>
     <div class="ss-card">
       <label class="sf-label">背景</label>
@@ -2363,14 +2400,16 @@ function getUpcomingCoursesToday() {
   var d = loadSchedule();
   var week = d.currentWeek || 1;
   var day = (new Date().getDay() + 6) % 7; // 周一=0
+  if (d.showWeekend === false && day > 4) return [];
   var now = new Date();
   var nowMin = now.getHours() * 60 + now.getMinutes();
+  var times = getScheduleTimes(d);
   var list = d.courses.filter(function(c) {
     if (c.day !== day) return false;
     if (getCourseWeeks(c).indexOf(week) < 0) return false;
     var p = c.start;
-    if (!p || p < 1 || p > SCHEDULE_ENDTIMES.length) return false;
-    var et = SCHEDULE_ENDTIMES[p - 1].split(":");
+    if (!p || p < 1 || p > times.length) return false;
+    var et = times[p - 1][1].split(":");
     var eMin = (+et[0]) * 60 + (+et[1]);
     return eMin > nowMin; // 还没结束的课（进行中或即将开始）
   });
@@ -3015,11 +3054,12 @@ try { applyBubbleStyle(); } catch(e) {}
 // ============================================================
 // AUTO CHANGELOG — 自动更新日志系统
 // ============================================================
-var APP_VERSION = "v3.3.0";
+var APP_VERSION = "v3.4.0";
 var APP_VERSION_DATE = "2026.08.16";
 var CHANGELOG_KEY = "seawhy-lex-changelog";
 
 var DEFAULT_CHANGELOG = [
+  { ver: "v3.4.0", date: "2026.08.16", notes: "课程表升级：卡片长度/透明度/圆角移至外观设置（改为半屏弹层）、一次课默认两节、可设一天节数与显示周六日/非本周(幽灵课)/授课教师、修复非白背景下白色格子" },
   { ver: "v3.3.0", date: "2026.08.16", notes: "新增哔哩哔哩登录与视频搜索播放、学习时钟(番茄钟)、首页待办/课表上下滑动切换、输入法升级(iOS式触感、字母键简洁化)" },
   { ver: "v3.2.0", date: "2026.08.16", notes: "课程表升级：课表外观高度自定义（背景/文字/边框/字体/贴纸/深色模式）、多学期管理与节次时间自定义、JSON/分享码导入导出与数据备份" },
   { ver: "v3.1.0", date: "2026.08.09", notes: "新增课程表，支持自定义创建大学课程表" },
@@ -3761,7 +3801,8 @@ var SCHEDULE_APPEAR_DEFAULTS = {
   fontFamily: "default",
   stickers: ["", "", "", ""],
   themeMode: "auto",
-  accentColor: ""
+  accentColor: "",
+  cardHeight: 96, cardOpacity: 100, cardRadius: 8
 };
 
 function loadSchedule() {
@@ -3802,6 +3843,9 @@ function loadSchedule() {
     // 外观字段默认值合并(向后兼容)
     var apK = Object.keys(SCHEDULE_APPEAR_DEFAULTS);
     for (var ak = 0; ak < apK.length; ak++) if (d[apK[ak]] === undefined) d[apK[ak]] = SCHEDULE_APPEAR_DEFAULTS[apK[ak]];
+    // 课表设置默认值(向后兼容)
+    var SET_DEFAULTS = { periodsPerDay: 10, showWeekend: true, showTeacher: true, showOtherWeeks: true };
+    for (var sk in SET_DEFAULTS) if (d[sk] === undefined) d[sk] = SET_DEFAULTS[sk];
     return d;
   } catch (e) {
     var e0 = { courses: [], currentWeek: 1 };
@@ -3924,18 +3968,10 @@ function openScheduleSettings() {
 function closeScheduleSettings() { showSchedule(); }
 function renderScheduleSettings() {
   var d = loadSchedule();
-  var hEl = document.getElementById("ssCardHeight");
-  var vEl = document.getElementById("ssCardHeightVal");
-  var ch = d.cardHeight || 96;
-  if (hEl) { hEl.value = ch; if (vEl) vEl.textContent = ch + "px"; }
-  var opEl = document.getElementById("ssCardOpacity");
-  var opV = document.getElementById("ssCardOpacityVal");
-  var op = d.cardOpacity != null ? d.cardOpacity : 100;
-  if (opEl) { opEl.value = op; if (opV) opV.textContent = op + "%"; }
-  var rdEl = document.getElementById("ssCardRadius");
-  var rdV = document.getElementById("ssCardRadiusVal");
-  var rd = d.cardRadius != null ? d.cardRadius : 8;
-  if (rdEl) { rdEl.value = rd; if (rdV) rdV.textContent = rd + "px"; }
+  setBtnGroup("ssPeriodsPerDay", d.periodsPerDay);
+  setBtnGroup("ssShowWeekend", d.showWeekend);
+  setBtnGroup("ssShowOtherWeeks", d.showOtherWeeks);
+  setBtnGroup("ssShowTeacher", d.showTeacher);
   var dEl = document.getElementById("ssSemesterStart");
   if (dEl) {
     if (d.semesterStart) {
@@ -3948,23 +3984,27 @@ function renderScheduleSettings() {
   renderAccentSwatches();
   applyScheduleAccent();
 }
+function setScheduleSetting(key, val) {
+  var d = loadSchedule();
+  d[key] = val;
+  saveSchedule(d);
+  renderScheduleSettings();
+  var sv = document.getElementById("scheduleView");
+  if (sv && sv.classList.contains("show")) renderScheduleView();
+  showToast("课表设置已保存");
+}
 function saveScheduleSettings() {
   var d = loadSchedule();
-  var h = parseInt(document.getElementById("ssCardHeight").value, 10);
-  if (h > 0) d.cardHeight = h;
-  var op = parseInt(document.getElementById("ssCardOpacity").value, 10);
-  if (!isNaN(op)) d.cardOpacity = op;
-  var rd = parseInt(document.getElementById("ssCardRadius").value, 10);
-  if (!isNaN(rd)) d.cardRadius = rd;
+  var ppd = getPeriodsPerDay(d);
   var dEl = document.getElementById("ssSemesterStart");
   if (dEl && dEl.value) d.semesterStart = new Date(dEl.value + "T00:00:00").getTime();
   var nt = [];
-  for (var ti = 0; ti < 10; ti++) {
+  for (var ti = 0; ti < ppd; ti++) {
     var sEl = document.getElementById("ssT" + ti + "S");
     var eEl = document.getElementById("ssT" + ti + "E");
     if (sEl && eEl) nt.push([sEl.value || SCHEDULE_TIMES[ti], eEl.value || SCHEDULE_ENDTIMES[ti]]);
   }
-  if (nt.length === 10) d.times = nt;
+  if (nt.length === ppd) d.times = nt;
   saveSchedule(d);
   showToast("课表设置已保存");
   closeScheduleSettings();
@@ -4070,8 +4110,9 @@ function renderScheduleTimes() {
   var el = document.getElementById("ssTimesList");
   if (!el) return;
   var times = getScheduleTimes(d);
+  var ppd = getPeriodsPerDay(d);
   var html = "";
-  for (var ti = 0; ti < 10; ti++) {
+  for (var ti = 0; ti < ppd; ti++) {
     html += '<div class="ss-time-row">' +
       '<span class="ss-time-idx">第' + (ti + 1) + '节</span>' +
       '<input type="time" id="ssT' + ti + 'S" value="' + times[ti][0] + '" class="ss-time-input" />' +
@@ -4237,20 +4278,24 @@ function exportScheduleShareCode() {
   showToast("已生成分享码，可复制分享");
 }
 
-// ---- 课表外观 ----
+// ---- 课表外观(半屏底部弹层,课表保持显示) ----
 function openScheduleAppearance() {
-  hideAllViews();
-  document.getElementById("scheduleAppearanceView").style.display = "";
-  document.getElementById("scheduleAppearanceView").classList.add("show");
-  applyScheduleAccent();
   renderAppearanceView();
+  applyScheduleAccent();
+  document.getElementById("scheduleAppearanceView").classList.add("show");
+  var bd = document.getElementById("appSheetBackdrop");
+  if (bd) bd.classList.add("show");
 }
-function closeScheduleAppearance() { showSchedule(); }
+function closeScheduleAppearance() {
+  document.getElementById("scheduleAppearanceView").classList.remove("show");
+  var bd = document.getElementById("appSheetBackdrop");
+  if (bd) bd.classList.remove("show");
+}
 function setBtnGroup(id, activeVal) {
   var el = document.getElementById(id);
   if (!el) return;
   var btns = el.querySelectorAll("[data-val]");
-  for (var i = 0; i < btns.length; i++) btns[i].classList.toggle("on", btns[i].getAttribute("data-val") === activeVal);
+  for (var i = 0; i < btns.length; i++) btns[i].classList.toggle("on", String(btns[i].getAttribute("data-val")) === String(activeVal));
 }
 function renderSwatches(id, colors, active, pickFn) {
   var el = document.getElementById(id);
@@ -4288,6 +4333,18 @@ function renderAppearanceView() {
   var bv = document.getElementById("appBorderWidthVal");
   if (bw) bw.value = ap.borderWidth;
   if (bv) bv.textContent = ap.borderWidth + "dp";
+  var chEl = document.getElementById("appCardHeight");
+  var chV = document.getElementById("appCardHeightVal");
+  if (chEl) chEl.value = ap.cardHeight;
+  if (chV) chV.textContent = (ap.cardHeight || 96) + "px";
+  var coEl = document.getElementById("appCardOpacity");
+  var coV = document.getElementById("appCardOpacityVal");
+  if (coEl) coEl.value = ap.cardOpacity;
+  if (coV) coV.textContent = (ap.cardOpacity != null ? ap.cardOpacity : 100) + "%";
+  var crEl = document.getElementById("appCardRadius");
+  var crV = document.getElementById("appCardRadiusVal");
+  if (crEl) crEl.value = ap.cardRadius;
+  if (crV) crV.textContent = (ap.cardRadius != null ? ap.cardRadius : 8) + "px";
   for (var i = 0; i < 4; i++) {
     var sel = document.getElementById("appSticker" + i);
     if (!sel) continue;
@@ -4305,6 +4362,32 @@ function setAppField(key, value) {
   d[key] = value;
   saveSchedule(d);
   renderAppearanceView();
+  var sv = document.getElementById("scheduleView");
+  if (sv && sv.classList.contains("show")) renderScheduleView();
+}
+function appCardHeightIn() {
+  var el = document.getElementById("appCardHeight");
+  if (!el) return;
+  var v = parseInt(el.value, 10);
+  var val = document.getElementById("appCardHeightVal");
+  if (val) val.textContent = v + "px";
+  setAppField("cardHeight", v);
+}
+function appCardOpacityIn() {
+  var el = document.getElementById("appCardOpacity");
+  if (!el) return;
+  var v = parseInt(el.value, 10);
+  var val = document.getElementById("appCardOpacityVal");
+  if (val) val.textContent = v + "%";
+  setAppField("cardOpacity", v);
+}
+function appCardRadiusIn() {
+  var el = document.getElementById("appCardRadius");
+  if (!el) return;
+  var v = parseInt(el.value, 10);
+  var val = document.getElementById("appCardRadiusVal");
+  if (val) val.textContent = v + "px";
+  setAppField("cardRadius", v);
 }
 function appBgColorPick(col) { setAppField("bgColor", col); }
 function appTextColorPick(col) { setAppField("textColor", col); }
@@ -4382,6 +4465,8 @@ function resetScheduleAppearance() {
   for (var k in def) d[k] = (Array.isArray(def[k]) ? def[k].slice() : def[k]);
   saveSchedule(d);
   renderAppearanceView();
+  var sv = document.getElementById("scheduleView");
+  if (sv && sv.classList.contains("show")) renderScheduleView();
   showToast("已恢复默认外观");
 }
 function renderAppearancePreview() {
@@ -4401,8 +4486,10 @@ function renderAppearancePreview() {
   var c2 = (ap.colorMode === "unified" && ap.unifiedColor) ? ap.unifiedColor : "#FFB300";
   var head = "";
   for (var i = 0; i < 5; i++) head += '<div class="app-pv-head">' + SCHEDULE_DAYS[i] + '</div>';
+  var op = d.cardOpacity != null ? d.cardOpacity : 100;
   var cell = function(bg, name, span) {
-    return '<div class="app-pv-cell" style="background:' + bg + ';color:' + txtCol + ';' + bd + ';border-radius:' + rd + 'px' + (span ? ';grid-row:span 2' : '') + '"><span style="font-size:' + txtSize + 'px;font-weight:700">' + name + '</span></div>';
+    var b = op >= 100 ? bg : hexToRgba(bg, op / 100);
+    return '<div class="app-pv-cell" style="background:' + b + ';color:' + txtCol + ';' + bd + ';border-radius:' + rd + 'px' + (span ? ';grid-row:span 2' : '') + '"><span style="font-size:' + txtSize + 'px;font-weight:700">' + name + '</span></div>';
   };
   el.innerHTML = '<div class="app-preview-grid" style="' + bgStyle + 'font-family:' + font + '">' +
     head +
@@ -4734,43 +4821,49 @@ function renderBiliLogin() {
   }
 }
 
+function getPeriodsPerDay(d) { return Math.max(4, Math.min(14, d.periodsPerDay || 10)); }
 function getScheduleTimes(d) {
-  if (Array.isArray(d.times) && d.times.length === 10) {
+  var ppd = getPeriodsPerDay(d);
+  if (Array.isArray(d.times) && d.times.length >= ppd) {
     var ok = true;
-    for (var i = 0; i < 10; i++) if (!Array.isArray(d.times[i]) || d.times[i].length !== 2) { ok = false; break; }
-    if (ok) return d.times;
+    for (var i = 0; i < ppd; i++) if (!Array.isArray(d.times[i]) || d.times[i].length !== 2) { ok = false; break; }
+    if (ok) return d.times.slice(0, ppd);
   }
   var t = [];
-  for (var j = 0; j < 10; j++) t.push([SCHEDULE_TIMES[j], SCHEDULE_ENDTIMES[j]]);
+  for (var j = 0; j < ppd; j++) t.push([SCHEDULE_TIMES[j], SCHEDULE_ENDTIMES[j]]);
   return t;
 }
 
 function buildWeekGrid(week) {
   var d = loadSchedule();
   var cardH = d.cardHeight || 96;
+  var ppd = getPeriodsPerDay(d);
+  var days = d.showWeekend === false ? 5 : 7;
   var courses = getVisibleCourses(d, week);
   var dates = getWeekDates(week);
   var times = getScheduleTimes(d);
   var ap = d; // 外观字段(loadSchedule 已合并默认值)
   var font = SCHEDULE_FONTS[ap.fontFamily] || "inherit";
   var bgStyle = "";
-  if (ap.bgType === "color" && ap.bgColor) bgStyle = "background:" + ap.bgColor + ";";
-  else if (ap.bgType === "image" && ap.bgImage) bgStyle = "background-image:url('" + ap.bgImage + "');background-size:cover;background-position:center;";
-  var html = '<div class="schedule-grid" style="grid-auto-rows:' + cardH + 'px;' + bgStyle + 'font-family:' + font + '">';
+  var bgCustom = false;
+  if (ap.bgType === "color" && ap.bgColor) { bgStyle = "background:" + ap.bgColor + ";"; bgCustom = true; }
+  else if (ap.bgType === "image" && ap.bgImage) { bgStyle = "background-image:url('" + ap.bgImage + "');background-size:cover;background-position:center;"; bgCustom = true; }
+  var html = '<div class="schedule-grid' + (bgCustom ? " sch-bg-custom" : "") + '" style="grid-auto-rows:' + cardH + 'px;grid-template-columns:48px repeat(' + days + ',1fr);' + bgStyle + 'font-family:' + font + '">';
   // 表头
   html += '<div class="sch-corner" style="grid-column:1;grid-row:1">节次</div>';
-  for (var day = 0; day < 7; day++) {
+  for (var day = 0; day < days; day++) {
     html += '<div class="sch-dayhead" style="grid-column:' + (day + 2) + ';grid-row:1">' + SCHEDULE_DAYS[day] + '<span>' + fmtSchDate(dates[day]) + '</span></div>';
   }
   // 时间列（读自定义节次时间）
-  for (var p = 1; p <= 10; p++) {
+  for (var p = 1; p <= ppd; p++) {
     html += '<div class="sch-time" style="grid-column:1;grid-row:' + (p + 1) + '">' + p + '<span>' + times[p - 1][0] + '<br>' + times[p - 1][1] + '</span></div>';
   }
   // 课程块（带跨行）
   var txtCol = ap.textColor || "#FFFFFF";
   var txtSize = ap.textSize || 13;
+  var rd = d.cardRadius != null ? d.cardRadius : 8;
   var occupied = {};
-  for (var day = 0; day < 7; day++) {
+  for (var day = 0; day < days; day++) {
     var dayCourses = [];
     for (var ci = 0; ci < courses.length; ci++) {
       if (courses[ci].day === day) dayCourses.push({ c: courses[ci], idx: ci });
@@ -4778,10 +4871,11 @@ function buildWeekGrid(week) {
     for (var i = 0; i < dayCourses.length; i++) {
       var c = dayCourses[i].c;
       var start = c.start, end = c.end || start;
+      if (start > ppd) continue;
+      if (end > ppd) end = ppd;
       for (var pp = start; pp <= end; pp++) occupied[day + "_" + pp] = true;
       var color = (ap.colorMode === "unified" && ap.unifiedColor) ? ap.unifiedColor : SCHEDULE_COLORS[(c.color == null ? 0 : c.color) % SCHEDULE_COLORS.length];
       var op = d.cardOpacity != null ? d.cardOpacity : 100;
-      var rd = d.cardRadius != null ? d.cardRadius : 8;
       var bg = op >= 100 ? color : hexToRgba(color, op / 100);
       var bd = "";
       if (ap.borderStyle && ap.borderStyle !== "none" && ap.borderWidth > 0) {
@@ -4790,13 +4884,37 @@ function buildWeekGrid(week) {
       html += '<div class="sch-course" style="grid-column:' + (day + 2) + ';grid-row:' + (start + 1) + '/' + (end + 2) + ';background:' + bg + ';border-radius:' + rd + 'px;color:' + txtCol + ';' + bd + '" onclick="editScheduleCourse(' + week + ',' + dayCourses[i].idx + ')">' +
         '<div class="sc-name" style="font-size:' + txtSize + 'px;color:' + txtCol + '">' + escHtml(c.name || "课程") + '</div>' +
         (c.loc ? '<div class="sc-loc">' + escHtml(c.loc) + '</div>' : '') +
+        (ap.showTeacher && c.teacher ? '<div class="sc-teacher">👨‍🏫 ' + escHtml(c.teacher) + '</div>' : '') +
+        '</div>';
+    }
+  }
+  // 幽灵课：同学期但不在本周的课程，半透明显示(显示非本周课程)
+  var ghostKeys = {};
+  if (ap.showOtherWeeks) {
+    var semCourses = d.courses.filter(function(cc) { return cc.semId == null || cc.semId === d.currentSem; });
+    for (var gi = 0; gi < semCourses.length; gi++) {
+      var gc = semCourses[gi];
+      if (gc.day >= days) continue;
+      if (getCourseWeeks(gc).indexOf(week) >= 0) continue;
+      var gs = gc.start || 1, ge = gc.end || gs;
+      if (gs > ppd) continue;
+      var free = true;
+      for (var gp = gs; gp <= Math.min(ge, ppd); gp++) {
+        if (occupied[gc.day + "_" + gp] || ghostKeys[gc.day + "_" + gp]) { free = false; break; }
+      }
+      if (!free) continue;
+      for (var gp2 = gs; gp2 <= Math.min(ge, ppd); gp2++) ghostKeys[gc.day + "_" + gp2] = true;
+      var gcolor = (ap.colorMode === "unified" && ap.unifiedColor) ? ap.unifiedColor : SCHEDULE_COLORS[(gc.color == null ? 0 : gc.color) % SCHEDULE_COLORS.length];
+      html += '<div class="sch-course sch-ghost" style="grid-column:' + (gc.day + 2) + ';grid-row:' + (gs + 1) + '/' + (Math.min(ge, ppd) + 2) + ';background:' + gcolor + ';border-radius:' + rd + 'px;color:' + txtCol + ';opacity:.35;filter:grayscale(.3);pointer-events:none;box-shadow:none;border:1px dashed rgba(0,0,0,.25);box-sizing:border-box;">' +
+        '<div class="sc-name" style="font-size:' + txtSize + 'px;color:' + txtCol + '">' + escHtml(gc.name || "课程") + '</div>' +
+        (gc.loc ? '<div class="sc-loc">' + escHtml(gc.loc) + '</div>' : '') +
         '</div>';
     }
   }
   // 空格子
-  for (var p2 = 1; p2 <= 10; p2++) {
-    for (var day2 = 0; day2 < 7; day2++) {
-      if (occupied[day2 + "_" + p2]) continue;
+  for (var p2 = 1; p2 <= ppd; p2++) {
+    for (var day2 = 0; day2 < days; day2++) {
+      if (occupied[day2 + "_" + p2] || ghostKeys[day2 + "_" + p2]) continue;
       html += '<div class="sch-empty" style="grid-column:' + (day2 + 2) + ';grid-row:' + (p2 + 1) + '" onclick="addScheduleCourse(' + day2 + ',' + p2 + ')"></div>';
     }
   }
@@ -4847,7 +4965,13 @@ function allWeeks() {
 }
 function addScheduleCourse(day, period) {
   _schedEditRef = null;
-  openScheduleForm({ day: day, start: period, end: period, name: "", loc: "", color: 0, weeks: allWeeks() });
+  var d = loadSchedule();
+  var ppd = getPeriodsPerDay(d);
+  // 一次课默认两节，无单节
+  var start = Math.min(period, ppd);
+  var end = Math.min(start + 1, ppd);
+  if (end === start) start = Math.max(1, start - 1);
+  openScheduleForm({ day: day, start: start, end: end, name: "", loc: "", color: 0, weeks: allWeeks() });
 }
 function editScheduleCourse(week, idx) {
   var d = loadSchedule();
@@ -4855,7 +4979,7 @@ function editScheduleCourse(week, idx) {
   var c = courses[idx];
   if (!c) return;
   _schedEditRef = { realIdx: d.courses.indexOf(c) };
-  openScheduleForm({ day: c.day, start: c.start, end: c.end, name: c.name, loc: c.loc, color: c.color, weeks: getCourseWeeks(c) });
+  openScheduleForm({ day: c.day, start: c.start, end: c.end, name: c.name, loc: c.loc, teacher: c.teacher || "", color: c.color, weeks: getCourseWeeks(c) });
 }
 function openScheduleForm(prefill) {
   var overlay = document.createElement("div");
@@ -4869,10 +4993,11 @@ function openScheduleForm(prefill) {
   }
   var dayOptions = "";
   for (var di = 0; di < 7; di++) dayOptions += '<option value="' + di + '"' + (prefill.day == di ? " selected" : "") + '>' + SCHEDULE_DAYS[di] + '</option>';
+  var ppd = getPeriodsPerDay(loadSchedule());
   var startOptions = "";
-  for (var pi = 1; pi <= 10; pi++) startOptions += '<option value="' + pi + '"' + (prefill.start == pi ? " selected" : "") + '>第' + pi + '节</option>';
+  for (var pi = 1; pi <= ppd; pi++) startOptions += '<option value="' + pi + '"' + (prefill.start == pi ? " selected" : "") + '>第' + pi + '节</option>';
   var endOptions = "";
-  for (var pe = 1; pe <= 10; pe++) endOptions += '<option value="' + pe + '"' + (prefill.end == pe ? " selected" : "") + '>第' + pe + '节</option>';
+  for (var pe = 1; pe <= ppd; pe++) endOptions += '<option value="' + pe + '"' + (prefill.end == pe ? " selected" : "") + '>第' + pe + '节</option>';
   var selWeeks = Array.isArray(prefill.weeks) && prefill.weeks.length ? prefill.weeks.slice() : allWeeks();
   var weekBtns = "";
   for (var wk = 1; wk <= 20; wk++) {
@@ -4885,10 +5010,12 @@ function openScheduleForm(prefill) {
     '<input id="sfName" type="text" maxlength="12" value="' + escAttr(prefill.name || "") + '" placeholder="如：国际法" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid var(--card-border);border-radius:10px;background:var(--input-bg);color:var(--text);font-size:14px;outline:none;margin-bottom:10px;font-family:inherit" />' +
     '<label class="sf-label">上课地点</label>' +
     '<input id="sfLoc" type="text" maxlength="12" value="' + escAttr(prefill.loc || "") + '" placeholder="如：A教201" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid var(--card-border);border-radius:10px;background:var(--input-bg);color:var(--text);font-size:14px;outline:none;margin-bottom:10px;font-family:inherit" />' +
+    '<label class="sf-label">授课教师</label>' +
+    '<input id="sfTeacher" type="text" maxlength="12" value="' + escAttr(prefill.teacher || "") + '" placeholder="如：张三" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid var(--card-border);border-radius:10px;background:var(--input-bg);color:var(--text);font-size:14px;outline:none;margin-bottom:10px;font-family:inherit" />' +
     '<label class="sf-label">星期</label>' +
     '<select id="sfDay" style="width:100%;padding:9px;border:1px solid var(--card-border);border-radius:10px;background:var(--input-bg);color:var(--text);font-size:13px;outline:none;margin-bottom:10px;font-family:inherit">' + dayOptions + '</select>' +
     '<div style="display:flex;gap:8px;margin-bottom:10px">' +
-    '<div style="flex:1"><label class="sf-label">开始节次</label><select id="sfStart" style="width:100%;padding:8px;border:1px solid var(--card-border);border-radius:10px;background:var(--input-bg);color:var(--text);font-size:12px;outline:none;font-family:inherit">' + startOptions + '</select></div>' +
+    '<div style="flex:1"><label class="sf-label">开始节次</label><select id="sfStart" onchange="adjustSchedPeriods()" style="width:100%;padding:8px;border:1px solid var(--card-border);border-radius:10px;background:var(--input-bg);color:var(--text);font-size:12px;outline:none;font-family:inherit">' + startOptions + '</select></div>' +
     '<div style="flex:1"><label class="sf-label">结束节次</label><select id="sfEnd" style="width:100%;padding:8px;border:1px solid var(--card-border);border-radius:10px;background:var(--input-bg);color:var(--text);font-size:12px;outline:none;font-family:inherit">' + endOptions + '</select></div>' +
     '</div>' +
     '<label class="sf-label">上课周次（点选 / 点掉）</label>' +
@@ -4933,14 +5060,19 @@ function saveScheduleCourse() {
   var name = document.getElementById("sfName").value.trim();
   if (!name) { showToast("请输入课程名称"); return; }
   var loc = document.getElementById("sfLoc").value.trim();
+  var teacher = document.getElementById("sfTeacher").value.trim();
   var day = parseInt(document.getElementById("sfDay").value, 10);
   var start = parseInt(document.getElementById("sfStart").value, 10);
   var end = parseInt(document.getElementById("sfEnd").value, 10);
-  if (end < start) { showToast("结束节次不能早于开始节次"); return; }
+  // 一次课至少两节：单节自动向后扩一节
+  var ppd = getPeriodsPerDay(d);
+  var adjusted = false;
+  if (end < start + 1) { end = start + 1; adjusted = true; }
+  if (end > ppd) { end = ppd; start = Math.max(1, ppd - 1); adjusted = true; }
   var weeks = window._schedForm ? window._schedForm.getWeeks() : allWeeks();
   if (!weeks.length) { showToast("请至少选择一个上课周次"); return; }
   var color = window._schedForm ? window._schedForm.getColor() : 0;
-  var course = { day: day, start: start, end: end, name: name, loc: loc, color: color, weeks: weeks, semId: d.currentSem };
+  var course = { day: day, start: start, end: end, name: name, loc: loc, teacher: teacher, color: color, weeks: weeks, semId: d.currentSem };
   if (_schedEditRef) {
     if (_schedEditRef.realIdx >= 0 && _schedEditRef.realIdx < d.courses.length) d.courses[_schedEditRef.realIdx] = course;
   } else {
@@ -4951,7 +5083,19 @@ function saveScheduleCourse() {
   var ov = document.getElementById("scheduleFormOverlay");
   if (ov) ov.remove();
   renderScheduleView();
-  showToast("课程表已更新");
+  showToast(adjusted ? "课程至少两节，已自动调整" : "课程表已更新");
+}
+function adjustSchedPeriods() {
+  var s = document.getElementById("sfStart");
+  var e = document.getElementById("sfEnd");
+  if (!s || !e) return;
+  var sv = parseInt(s.value, 10);
+  var ev = parseInt(e.value, 10);
+  if (ev <= sv) {
+    var ppd = getPeriodsPerDay(loadSchedule());
+    var nv = Math.min(sv + 1, ppd);
+    if (nv > sv) e.value = nv;
+  }
 }
 function deleteScheduleCourse() {
   if (!_schedEditRef) return;
@@ -4978,7 +5122,7 @@ function openScheduleImport() {
     '<div style="font-size:12px;font-weight:700;color:var(--text);margin:4px 0 6px">① 文本导入</div>' +
     '<button class="ss-save" style="width:100%;padding:9px;font-size:13px;margin-bottom:10px" onclick="document.getElementById(\'impPdfInput\').click()">📄 上传 PDF 提取文字</button>' +
     '<input type="file" id="impPdfInput" accept=".pdf,application/pdf" style="display:none" />' +
-    '<textarea id="impText" placeholder="第1-8周 周一 第1-2节 国际法 A教201&#10;第3,5,7周 周二 第5节 刑法 B305&#10;周三 第3-4节 民法..." style="width:100%;box-sizing:border-box;height:110px;padding:10px;border:1px solid var(--card-border);border-radius:10px;background:var(--input-bg);color:var(--text);font-size:13px;font-family:inherit;outline:none;resize:vertical"></textarea>' +
+    '<textarea id="impText" placeholder="第1-8周 周一 第1-2节 国际法 A教201 张三&#10;第3,5,7周 周二 第5节 刑法 B305 李四&#10;周三 第3-4节 民法 C201 王五&#10;格式:周次(可省) 星期 第X-Y节 课程名 地点 教师;节次写单节会自动扩为两节" style="width:100%;box-sizing:border-box;height:120px;padding:10px;border:1px solid var(--card-border);border-radius:10px;background:var(--input-bg);color:var(--text);font-size:13px;font-family:inherit;outline:none;resize:vertical"></textarea>' +
     '<div id="impResult" style="font-size:11px;color:var(--text2);margin:8px 0;min-height:14px"></div>' +
     '<div style="display:flex;gap:8px;margin-bottom:12px">' +
     '<button class="sf-save" onclick="importScheduleText()">追加导入</button>' +
@@ -5056,18 +5200,26 @@ function parseScheduleText(text) {
       start = end = parseInt(pm[1], 10);
       line = line.replace(/(?:第)?\d{1,2}\s*节?/, " ");
     }
-    start = Math.max(1, Math.min(10, start));
-    end = Math.max(start, Math.min(10, end));
+    var ppd = getPeriodsPerDay(loadSchedule());
+    start = Math.max(1, Math.min(ppd, start));
+    end = Math.max(start, Math.min(ppd, end));
+    // 一次课至少两节：单节自动向后扩一节
+    if (end < start + 1) {
+      end = start + 1;
+      if (end > ppd) { end = ppd; start = Math.max(1, ppd - 1); }
+    }
     line = line.replace(/[，,、;；]\s*$/, "").trim();
     if (!line) continue;
     var parts = line.split(/\s+/);
-    var loc = "";
-    if (parts.length >= 2) loc = parts.pop();
+    var loc = "", teacher = "";
+    if (parts.length >= 3) { teacher = parts.pop(); loc = parts.pop(); }
+    else if (parts.length === 2) { loc = parts.pop(); }
     var name = parts.join(" ").trim();
     if (!name) { name = loc; loc = ""; }
     if (name.length > 20) name = name.slice(0, 20);
     if (loc.length > 12) loc = loc.slice(0, 12);
-    out.push({ day: day, start: start, end: end, name: name, loc: loc, color: (out.length + Math.floor(Math.random() * 3)) % SCHEDULE_COLORS.length, weeks: weeks });
+    if (teacher.length > 12) teacher = teacher.slice(0, 12);
+    out.push({ day: day, start: start, end: end, name: name, loc: loc, teacher: teacher, color: (out.length + Math.floor(Math.random() * 3)) % SCHEDULE_COLORS.length, weeks: weeks });
   }
   return out;
 }
