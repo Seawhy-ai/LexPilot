@@ -26,7 +26,7 @@
       --bg:#fff;--nav-bg:#fff;--card-bg:#fff;--card-border:rgba(0,0,0,0.08);
       --text:#111;--text2:#888;--input-bg:#f5f5f7;--input-border:rgba(0,0,0,0.1);
       --ai-bubble:#fff;--user-bubble:#C5DFF8;--bubble-shadow:0 1px 4px rgba(0,0,0,0.06);
-      --invite-bg:#f8f9fa;--accent:#1a5276;--accent-light:rgba(26,82,118,0.08);
+      --invite-bg:#f8f9fa;--accent:#1a5276;--accent-light:rgba(26,82,118,0.08);--icon-bg:#e9eef4;
       --modal-overlay:rgba(0,0,0,0.5);--toast-bg:#333;--toast-text:#fff;
       --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
     }
@@ -34,7 +34,7 @@
       --bg:#111;--nav-bg:#1a1a1a;--card-bg:#1a1a1a;--card-border:#333;
       --text:#e5e5e5;--text2:#999;--input-bg:#222;--input-border:#333;
       --ai-bubble:#262626;--user-bubble:#054740;--bubble-shadow:none;
-      --invite-bg:#111;--accent:#5dade2;--accent-light:rgba(93,173,226,0.18);
+      --invite-bg:#111;--accent:#5dade2;--accent-light:rgba(93,173,226,0.18);--icon-bg:#262c36;
       --modal-overlay:rgba(0,0,0,0.75);--toast-bg:#444;--toast-text:#e5e5e5;
     }
     html{height:100%}
@@ -83,8 +83,8 @@
     /* 全局背景层：fixed 全屏，位于所有内容之下 */
     #globalBg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1}
     /* 启用非默认背景时，各功能视图半透明透出背景（卡片本身不透明，保证可读性） */
-    body.bg-on #chatView,body.bg-on #dbView,body.bg-on #caseView,body.bg-on #quizView,body.bg-on #docView,body.bg-on #learnCenterView,body.bg-on #materialsView,body.bg-on #notebookView,body.bg-on #plazaView,body.bg-on #lawReaderView,body.bg-on #pointsView,body.bg-on #scheduleView,body.bg-on #scheduleSettingsView,body.bg-on #videoView,body.bg-on #noteDetailView,body.bg-on #profileView,body.bg-on #aboutView,body.bg-on #clockView,body.bg-on .case-detail,body.bg-on .mat-viewer{background:rgba(255,255,255,.85)}
-    body.dark.bg-on #chatView,body.dark.bg-on #dbView,body.dark.bg-on #caseView,body.dark.bg-on #quizView,body.dark.bg-on #docView,body.dark.bg-on #learnCenterView,body.dark.bg-on #materialsView,body.dark.bg-on #notebookView,body.dark.bg-on #plazaView,body.dark.bg-on #lawReaderView,body.dark.bg-on #pointsView,body.dark.bg-on #scheduleView,body.dark.bg-on #scheduleSettingsView,body.dark.bg-on #videoView,body.dark.bg-on #noteDetailView,body.dark.bg-on #profileView,body.dark.bg-on #aboutView,body.dark.bg-on #clockView,body.dark.bg-on .case-detail,body.dark.bg-on .mat-viewer{background:rgba(16,18,26,.85)}
+    body.bg-on #chatView,body.bg-on #dbView,body.bg-on #caseView,body.bg-on #quizView,body.bg-on #docView,body.bg-on #learnCenterView,body.bg-on #materialsView,body.bg-on #notebookView,body.bg-on #plazaView,body.bg-on #lawReaderView,body.bg-on #pointsView,body.bg-on #scheduleView,body.bg-on #scheduleSettingsView,body.bg-on #videoView,body.bg-on #noteDetailView,body.bg-on #profileView,body.bg-on #aboutView,body.bg-on .case-detail,body.bg-on .mat-viewer{background:rgba(255,255,255,.85)}
+    body.dark.bg-on #chatView,body.dark.bg-on #dbView,body.dark.bg-on #caseView,body.dark.bg-on #quizView,body.dark.bg-on #docView,body.dark.bg-on #learnCenterView,body.dark.bg-on #materialsView,body.dark.bg-on #notebookView,body.dark.bg-on #plazaView,body.dark.bg-on #lawReaderView,body.dark.bg-on #pointsView,body.dark.bg-on #scheduleView,body.dark.bg-on #scheduleSettingsView,body.dark.bg-on #videoView,body.dark.bg-on #noteDetailView,body.dark.bg-on #profileView,body.dark.bg-on #aboutView,body.dark.bg-on .case-detail,body.dark.bg-on .mat-viewer{background:rgba(16,18,26,.85)}
     /* 内部滚动容器 / 导航条在非默认背景下透明，让半透明视图真正透出背景（卡片本身仍不透明） */
     body.bg-on .wx-nav,body.bg-on .chat-area,body.bg-on .lr-search-wrap,body.bg-on .cd-nav{background:transparent}
     /* 森林 */
@@ -118,22 +118,9 @@
     .hbg-name{font-size:14px;font-weight:600;color:var(--text)}
     .hbg-desc{font-size:11px;color:var(--text2)}
 
-    .profile-btn{position:absolute!important;top:calc(16px + var(--safe-top));left:20px!important;right:auto!important;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);font-size:20px;background:rgba(255,255,255,0.3);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.5);z-index:10;transition:all .15s;overflow:hidden}
-    body.dark .profile-btn{background:rgba(40,40,40,0.35);border:1px solid rgba(255,255,255,0.15)}
-    body.dark .profile-btn{background:rgba(40,40,40,0.6);border:1px solid rgba(255,255,255,0.08)}
+    .profile-btn{position:absolute!important;top:calc(16px + var(--safe-top));left:20px!important;right:auto!important;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);font-size:20px;background:var(--icon-bg);border:1px solid var(--card-border);z-index:10;transition:all .15s;overflow:hidden}
+    body.dark .profile-btn{background:var(--icon-bg);border:1px solid var(--card-border)}
     .profile-btn:active{transform:scale(.92);opacity:.8}
-    .clock-fab{position:absolute!important;top:calc(16px + var(--safe-top));right:16px!important;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);font-size:19px;background:rgba(255,255,255,0.3);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.5);z-index:10;transition:all .15s;overflow:hidden}
-    body.dark .clock-fab{background:rgba(40,40,40,0.6);border:1px solid rgba(255,255,255,0.08)}
-    .clock-fab:active{transform:scale(.92);opacity:.8}
-    /* 学习时钟独立界面 */
-    #clockView{flex:1;display:none!important;flex-direction:column;overflow:hidden;background:var(--bg)}
-    #clockView.show{display:flex!important}
-    .clock-screen{flex:1;overflow-y:auto;padding:24px 20px calc(24px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch;max-width:600px;margin:0 auto;width:100%}
-    #clockView .learn-clock{margin:0;border-radius:20px;padding:26px 20px}
-    #clockView .lc-clock-time{font-size:64px}
-    #clockView .lc-clock-set{flex-wrap:wrap;gap:12px}
-    #clockView .lc-clock-set input{width:56px;padding:8px 6px;font-size:16px}
-    #clockView .lc-clock-apply{flex:1;max-width:150px;padding:9px 0;border:none;border-radius:12px;background:var(--accent);color:#fff;font-size:13px;cursor:pointer;font-family:inherit}
 
     /* ===== WELCOME SCREEN ===== */
     .welcome-hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;padding-top:calc(50px + var(--safe-top))}
@@ -159,7 +146,7 @@
     body.dark .dash-card{background:rgba(40,40,40,0.8);box-shadow:0 4px 24px rgba(0,0,0,0.3)}
     .dash-card:active{transform:scale(.97)}
     .dash-head{display:flex;align-items:center;gap:5px;width:100%;justify-content:flex-start}
-    .dash-head .dash-icon{color:#111;width:22px;height:22px;border-radius:7px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .dash-head .dash-icon{color:#111;width:22px;height:22px;border-radius:7px;background:var(--icon-bg);display:flex;align-items:center;justify-content:center;flex-shrink:0}
     .dash-head .dash-icon svg{width:14px;height:14px}
     .dash-head .dash-name{font-size:11px;font-weight:600;color:#111;letter-spacing:.5px;white-space:nowrap}
     .dash-swap{margin-left:auto;width:20px;height:20px;border-radius:50%;border:none;background:var(--accent-light);color:var(--accent);font-size:12px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;padding:0;transition:all .15s}
@@ -177,7 +164,7 @@
     #bottomNav{display:flex;justify-content:space-around;align-items:center;margin:0 auto;margin-bottom:calc(12px + env(safe-area-inset-bottom));padding:10px 12px;background:rgba(255,255,255,0.42);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:24px;box-shadow:0 4px 24px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.04);flex-shrink:0;max-width:380px;width:calc(100% - 48px)}
     body.dark #bottomNav{background:rgba(40,40,40,0.8);box-shadow:0 4px 24px rgba(0,0,0,0.3)}
     #bottomNav .nav-item{display:flex;align-items:center;justify-content:center;cursor:pointer;padding:12px;border:none;background:none;color:#111;font-family:inherit;transition:all .15s;border-radius:16px;flex:1}
-    #bottomNav .nav-item:active{color:var(--accent);background:rgba(74,144,217,0.08)}
+    #bottomNav .nav-item:active{color:var(--accent);background:var(--icon-bg)}
     #bottomNav .nav-item svg{width:24px;height:24px}
     .cta-btn{display:flex;align-items:center;justify-content:center;gap:4px;width:100%;max-width:320px;margin:0 auto 20px;padding:15px 24px;border:none;border-radius:16px;font-size:clamp(15px,3.5vw,17px);font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(135deg,#1a5276,#2980b9);box-shadow:0 4px 20px rgba(26,82,118,0.3);transition:all .15s;font-family:inherit;letter-spacing:.5px;min-height:50px}
     .cta-btn:active{transform:scale(.97);opacity:.9}
@@ -186,7 +173,7 @@
     .model-cards{max-width:380px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:10px;padding:0 4px}
     .model-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:18px;padding:15px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .15s;position:relative;overflow:visible;min-height:64px}
     .model-card:active{background:var(--input-bg);transform:scale(.98)}
-    .mc-icon{width:48px;height:48px;border-radius:12px;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;background:var(--accent-light);color:var(--accent)}
+    .mc-icon{width:48px;height:48px;border-radius:12px;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;background:var(--icon-bg);color:var(--accent)}
     .mc-icon svg{width:24px;height:24px}
     .mc-info{flex:1;min-width:0;text-align:left}
     .mc-name{font-size:clamp(14px,3.5vw,17px);font-weight:600;line-height:1.3}
@@ -650,17 +637,19 @@
 .lc-clock-title{font-size:13px;font-weight:700;color:var(--text)}
 .lc-clock-done{font-size:11px;color:var(--text2)}
 .lc-clock-main{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px}
-.lc-clock-mode{font-size:12px;color:var(--accent);background:var(--accent-light);border-radius:10px;padding:3px 10px}
-.lc-clock-time{font-size:42px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;letter-spacing:1px;line-height:1.1}
-.lc-clock-ctl{display:flex;gap:8px;justify-content:center;margin-bottom:8px}
-.lc-clock-btn{border:none;background:var(--accent-light);color:var(--accent);border-radius:12px;padding:9px 0;font-size:14px;cursor:pointer;font-family:inherit;flex:1;max-width:120px;transition:all .15s}
+.lc-clock-mode{font-size:12px;color:var(--accent);background:var(--icon-bg);border-radius:10px;padding:3px 10px}
+.lc-clock-time{font-size:56px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;letter-spacing:1px;line-height:1.1}
+.lc-clock-ctl{display:flex;gap:8px;justify-content:center;margin-bottom:10px}
+.lc-clock-btn{border:none;background:var(--icon-bg);color:var(--accent);border-radius:12px;padding:9px 0;font-size:14px;cursor:pointer;font-family:inherit;flex:1;max-width:120px;transition:all .15s}
 .lc-clock-btn.primary{background:var(--accent);color:#fff}
 .lc-clock-btn:active{transform:scale(.96)}
-.lc-clock-set{display:flex;gap:16px;justify-content:center;font-size:12px;color:var(--text2)}
-.lc-clock-set input{width:48px;box-sizing:border-box;padding:4px 6px;border:1px solid var(--card-border);border-radius:8px;background:var(--input-bg);color:var(--text);text-align:center;font-size:12px;font-family:inherit}
+.lc-clock-set{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--text2)}
+.lc-slider-row{display:flex;align-items:center;gap:10px}
+.lc-slider-row input[type=range]{flex:1;min-width:0;accent-color:var(--accent);height:30px;margin:0}
+.lc-slider-row b{min-width:24px;text-align:right;font-size:13px;color:var(--text);font-variant-numeric:tabular-nums}
 .learn-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:18px;padding:18px 16px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .15s}
 .learn-card:active{transform:scale(.98);background:var(--input-bg)}
-.lc-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text)}
+.lc-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text);background:var(--icon-bg)}
 .lc-name{font-size:16px;font-weight:700;margin-bottom:2px}
 .lc-desc{font-size:12px;color:var(--text2);line-height:1.4}
 
@@ -781,12 +770,12 @@
     .sch-nav-center{flex:1;text-align:center;line-height:1.3;padding:0 130px 0 128px}
     .sch-nav-center .sch-week-label{font-size:16px;font-weight:700;color:#222}
     .sch-nav-center .sch-week-date{font-size:11px;color:#999;margin-top:1px}
-    .sch-week-btn{width:28px;height:28px;border:none;border-radius:50%;background:#f2f2f2;color:#333;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit;line-height:1;flex-shrink:0}
-    .sch-week-btn:active{background:#e0e0e0}
+    .sch-week-btn{width:28px;height:28px;border:none;border-radius:50%;background:var(--icon-bg);color:#333;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit;line-height:1;flex-shrink:0}
+    .sch-week-btn:active{background:#e2e8ef}
     .sch-add-btn{padding:6px 12px;border:none;border-radius:16px;background:#111;color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0}
     .sch-add-btn:active{opacity:.8}
-    .sch-set-btn{width:28px;height:28px;border:none;border-radius:50%;background:#f2f2f2;color:#555;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-    .sch-set-btn:active{background:#e0e0e0}
+    .sch-set-btn{width:28px;height:28px;border:none;border-radius:50%;background:var(--icon-bg);color:#555;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .sch-set-btn:active{background:#e2e8ef}
     #scheduleSettingsView{flex:1;display:none!important;flex-direction:column;overflow:hidden;background:var(--bg)}
     #scheduleSettingsView.show{display:flex!important}
     #videoView{flex:1;display:none!important;flex-direction:column;overflow:hidden;background:var(--bg)}
@@ -874,8 +863,8 @@
     #scheduleView.sch-dark .schedule-nav{background:#1f232b;border-bottom-color:#2a2f3a}
     #scheduleView.sch-dark .schedule-nav .sch-week-label{color:#e8ebf2}
     #scheduleView.sch-dark .sch-week-date,#scheduleView.sch-dark .sch-today-date{color:#8a92a3}
-    #scheduleView.sch-dark .sch-set-btn{background:#2a2f3a;color:#cbd3e0}
-    #scheduleView.sch-dark .sch-set-btn:active{background:#353b48}
+    #scheduleView.sch-dark .sch-set-btn{background:var(--icon-bg);color:#cbd3e0}
+    #scheduleView.sch-dark .sch-set-btn:active{background:#303742}
     #scheduleView.sch-dark .sch-add-btn{background:#e8ebf2;color:#111}
     #scheduleView.sch-dark .schedule-grid{background:#1f232b}
     #scheduleView.sch-dark .sch-corner,#scheduleView.sch-dark .sch-dayhead,#scheduleView.sch-dark .sch-time,#scheduleView.sch-dark .sch-empty{background:#1f232b}
@@ -989,7 +978,6 @@
 <div class="screen" id="homeScreen" style="display:none">
   <div class="home-bg" id="homeBg"></div>
   <div class="profile-btn" id="homeProfileBtn" onclick="goToProfile()" title="个人中心"></div>
-  <button class="clock-fab" id="homeClockBtn" onclick="showClock()" title="学习时钟">⏱</button>
 <div class="welcome-hero">
     <div class="whale-icon">🐋</div>
     <h1 class="typewriter" id="typewriter"></h1>
@@ -1319,37 +1307,6 @@
     <div class="points-sec">
       <h3>积分明细</h3>
       <div id="pcTxnView"></div>
-    </div>
-  </div>
-</div>
-
-<!-- ===== 学习时钟(独立界面) ===== -->
-<div id="clockView" style="display:none">
-  <div class="wx-nav">
-    <button class="back" onclick="goHome()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
-    <span class="title">学习时钟</span>
-  </div>
-  <div class="clock-screen">
-    <div class="learn-clock">
-      <div class="lc-clock-hd">
-        <span class="lc-clock-title">⏱ 学习时钟</span>
-        <span class="lc-clock-done" id="clockDone">今日 0 番茄</span>
-      </div>
-      <div class="lc-clock-main">
-        <span class="lc-clock-mode" id="clockMode">专注</span>
-        <span class="lc-clock-time" id="clockTime">25:00</span>
-      </div>
-      <div class="lc-clock-ctl">
-        <button class="lc-clock-btn primary" id="clockToggle" onclick="clockToggle()">开始</button>
-        <button class="lc-clock-btn" onclick="clockReset()">重置</button>
-        <button class="lc-clock-btn" onclick="clockSkip()">跳过</button>
-      </div>
-      <div class="lc-clock-set">
-        <label>专注 <input id="clockFocusMin" type="text" inputmode="numeric" maxlength="3" value="25" /> 分</label>
-        <label>休息 <input id="clockRestMin" type="text" inputmode="numeric" maxlength="3" value="5" /> 分</label>
-        <button class="lc-clock-apply" onclick="clockSetDur()">确定</button>
-      </div>
-      <div style="text-align:center;font-size:11px;color:var(--text2);margin-top:10px">专注计时计入今日学习时长；完成一个番茄计 1 个</div>
     </div>
   </div>
 </div>
@@ -1760,6 +1717,27 @@
         <span class="learn-goal-txt" id="learnGoalTxt">0/30 分钟</span>
       </div>
       <div class="learn-week" id="learnWeekBar"></div>
+    </div>
+
+    <!-- 学习时钟 -->
+    <div class="learn-clock">
+      <div class="lc-clock-hd">
+        <span class="lc-clock-title">⏱ 学习时钟</span>
+        <span class="lc-clock-done" id="clockDone">今日 0 番茄</span>
+      </div>
+      <div class="lc-clock-main">
+        <span class="lc-clock-mode" id="clockMode">专注</span>
+        <span class="lc-clock-time" id="clockTime">25:00</span>
+      </div>
+      <div class="lc-clock-ctl">
+        <button class="lc-clock-btn primary" id="clockToggle" onclick="clockToggle()">开始</button>
+        <button class="lc-clock-btn" onclick="clockReset()">重置</button>
+        <button class="lc-clock-btn" onclick="clockSkip()">跳过</button>
+      </div>
+      <div class="lc-clock-set">
+        <div class="lc-slider-row"><span>专注</span><input id="clockFocusMin" type="range" min="1" max="120" step="1" value="25" oninput="clockSetDur()"><b id="clockFocusVal">25</b><span>分</span></div>
+        <div class="lc-slider-row"><span>休息</span><input id="clockRestMin" type="range" min="1" max="60" step="1" value="5" oninput="clockSetDur()"><b id="clockRestVal">5</b><span>分</span></div>
+      </div>
     </div>
 
     <!-- 功能卡片 -->
@@ -2494,15 +2472,15 @@ function homeDashSwipeInit() {
   wrap.dataset.swipeInit = "1";
   var todoCard = document.getElementById("todoCard");
   var schCard = document.getElementById("scheduleCard");
-  var startY = 0, curY = 0, effDy = 0, rawDy = 0, dragging = false, suppressClick = false;
-  var CARD_H = 148, TH = 50; // 卡高 / 触发阈值(px)
+  var startY = 0, effDy = 0, rawDy = 0, dragging = false, moved = false, suppressClick = false;
+  var CARD_H = 148, TH = 50, ACT_TH = 8; // 卡高 / 切换阈值 / 拖动激活阈值(轻点不算拖动)
 
   function resetTrans() {
     if (todoCard) todoCard.style.transition = "";
     if (schCard) schCard.style.transition = "";
   }
   function liveTransform(dy) {
-    // 拖拽中关闭过渡,实时跟随;dx 仅在有效方向上有阻力延伸
+    // 拖拽中关闭过渡,实时跟随;反向有阻力延伸
     if (todoCard) todoCard.style.transition = "none";
     if (schCard) schCard.style.transition = "none";
     var isSched = (options.homeWidget || "todo") === "schedule";
@@ -2520,30 +2498,54 @@ function homeDashSwipeInit() {
     if (dy > max) dy = max + (dy - max) * 0.3;
     return dy;
   }
+  function restTargets() {
+    var isSched = (options.homeWidget || "todo") === "schedule";
+    return isSched ? [-CARD_H, 0] : [0, CARD_H]; // [todo, sch] 静止位
+  }
+  // iOS 组件式回弹：先启用 spring 过渡 → 强制 reflow 注册当前拖拽位 → 再写目标 transform
+  function animateCardsTo(t0, t1) {
+    if (todoCard) todoCard.style.transition = "transform .42s cubic-bezier(.2,.9,.35,1)";
+    if (schCard) schCard.style.transition = "transform .42s cubic-bezier(.2,.9,.35,1)";
+    if (todoCard) void todoCard.offsetWidth;
+    if (todoCard) todoCard.style.transform = "translateY(" + t0 + "px)";
+    if (schCard) schCard.style.transform = "translateY(" + t1 + "px)";
+    setTimeout(resetTrans, 460);
+  }
   wrap.addEventListener("pointerdown", function(e) {
     if (e.pointerType === "mouse" && e.button !== 0) return;
-    dragging = true;
-    startY = curY = e.clientY;
-    try { wrap.setPointerCapture(e.pointerId); } catch(err) {}
+    // 只记录起点、不捕获指针：轻点需保留原生 click 目标(卡片自身的 onclick 可用)
+    startY = e.clientY;
+    rawDy = 0; effDy = 0; dragging = false; moved = false;
   }, { passive: true });
   wrap.addEventListener("pointermove", function(e) {
+    rawDy = e.clientY - startY;
+    if (!moved && Math.abs(rawDy) > ACT_TH) {
+      // 位移超过激活阈值才算真正拖动（避免轻点误滑）
+      moved = true; dragging = true;
+      try { wrap.setPointerCapture(e.pointerId); } catch(err) {}
+      effDy = clampDrag(rawDy);
+      liveTransform(effDy);
+      return;
+    }
     if (!dragging) return;
-    curY = e.clientY;
-    rawDy = curY - startY; // 原始位移（判定用）
-    effDy = clampDrag(rawDy); // 可视位移（反向有阻力）
+    effDy = clampDrag(rawDy);
     liveTransform(effDy);
   }, { passive: true });
   wrap.addEventListener("pointerup", function(e) {
     if (!dragging) return;
     dragging = false;
-    // 双向滑动达到阈值都切换：两张卡循环切换
     if (Math.abs(rawDy) >= TH) {
+      // 双向滑动达到阈值都切换：两张卡循环切换 + spring 回弹
       suppressClick = true; // 拖动后吞掉卡片自身的 onclick
-      toggleHomeWidget();
+      options.homeWidget = (options.homeWidget === "schedule") ? "todo" : "schedule";
+      try { localStorage.setItem("seawhy-lex-opts", JSON.stringify(options)); } catch(err2) {}
+      renderScheduleCard(); // 课表内容刷新（不影响 transform）
+      var tt = restTargets();
+      animateCardsTo(tt[0], tt[1]);
       setTimeout(function() { suppressClick = false; }, 400);
     } else {
-      resetTrans();
-      renderHomeCard(); // 回弹
+      var rt = restTargets();
+      animateCardsTo(rt[0], rt[1]); // 未达阈值：平滑弹回
     }
   }, { passive: true });
   wrap.addEventListener("pointercancel", function() {
@@ -2704,7 +2706,7 @@ function checkLoginState() {
 }
 
 function showLoginScreen() {
-  ["homeScreen","chatView","dbView","aboutView","quizView","docView","caseView","caseDetail","learnCenterView","materialsView","notebookView","plazaView","noteDetailView","profileView","pointsView","scheduleView","scheduleSettingsView","scheduleAppearanceView","videoView","clockView"].forEach(function(id) {
+  ["homeScreen","chatView","dbView","aboutView","quizView","docView","caseView","caseDetail","learnCenterView","materialsView","notebookView","plazaView","noteDetailView","profileView","pointsView","scheduleView","scheduleSettingsView","scheduleAppearanceView","videoView"].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) { el.classList.remove("show"); el.style.display = "none"; }
   });
@@ -3073,11 +3075,12 @@ try { applyBubbleStyle(); } catch(e) {}
 // ============================================================
 // AUTO CHANGELOG — 自动更新日志系统
 // ============================================================
-var APP_VERSION = "v3.5.0";
+var APP_VERSION = "v3.6.0";
 var APP_VERSION_DATE = "2026.08.16";
 var CHANGELOG_KEY = "seawhy-lex-changelog";
 
 var DEFAULT_CHANGELOG = [
+  { ver: "v3.6.0", date: "2026.08.16", notes: "学习时钟移入学习中心（大号数字、专注/休息改滑动选择）；所有图标UI统一为纯色；待办/课表卡片切换改为iOS组件式平滑回弹并修复轻点误滑、点卡片打不开待办的问题；修复考试模式已答题数不变、无法交卷；打卡卡片与今日待办/课表卡片尺寸统一" },
   { ver: "v3.5.0", date: "2026.08.16", notes: "批量优化：输入法加按键触感与左右方向键、符号键改为常用标点；学习时钟独立为首页按钮；主页卡片上下循环滑动（去掉切换按钮）；去掉所有获得积分弹窗；修复多选题取消后仍显示蓝框；考试模式交卷前可更改答案；B站登录检测优化（明确提示/可重试）；修复自定义背景覆盖不到、底部留白；AI咨询改为用户气泡并扣除积分（VIP免费）、AI回复无气泡全宽；课表外观弹窗半透明并去掉实时预览" },
   { ver: "v3.4.1", date: "2026.08.16", notes: "课程表支持教务系统一键导入（hash 桥接）：在教务系统课表页运行 tools/swun-import.js 后可一键跳转并预填导入弹层" },
   { ver: "v3.4.0", date: "2026.08.16", notes: "课程表升级：卡片长度/透明度/圆角移至外观设置（改为半屏弹层）、一次课默认两节、可设一天节数与显示周六日/非本周(幽灵课)/授课教师、修复非白背景下白色格子" },
@@ -5579,13 +5582,13 @@ function showAbout() {
 // SCREEN MANAGEMENT
 // ============================================================
 function hideAllViews() {
-  ["homeScreen","chatView","dbView","aboutView","quizView","docView","caseView","caseDetail","learnCenterView","materialsView","notebookView","plazaView","noteDetailView","profileView","pointsView","scheduleView","scheduleSettingsView","scheduleAppearanceView","videoView","clockView"].forEach(function(id) {
+  ["homeScreen","chatView","dbView","aboutView","quizView","docView","caseView","caseDetail","learnCenterView","materialsView","notebookView","plazaView","noteDetailView","profileView","pointsView","scheduleView","scheduleSettingsView","scheduleAppearanceView","videoView"].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) el.classList.remove("show");
   });
   window.scrollTo(0, 0);
   // 新界面默认滚到最顶端（聊天保留阅读位置）
-  var scs = document.querySelectorAll(".about-body,.points-body,.video-body,.learn-body,.quiz-body,.db-body,.doc-body,.case-body,.notebook-body,.schedule-scroll,.lr-body,.plaza-body,.note-detail-body,.screen,.case-detail,.clock-screen");
+  var scs = document.querySelectorAll(".about-body,.points-body,.video-body,.learn-body,.quiz-body,.db-body,.doc-body,.case-body,.notebook-body,.schedule-scroll,.lr-body,.plaza-body,.note-detail-body,.screen,.case-detail");
   for (var si = 0; si < scs.length; si++) scs[si].scrollTop = 0;
 }
 
@@ -6435,6 +6438,10 @@ function clockRender() {
   var fm = document.getElementById("clockFocusMin"), rm = document.getElementById("clockRestMin");
   if (fm) fm.value = c.focusMin;
   if (rm) rm.value = c.restMin;
+  var fv = document.getElementById("clockFocusVal");
+  if (fv) fv.textContent = c.focusMin;
+  var rv = document.getElementById("clockRestVal");
+  if (rv) rv.textContent = c.restMin;
 }
 function clockToggle() {
   var c = loadClock();
@@ -6522,7 +6529,7 @@ function saveLearnStats(stats) {
 }
 
 // ===== 学习时长：实时计时（仅统计处于学习界面且应用可见的时间） =====
-var STUDY_VIEWS = ["quizView","chatView","docView","dbView","caseView","learnCenterView","materialsView","notebookView","clockView"];
+var STUDY_VIEWS = ["quizView","chatView","docView","dbView","caseView","learnCenterView","materialsView","notebookView"];
 var _studyOn = false;
 var _studySegStart = 0;
 var _studySegSec = 0;
@@ -6611,16 +6618,6 @@ function showLearningCenter() {
   el.style.display = "";
   el.classList.add("show");
   updateLearnDashboard();
-}
-
-// 学习时钟独立界面：主页 ⏱ 按钮进入
-function showClock() {
-  hideAllViews();
-  var el = document.getElementById("clockView");
-  el.style.display = "";
-  el.classList.add("show");
-  clockRender();
-  clockStartLoop();
 }
 
 function updateLearnDashboard() {
@@ -7755,9 +7752,23 @@ function updateExamTimer() {
   }
 }
 
+// 已答数：考试交卷前数“有非空选择”的题(单选存数值/多选存数组)，其余状态数 answered
+function quizAnsweredCount() {
+  if (QUIZ_STATE.mode === "exam" && !QUIZ_STATE._examSubmitted) {
+    var qs = QUIZ_STATE.questions || [];
+    var n = 0;
+    for (var i = 0; i < qs.length; i++) {
+      var a = QUIZ_STATE.answers[i];
+      if (qs[i] && qs[i].multi) { if (Array.isArray(a) && a.length > 0) n++; }
+      else if (a !== undefined && a !== null && a !== "") n++;
+    }
+    return n;
+  }
+  return Object.keys(QUIZ_STATE.answered).length;
+}
 function renderQuizStats() {
   var total = QUIZ_STATE.questions.length;
-  var answered = Object.keys(QUIZ_STATE.answered).length;
+  var answered = quizAnsweredCount();
   var correct = 0;
   for (var k in QUIZ_STATE.correct) { if (QUIZ_STATE.correct[k]) correct++; }
   var h = '<div class="quiz-stat"><div class="qs-num">' + total + '</div><div class="qs-label">总题数</div></div>';
@@ -7889,9 +7900,9 @@ function renderQuizPage() {
 
   var refSVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:3px"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>';
 
-  var answered = Object.keys(QUIZ_STATE.answered).length;
-  if (QUIZ_STATE.mode === "exam" && !QUIZ_STATE._examSubmitted && answered >= total && total > 0) {
-    h += '<div class="quiz-result"><div class="qr-label">已完成全部题目，点击交卷查看成绩与解析</div>' +
+  var answered = quizAnsweredCount();
+  if (QUIZ_STATE.mode === "exam" && !QUIZ_STATE._examSubmitted && total > 0) {
+    h += '<div class="quiz-result"><div class="qr-label">' + (answered < total ? '已答 ' + answered + '/' + total + ' 题' : '已完成全部题目') + '，点击交卷查看成绩与解析</div>' +
       '<button class="quiz-btn primary" onclick="submitExam()">交卷查看成绩</button></div>';
   } else if ((answered >= total || QUIZ_STATE._examSubmitted) && total > 0) {
     var correctCount = 0;
