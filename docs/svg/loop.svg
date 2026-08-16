@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="380" viewBox="0 0 760 380">
+    <defs>
+        <marker id="arrow_blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb" />
+        </marker>
+        <marker id="arrow_green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a" />
+        </marker>
+        <marker id="arrow_orange" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="#d97706" />
+        </marker>
+    </defs>
+
+    <!-- 白色画布 -->
+    <rect width="760" height="380" fill="#ffffff" />
+
+    <!-- 连接弧线 -->
+    <!-- 上方到右方（蓝） -->
+    <path d="M 470 80 A 125 125 0 0 1 490 150" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow_blue)" />
+    <!-- 右方到下方（绿） -->
+    <path d="M 490 230 A 125 125 0 0 1 470 300" fill="none" stroke="#16a34a" stroke-width="2.5" marker-end="url(#arrow_green)" />
+    <!-- 下方到左方（橙） -->
+    <path d="M 290 300 A 125 125 0 0 1 270 230" fill="none" stroke="#d97706" stroke-width="2.5" marker-end="url(#arrow_orange)" />
+    <!-- 左方到上方（蓝） -->
+    <path d="M 270 150 A 125 125 0 0 1 290 80" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow_blue)" />
+
+    <!-- 步骤编号 -->
+    <!-- 步骤 1 -->
+    <circle cx="488" cy="110" r="10" fill="#ffffff" stroke="#2563eb" stroke-width="1.5" />
+    <text x="488" y="114" text-anchor="middle" font-family="Microsoft YaHei" font-size="14" font-weight="bold" fill="#2563eb" dominant-baseline="middle">1</text>
+    
+    <!-- 步骤 2 -->
+    <circle cx="474" cy="257" r="10" fill="#ffffff" stroke="#16a34a" stroke-width="1.5" />
+    <text x="474" y="261" text-anchor="middle" font-family="Microsoft YaHei" font-size="14" font-weight="bold" fill="#16a34a" dominant-baseline="middle">2</text>
+    
+    <!-- 步骤 3 -->
+    <circle cx="270" cy="257" r="10" fill="#ffffff" stroke="#d97706" stroke-width="1.5" />
+    <text x="270" y="261" text-anchor="middle" font-family="Microsoft YaHei" font-size="14" font-weight="bold" fill="#d97706" dominant-baseline="middle">3</text>
+    
+    <!-- 步骤 4 -->
+    <circle cx="270" cy="110" r="10" fill="#ffffff" stroke="#2563eb" stroke-width="1.5" />
+    <text x="270" y="114" text-anchor="middle" font-family="Microsoft YaHei" font-size="14" font-weight="bold" fill="#2563eb" dominant-baseline="middle">4</text>
+
+    <!-- 中心元素 -->
+    <rect x="305" y="160" width="150" height="60" rx="10" fill="#f3f4f6" stroke="#6b7280" stroke-width="2" />
+    <text x="380" y="190" text-anchor="middle" font-family="Microsoft YaHei" font-size="16" font-weight="bold" fill="#1f2937" dominant-baseline="middle">学-练-赛 闭环</text>
+
+    <!-- 上方节点：数据准备 -->
+    <rect x="290" y="40" width="180" height="80" rx="12" fill="#eff6ff" stroke="#93c5fd" stroke-width="2" />
+    <rect x="292" y="42" width="6" height="76" fill="#2563eb" />
+    <text x="380" y="75" text-anchor="middle" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#1f2937">数据准备</text>
+    <text x="380" y="105" text-anchor="middle" font-family="Microsoft YaHei" font-size="14" fill="#374151">场景清单 + 法条/FAQ</text>
+
+    <!-- 右方节点：知识库构建 -->
+    <rect x="400" y="150" width="180" height="80" rx="12" fill="#eff6ff" stroke="#93c5fd" stroke-width="2" />
+    <rect x="402" y="152" width="6" height="76" fill="#2563eb" />
+    <text x="490" y="185" text-anchor="middle" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#1f2937">知识库构建</text>
+    <text x="490" y="215" text-anchor="middle" font-family="Microsoft YaHei" font-size="14" fill="#374151">4+1 分库搭建调优</text>
+
+    <!-- 下方节点：工作流编排 -->
+    <rect x="290" y="260" width="180" height="80" rx="12" fill="#f0fdf4" stroke="#86efac" stroke-width="2" />
+    <rect x="292" y="262" width="6" height="76" fill="#16a34a" />
+    <text x="380" y="295" text-anchor="middle" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#1f2937">工作流编排</text>
+    <text x="380" y="325" text-anchor="middle" font-family="Microsoft YaHei" font-size="14" fill="#374151">主干 + 领域分支</text>
+
+    <!-- 左方节点：测试优化 -->
+    <rect x="180" y="150" width="180" height="80" rx="12" fill="#fffbeb" stroke="#fcd34d" stroke-width="2" />
+    <rect x="182" y="152" width="6" height="76" fill="#d97706" />
+    <text x="270" y="185" text-anchor="middle" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#1f2937">测试优化</text>
+    <text x="270" y="215" text-anchor="middle" font-family="Microsoft YaHei" font-size="14" fill="#374151">测试集迭代</text>
+
+</svg>

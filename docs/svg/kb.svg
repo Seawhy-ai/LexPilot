@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="460" viewBox="0 0 880 460">
+  <defs>
+    <linearGradient id="centerGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+    <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#2563eb"/>
+    </marker>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="880" height="460" fill="#ffffff"/>
+
+  <!-- 连接线：主干 -->
+  <line x1="440" y1="88" x2="440" y2="145" stroke="#2563eb" stroke-width="2"/>
+  <!-- 水平干线 -->
+  <line x1="106" y1="145" x2="774" y2="145" stroke="#2563eb" stroke-width="2"/>
+  <!-- 垂直分支 -->
+  <line x1="106" y1="145" x2="106" y2="171" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <line x1="273" y1="145" x2="273" y2="171" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <line x1="440" y1="145" x2="440" y2="171" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <line x1="607" y1="145" x2="607" y2="171" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <line x1="774" y1="145" x2="774" y2="171" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+  <!-- 中央总框 -->
+  <rect x="310" y="30" width="260" height="58" rx="12" fill="url(#centerGrad)" stroke="#1e40af" stroke-width="2"/>
+  <text x="440" y="66" text-anchor="middle" font-family="Microsoft YaHei" font-size="20" font-weight="bold" fill="#ffffff">律衡知识库</text>
+
+  <!-- 分库框1：法条库（主蓝） -->
+  <rect x="30" y="175" width="152" height="165" rx="12" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
+  <text x="106" y="223" text-anchor="middle" font-family="Microsoft YaHei" font-size="16" font-weight="bold" fill="#2563eb">法条库</text>
+  <text x="106" y="251" text-anchor="middle" font-family="Microsoft YaHei" font-size="13" fill="#374151">民法典 / 劳动法</text>
+  <text x="106" y="269" text-anchor="middle" font-family="Microsoft YaHei" font-size="13" fill="#374151">消保法等</text>
+  <text x="106" y="287" text-anchor="middle" font-family="Microsoft YaHei" font-size="13" fill="#374151">按「章-条」切分</text>
+
+  <!-- 分库框2：案例库（主蓝） -->
+  <rect x="197" y="175" width="152" height="165" rx="12" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
+  <text x="273" y="223" text-anchor="middle" font-family="Microsoft YaHei" font-size="16" font-weight="bold" fill="#2563eb">案例库</text>
+  <text x="273" y="251" text-anchor="middle" font-family="Microsoft YaHei" font-size="13" fill="#374151">指导案例 / 公报案例</text>
+  <text x="273" y="269" text-anchor="middle" font-family="Microsoft YaHei" font-size="13" fill="#374151">按「案情-裁判-要点」</text>
+
+  <!-- 分库框3：FAQ库（主绿） -->
+  <rect x="364" y="175" width="152" height="165" rx="12" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
+  <text x="440" y="223" text-anchor="middle" font-family="Microsoft YaHei" font-size="16" font-weight="bold" fill="#16a34a">FAQ 库</text>
+  <text x="440" y="251" text-anchor="middle" font-family="Microsoft YaHei" font-size="13" fill="#374151">30+ 高频生活场景</text>
+  <text x="440" y="269" text-anchor="middle" font-family="Microsoft YaHei" font-size="13" fill="#374151">结论/依据/步骤/注意</text>
+
+  <!-- 分库框4：渠道库（主橙） -->
+  <rect x="531" y="175" width="152" height="165" rx="12" fill="#fffbeb" stroke="#fcd34d" stroke-width="2"/>
+  <text x="607" y="223" text-anchor="middle" font-family="Microsoft YaHei" font-size="16" font-weight="bold" fill="#d97706">渠道库</text>
+  <text x="607" y="251" text-anchor="middle" font-family="Microsoft YaHei" font-size="13" fill="#374151">12348 / 12315 / 12333</text>
+  <text x="607" y="269" text-anchor="middle" font-family="Microsoft YaHei" font-size="13" fill="#374151">按机构-地域组织</text>
+
+  <!-- 分库框5：模板库（主橙） -->
+  <rect x="698" y="175" width="152" height="165" rx="12" fill="#fffbeb" stroke="#fcd34d" stroke-width="2"/>
+  <text x="774" y="223" text-anchor="middle" font-family="Microsoft YaHei" font-size="16" font-weight="bold" fill="#d97706">模板库</text>
+  <text x="774" y="251" text-anchor="middle" font-family="Microsoft YaHei" font-size="13" fill="#374151">借条 / 合同要点等</text>
+  <text x="774" y="269" text-anchor="middle" font-family="Microsoft YaHei" font-size="13" fill="#374151">按文书类型组织</text>
+</svg>

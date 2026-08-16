@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="660" height="900" viewBox="0 0 660 900">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.06"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#6b7280"/>
+    </marker>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="660" height="900" fill="#ffffff"/>
+
+  <!-- 顶部标题 -->
+  <text x="330" y="40" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="bold" fill="#1f2937" text-anchor="middle">律衡 · 全民法律知识普惠智能体</text>
+  <text x="330" y="62" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#6b7280" text-anchor="middle">全流程工作流示意图</text>
+
+  <!-- 节点 1 -->
+  <g>
+    <rect x="70" y="85" width="520" height="70" rx="12" fill="#eff6ff" stroke="#93c5fd" stroke-width="2" filter="url(#shadow)"/>
+    <rect x="70" y="85" width="6" height="70" rx="3" fill="#2563eb"/>
+    <text x="90" y="110" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#1f2937">用户提问</text>
+    <text x="90" y="134" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#374151">输入生活场景中的法律问题</text>
+  </g>
+
+  <!-- 箭头 1 -->
+  <line x1="330" y1="155" x2="330" y2="175" stroke="#6b7280" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- 节点 2 -->
+  <g>
+    <rect x="70" y="180" width="520" height="70" rx="12" fill="#eff6ff" stroke="#93c5fd" stroke-width="2" filter="url(#shadow)"/>
+    <rect x="70" y="180" width="6" height="70" rx="3" fill="#2563eb"/>
+    <text x="90" y="205" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#1f2937">问题分类</text>
+    <text x="90" y="229" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#374151">识别领域(劳动/消费/婚姻/房产/借贷/交通/其他)</text>
+  </g>
+
+  <!-- 箭头 2 -->
+  <line x1="330" y1="250" x2="330" y2="270" stroke="#6b7280" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- 节点 3 -->
+  <g>
+    <rect x="70" y="275" width="520" height="70" rx="12" fill="#eff6ff" stroke="#93c5fd" stroke-width="2" filter="url(#shadow)"/>
+    <rect x="70" y="275" width="6" height="70" rx="3" fill="#2563eb"/>
+    <text x="90" y="300" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#1f2937">要素引导</text>
+    <text x="90" y="324" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#374151">追问关键事实,写入对话变量</text>
+  </g>
+
+  <!-- 箭头 3 -->
+  <line x1="330" y1="345" x2="330" y2="365" stroke="#6b7280" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- 节点 4 -->
+  <g>
+    <rect x="70" y="370" width="520" height="70" rx="12" fill="#eff6ff" stroke="#93c5fd" stroke-width="2" filter="url(#shadow)"/>
+    <rect x="70" y="370" width="6" height="70" rx="3" fill="#2563eb"/>
+    <text x="90" y="395" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#1f2937">知识库检索</text>
+    <text x="90" y="419" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#374151">按领域检索对应分库</text>
+  </g>
+
+  <!-- 箭头 4 -->
+  <line x1="330" y1="440" x2="330" y2="460" stroke="#6b7280" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- 节点 5 -->
+  <g>
+    <rect x="70" y="465" width="520" height="70" rx="12" fill="#f0fdf4" stroke="#86efac" stroke-width="2" filter="url(#shadow)"/>
+    <rect x="70" y="465" width="6" height="70" rx="3" fill="#16a34a"/>
+    <text x="90" y="490" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#1f2937">AI 对话</text>
+    <text x="90" y="514" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#374151">通俗解释 + 法条引用 + 操作建议</text>
+  </g>
+
+  <!-- 箭头 5 -->
+  <line x1="330" y1="535" x2="330" y2="555" stroke="#6b7280" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- 节点 6 -->
+  <g>
+    <rect x="70" y="560" width="520" height="70" rx="12" fill="#fffbeb" stroke="#fcd34d" stroke-width="2" filter="url(#shadow)"/>
+    <rect x="70" y="560" width="6" height="70" rx="3" fill="#d97706"/>
+    <text x="90" y="585" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#1f2937">条件分支</text>
+    <text x="90" y="609" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#374151">按用户情形分流到具体维权路径</text>
+  </g>
+
+  <!-- 箭头 6 -->
+  <line x1="330" y1="630" x2="330" y2="650" stroke="#6b7280" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- 节点 7 -->
+  <g>
+    <rect x="70" y="655" width="520" height="70" rx="12" fill="#f0fdf4" stroke="#86efac" stroke-width="2" filter="url(#shadow)"/>
+    <rect x="70" y="655" width="6" height="70" rx="3" fill="#16a34a"/>
+    <text x="90" y="680" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#1f2937">结果汇总</text>
+    <text x="90" y="704" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#374151">维权渠道/材料清单 + 免责声明 + 转介</text>
+  </g>
+
+  <!-- 箭头 7 -->
+  <line x1="330" y1="725" x2="330" y2="745" stroke="#6b7280" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- 节点 8 -->
+  <g>
+    <rect x="70" y="750" width="520" height="70" rx="12" fill="#f3f4f6" stroke="#6b7280" stroke-width="2" filter="url(#shadow)"/>
+    <rect x="70" y="750" width="6" height="70" rx="3" fill="#6b7280"/>
+    <text x="90" y="775" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#1f2937">结束</text>
+    <text x="90" y="799" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#374151">「换一个问题」/「拨打 12348」引导</text>
+  </g>
+</svg>

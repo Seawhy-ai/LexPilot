@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="620" viewBox="0 0 780 620">
+    <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#6b7280"/>
+        </marker>
+    </defs>
+
+    <!-- 白色画布背景 -->
+    <rect width="100%" height="100%" fill="#ffffff" />
+
+    <!-- ================= 框 1：劳动纠纷（主蓝） ================= -->
+    <rect x="276" y="50" width="240" height="60" rx="12" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
+    <path d="M 276 62 A 12 12 0 0 1 288 50 L 288 110 A 12 12 0 0 1 276 98 Z" fill="#2563eb"/>
+    <text x="396" y="78" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#2563eb">劳动纠纷</text>
+    <text x="396" y="98" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#374151">（识别到劳动类问题）</text>
+
+    <!-- ================= 框 2：已离职？（主灰） ================= -->
+    <rect x="306" y="185" width="180" height="50" rx="12" fill="#f3f4f6" stroke="#6b7280" stroke-width="2"/>
+    <path d="M 306 197 A 12 12 0 0 1 318 185 L 318 235 A 12 12 0 0 1 306 223 Z" fill="#6b7280"/>
+    <text x="396" y="215" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#1f2937">已离职？</text>
+
+    <!-- ================= 框 3：劳动仲裁指引（主蓝） ================= -->
+    <rect x="26" y="340" width="320" height="80" rx="12" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
+    <path d="M 26 352 A 12 12 0 0 1 38 340 L 38 420 A 12 12 0 0 1 26 408 Z" fill="#2563eb"/>
+    <text x="186" y="370" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#2563eb">劳动仲裁指引</text>
+    <text x="186" y="395" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#374151">时效 1 年 · 申请书 · 证据清单</text>
+    <text x="186" y="413" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#374151">属地仲裁委</text>
+
+    <!-- ================= 框 4：在职？（主灰） ================= -->
+    <rect x="516" y="315" width="180" height="50" rx="12" fill="#f3f4f6" stroke="#6b7280" stroke-width="2"/>
+    <path d="M 516 327 A 12 12 0 0 1 528 315 L 528 365 A 12 12 0 0 1 516 353 Z" fill="#6b7280"/>
+    <text x="606" y="345" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#1f2937">在职？</text>
+
+    <!-- ================= 框 5：12333 劳动监察投诉（主绿） ================= -->
+    <rect x="456" y="440" width="300" height="80" rx="12" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
+    <path d="M 456 452 A 12 12 0 0 1 468 440 L 468 520 A 12 12 0 0 1 456 508 Z" fill="#16a34a"/>
+    <text x="606" y="470" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#16a34a">12333 劳动监察投诉</text>
+    <text x="606" y="492" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#374151">保留工资流水 / 考勤记录</text>
+    <text x="606" y="510" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#374151">维权渠道指引</text>
+
+    <!-- ================= 框 6：工伤认定 / 被迫离职（强调红） ================= -->
+    <rect x="26" y="480" width="320" height="80" rx="12" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+    <path d="M 26 492 A 12 12 0 0 1 38 480 L 38 560 A 12 12 0 0 1 26 548 Z" fill="#dc2626"/>
+    <text x="186" y="510" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#dc2626">工伤认定流程 /</text>
+    <text x="186" y="532" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="16" fill="#dc2626">经济补偿金 · 被迫离职提示</text>
+
+    <!-- ================= 连接线和箭头 ================= -->
+    <!-- 连接 1：框 1 到框 2 -->
+    <path d="M 396 110 L 396 185" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- 连接 2：框 2 到框 3（是 - 已离职） -->
+    <path d="M 306 210 L 246 210 L 246 380 L 346 380" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="276" y="200" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="14" font-weight="bold" fill="#2563eb">是</text>
+
+    <!-- 连接 3：框 2 到框 4（否 - 未离职） -->
+    <path d="M 486 210 L 726 210 L 726 340 L 696 340" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="606" y="200" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="14" font-weight="bold" fill="#d97706">否</text>
+
+    <!-- 连接 4：框 4 到框 5（是 - 在职） -->
+    <path d="M 606 365 L 606 440" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="621" y="400" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="14" font-weight="bold" fill="#16a34a">是</text>
+
+    <!-- 连接 5：框 4 到框 6（特殊情形） -->
+    <path d="M 516 340 L 436 340 L 436 520 L 346 520" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="436" y="430" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="14" font-weight="bold" fill="#dc2626" transform="rotate(90 436 430)">特殊情形</text>
+
+</svg>

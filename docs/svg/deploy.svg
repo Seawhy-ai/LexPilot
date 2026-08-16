@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="500" viewBox="0 0 920 500">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000000" flood-opacity="0.1"/>
+    </filter>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#6b7280"/>
+    </marker>
+    <marker id="arrow-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#d97706"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a"/>
+    </marker>
+  </defs>
+
+  <!-- 纯白背景 -->
+  <rect width="920" height="500" fill="#ffffff"/>
+
+  <!-- 连线层 -->
+  <!-- 浏览器 -HTTPS- Nginx -->
+  <line x1="220" y1="95" x2="364" y2="95" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <rect x="280" y="84" width="40" height="22" fill="#ffffff" rx="4"/>
+  <text x="300" y="95" text-anchor="middle" dominant-baseline="middle" font-family="Microsoft YaHei" font-size="12" fill="#374151">HTTPS</text>
+
+  <!-- Nginx -转发- FastGPT -->
+  <line x1="460" y1="130" x2="460" y2="204" stroke="#6b7280" stroke-width="2" marker-end="url(#arrow-gray)"/>
+  <rect x="470" y="160" width="30" height="20" fill="#ffffff" rx="4"/>
+  <text x="485" y="170" text-anchor="middle" dominant-baseline="middle" font-family="Microsoft YaHei" font-size="12" fill="#374151">转发</text>
+
+  <!-- FastGPT -查询- 向量数据库 -->
+  <path d="M 410 290 L 410 330 L 234 330 L 234 364" fill="none" stroke="#d97706" stroke-width="2" marker-end="url(#arrow-orange)"/>
+  <rect x="307" y="316" width="30" height="20" fill="#ffffff" rx="4"/>
+  <text x="322" y="326" text-anchor="middle" dominant-baseline="middle" font-family="Microsoft YaHei" font-size="12" fill="#374151">查询</text>
+
+  <!-- FastGPT -调用- 大模型 API -->
+  <path d="M 510 290 L 510 330 L 694 330 L 694 364" fill="none" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow-green)"/>
+  <rect x="587" y="316" width="30" height="20" fill="#ffffff" rx="4"/>
+  <text x="602" y="326" text-anchor="middle" dominant-baseline="middle" font-family="Microsoft YaHei" font-size="12" fill="#374151">调用</text>
+
+  <!-- 节点 1：公众浏览器 -->
+  <g>
+    <rect x="60" y="60" width="160" height="70" rx="12" fill="#eff6ff" stroke="#93c5fd" stroke-width="2" filter="url(#shadow)"/>
+    <path d="M 60 72 A 12 12 0 0 1 72 60 L 68 60 L 68 130 L 72 130 A 12 12 0 0 1 60 118 Z" fill="#2563eb"/>
+    <text x="144" y="86" text-anchor="middle" dominant-baseline="middle" font-family="Microsoft YaHei" font-size="16" font-weight="bold" fill="#1f2937">公众浏览器</text>
+    <text x="144" y="109" text-anchor="middle" dominant-baseline="middle" font-family="Microsoft YaHei" font-size="14" fill="#374151">浏览器直开</text>
+  </g>
+
+  <!-- 节点 2：Nginx 反向代理 -->
+  <g>
+    <rect x="370" y="60" width="180" height="70" rx="12" fill="#f3f4f6" stroke="#6b7280" stroke-width="2" filter="url(#shadow)"/>
+    <path d="M 370 72 A 12 12 0 0 1 382 60 L 378 60 L 378 130 L 382 130 A 12 12 0 0 1 370 118 Z" fill="#6b7280"/>
+    <text x="464" y="86" text-anchor="middle" dominant-baseline="middle" font-family="Microsoft YaHei" font-size="16" font-weight="bold" fill="#1f2937">Nginx 反向代理</text>
+    <text x="464" y="109" text-anchor="middle" dominant-baseline="middle" font-family="Microsoft YaHei" font-size="14" fill="#374151">公网入口</text>
+  </g>
+
+  <!-- 节点 3：FastGPT 服务 -->
+  <g>
+    <rect x="350" y="210" width="220" height="80" rx="12" fill="#eff6ff" stroke="#93c5fd" stroke-width="2" filter="url(#shadow)"/>
+    <path d="M 350 222 A 12 12 0 0 1 362 210 L 358 210 L 358 290 L 362 290 A 12 12 0 0 1 350 278 Z" fill="#2563eb"/>
+    <text x="464" y="242" text-anchor="middle" dominant-baseline="middle" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#1f2937">FastGPT 服务</text>
+    <text x="464" y="266" text-anchor="middle" dominant-baseline="middle" font-family="Microsoft YaHei" font-size="14" fill="#374151">容器化 · 私有化部署</text>
+  </g>
+
+  <!-- 节点 4：向量数据库 -->
+  <g>
+    <rect x="150" y="370" width="160" height="70" rx="12" fill="#fffbeb" stroke="#fcd34d" stroke-width="2" filter="url(#shadow)"/>
+    <path d="M 150 382 A 12 12 0 0 1 162 370 L 158 370 L 158 440 L 162 440 A 12 12 0 0 1 150 428 Z" fill="#d97706"/>
+    <text x="234" y="398" text-anchor="middle" dominant-baseline="middle" font-family="Microsoft YaHei" font-size="16" font-weight="bold" fill="#1f2937">向量数据库</text>
+    <text x="234" y="420" text-anchor="middle" dominant-baseline="middle" font-family="Microsoft YaHei" font-size="14" fill="#374151">知识库检索</text>
+  </g>
+
+  <!-- 节点 5：大模型 API -->
+  <g>
+    <rect x="610" y="370" width="160" height="70" rx="12" fill="#f0fdf4" stroke="#86efac" stroke-width="2" filter="url(#shadow)"/>
+    <path d="M 610 382 A 12 12 0 0 1 622 370 L 618 370 L 618 440 L 622 440 A 12 12 0 0 1 610 428 Z" fill="#16a34a"/>
+    <text x="694" y="398" text-anchor="middle" dominant-baseline="middle" font-family="Microsoft YaHei" font-size="16" font-weight="bold" fill="#1f2937">大模型 API</text>
+    <text x="694" y="420" text-anchor="middle" dominant-baseline="middle" font-family="Microsoft YaHei" font-size="14" fill="#374151">DeepSeek / GLM</text>
+  </g>
+
+</svg>
