@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>SeaWhy Lex · 宣传片渲染器</title>
+<style>
+  html,body{margin:0;padding:0;width:1920px;height:1080px;overflow:hidden;background:#000;}
+  canvas{display:block;}
+  #ui{position:fixed;right:24px;top:24px;z-index:9;font:12px/1.6 "Consolas",monospace;color:#9bd1ff;background:rgba(0,20,40,.7);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:8px 12px;pointer-events:none;opacity:.9;}
+</style>
+</head>
+<body>
+<canvas id="c" width="1920" height="1080"></canvas>
+<div id="ui"></div>
+<script>
+/* ============================================================
+   SeaWhy Lex — 宣传片渲染器 (确定性时间轴)
+   画幅 1920×1080 · 时长 30s · 30fps
+   每帧画面完全由时间 t 决定 → 可逐帧截图合成视频
+   window.setPromoTime(t) 在浏览器里也能逐帧驱动
+   ============================================================ */
+const W = 1920, H = 1080, FPS = 30, DUR = 30;
+const ctx = document.getElementById('c').getContext('2d');
+
+/* ---------- 字体 / 颜色 ---------- */
+const F   = '"Microsoft YaHei","PingFang SC","Noto Sans CJK SC","Source Han Sans SC",sans-serif';
+const FB  = '"Microsoft YaHei",sans-serif';
+const C = {
+  bgTop:'#0a2440', bgMid:'#0f3a63', bgBot:'#0a2b4c',
+  accent:'#5dade2', bright:'#9bd1ff', soft:'#cfe6ff',
+  text:'#ffffff', sub:'rgba(225,240,255,.82)', faint:'rgba(255,255,255,.45)',
+  tile:'rgba(255,255,255,.055)', tileStroke:'rgba(255,255,255,.16)',
+  chip:'rgba(255,255,255,.10)', chipStroke:'rgba(255,255,255,.22)',
+};
+
+/* ---------- 功能模块数据 (8 个) ---------- */
+const FEATURES = [
+  { icon:'chat',   grad:['#1668b8','#5dade2'], name:'AI 法律咨询', desc:'智能问答 · 多角色人格化服务',     chips:['AI 对话','人格化','随时问'] },
+  { icon:'book',   grad:['#0e7490','#2dd4bf'], name:'法典数据库', desc:'民法典 · 刑法 · 诉讼法全文检索',  chips:['法典全文','在线检索','随时查'] },
+  { icon:'target', grad:['#b45309','#f59e0b'], name:'学习题库',   desc:'493 道真题 · 按教材章节分组',      chips:['章节练习','考试模式','错题本'] },
+  { icon:'cal',    grad:['#15803d','#4ade80'], name:'学习规划',   desc:'课表管理 · 每日打卡 · 今日待办',   chips:['周视图','每日打卡','待办清单'] },
+  { icon:'note',   grad:['#7c3aed','#a78bfa'], name:'学习笔记',   desc:'标签分类 · 云端同步',              chips:['标签管理','云同步'] },
+  { icon:'doc',    grad:['#be185d','#f472b6'], name:'法律文书',   desc:'常用文书模板 · 一键生成',          chips:['文书模板','一键生成'] },
+  { icon:'case',   grad:['#0f766e','#34d399'], name:'案例分析',   desc:'判例检索与深度解析',               chips:['判例检索','深度解析'] },
+  { icon:'user',   grad:['#1d4ed8','#60a5fa'], name:'个人中心',   desc:'积分体系 · VIP 特权 · 云端备份',   chips:['积分体系','VIP','云备份'] },
+];
+
+/* ---------- 数学工具 ---------- */
+const clamp = (v,a,b)=>v<a?a:v>b?b:v;
+const lerp  = (a,b,t)=>a+(b-a)*t;
+const smooth=(a,b,x)=>{let t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t);};
+const easeOutCubic = x=>1-Math.pow(1-x,3);
+const easeOutBack  = x=>{const c=1.70158,c3=c+1;x-=1;return 1+c3*x*x*x+c*x*x;};
+const easeInQuad   = x=>x*x;
+// 确定性伪随机
+function rnd(i){const s=Math.sin(i*127.1+311.7)*43758.5453123;return s-Math.floor(s);}
+
+/* ---------- 背景粒子 (气泡, 确定性) ---------- */
+const N_BUB=46;
+const bub = Array.from({length:N_BUB},(_,i)=>({
+  x: rnd(i)*W, y0: rnd(i+50)*H,
+  sp: 0.03+rnd(i+100)*0.06,      // 秒速上升 (0.03~0.09 屏/s)
+  r: 3+rnd(i+150)*20,
+  ph: rnd(i+200)*6.2832,
+  dr: 30+rnd(i+250)*120,
+}));
+
+/* ---------- 图标绘制 (白色描边线性图标) ---------- */
+function drawIcon(id,cx,cy,s){
+  ctx.save();
+  ctx.strokeStyle = 'rgba(255,255,255,.95)';
+  ctx.fillStyle   = 'rgba(255,255,255,.95)';
+  ctx.lineWidth   = s*0.16;
+  ctx.lineCap = 'round'; ctx.lineJoin='round';
+  ctx.beginPath();
+  switch(id){
+    case 'chat': { // 气泡
+      const r=s*0.28;
+      ctx.roundRect(cx-s,cy-s*0.78,2*s,s*0.78+s*0.48,r);
+      ctx.moveTo(cx-s*0.7,cy+s*0.48); ctx.lineTo(cx-s*1.15,cy+s*0.95); ctx.lineTo(cx-s*0.1,cy+s*0.48);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(cx-s*0.42,cy-s*0.15,s*0.09,0,7); ctx.fill();
+      ctx.beginPath(); ctx.arc(cx,cy-s*0.15,s*0.09,0,7); ctx.fill();
+      ctx.beginPath(); ctx.arc(cx+s*0.42,cy-s*0.15,s*0.09,0,7); ctx.fill();
+      break;
+    }
+    case 'book': { // 打开的书籍
+      ctx.moveTo(cx-s,cy-s*0.55);
+      ctx.quadraticCurveTo(cx-s*0.42,cy-s*0.75,cx,cy-s*0.42);
+      ctx.quadraticCurveTo(cx+s*0.42,cy-s*0.75,cx+s,cy-s*0.55);
+      ctx.lineTo(cx+s,cy+s*0.5);
+      ctx.quadraticCurveTo(cx+s*0.42,cy+s*0.62,cx,cy+s*0.32);
+      ctx.quadraticCurveTo(cx-s*0.42,cy+s*0.62,cx-s,cy+s*0.5);
+      ctx.closePath(); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(cx,cy-s*0.42); ctx.lineTo(cx,cy+s*0.32); ctx.stroke();
+      break;
+    }
+    case 'target': { // 靶心
+      ctx.arc(cx,cy,s,0,7); ctx.moveTo(cx+s*0.6,cy); ctx.arc(cx,cy,s*0.6,0,7);
+      ctx.moveTo(cx+s*0.2,cy); ctx.arc(cx,cy,s*0.2,0,7); ctx.stroke();
+      ctx.beginPath(); ctx.arc(cx,cy,s*0.08,0,7); ctx.fill();
+      break;
+    }
+    case 'cal': { // 日历 + 对勾
+      ctx.roundRect(cx-s*0.9,cy-s*0.78,1.8*s,s*0.78+s*0.74,s*0.18);
+      ctx.moveTo(cx-s*0.55,cy-s*1.05); ctx.lineTo(cx-s*0.55,cy-s*0.6);
+      ctx.moveTo(cx+s*0.55,cy-s*1.05); ctx.lineTo(cx+s*0.55,cy-s*0.6);
+      ctx.moveTo(cx-s*0.9,cy-s*0.32); ctx.lineTo(cx+s*0.9,cy-s*0.32);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(cx-s*0.5,cy+s*0.12); ctx.lineTo(cx-s*0.12,cy+s*0.5); ctx.lineTo(cx+s*0.62,cy-s*0.28);
+      ctx.stroke();
+      break;
+    }
+    case 'note': { // 便签 + 铅笔
+      ctx.roundRect(cx-s*0.82,cy-s*0.95,1.64*s,s*0.95+s*0.95,s*0.14);
+      ctx.moveTo(cx-s*0.82,cy-s*0.95); ctx.lineTo(cx+s*0.82,cy-s*0.95);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(cx-s*0.45,cy-s*0.45); ctx.lineTo(cx+s*0.45,cy-s*0.45);
+      ctx.moveTo(cx-s*0.45,cy-s*0.05); ctx.lineTo(cx+s*0.45,cy-s*0.05);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(cx-s*0.9,cy+s*0.85); ctx.lineTo(cx+s*0.55,cy-s*0.8);
+      ctx.lineTo(cx+s*0.95,cy-s*0.75); ctx.lineTo(cx-s*0.6,cy+s*0.95);
+      ctx.closePath(); ctx.stroke();
+      break;
+    }
+    case 'doc': { // 文书 (卷角)
+      ctx.beginPath();
+      ctx.moveTo(cx-s*0.7,cy-s*0.95); ctx.lineTo(cx+s*0.35,cy-s*0.95);
+      ctx.lineTo(cx+s*0.75,cy-s*0.55); ctx.lineTo(cx+s*0.75,cy+s*0.95);
+      ctx.lineTo(cx-s*0.7,cy+s*0.95); ctx.closePath(); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(cx+s*0.35,cy-s*0.95); ctx.lineTo(cx+s*0.35,cy-s*0.55); ctx.lineTo(cx+s*0.75,cy-s*0.55);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(cx-s*0.35,cy-s*0.35); ctx.lineTo(cx+s*0.35,cy-s*0.35);
+      ctx.moveTo(cx-s*0.35,cy-s*0.05); ctx.lineTo(cx+s*0.35,cy-s*0.05);
+      ctx.moveTo(cx-s*0.35,cy+s*0.25); ctx.lineTo(cx+s*0.1,cy+s*0.25);
+      ctx.stroke();
+      break;
+    }
+    case 'case': { // 放大镜
+      ctx.beginPath();
+      ctx.arc(cx-s*0.18,cy-s*0.2,s*0.55,0,7); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(cx+s*0.22,cy+s*0.22); ctx.lineTo(cx+s*0.9,cy+s*0.9); ctx.stroke();
+      break;
+    }
+    case 'user': { // 人像
+      ctx.beginPath(); ctx.arc(cx,cy-s*0.35,s*0.34,0,7); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(cx-s*0.82,cy+s*0.95);
+      ctx.quadraticCurveTo(cx-s*0.7,cy+s*0.05,cx,cy+s*0.05);
+      ctx.quadraticCurveTo(cx+s*0.7,cy+s*0.05,cx+s*0.82,cy+s*0.95);
+      ctx.closePath(); ctx.stroke();
+      break;
+    }
+  }
+  ctx.restore();
+}
+
+/* ---------- 圆角矩形 ---------- */
+CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){
+  r=Math.min(r,w/2,h/2);
+  this.moveTo(x+r,y); this.arcTo(x+w,y,x+w,y+h,r); this.arcTo(x+w,y+h,x,y+h,r);
+  this.arcTo(x,y+h,x,y,r); this.arcTo(x,y,x+w,y,r); this.closePath();
+  return this;
+};
+
+/* ---------- Logo 图片 ---------- */
+const logo = new Image();
+logo.src = 'icon.png';
+
+function drawLogo(cx,cy,size,alpha){
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  // 白底圆角卡片
+  ctx.shadowColor='rgba(0,30,60,.55)'; ctx.shadowBlur=60;
+  ctx.fillStyle='#fff';
+  ctx.beginPath(); ctx.roundRect(cx-size/2,cy-size/2,size,size,size*0.22); ctx.fill();
+  ctx.shadowBlur=0;
+  if(logo.complete && logo.naturalWidth>0){
+    ctx.save();
+    ctx.beginPath(); ctx.roundRect(cx-size/2,cy-size/2,size,size,size*0.22); ctx.clip();
+    ctx.drawImage(logo,cx-size/2,cy-size/2,size,size);
+    ctx.restore();
+  }else{
+    ctx.font = size*0.6+'px serif';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('🐋',cx,cy+size*0.03);
+  }
+  ctx.restore();
+}
+
+/* ---------- 文本工具 ---------- */
+function text(s,x,y,size,color,opts={}){
+  ctx.save();
+  ctx.globalAlpha = opts.alpha!=null?opts.alpha:1;
+  ctx.font = (opts.weight||700)+' '+size+'px '+FB;
+  ctx.fillStyle = color||C.text;
+  ctx.textAlign = opts.align||'center';
+  ctx.textBaseline = opts.baseline||'middle';
+  if(opts.spacing){ try{ctx.letterSpacing=opts.spacing+'px';}catch(e){} }
+  ctx.shadowColor = opts.shadow?opts.shadow:'transparent';
+  ctx.shadowBlur = opts.shadow?opts.blur||30:0;
+  ctx.fillText(s,x,y);
+  if(opts.spacing){ try{ctx.letterSpacing='0px';}catch(e){} }
+  ctx.restore();
+}
+function chip(x,y,txt){
+  const fs=30;
+  ctx.save();
+  ctx.font='600 '+fs+'px '+FB;
+  const w=ctx.measureText(txt).width+44;
+  ctx.beginPath(); ctx.roundRect(x-w/2,y-20,w,40,20); ctx.fillStyle=C.chip; ctx.fill();
+  ctx.lineWidth=1.5; ctx.strokeStyle=C.chipStroke; ctx.stroke();
+  ctx.fillStyle='rgba(255,255,255,.92)';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(txt,x,y+2);
+  ctx.restore();
+}
+
+/* ---------- 场景 ---------- */
+const SC = {intro:0, tag:3, feat:5.5, sum:23.5, outro:26, end:30};
+
+function drawBackground(t){
+  // 海洋渐变
+  const g=ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,C.bgTop); g.addColorStop(0.5,C.bgMid); g.addColorStop(1,C.bgBot);
+  ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+  // 柔光
+  let rg=ctx.createRadialGradient(W*0.22+Math.sin(t*0.09)*160,H*0.26,40, W*0.22+Math.sin(t*0.09)*160,H*0.26,680);
+  rg.addColorStop(0,'rgba(50,120,200,.28)'); rg.addColorStop(1,'rgba(50,120,200,0)');
+  ctx.fillStyle=rg; ctx.fillRect(0,0,W,H);
+  rg=ctx.createRadialGradient(W*0.82+Math.cos(t*0.07)*140,H*0.8,60, W*0.82+Math.cos(t*0.07)*140,H*0.8,760);
+  rg.addColorStop(0,'rgba(30,90,160,.22)'); rg.addColorStop(1,'rgba(30,90,160,0)');
+  ctx.fillStyle=rg; ctx.fillRect(0,0,W,H);
+  // 气泡
+  for(const b of bub){
+    const y=((b.y0 - t*b.sp*H)%H+H)%H;
+    const x=b.x+Math.sin(t*0.4+b.ph)*b.dr*0.12;
+    const a=0.05+0.10*Math.pow(Math.sin(t*0.6+b.ph),2);
+    ctx.beginPath(); ctx.arc(x,y,b.r,0,7);
+    ctx.fillStyle='rgba(255,255,255,'+a.toFixed(3)+')'; ctx.fill();
+  }
+  // 暗角
+  const v=ctx.createRadialGradient(W/2,H/2,H*0.45,W/2,H/2,H*0.78);
+  v.addColorStop(0,'rgba(0,10,24,0)'); v.addColorStop(1,'rgba(0,10,24,.55)');
+  ctx.fillStyle=v; ctx.fillRect(0,0,W,H);
+}
+function watermark(t){
+  ctx.save(); ctx.globalAlpha=0.5;
+  text('SEAWHY LEX',60,64,26,'rgba(155,209,255,.6)',{weight:600,spacing:6,align:'left',alpha:0.9});
+  text('法学生 AI 学习助手',W-60,64,24,'rgba(155,209,255,.6)',{weight:500,spacing:2,align:'right',alpha:0.9});
+  ctx.restore();
+}
+
+/* --- 场景 0: 封面 (0-3s) --- */
+function drawIntro(t){
+  const l=t;
+  const a0=smooth(0,0.25,l), a1=1-smooth(2.55,2.9,l);
+  const A=a0*a1;
+  // logo
+  const scale=easeOutBack(clamp(l/0.9,0,1));
+  const oy=Math.sin(t*0.9)*7;
+  drawLogo(960,420+oy,250*scale,0.95*A);
+  // 标题
+  text('SeaWhy Lex',960,650,96,'#ffffff',{alpha:A*smooth(0.9,1.25,l),spacing:8});
+  // 副标题
+  text('法学生 AI 学习助手',960,742,44,C.soft,{alpha:A*smooth(1.3,1.6,l),weight:500,spacing:4});
+  // 标签胶囊
+  const chipsT=['AI 智能学习','法学实证驱动','开源 · 免费'];
+  ctx.save(); ctx.globalAlpha=A;
+  for(let i=0;i<3;i++){
+    const ca=smooth(1.7+i*0.22,2.0+i*0.22,l);
+    if(ca<=0)continue;
+    ctx.save(); ctx.globalAlpha=A*ca;
+    chip(960+(i-1)*230,826,chipsT[i]);
+    ctx.restore();
+  }
+  ctx.restore();
+  // 底部研究依据
+  text('源自《AI法律工具失效模式与规制路径研究》',960,992,26,C.faint,
+    {alpha:A*smooth(2.2,2.5,l),weight:400});
+}
+
+/* --- 场景 1: 核心标语 (3-5.5s) --- */
+function drawTag(t){
+  const l=t-SC.tag, A=smooth(0,0.3,l)*(1-smooth(2.15,2.5,l));
+  // 主标题
+  text('让法律学习',960,470,148,'#ffffff',{alpha:A*smooth(0.15,0.55,l),spacing:6});
+  const g2=ctx.createLinearGradient(0,560,0,700);
+  g2.addColorStop(0,'#9bd1ff'); g2.addColorStop(1,'#5dade2');
+  text('更 简 单',960,642,148,g2,{alpha:A*smooth(0.55,0.95,l),spacing:16});
+  // 下划线
+  const uw=lerp(0,560,easeOutCubic(smooth(0.85,1.3,l)));
+  if(uw>0){ctx.save();ctx.globalAlpha=A*0.9;
+    ctx.fillStyle='#5dade2';
+    ctx.beginPath();ctx.roundRect(960-uw/2,700,uw,8,4);ctx.fill();ctx.restore();}
+  // 副标题
+  text('AI 时代 · 法学生的智能学习助手',960,800,46,C.soft,{alpha:A*smooth(1.3,1.65,l),weight:500,spacing:3});
+  // 三个小点
+  const pts=['实证驱动','多角色人格','随时可用'];
+  for(let i=0;i<3;i++){
+    const a=smooth(1.55+i*0.2,1.8+i*0.2,l)*A;
+    if(a<=0)continue;
+    ctx.save(); ctx.globalAlpha=a;
+    text('· '+pts[i],960+(i-1)*250,880,32,C.bright,{weight:500,align:'center'});
+    ctx.restore();
+  }
+}
+
+/* --- 场景 2: 功能模块 (5.5-23.5s) --- */
+function drawFeature(t){
+  const base=SC.feat, span=2.25;
+  const idx=Math.min(7,Math.floor((t-base)/span));
+  const l=t-base-idx*span;
+  const f=FEATURES[idx];
+  const cx=lerp(1240,960,easeOutCubic(smooth(0,0.45,l)));
+  const yB=560-smooth(1.85,2.25,l)*34;
+  const cardA=smooth(0,0.3,l)*(1-smooth(1.95,2.25,l));
+  const wCard=1080,hCard=430;
+  // 卡片
+  ctx.save(); ctx.globalAlpha=cardA;
+  ctx.shadowColor='rgba(0,20,45,.5)'; ctx.shadowBlur=48;
+  ctx.fillStyle='rgba(15,50,92,.72)';
+  ctx.strokeStyle='rgba(155,209,255,.30)'; ctx.lineWidth=2.5;
+  ctx.beginPath(); ctx.roundRect(cx-wCard/2,yB-hCard/2,wCard,hCard,44); ctx.fill(); ctx.stroke();
+  ctx.shadowBlur=0;
+  // 序号角标
+  text('0'+(idx+1),cx+wCard/2-52,yB-hCard/2+40,54,'rgba(155,209,255,.28)',{weight:800,align:'right',alpha:1});
+  // 图标砖块
+  const sTile=200;
+  const tilePop=easeOutBack(clamp((l-0.22)/0.42,0,1));
+  const ringP=smooth(0.22,1.3,l);
+  // 脉冲环
+  if(ringP>0&&ringP<1){ctx.save();ctx.globalAlpha=cardA*(1-ringP)*0.5;
+    ctx.strokeStyle='#9bd1ff';ctx.lineWidth=3;
+    ctx.beginPath();ctx.arc(cx-wCard/2+sTile/2,yB,sTile*0.62*ringP+8,0,7);ctx.stroke();ctx.restore();}
+  const tg=ctx.createLinearGradient(0,yB-sTile/2,0,yB+sTile/2);
+  tg.addColorStop(0,f.grad[0]); tg.addColorStop(1,f.grad[1]);
+  ctx.save(); ctx.globalAlpha=cardA;
+  ctx.translate(cx-wCard/2+sTile/2,yB);
+  ctx.scale(tilePop,tilePop);
+  ctx.shadowColor=f.grad[1]; ctx.shadowBlur=40;
+  ctx.fillStyle=tg;
+  ctx.beginPath(); ctx.roundRect(-sTile/2,-sTile/2,sTile,sTile,46); ctx.fill();
+  ctx.shadowBlur=0;
+  drawIcon(f.icon,0,0,62);
+  ctx.restore();
+  // 名称
+  const ny=yB-70+smooth(0.45,0.8,l)*(-20);
+  text(f.name,cx+60,ny,76,'#ffffff',{alpha:cardA*smooth(0.5,0.85,l),align:'left',weight:800});
+  // 描述
+  text(f.desc,cx+60,yB+16,40,C.soft,{alpha:cardA*smooth(0.78,1.1,l),align:'left',weight:500});
+  // 标签
+  const cw0=cx+60;
+  let acc=0;
+  for(let i=0;i<f.chips.length;i++){
+    const ca=smooth(1.0+i*0.16,1.25+i*0.16,l)*cardA;
+    if(ca<=0)continue;
+    ctx.save(); ctx.globalAlpha=ca;
+    ctx.font='600 30px '+FB;
+    const cw=ctx.measureText(f.chips[i]).width+44;
+    chip(cw0+acc+cw/2,yB+96,f.chips[i]);
+    acc+=cw+22;
+    ctx.restore();
+  }
+  ctx.restore();
+  // 顶部进度点
+  for(let i=0;i<8;i++){
+    const active=i===idx;
+    ctx.beginPath();
+    ctx.arc(960+(i-3.5)*46,150,active?9:6,0,7);
+    ctx.fillStyle=active?'rgba(255,255,255,.95)':'rgba(255,255,255,.28)';
+    ctx.fill();
+  }
+  text('核心功能',960,204,30,'rgba(155,209,255,.55)',{weight:600,spacing:6});
+}
+
+/* --- 场景 3: 总结汇聚 (23.5-26s) --- */
+function drawSummary(t){
+  const l=t-SC.sum, A=smooth(0,0.3,l)*(1-smooth(2.15,2.5,l));
+  const p=easeOutCubic(smooth(0.4,1.7,l));
+  for(let i=0;i<8;i++){
+    const f=FEATURES[i];
+    const dstX=960+(i-3.5)*150, dstY=470;
+    const srcX=i<4? -180-i*150 : W+180+(7-i)*150;
+    const srcY=390+rnd(i)*120-60;
+    const x=lerp(srcX,dstX,p), y=lerp(srcY,dstY,p);
+    const s=86;
+    const tg=ctx.createLinearGradient(0,y-s/2,0,y+s/2);
+    tg.addColorStop(0,f.grad[0]); tg.addColorStop(1,f.grad[1]);
+    ctx.save(); ctx.globalAlpha=A*p;
+    ctx.shadowColor='rgba(0,20,45,.5)'; ctx.shadowBlur=24;
+    ctx.fillStyle=tg;
+    ctx.beginPath(); ctx.roundRect(x-s/2,y-s/2,s,s,24); ctx.fill();
+    ctx.shadowBlur=0;
+    drawIcon(f.icon,x,y,26);
+    ctx.restore();
+  }
+  text('一站式法学生态',960,760,96,'#ffffff',{alpha:A*smooth(1.15,1.55,l),spacing:6,weight:800});
+  text('从法条到案例 · 从题海到实战',960,856,42,C.soft,{alpha:A*smooth(1.5,1.85,l),weight:500,spacing:3});
+}
+
+/* --- 场景 4: 收尾 (26-30s) --- */
+function drawOutro(t){
+  const l=t-SC.outro, A=smooth(0,0.25,l);
+  drawLogo(960,400,210,easeOutBack(clamp(l/0.5,0,1))*0.95*A);
+  text('SeaWhy Lex',960,592,96,'#ffffff',{alpha:A*smooth(0.4,0.75,l),spacing:8});
+  text('免费 · 开源 · 即刻体验',960,686,44,C.soft,{alpha:A*smooth(0.7,1.0,l),weight:500,spacing:4});
+  // URL 胶囊
+  const ua=A*smooth(1.0,1.3,l);
+  if(ua>0){
+    ctx.save(); ctx.globalAlpha=ua;
+    ctx.font='600 34px "Consolas","Cascadia Mono",monospace';
+    const uw=ctx.measureText('seawhy-ai.github.io/LexPilot').width+70;
+    ctx.fillStyle='rgba(10,35,66,.75)';
+    ctx.strokeStyle='rgba(255,255,255,.25)'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.roundRect(960-uw/2,740-34,uw,68,34); ctx.fill(); ctx.stroke();
+    ctx.fillStyle='#9bd1ff';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('seawhy-ai.github.io/LexPilot',960,744);
+    ctx.restore();
+  }
+  text('Made with ❤️ for 法学生',960,992,28,C.faint,{alpha:A*smooth(1.6,1.9,l),weight:400});
+  // 结尾淡出黑幕
+  const fad=smooth(3.35,3.95,l);
+  if(fad>0){ctx.fillStyle='rgba(2,8,18,'+fad.toFixed(3)+')';ctx.fillRect(0,0,W,H);}
+}
+
+/* ---------- 主帧函数 ---------- */
+function frame(t){
+  t=clamp(t,0,DUR);
+  drawBackground(t);
+  if(t<SC.tag)            drawIntro(t);
+  else if(t<SC.feat)      drawTag(t);
+  else if(t<SC.sum)       drawFeature(t);
+  else if(t<SC.outro)     drawSummary(t);
+  else                    drawOutro(t);
+  watermark(t);
+  // 底部总进度
+  const pw=(t/DUR)*W;
+  ctx.fillStyle='rgba(255,255,255,.08)'; ctx.fillRect(0,H-6,W,6);
+  const pg=ctx.createLinearGradient(0,0,W,0);
+  pg.addColorStop(0,'#1668b8'); pg.addColorStop(1,'#9bd1ff');
+  ctx.fillStyle=pg; ctx.fillRect(0,H-6,pw,6);
+  curT=t;
+}
+
+/* ---------- 对外接口 ---------- */
+let curT=0;
+function setPromoTime(t){ frame(Number(t)); return curT; }
+window.setPromoTime=setPromoTime;
+
+/* ---------- 浏览器实时预览 (无 ?t= 时自动播放) ---------- */
+const ui=document.getElementById('ui');
+let playing=true, last=0;
+const params=new URLSearchParams(location.search);
+if(params.get('t')!=null){ setPromoTime(parseFloat(params.get('t'))); playing=false; }
+if(params.get('render')!=null){ ui.style.display='none'; }   // 视频渲染时隐藏调试 UI
+function loop(ts){
+  if(playing){ setPromoTime(((ts/1000)%(DUR+1.2))); }
+  const fr=Math.floor(curT*FPS);
+  ui.textContent='t='+curT.toFixed(2)+'s · frame '+fr+'/'+(DUR*FPS)+' · '+(playing?'播放':'暂停');
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+document.addEventListener('click',()=>{playing=!playing;});
+</script>
+</body>
+</html>
