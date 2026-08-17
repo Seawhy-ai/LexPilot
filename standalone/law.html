@@ -719,8 +719,25 @@
 @keyframes lrfShine{0%,100%{box-shadow:0 0 0 0 rgba(247,183,51,0)}50%{box-shadow:0 0 22px 6px rgba(247,183,51,.55)}}
 .lrf{position:absolute;inset:0;margin:auto;width:420px;height:420px;border-radius:50%;pointer-events:none;z-index:0;background:radial-gradient(circle,rgba(247,183,51,.55),rgba(247,183,51,.14) 45%,transparent 68%);animation:lrfBurst 1.15s cubic-bezier(.22,.61,.36,1) forwards}
 @keyframes lrfBurst{0%{transform:scale(.35);opacity:0}22%{opacity:1}100%{transform:scale(1.5);opacity:0}}
-.lottery-cell.hit-jackpot{animation:cellJackpot .95s ease-out}
-@keyframes cellJackpot{0%{box-shadow:0 0 0 0 rgba(247,183,51,0);transform:scale(1)}35%{box-shadow:0 0 26px 9px rgba(247,183,51,.85);transform:scale(1.18)}100%{box-shadow:0 0 0 0 rgba(247,183,51,0);transform:scale(1.08)}}
+/* 王者祈愿式抽奖动画: 光球升腾 → 爆发放光 → 卡片翻牌揭晓 */
+.wish{position:fixed;inset:0;z-index:675;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 42%,rgba(56,92,150,.55),rgba(6,12,26,.93) 72%);overflow:hidden}
+.wish-glow{position:absolute;inset:0;margin:auto;width:270px;height:270px;border-radius:50%;background:radial-gradient(circle,rgba(247,183,51,.28),transparent 66%);animation:wishPulse 1.15s ease-out}
+@keyframes wishPulse{0%{transform:scale(.5);opacity:0}50%{opacity:1}100%{transform:scale(1.3);opacity:0}}
+.wish-orb{position:relative;z-index:1;width:86px;height:86px;border-radius:50%;background:radial-gradient(circle,#fff8e1,#f7b733 45%,#fc4a1a 92%);box-shadow:0 0 42px 15px rgba(247,183,51,.55),0 0 130px 42px rgba(247,183,51,.25);animation:wishFloat 1.15s ease-out forwards}
+@keyframes wishFloat{0%{transform:translateY(40px) scale(.55);opacity:0}25%{opacity:1}70%{transform:translateY(-4px) scale(1)}100%{transform:translateY(-8px) scale(.98)}}
+.wish-title{position:relative;z-index:1;color:#fff;font-size:13px;letter-spacing:5px;font-weight:700;margin-top:36px;text-shadow:0 0 14px rgba(247,183,51,.6);text-align:center}
+.wish-title small{display:block;font-size:10px;letter-spacing:2px;opacity:.6;margin-top:7px;font-weight:400}
+.wish-dot{position:absolute;border-radius:50%;background:radial-gradient(circle,#fff,#ffd166);animation:wishRise linear forwards}
+@keyframes wishRise{0%{transform:translateY(0);opacity:0}18%{opacity:.9}100%{transform:translateY(-150px);opacity:0}}
+.wish-burst{position:absolute;inset:0;margin:auto;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,rgba(255,236,179,.95),rgba(247,183,51,.5) 40%,transparent 72%);animation:wishBurst .7s ease-out forwards;pointer-events:none;z-index:2}
+@keyframes wishBurst{0%{transform:scale(.4);opacity:0}30%{opacity:1}100%{transform:scale(3.4);opacity:0}}
+.wish-particle{position:absolute;width:7px;height:7px;border-radius:50%;background:#ffd166;box-shadow:0 0 8px rgba(255,209,102,.8);animation:wishFly .62s ease-out forwards;pointer-events:none;z-index:2}
+@keyframes wishFly{0%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(var(--fx),var(--fy)) scale(.3);opacity:0}}
+/* 结果卡片翻牌入场 */
+.lrBox{animation:lrBoxIn .4s ease-out}
+@keyframes lrBoxIn{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:scale(1)}}
+.lottery-result-list .lr-item{animation:cardFlip .5s cubic-bezier(.34,1.56,.64,1) backwards}
+@keyframes cardFlip{0%{transform:perspective(320px) rotateX(-85deg) translateY(16px);opacity:0}100%{transform:perspective(320px) rotateX(0) translateY(0);opacity:1}}
 .lottery-challenge{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:650;display:flex;align-items:center;justify-content:center;padding:20px}
 .lottery-challenge-box{position:relative;background:var(--card-bg);border-radius:20px;padding:20px;max-width:360px;width:100%;max-height:80vh;display:flex;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch}
 /* 皮肤/徽章图鉴 */
@@ -740,6 +757,7 @@
 .g-card .g-rarity{font-size:10px;font-weight:700;margin-bottom:4px}
 .g-card .g-desc{font-size:10px;color:var(--text2);line-height:1.45;margin-bottom:6px}
 .g-rarity-basic{color:#9ca3af}.g-rarity-rare{color:#38bdf8}.g-rarity-epic{color:#a78bfa}.g-rarity-legend{color:#f7b733}
+.g-rarity-common{color:#94a3b8}.g-rarity-brave{color:#38bdf8}.g-rarity-mythic{color:#fb7185;background:linear-gradient(135deg,#f7b733,#fb7185);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .g-btn{border:none;border-radius:9px;padding:6px 14px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;background:var(--accent);color:#fff}
 .g-btn.craft{background:linear-gradient(135deg,#f7b733,#fc4a1a);color:#fff}
 .g-btn.craft.off{background:var(--card-border);color:var(--text2)}
@@ -3282,11 +3300,12 @@ try { applyBubbleStyle(); } catch(e) {}
 // ============================================================
 // AUTO CHANGELOG — 自动更新日志系统
 // ============================================================
-var APP_VERSION = "v3.9.2";
+var APP_VERSION = "v3.10.0";
 var APP_VERSION_DATE = "2026.08.17";
 var CHANGELOG_KEY = "seawhy-lex-changelog";
 
 var DEFAULT_CHANGELOG = [
+  { ver: "v3.10.0", date: "2026.08.17", notes: "皮肤系统升级：皮肤扩充至9套并按档定价（普通88/勇者288/史诗588/传说988碎片，典藏1法魂水晶），新增墨海书童/碧潮卫士/极光律者/天御法尊/星河法皇造型；抽奖改为王者祈愿式动画（光球升腾、星尘上升、爆发放光、卡片翻牌揭晓，不再九宫格滚动）；重复徽章/背景/头像框奖励不再触发大奖闪光" },
   { ver: "v3.9.2", date: "2026.08.17", notes: "虚拟角色登场：新增「法海星旅」虚拟角色，皮肤图鉴顶部实时展示角色形象，佩戴不同皮肤时法袍颜色与饰品（法冕/星灯/波浪/星芒）随之变化" },
   { ver: "v3.9.1", date: "2026.08.17", notes: "积分夺宝体验优化：抽奖扫光动画加速（约2秒缩短至约1秒）；新增大奖闪光表现——抽中个体概率低于1.5%的奖励（法魂水晶/限定徽章/VIP7天与3天卡/666·888·999积分/58·88皮肤碎片等）时，九宫格落地格金芒闪烁、结果弹层绽放金光并高亮该奖品" },
   { ver: "v3.9.0", date: "2026.08.17", notes: "积分夺宝改版：奖池重构（VIP卡3%/答案解析12%/背景头像框5%/积分35%/法魂水晶0.1%保底/题目挑战8%/皮肤碎片18%/限定徽章10%/空奖8.9%）；法魂水晶改为365抽保底分段曲线（概率从空奖压缩）；五连抽改130积分；新增皮肤系统（碎片合成衣服、皮肤图鉴、可佩戴）；新增限定徽章系统（法脉·星海典藏8款，重复徽章转20积分，徽章图鉴）；题目挑战奖励改30/40/50，背景/头像框重复转化改为20/10积分" },
@@ -4026,11 +4045,17 @@ var LOTTERY_PRIZES = [
   { key: "empty",     name: "空奖",           weight: 8.9,  icon: "💨", cell: 8 }
 ];
 // 皮肤(衣服): 图鉴 + 碎片合成 + 佩戴记录(角色实机展示后续版本接入)
+// 皮肤分档: 普通88碎片 / 勇者288碎片 / 史诗588碎片 / 传说988碎片 / 典藏1法魂水晶(crystal:true)
 var SKINS = [
-  { key: "sea",   name: "沧海法袍", cost: 88,  icon: "🌊", rarity: "稀有", color: "#38bdf8", accent: "#0284c7", desc: "碧波为衬,法袍翻卷,像潮水一样奔赴每一次学习" },
-  { key: "star",  name: "星河律裳", cost: 128, icon: "🌌", rarity: "史诗", color: "#a78bfa", accent: "#6d28d9", desc: "以星河为裳,衣袂间流淌着无数法条的微光" },
-  { key: "gold",  name: "鎏金法冕", cost: 168, icon: "👑", rarity: "传说", color: "#f7b733", accent: "#b45309", desc: "鎏金镶边,法冕加身,沉稳中透出规则的锋芒" },
-  { key: "crown", name: "星海执灯人", cost: 258, icon: "🏮", rarity: "传说", color: "#fb7185", accent: "#be185d", desc: "传说级典藏。提一盏星灯,行走于浩瀚法海之巅" }
+  { key: "sea",   name: "沧海法袍", cost: 88,  icon: "🌊", rarity: "普通", color: "#38bdf8", accent: "#0284c7", desc: "碧波为衬,法袍翻卷,像潮水一样奔赴每一次学习" },
+  { key: "ink",   name: "墨海书童", cost: 88,  icon: "🖋️", rarity: "普通", color: "#64748b", accent: "#334155", desc: "墨海为卷,书童执笔,在知识的浪尖一笔一划" },
+  { key: "star",  name: "星河律裳", cost: 288, icon: "🌌", rarity: "勇者", color: "#a78bfa", accent: "#6d28d9", desc: "以星河为裳,衣袂间流淌着无数法条的微光" },
+  { key: "tide",  name: "碧潮卫士", cost: 288, icon: "⚔️", rarity: "勇者", color: "#34d399", accent: "#047857", desc: "碧潮为甲,勇者无畏,守护每一次向前的努力" },
+  { key: "gold",  name: "鎏金法冕", cost: 588, icon: "👑", rarity: "史诗", color: "#f7b733", accent: "#b45309", desc: "鎏金镶边,法冕加身,沉稳中透出规则的锋芒" },
+  { key: "aurora",name: "极光律者", cost: 588, icon: "🌈", rarity: "史诗", color: "#2dd4bf", accent: "#0d9488", desc: "极光为冕,律者临风,天边有一道属于你的辉光" },
+  { key: "crown", name: "星海执灯人", cost: 988, icon: "🏮", rarity: "传说", color: "#fb7185", accent: "#be185d", desc: "提一盏星灯,行走于浩瀚法海之巅" },
+  { key: "lord",  name: "天御法尊", cost: 988, icon: "🛡️", rarity: "传说", color: "#cbd5e1", accent: "#64748b", desc: "白袍法尊,御守正道,为迷途的人指引方向" },
+  { key: "starlord", name: "星河法皇", cost: 1,  icon: "🌟", rarity: "典藏", crystal: true, color: "#8b5cf6", accent: "#f7b733", desc: "典藏限定。星河加冕,法皇临世,以整片星海为袍" }
 ];
 // 限定徽章(法脉·星海典藏), weight 合计 10%
 var BADGES = [
@@ -4209,12 +4234,14 @@ function applyLotteryReward(prize) {
       if (!bgs.length) {
         lotAddPoints(p, 20, "积分夺宝背景转化");
         res.desc = "已拥有全部背景，转化 20 积分";
+        res.dup = true;
       } else {
         var bk = bgs[Math.floor(Math.random() * bgs.length)];
         var ownedBgs = p.bgOwned || [];
         if (ownedBgs.indexOf(bk) >= 0) {
           lotAddPoints(p, 20, "积分夺宝背景转化");
           res.desc = "已拥有背景，转化 20 积分";
+          res.dup = true;
         } else {
           if (!p.bgOwned) p.bgOwned = [];
           p.bgOwned.push(bk);
@@ -4230,6 +4257,7 @@ function applyLotteryReward(prize) {
       if (ownedF.indexOf(fk) >= 0) {
         lotAddPoints(p, 10, "积分夺宝头像框转化");
         res.desc = "已拥有头像框，转化 10 积分";
+        res.dup = true;
       } else {
         if (!p.avatarFramesOwned) p.avatarFramesOwned = [];
         p.avatarFramesOwned.push(fk);
@@ -4263,6 +4291,7 @@ function applyLotteryReward(prize) {
       res.name = "徽章 · " + bg.name;
       res.desc = "重复徽章，转化 20 积分";
       res.rare = bg.rarity === "传说";
+      res.dup = true; // 重复徽章不触发大奖闪光
     } else {
       if (!p.badgesOwned) p.badgesOwned = [];
       p.badgesOwned.push(bg.key);
@@ -4276,34 +4305,49 @@ function applyLotteryReward(prize) {
   saveProfile(p);
   return res;
 }
-// 九宫格扫光动画，落在 targetCell（加速版；jackpot=true 时落地格闪烁）
-function lotterySpin(targetCell, cb, jackpot) {
-  var cells = document.querySelectorAll(".lottery-cell");
-  if (!cells.length) { if (cb) cb(); return; }
-  var totalCells = cells.length, cur = 0, step = 0, c;
-  for (c = 0; c < cells.length; c++) cells[c].classList.remove("hit", "hit-jackpot");
-  var stepsNeeded = (targetCell === undefined)
-    ? Math.max(8, Math.round(totalCells * 1.1))
-    : Math.round(totalCells * 1.2) + targetCell;
-  var iv = setInterval(function() {
-    for (var c2 = 0; c2 < cells.length; c2++) cells[c2].classList.remove("hit");
-    cells[cur].classList.add("hit");
-    cur = (cur + 1) % totalCells;
-    step++;
-    if (step >= stepsNeeded) {
-      clearInterval(iv);
-      for (var c3 = 0; c3 < cells.length; c3++) cells[c3].classList.remove("hit");
-      var land = targetCell !== undefined ? targetCell : totalCells - 1;
-      if (cells[land]) {
-        cells[land].classList.add("hit");
-        if (jackpot) cells[land].classList.add("hit-jackpot");
-      }
-      if (cb) setTimeout(cb, 200);
+// 王者祈愿式抽奖动画: 全屏暗场 + 光球升腾 + 星尘上升,爆破后进入卡片翻牌揭晓
+function lotteryWish(results, cb) {
+  var overlay = document.createElement("div");
+  overlay.id = "lotteryWishOverlay";
+  overlay.className = "wish";
+  var dots = "";
+  for (var i = 0; i < 14; i++) {
+    var left = (6 + Math.random() * 88).toFixed(1);
+    var size = (3 + Math.random() * 4).toFixed(1);
+    var dur = (0.9 + Math.random() * 0.7).toFixed(2);
+    var delay = (Math.random() * 0.6).toFixed(2);
+    var top = (54 + Math.random() * 22).toFixed(1);
+    dots += '<div class="wish-dot" style="left:' + left + '%;top:' + top + '%;width:' + size + 'px;height:' + size + 'px;animation-duration:' + dur + 's;animation-delay:' + delay + 's"></div>';
+  }
+  overlay.innerHTML = '<div class="wish-glow"></div>' + dots +
+    '<div class="wish-orb"></div>' +
+    '<div class="wish-title">星辰汇聚 · 祈愿中<small>' + (results.length > 1 ? "五连祈愿 · 必出其一" : "心之所向,星河回响") + '</small></div>';
+  document.body.appendChild(overlay);
+  setTimeout(function() {
+    var burst = document.createElement("div");
+    burst.className = "wish-burst";
+    overlay.appendChild(burst);
+    for (var p = 0; p < 16; p++) {
+      var part = document.createElement("div");
+      part.className = "wish-particle";
+      var ang = Math.random() * Math.PI * 2;
+      var dist = 60 + Math.random() * 95;
+      part.style.setProperty("--fx", (Math.cos(ang) * dist).toFixed(0) + "px");
+      part.style.setProperty("--fy", (Math.sin(ang) * dist).toFixed(0) + "px");
+      part.style.left = "50%";
+      part.style.top = "43%";
+      part.style.animationDelay = (p * 0.018).toFixed(2) + "s";
+      overlay.appendChild(part);
     }
-  }, 45);
+  }, 1150);
+  setTimeout(function() {
+    overlay.remove();
+    showLotteryResult(results);
+    if (cb) cb();
+  }, 1650);
 }
-// 大奖判定: 个体概率 < 1.5% 即大奖闪光
-function isJackpotResult(r) { return !!r && r.pct != null && r.pct < 1.5; }
+// 大奖判定: 个体概率 < 1.5% 即大奖闪光;重复(已拥有徽章/背景/头像框转化)不算大奖
+function isJackpotResult(r) { return !!r && !r.dup && r.pct != null && r.pct < 1.5; }
 function lotteryDraw(n) {
   if (_lotteryBusy) return;
   var cost = n === 5 ? 130 : 30;
@@ -4320,20 +4364,17 @@ function lotteryDraw(n) {
     results.push(applyLotteryReward(prize));
   }
   renderLottery();
-  var last = results[results.length - 1];
-  var jackpot = false;
-  for (i = 0; i < results.length; i++) if (isJackpotResult(results[i])) { jackpot = true; break; }
-  lotterySpin(last ? last.cell : undefined, function() {
-    showLotteryResult(results);
+  lotteryWish(results, function() {
     _lotteryBusy = false;
     renderLottery();
-  }, jackpot);
+  });
 }
 function showLotteryResult(results) {
   var overlay = document.createElement("div");
   overlay.id = "lotteryResultOverlay";
   overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:680;display:flex;align-items:center;justify-content:center;padding:20px";
   var box = document.createElement("div");
+  box.className = "lrBox";
   box.style.cssText = "position:relative;background:var(--card-bg);border-radius:20px;padding:20px;max-width:340px;width:100%;max-height:80vh;overflow-y:auto;-webkit-overflow-scrolling:touch";
   var hasRare = false, hasJackpot = false, i;
   for (i = 0; i < results.length; i++) { if (results[i].rare) hasRare = true; if (isJackpotResult(results[i])) hasJackpot = true; }
@@ -4347,7 +4388,7 @@ function showLotteryResult(results) {
   h += '<div class="lottery-result-list">';
   for (i = 0; i < results.length; i++) {
     var r = results[i];
-    h += '<div class="lr-item' + (r.rare ? ' rare' : '') + (isJackpotResult(r) ? ' jackpot' : '') + '"><span class="lr-ic">' + r.icon + '</span>' +
+    h += '<div class="lr-item' + (r.rare ? ' rare' : '') + (isJackpotResult(r) ? ' jackpot' : '') + '" style="animation-delay:' + (i * 0.12).toFixed(2) + 's"><span class="lr-ic">' + r.icon + '</span>' +
       '<div style="flex:1;min-width:0"><div class="lr-name">' + escHtml(r.name) + '</div><div class="lr-desc">' + escHtml(r.desc) + '</div></div></div>';
   }
   h += '</div>';
@@ -4375,32 +4416,62 @@ function openLotteryExchange() {
   renderLottery();
   showToast("🎉 已兑换永久 VIP");
 }
-function rarityCls(r) { return r === "基础" ? "basic" : r === "稀有" ? "rare" : r === "史诗" ? "epic" : "legend"; }
+function rarityCls(r) {
+  // 皮肤档位: 普通/勇者/史诗/传说/典藏
+  if (r === "普通") return "common";
+  if (r === "勇者") return "brave";
+  if (r === "典藏") return "mythic";
+  // 徽章档位: 基础/稀有/史诗/传说
+  if (r === "基础") return "basic";
+  if (r === "稀有") return "rare";
+  if (r === "史诗") return "epic";
+  return "legend";
+}
 function skinNameByKey(key) { for (var i = 0; i < SKINS.length; i++) if (SKINS[i].key === key) return SKINS[i].name; return ""; }
-// 虚拟角色(法海星旅)SVG —— 法袍颜色与饰品随佩戴皮肤变化
+// 虚拟角色(法海星旅)SVG —— 法袍颜色与饰品随佩戴皮肤变化(back=身后层,front=身前层)
 function characterSVG(skinKey) {
   var s = null, i;
   for (i = 0; i < SKINS.length; i++) if (SKINS[i].key === skinKey) s = SKINS[i];
   var robe = s ? s.color : "#7dd3fc";          // 法袍主色
   var trim = s ? (s.accent || s.color) : "#0284c7"; // 滚边/腰带
   var hair = "#3b3a4a", face = "#ffd9b3";
-  var extra = "";
-  if (s && s.key === "gold") { // 鎏金法冕: 头顶小法冕
-    extra = '<path d="M48 15 l3 -5 3 5 3 -6 3 6 3 -5 3 5 v4 h-18 Z" fill="#f7b733" stroke="#b45309" stroke-width="1.1"/>';
-  } else if (s && s.key === "crown") { // 星海执灯人: 右手提星灯
-    extra = '<g><rect x="88" y="70" width="3" height="34" rx="1.5" fill="#b45309"/>' +
-      '<rect x="80" y="88" width="19" height="15" rx="3.5" fill="#fbbf24" stroke="#b45309" stroke-width="1.5"/>' +
-      '<rect x="85" y="91" width="9" height="9" rx="2" fill="#fff7d6"/>' +
-      '<circle cx="89.5" cy="95.5" r="9" fill="#fbbf24" opacity=".28"/></g>';
-  } else if (s && s.key === "sea") { // 沧海法袍: 袍摆波浪
-    extra = '<path d="M34 126 q3 -5 6 0 q3 5 6 0 q3 -5 6 0 q3 5 6 0 q3 -5 6 0 q3 5 6 0 q3 -5 6 0 q3 5 6 0" fill="none" stroke="#e0f2fe" stroke-width="2.4" stroke-linecap="round"/>';
-  } else if (s && s.key === "star") { // 星河律裳: 袍上星芒
-    extra = '<path d="M33 74 l3 -5 3 5 5 2 -5 3 -3 5 -3 -5 -5 -3 Z" fill="#ede9fe" opacity=".95"/>' +
-      '<path d="M90 94 l2.5 -4 2.5 4 4 1.5 -4 2.5 -2.5 4 -2.5 -4 -4 -2.5 Z" fill="#f5f3ff" opacity=".9"/>' +
-      '<circle cx="83" cy="78" r="1.8" fill="#fff" opacity=".95"/>';
+  var back = "", front = "";
+  if (s) {
+    if (s.key === "gold") { // 鎏金法冕: 头顶小法冕
+      front = '<path d="M48 15 l3 -5 3 5 3 -6 3 6 3 -5 3 5 v4 h-18 Z" fill="#f7b733" stroke="#b45309" stroke-width="1.1"/>';
+    } else if (s.key === "crown") { // 星海执灯人: 右手提星灯
+      front = '<g><rect x="88" y="70" width="3" height="34" rx="1.5" fill="#b45309"/>' +
+        '<rect x="80" y="88" width="19" height="15" rx="3.5" fill="#fbbf24" stroke="#b45309" stroke-width="1.5"/>' +
+        '<rect x="85" y="91" width="9" height="9" rx="2" fill="#fff7d6"/>' +
+        '<circle cx="89.5" cy="95.5" r="9" fill="#fbbf24" opacity=".28"/></g>';
+    } else if (s.key === "sea") { // 沧海法袍: 袍摆波浪
+      front = '<path d="M34 126 q3 -5 6 0 q3 5 6 0 q3 -5 6 0 q3 5 6 0 q3 -5 6 0 q3 5 6 0 q3 -5 6 0 q3 5 6 0" fill="none" stroke="#e0f2fe" stroke-width="2.4" stroke-linecap="round"/>';
+    } else if (s.key === "star") { // 星河律裳: 袍上星芒
+      front = '<path d="M33 74 l3 -5 3 5 5 2 -5 3 -3 5 -3 -5 -5 -3 Z" fill="#ede9fe" opacity=".95"/>' +
+        '<path d="M90 94 l2.5 -4 2.5 4 4 1.5 -4 2.5 -2.5 4 -2.5 -4 -4 -2.5 Z" fill="#f5f3ff" opacity=".9"/>' +
+        '<circle cx="83" cy="78" r="1.8" fill="#fff" opacity=".95"/>';
+    } else if (s.key === "ink") { // 墨海书童: 腰间悬一支墨笔
+      front = '<rect x="40" y="86" width="19" height="3.6" rx="1.8" transform="rotate(-26 49 88)" fill="#0f172a"/>' +
+        '<rect x="40" y="86" width="4" height="3.6" rx="1.8" transform="rotate(-26 49 88)" fill="#f8fafc"/>';
+    } else if (s.key === "tide") { // 碧潮卫士: 双肩护甲 + 胸前小盾
+      front = '<circle cx="40" cy="67" r="4.2" fill="#047857"/><circle cx="80" cy="67" r="4.2" fill="#047857"/>' +
+        '<path d="M54 82 l6 -5 6 5 v6 q-6 5 -6 5 q-6 -5 -6 -5 Z" fill="#a7f3d0" opacity=".95"/>';
+    } else if (s.key === "aurora") { // 极光律者: 袍摆极光弧 + 星光
+      front = '<path d="M34 128 Q46 116 60 128 Q74 116 86 128" stroke="#a5f3fc" fill="none" stroke-width="2.6" stroke-linecap="round"/>' +
+        '<circle cx="78" cy="76" r="1.8" fill="#ccfbf1" opacity=".95"/>';
+    } else if (s.key === "lord") { // 天御法尊: 身后圣光光环
+      back = '<circle cx="60" cy="42" r="29" fill="none" stroke="#fef3c7" stroke-width="2.2" opacity=".75"/>';
+    } else if (s.key === "starlord") { // 星河法皇(典藏): 身后披风 + 大法冕 + 星屑
+      back = '<path d="M40 60 Q22 102 34 140 L86 140 Q98 102 80 60 Z" fill="#6d28d9" opacity=".62"/>';
+      front = '<path d="M46 13 l3 -6 3 6 4 -8 4 8 3 -6 3 6 v5 h-20 Z" fill="#f7b733" stroke="#b45309" stroke-width="1.3"/>' +
+        '<circle cx="55" cy="22" r="2" fill="#fef08a"/><circle cx="65" cy="20" r="1.6" fill="#fef08a"/>' +
+        '<path d="M31 72 l2 -4 2 4 4 1.5 -4 2.5 -2 4 -2 -4 -4 -2.5 Z" fill="#ede9fe" opacity=".95"/>' +
+        '<path d="M88 90 l2 -3 2 3 3.5 1.5 -3.5 2 -2 3 -2 -3 -3.5 -2 Z" fill="#ede9fe" opacity=".9"/>';
+    }
   }
   return '<svg viewBox="0 0 120 150" width="96" height="120" xmlns="http://www.w3.org/2000/svg">' +
     '<path d="M40 42 Q40 16 60 16 Q80 16 80 42 L80 50 Q80 58 72 60 L72 44 Q72 30 60 30 Q48 30 48 44 L48 60 Q40 58 40 50 Z" fill="' + hair + '"/>' +
+    back +
     '<circle cx="60" cy="44" r="20" fill="' + face + '"/>' +
     '<path d="M40 42 Q44 26 60 26 Q76 26 80 42 Q76 32 68 29 Q74 44 60 44 Q46 44 50 30 Q44 33 40 42 Z" fill="' + hair + '"/>' +
     '<circle cx="52" cy="46" r="2.6" fill="#2b2b33"/><circle cx="68" cy="46" r="2.6" fill="#2b2b33"/>' +
@@ -4413,7 +4484,7 @@ function characterSVG(skinKey) {
     '<path d="M42 64 Q32 86 35 106 L45 104 Q41 84 46 66 Z" fill="' + robe + '"/>' +
     '<path d="M78 64 Q88 86 85 106 L75 104 Q79 84 74 66 Z" fill="' + robe + '"/>' +
     '<circle cx="36" cy="108" r="5" fill="' + face + '"/><circle cx="84" cy="108" r="5" fill="' + face + '"/>' +
-    extra +
+    front +
     '</svg>';
 }
 
@@ -4426,15 +4497,16 @@ function openSkinGallery() {
   overlay.className = "lottery-challenge";
   var box = document.createElement("div");
   box.className = "lottery-challenge-box gallery-box";
+  var cry = p.soulCrystals || 0;
   var h = '<button class="modal-close">✕</button>';
   h += '<div style="text-align:center;margin-bottom:2px"><div style="font-size:15px;font-weight:800;color:var(--text)">皮肤图鉴</div>' +
-    '<div style="font-size:11px;color:var(--text2);margin-top:3px">碎片 <b style="color:var(--accent)">' + frags + '</b></div></div>';
+    '<div style="font-size:11px;color:var(--text2);margin-top:3px">碎片 <b style="color:var(--accent)">' + frags + '</b> · 法魂水晶 <b style="color:#f7b733">' + cry + '</b></div></div>';
   var wearColor = "#7dd3fc", wearName = "未佩戴";
   for (var wi = 0; wi < SKINS.length; wi++) if (SKINS[wi].key === active) { wearColor = SKINS[wi].color; wearName = SKINS[wi].name; }
   h += '<div class="g-char"><div class="g-char-avatar">' + characterSVG(active) + '</div>' +
     '<div class="g-char-info"><div class="g-char-title">虚拟角色 · 法海星旅</div>' +
     '<div class="g-char-wear" style="color:' + wearColor + '">' + (active ? '穿着「' + escHtml(wearName) + '」' : '未佩戴皮肤') + '</div>' +
-    '<div class="g-char-hint">佩戴皮肤后,角色的法袍与饰品会实时变化</div></div></div>';
+    '<div class="g-char-hint">普通88/勇者288/史诗588/传说988碎片,典藏需1法魂水晶</div></div></div>';
   h += '<div class="g-grid">';
   for (var i = 0; i < SKINS.length; i++) {
     var s = SKINS[i];
@@ -4444,12 +4516,12 @@ function openSkinGallery() {
     h += '<div class="' + cls + '" style="' + (has ? 'border-color:' + s.color + ';' : '') + '">' +
       '<div class="g-ic">' + s.icon + '</div>' +
       '<div class="g-name">' + escHtml(s.name) + '</div>' +
-      '<div class="g-rarity g-rarity-' + rarityCls(s.rarity) + '" style="color:' + s.color + '">' + s.rarity + ' · ' + s.cost + '碎片</div>' +
+      '<div class="g-rarity g-rarity-' + rarityCls(s.rarity) + '" style="color:' + s.color + '">' + s.rarity + ' · ' + (s.crystal ? "1水晶" : s.cost + "碎片") + '</div>' +
       '<div class="g-desc">' + escHtml(s.desc) + '</div>';
     if (has) {
       h += '<button class="g-btn' + (isActive ? " on" : "") + '" data-action="wear" data-key="' + s.key + '">' + (isActive ? "佩戴中" : "佩戴") + '</button>';
     } else {
-      var can = frags >= s.cost;
+      var can = s.crystal ? (cry >= 1) : (frags >= s.cost);
       h += '<button class="g-btn craft' + (can ? "" : " off") + '" data-action="craft" data-key="' + s.key + '"' + (can ? "" : " disabled") + '>合成</button>';
     }
     h += '</div>';
@@ -4470,8 +4542,14 @@ function openSkinGallery() {
       } else if (act === "craft") {
         var sk = null;
         for (var i2 = 0; i2 < SKINS.length; i2++) if (SKINS[i2].key === key) sk = SKINS[i2];
-        if (!sk || (pp.skinFragments || 0) < sk.cost) { showToast("皮肤碎片不足"); return; }
-        pp.skinFragments = (pp.skinFragments || 0) - sk.cost;
+        if (!sk) return;
+        if (sk.crystal) {
+          if ((pp.soulCrystals || 0) < 1) { showToast("法魂水晶不足"); return; }
+          pp.soulCrystals = (pp.soulCrystals || 0) - 1;
+        } else {
+          if ((pp.skinFragments || 0) < sk.cost) { showToast("皮肤碎片不足"); return; }
+          pp.skinFragments = (pp.skinFragments || 0) - sk.cost;
+        }
         if (!pp.skinsOwned) pp.skinsOwned = [];
         pp.skinsOwned.push(sk.key);
         pp.activeSkin = sk.key;
