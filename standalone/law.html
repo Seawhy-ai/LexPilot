@@ -715,6 +715,12 @@
 .lr-item .lr-desc{font-size:11px;color:var(--text2)}
 .lr-item.rare{background:linear-gradient(160deg,rgba(247,183,51,.2),rgba(252,74,26,.1));border:1px solid rgba(247,183,51,.5)}
 .lr-item.rare .lr-name{color:#f7b733}
+.lr-item.jackpot{animation:lrfShine 1.6s ease-in-out .25s infinite}
+@keyframes lrfShine{0%,100%{box-shadow:0 0 0 0 rgba(247,183,51,0)}50%{box-shadow:0 0 22px 6px rgba(247,183,51,.55)}}
+.lrf{position:absolute;inset:0;margin:auto;width:420px;height:420px;border-radius:50%;pointer-events:none;z-index:0;background:radial-gradient(circle,rgba(247,183,51,.55),rgba(247,183,51,.14) 45%,transparent 68%);animation:lrfBurst 1.15s cubic-bezier(.22,.61,.36,1) forwards}
+@keyframes lrfBurst{0%{transform:scale(.35);opacity:0}22%{opacity:1}100%{transform:scale(1.5);opacity:0}}
+.lottery-cell.hit-jackpot{animation:cellJackpot .95s ease-out}
+@keyframes cellJackpot{0%{box-shadow:0 0 0 0 rgba(247,183,51,0);transform:scale(1)}35%{box-shadow:0 0 26px 9px rgba(247,183,51,.85);transform:scale(1.18)}100%{box-shadow:0 0 0 0 rgba(247,183,51,0);transform:scale(1.08)}}
 .lottery-challenge{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:650;display:flex;align-items:center;justify-content:center;padding:20px}
 .lottery-challenge-box{position:relative;background:var(--card-bg);border-radius:20px;padding:20px;max-width:360px;width:100%;max-height:80vh;display:flex;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch}
 /* 皮肤/徽章图鉴 */
@@ -3270,11 +3276,12 @@ try { applyBubbleStyle(); } catch(e) {}
 // ============================================================
 // AUTO CHANGELOG — 自动更新日志系统
 // ============================================================
-var APP_VERSION = "v3.9.0";
+var APP_VERSION = "v3.9.1";
 var APP_VERSION_DATE = "2026.08.17";
 var CHANGELOG_KEY = "seawhy-lex-changelog";
 
 var DEFAULT_CHANGELOG = [
+  { ver: "v3.9.1", date: "2026.08.17", notes: "积分夺宝体验优化：抽奖扫光动画加速（约2秒缩短至约1秒）；新增大奖闪光表现——抽中个体概率低于1.5%的奖励（法魂水晶/限定徽章/VIP7天与3天卡/666·888·999积分/58·88皮肤碎片等）时，九宫格落地格金芒闪烁、结果弹层绽放金光并高亮该奖品" },
   { ver: "v3.9.0", date: "2026.08.17", notes: "积分夺宝改版：奖池重构（VIP卡3%/答案解析12%/背景头像框5%/积分35%/法魂水晶0.1%保底/题目挑战8%/皮肤碎片18%/限定徽章10%/空奖8.9%）；法魂水晶改为365抽保底分段曲线（概率从空奖压缩）；五连抽改130积分；新增皮肤系统（碎片合成衣服、皮肤图鉴、可佩戴）；新增限定徽章系统（法脉·星海典藏8款，重复徽章转20积分，徽章图鉴）；题目挑战奖励改30/40/50，背景/头像框重复转化改为20/10积分" },
   { ver: "v3.8.0", date: "2026.08.16", notes: "新增广场「积分夺宝」：单抽30积分/五连抽120积分，九宫格扫光抽奖，奖品含VIP卡、法魂水晶、积分、背景/头像框、题目挑战、答案解析时间；幸运值365必中水晶，1水晶兑换永久VIP；题目挑战从题库随机出题答对加积分；新增头像框系统（随机获得、个人中心佩戴）" },
   { ver: "v3.7.1", date: "2026.08.16", notes: "修复：设置页打开白屏（补上 #settingsView 布局样式，.show 才真正生效）" },
@@ -4111,19 +4118,19 @@ function pickLotteryReward(n) {
   }
   return pickPrizeByKey("empty");
 }
-// VIP 卡子加权: 7天 7.69% / 3天 15.38% / 12小时 76.92%
+// VIP 卡子加权: 7天 7.69% / 3天 15.38% / 12小时 76.92%（w=子加权小数）
 function pickVipSub() {
   var r = Math.random();
-  if (r < 0.0769) return { label: "7天", ms: 7 * 86400000 };
-  if (r < 0.2307) return { label: "3天", ms: 3 * 86400000 };
-  return             { label: "12小时", ms: 12 * 3600000 };
+  if (r < 0.0769) return { label: "7天", ms: 7 * 86400000, w: 0.0769 };
+  if (r < 0.2307) return { label: "3天", ms: 3 * 86400000, w: 0.1538 };
+  return             { label: "12小时", ms: 12 * 3600000, w: 0.7692 };
 }
-// 答案解析时间子加权: 3天 10% / 1天 30% / 3小时 60%
+// 答案解析时间子加权: 3天 10% / 1天 30% / 3小时 60%（w=子加权小数）
 function pickUnlockSub() {
   var r = Math.random();
-  if (r < 0.10) return { label: "3 天", ms: 3 * 86400000 };
-  if (r < 0.40) return { label: "1 天", ms: 1 * 86400000 };
-  return           { label: "3 小时", ms: 3 * 3600000 };
+  if (r < 0.10) return { label: "3 天", ms: 3 * 86400000, w: 0.10 };
+  if (r < 0.40) return { label: "1 天", ms: 1 * 86400000, w: 0.30 };
+  return           { label: "3 小时", ms: 3 * 3600000, w: 0.60 };
 }
 // 积分区间子加权: 1-10(35%)/11-30(30%)/31-60(20%)/61-85(8%)/86-99(4%)/666(1.5%)/888(1%)/999(0.5%)
 function rollLotteryPoints() {
@@ -4175,14 +4182,18 @@ function applyLotteryReward(prize) {
     p.vipUntil = Math.max(now, p.vipUntil || 0) + vs.ms;
     res.name = "VIP " + vs.label + "卡";
     res.desc = "VIP 延长 " + vs.label;
+    res.pct = 3 * vs.w; // 个体概率 = 奖池3% × 子加权
   } else if (prize.key === "crystal") {
     p.soulCrystals = (p.soulCrystals || 0) + 1;
     p.lotteryLuck = 0; // 抽中水晶幸运值清零
     res.desc = "可在兑换中换取永久VIP";
+    res.pct = 0.1;
   } else if (prize.key === "points") {
     var n = rollLotteryPoints();
     res.name = n + " 积分";
     res.desc = "积分 +" + n;
+    var tp = n === 666 ? 1.5 : n === 888 ? 1 : n === 999 ? 0.5 : n <= 10 ? 35 : n <= 30 ? 30 : n <= 60 ? 20 : n <= 85 ? 8 : 4;
+    res.pct = 35 * tp / 100; // 个体概率 = 奖池35% × 档位占比
     lotAddPoints(p, n, "积分夺宝奖励");
   } else if (prize.key === "bgFrame") {
     if (Math.random() < 0.5) {
@@ -4228,13 +4239,17 @@ function applyLotteryReward(prize) {
     var us = pickUnlockSub();
     p.quizUnlockUntil = Math.max(now, p.quizUnlockUntil || 0) + us.ms;
     res.desc = "答案解析时间 +" + us.label;
+    res.pct = 12 * us.w; // 个体概率 = 奖池12% × 子加权
   } else if (prize.key === "skin") {
     var nf = rollSkinFragments();
     p.skinFragments = (p.skinFragments || 0) + nf;
     res.name = nf + " 皮肤碎片";
     res.desc = "皮肤碎片 +" + nf + "，可在皮肤图鉴合成衣服";
+    var fp = nf === 88 ? 2 : nf === 58 ? 6 : nf === 28 ? 12 : nf === 18 ? 25 : 55;
+    res.pct = 18 * fp / 100; // 个体概率 = 奖池18% × 档位占比
   } else if (prize.key === "badge") {
     var bg = pickBadge();
+    res.pct = 10 * bg.weight / 100; // 个体概率 = 奖池10% × 徽章权重
     var ownedBadges = p.badgesOwned || [];
     if (ownedBadges.indexOf(bg.key) >= 0) {
       lotAddPoints(p, 20, "积分夺宝徽章重复转化");
@@ -4254,15 +4269,15 @@ function applyLotteryReward(prize) {
   saveProfile(p);
   return res;
 }
-// 九宫格扫光动画，落在 targetCell
-function lotterySpin(targetCell, cb) {
+// 九宫格扫光动画，落在 targetCell（加速版；jackpot=true 时落地格闪烁）
+function lotterySpin(targetCell, cb, jackpot) {
   var cells = document.querySelectorAll(".lottery-cell");
   if (!cells.length) { if (cb) cb(); return; }
   var totalCells = cells.length, cur = 0, step = 0, c;
-  for (c = 0; c < cells.length; c++) cells[c].classList.remove("hit");
+  for (c = 0; c < cells.length; c++) cells[c].classList.remove("hit", "hit-jackpot");
   var stepsNeeded = (targetCell === undefined)
-    ? Math.max(12, Math.floor(totalCells * 1.5))
-    : 2 * totalCells + targetCell;
+    ? Math.max(8, Math.round(totalCells * 1.1))
+    : Math.round(totalCells * 1.2) + targetCell;
   var iv = setInterval(function() {
     for (var c2 = 0; c2 < cells.length; c2++) cells[c2].classList.remove("hit");
     cells[cur].classList.add("hit");
@@ -4272,11 +4287,16 @@ function lotterySpin(targetCell, cb) {
       clearInterval(iv);
       for (var c3 = 0; c3 < cells.length; c3++) cells[c3].classList.remove("hit");
       var land = targetCell !== undefined ? targetCell : totalCells - 1;
-      if (cells[land]) cells[land].classList.add("hit");
-      if (cb) setTimeout(cb, 400);
+      if (cells[land]) {
+        cells[land].classList.add("hit");
+        if (jackpot) cells[land].classList.add("hit-jackpot");
+      }
+      if (cb) setTimeout(cb, 200);
     }
-  }, 80);
+  }, 45);
 }
+// 大奖判定: 个体概率 < 1.5% 即大奖闪光
+function isJackpotResult(r) { return !!r && r.pct != null && r.pct < 1.5; }
 function lotteryDraw(n) {
   if (_lotteryBusy) return;
   var cost = n === 5 ? 130 : 30;
@@ -4294,11 +4314,13 @@ function lotteryDraw(n) {
   }
   renderLottery();
   var last = results[results.length - 1];
+  var jackpot = false;
+  for (i = 0; i < results.length; i++) if (isJackpotResult(results[i])) { jackpot = true; break; }
   lotterySpin(last ? last.cell : undefined, function() {
     showLotteryResult(results);
     _lotteryBusy = false;
     renderLottery();
-  });
+  }, jackpot);
 }
 function showLotteryResult(results) {
   var overlay = document.createElement("div");
@@ -4306,22 +4328,29 @@ function showLotteryResult(results) {
   overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:680;display:flex;align-items:center;justify-content:center;padding:20px";
   var box = document.createElement("div");
   box.style.cssText = "position:relative;background:var(--card-bg);border-radius:20px;padding:20px;max-width:340px;width:100%;max-height:80vh;overflow-y:auto;-webkit-overflow-scrolling:touch";
-  var hasRare = false, i;
-  for (i = 0; i < results.length; i++) if (results[i].rare) hasRare = true;
+  var hasRare = false, hasJackpot = false, i;
+  for (i = 0; i < results.length; i++) { if (results[i].rare) hasRare = true; if (isJackpotResult(results[i])) hasJackpot = true; }
+  var headIc = results[0].key === "crystal" ? "🏆" : hasJackpot ? "🌟" : hasRare ? "🎉" : "✨";
   var h = '<button class="modal-close">✕</button>';
   h += '<div style="text-align:center;margin-bottom:12px">' +
-    '<div style="font-size:34px">' + (hasRare ? "🎉" : "✨") + '</div>' +
+    '<div style="font-size:34px">' + headIc + '</div>' +
     '<p style="font-size:16px;font-weight:800;color:var(--text);margin:4px 0 0">' +
-    (results.length > 1 ? "五连抽结果" : (results[0].key === "crystal" ? "恭喜获得法魂水晶！" : (results[0].rare ? "获得稀有奖励！" : "获得奖品"))) + '</p></div>';
+    (results.length > 1 ? "五连抽结果" : (results[0].key === "crystal" ? "恭喜获得法魂水晶！" : (hasJackpot ? "恭喜抽中大奖！" : (hasRare ? "获得稀有奖励！" : "获得奖品")))) + '</p>' +
+    (hasJackpot ? '<div style="font-size:11px;font-weight:700;color:#f7b733;margin-top:4px">✦ 大奖降临 ✦</div>' : '') + '</div>';
   h += '<div class="lottery-result-list">';
   for (i = 0; i < results.length; i++) {
     var r = results[i];
-    h += '<div class="lr-item' + (r.rare ? ' rare' : '') + '"><span class="lr-ic">' + r.icon + '</span>' +
+    h += '<div class="lr-item' + (r.rare ? ' rare' : '') + (isJackpotResult(r) ? ' jackpot' : '') + '"><span class="lr-ic">' + r.icon + '</span>' +
       '<div style="flex:1;min-width:0"><div class="lr-name">' + escHtml(r.name) + '</div><div class="lr-desc">' + escHtml(r.desc) + '</div></div></div>';
   }
   h += '</div>';
   h += '<button onclick="document.getElementById(\'lotteryResultOverlay\').remove()" style="width:100%;margin-top:14px;padding:12px;border:none;border-radius:12px;background:var(--accent);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">收下</button>';
   box.innerHTML = h;
+  if (hasJackpot) {
+    var flash = document.createElement("div");
+    flash.className = "lrf";
+    overlay.appendChild(flash);
+  }
   overlay.appendChild(box);
   document.body.appendChild(overlay);
   var mc = box.querySelector(".modal-close");
