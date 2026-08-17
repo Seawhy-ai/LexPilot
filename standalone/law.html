@@ -1826,7 +1826,7 @@ body.dark .af-opt{background:#2a2a2a}
       <div class="learn-card lottery-entry" onclick="openLottery()">
         <div class="lc-icon">💎</div>
         <div class="lc-name">积分夺宝 <span class="lottery-new">NEW</span></div>
-        <div class="lc-desc">30积分单抽 · 130积分五连抽 · 365幸运值必中水晶</div>
+        <div class="lc-desc">30积分单抽 · 280积分十连抽 · 365幸运值必中水晶</div>
       </div>
     </div>
   </div>
@@ -1873,7 +1873,7 @@ body.dark .af-opt{background:#2a2a2a}
 
     <div class="lottery-draw-row">
       <button class="l-draw-btn" id="lotDraw1" onclick="lotteryDraw(1)">单抽<span class="ld-cost">30 积分</span></button>
-      <button class="l-draw-btn gold" id="lotDraw5" onclick="lotteryDraw(5)">五连抽<span class="ld-cost">130 积分</span></button>
+      <button class="l-draw-btn gold" id="lotDraw10" onclick="lotteryDraw(10)">十连抽<span class="ld-cost">280 积分</span></button>
     </div>
 
     <div class="lottery-cta-row">
@@ -1895,7 +1895,7 @@ body.dark .af-opt{background:#2a2a2a}
         <b>皮肤碎片</b> 18% —— 8（55%）/ 18（25%）/ 28（12%）/ 58（6%）/ 88（2%），可在皮肤图鉴合成衣服<br>
         <b>限定徽章</b> 10% —— 共 8 款「法脉 · 星海典藏」，重复徽章转化为 20 积分<br>
         <b>空奖</b> 8.9%（基础）—— 受法魂水晶保底压缩<br>
-        单抽 30 积分，五连抽 130 积分；每抽 +1 幸运值，<b>365 幸运值必中法魂水晶</b>。
+        单抽 30 积分，十连抽 280 积分；每抽 +1 幸运值，<b>365 幸运值必中法魂水晶</b>。
       </div>
     </div>
   </div>
@@ -3300,11 +3300,12 @@ try { applyBubbleStyle(); } catch(e) {}
 // ============================================================
 // AUTO CHANGELOG — 自动更新日志系统
 // ============================================================
-var APP_VERSION = "v3.10.0";
+var APP_VERSION = "v3.11.0";
 var APP_VERSION_DATE = "2026.08.17";
 var CHANGELOG_KEY = "seawhy-lex-changelog";
 
 var DEFAULT_CHANGELOG = [
+  { ver: "v3.11.0", date: "2026.08.17", notes: "积分夺宝十连抽：五连抽改为十连抽，280 积分（原 130/五连），十连必出其一；祈愿动画标题同步更新" },
   { ver: "v3.10.0", date: "2026.08.17", notes: "皮肤系统升级：皮肤扩充至9套并按档定价（普通88/勇者288/史诗588/传说988碎片，典藏1法魂水晶），新增墨海书童/碧潮卫士/极光律者/天御法尊/星河法皇造型；抽奖改为王者祈愿式动画（光球升腾、星尘上升、爆发放光、卡片翻牌揭晓，不再九宫格滚动）；重复徽章/背景/头像框奖励不再触发大奖闪光" },
   { ver: "v3.9.2", date: "2026.08.17", notes: "虚拟角色登场：新增「法海星旅」虚拟角色，皮肤图鉴顶部实时展示角色形象，佩戴不同皮肤时法袍颜色与饰品（法冕/星灯/波浪/星芒）随之变化" },
   { ver: "v3.9.1", date: "2026.08.17", notes: "积分夺宝体验优化：抽奖扫光动画加速（约2秒缩短至约1秒）；新增大奖闪光表现——抽中个体概率低于1.5%的奖励（法魂水晶/限定徽章/VIP7天与3天卡/666·888·999积分/58·88皮肤碎片等）时，九宫格落地格金芒闪烁、结果弹层绽放金光并高亮该奖品" },
@@ -4103,9 +4104,9 @@ function renderLottery() {
   var sf = document.getElementById("lotSkinFrags"); if (sf) sf.textContent = frags;
   var sc = document.getElementById("lotSkinCount"); if (sc) sc.textContent = skins.length + "/" + SKINS.length;
   var bc = document.getElementById("lotBadgeCount"); if (bc) bc.textContent = badges.length + "/" + BADGES.length;
-  var b1 = document.getElementById("lotDraw1"), b5 = document.getElementById("lotDraw5");
+  var b1 = document.getElementById("lotDraw1"), b10 = document.getElementById("lotDraw10");
   if (b1) b1.disabled = _lotteryBusy || pts < 30;
-  if (b5) b5.disabled = _lotteryBusy || pts < 130;
+  if (b10) b10.disabled = _lotteryBusy || pts < 280;
   var cb = document.getElementById("lotChallengeBtn");
   if (cb) cb.disabled = chg <= 0;
 }
@@ -4321,7 +4322,7 @@ function lotteryWish(results, cb) {
   }
   overlay.innerHTML = '<div class="wish-glow"></div>' + dots +
     '<div class="wish-orb"></div>' +
-    '<div class="wish-title">星辰汇聚 · 祈愿中<small>' + (results.length > 1 ? "五连祈愿 · 必出其一" : "心之所向,星河回响") + '</small></div>';
+    '<div class="wish-title">星辰汇聚 · 祈愿中<small>' + (results.length > 1 ? "十连祈愿 · 必出其一" : "心之所向,星河回响") + '</small></div>';
   document.body.appendChild(overlay);
   setTimeout(function() {
     var burst = document.createElement("div");
@@ -4350,11 +4351,11 @@ function lotteryWish(results, cb) {
 function isJackpotResult(r) { return !!r && !r.dup && r.pct != null && r.pct < 1.5; }
 function lotteryDraw(n) {
   if (_lotteryBusy) return;
-  var cost = n === 5 ? 130 : 30;
+  var cost = n === 10 ? 280 : 30;
   var p0 = loadProfile();
   if ((p0.points || 0) < cost) { showToast("积分不足，无法抽奖"); renderLottery(); return; }
   _lotteryBusy = true;
-  addPoints(-cost, "积分夺宝" + (n === 5 ? "五连抽" : "单抽"));
+  addPoints(-cost, "积分夺宝" + (n === 10 ? "十连抽" : "单抽"));
   var results = [], i;
   for (i = 0; i < n; i++) {
     var pp = loadProfile();
@@ -4383,7 +4384,7 @@ function showLotteryResult(results) {
   h += '<div style="text-align:center;margin-bottom:12px">' +
     '<div style="font-size:34px">' + headIc + '</div>' +
     '<p style="font-size:16px;font-weight:800;color:var(--text);margin:4px 0 0">' +
-    (results.length > 1 ? "五连抽结果" : (results[0].key === "crystal" ? "恭喜获得法魂水晶！" : (hasJackpot ? "恭喜抽中大奖！" : (hasRare ? "获得稀有奖励！" : "获得奖品")))) + '</p>' +
+    (results.length > 1 ? "十连抽结果" : (results[0].key === "crystal" ? "恭喜获得法魂水晶！" : (hasJackpot ? "恭喜抽中大奖！" : (hasRare ? "获得稀有奖励！" : "获得奖品")))) + '</p>' +
     (hasJackpot ? '<div style="font-size:11px;font-weight:700;color:#f7b733;margin-top:4px">✦ 大奖降临 ✦</div>' : '') + '</div>';
   h += '<div class="lottery-result-list">';
   for (i = 0; i < results.length; i++) {
