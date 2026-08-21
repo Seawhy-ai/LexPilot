@@ -24,15 +24,15 @@
     html,body{height:100dvh;height:-webkit-fill-available;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei","Noto Serif SC",serif;background:var(--bg);color:var(--text);-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased;-webkit-user-select:none;user-select:none}
     :root{
       --bg:#fff;--nav-bg:#fff;--card-bg:#fff;--card-border:rgba(0,0,0,0.08);
-      --text:#111;--text2:#888;--input-bg:#f5f5f7;--input-border:rgba(0,0,0,0.1);
+      --text:#111;--text2:#666;--input-bg:#f5f5f7;--input-border:rgba(0,0,0,0.15);
       --ai-bubble:#fff;--user-bubble:#C5DFF8;--bubble-shadow:0 1px 4px rgba(0,0,0,0.06);
       --invite-bg:#f8f9fa;--accent:#1a5276;--accent-light:rgba(26,82,118,0.08);--icon-bg:#e9eef4;
       --modal-overlay:rgba(0,0,0,0.5);--toast-bg:#333;--toast-text:#fff;
       --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
     }
     body.dark{
-      --bg:#111;--nav-bg:#1a1a1a;--card-bg:#1a1a1a;--card-border:#333;
-      --text:#e5e5e5;--text2:#999;--input-bg:#222;--input-border:#333;
+      --bg:#0f0f0f;--nav-bg:#1a1a1a;--card-bg:#1f1f1f;--card-border:#333;
+      --text:#f5f5f5;--text2:#a3a3a3;--input-bg:#222;--input-border:#3a3a3a;
       --ai-bubble:#262626;--user-bubble:#054740;--bubble-shadow:none;
       --invite-bg:#111;--accent:#5dade2;--accent-light:rgba(93,173,226,0.18);--icon-bg:#262c36;
       --modal-overlay:rgba(0,0,0,0.75);--toast-bg:#444;--toast-text:#e5e5e5;
@@ -245,8 +245,10 @@
     .msg-content th{background:var(--card-bg)}
     .msg-content a{color:var(--accent);text-decoration:underline}
     .msg-content strong{color:var(--accent)}
-    .msg-time{font-size:9px;color:var(--text2);margin-top:3px;opacity:.55}
+    .msg-time{font-size:11px;color:var(--text2);margin-top:3px;opacity:.65;transition:opacity .2s}
     .msg.user .msg-time{text-align:right}
+    .msg .msg-time{opacity:0}
+    .msg:hover .msg-time{opacity:.75}
     .msg-actions{margin-top:4px;opacity:1;display:flex;gap:4px}
     .btn-copy{background:var(--card-bg);border:1px solid var(--card-border);color:var(--text2);font-size:10px;cursor:pointer;padding:3px 10px;border-radius:12px;font-family:inherit;transition:all .15s}
     .btn-copy:active{background:var(--accent);color:#fff;border-color:var(--accent)}
@@ -272,9 +274,9 @@
     body.bubble-aurora .msg.ai .msg-content th,body.bubble-ocean .msg.ai .msg-content th{background:rgba(255,255,255,.14)}
     .typing-dots{display:flex;gap:5px;padding:8px 4px 8px 46px;align-items:center}
     .typing-dots.no-avatar{padding-left:8px}
-    .typing-dots span{width:7px;height:7px;border-radius:50%;background:#aaa;opacity:.5;animation:bounce 1.2s infinite}
-    .typing-dots span:nth-child(2){animation-delay:.2s}.typing-dots span:nth-child(3){animation-delay:.4s}
-    @keyframes bounce{0%,60%,100%{transform:translateY(0);opacity:.5}30%{transform:translateY(-6px);opacity:1}}
+    .typing-dots span{width:7px;height:7px;border-radius:50%;background:var(--text2);opacity:.6;animation:typingBounce .8s infinite}
+    .typing-dots span:nth-child(2){animation-delay:.15s}.typing-dots span:nth-child(3){animation-delay:.3s}
+    @keyframes typingBounce{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-6px);opacity:1}}
     .error{background:rgba(231,76,60,0.08);color:#e74c3c;padding:10px 14px;border-radius:14px;font-size:12px;margin:6px 0}
 
     .input-tools{display:flex;gap:4px;flex-wrap:nowrap;margin-bottom:6px;align-items:center;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px}
@@ -284,13 +286,17 @@
     .input-tool.on{background:var(--accent);color:#fff}
     .input-bar{flex-shrink:0;background:var(--nav-bg);border-top:1px solid var(--card-border);padding:8px 10px calc(8px + var(--safe-bottom));box-shadow:0 -4px 24px rgba(0,0,0,0.08)}
     .input-row{display:flex;align-items:flex-end;gap:8px}
-    .input-field-wrap{flex:1;background:var(--input-bg);border:2px solid var(--input-border);border-radius:22px;padding:2px 14px;transition:border-color .2s}
-    .input-field-wrap:focus-within{border-color:var(--accent)}
+    .input-field-wrap{flex:1;background:var(--input-bg);border:2px solid var(--input-border);border-radius:22px;padding:2px 14px;transition:border-color .2s,box-shadow .2s}
+    .input-field-wrap:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(26,82,118,0.12)}
+    body.dark .input-field-wrap:focus-within{box-shadow:0 0 0 3px rgba(93,173,226,0.14)}
     .input-field{width:100%;background:transparent;border:none;outline:none;color:var(--text);font-size:15px;line-height:1.4;resize:none;max-height:100px;padding:7px 0;font-family:inherit}
     .input-field::placeholder{color:#bbb}
     .btn-send{width:42px;height:42px;border:none;border-radius:50%;background:var(--accent);color:#fff;font-size:18px;cursor:pointer;flex-shrink:0;transition:all .15s;display:flex;align-items:center;justify-content:center}
     .btn-send:active{transform:scale(.9);opacity:.9}
-    .btn-send:disabled{background:#ccc}
+    .btn-send:disabled{background:#ccc;cursor:not-allowed;opacity:.6}
+    .btn-send.loading{background:var(--accent);opacity:.8}
+    .btn-send.loading svg{display:none}
+    .btn-send.loading::after{content:"";width:18px;height:18px;border:2.5px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
     .input-hint{text-align:center;font-size:10px;color:#bbb;margin-top:4px}
 
     ::-webkit-scrollbar{width:0}
@@ -371,6 +377,9 @@
     #settingsView.show{display:flex!important}
     #settingsView .wx-nav{border-bottom:1px solid var(--card-border)}
     #settingsView .about-body{flex:1;overflow-y:auto;padding:20px 18px 30px;-webkit-overflow-scrolling:touch;max-width:560px;margin:0 auto;width:100%}
+    .settings-section{margin-bottom:20px}
+    .settings-section-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:10px;padding-left:14px;display:flex;align-items:center;gap:6px}
+    .settings-section-title svg{color:var(--accent);flex-shrink:0}
 
     /* ===== ABOUT VIEW ===== */
     #aboutView{flex:1;display:none!important;flex-direction:column;overflow:hidden;overscroll-behavior:none;background:var(--bg)}
@@ -478,16 +487,18 @@
         .quiz-case{background:var(--accent-light);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:10px 12px;margin-bottom:12px;font-size:13px;line-height:1.7;color:var(--text);white-space:pre-line}
         .quiz-q-text{font-size:15px;line-height:1.6;margin-bottom:14px;font-weight:500}
         .quiz-options{display:flex;flex-direction:column;gap:8px}
-        .quiz-opt{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border:2px solid var(--card-border);border-radius:12px;cursor:pointer;transition:all .15s;font-size:14px;line-height:1.5;background:var(--bg)}
-        .quiz-opt:hover{border-color:var(--input-border);background:var(--input-bg)}
+        .quiz-opt{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border:1.5px solid var(--card-border);border-left:3px solid transparent;border-radius:12px;cursor:pointer;transition:all .2s ease;font-size:14px;line-height:1.5;background:var(--bg);padding-left:16px}
+        .quiz-opt:hover{border-color:var(--accent);box-shadow:0 0 0 3px rgba(26,82,118,0.08);background:var(--input-bg)}
         .quiz-opt:active{transform:scale(.98)}
-        .quiz-opt.selected{border-color:var(--accent);background:var(--accent-light)}
-        .quiz-opt.correct-answer{border-color:#27ae60;background:rgba(39,174,96,0.08)}
-        .quiz-opt.wrong-answer{border-color:#e74c3c;background:rgba(231,76,60,0.08)}
-        .quiz-opt.disabled{pointer-events:none;opacity:.9}
-        .quiz-opt-prefix{font-weight:700;font-size:14px;color:var(--accent);flex-shrink:0;width:20px}
-        .quiz-opt.correct-answer .quiz-opt-prefix{color:#27ae60}
-        .quiz-opt.wrong-answer .quiz-opt-prefix{color:#e74c3c}
+        .quiz-opt.selected{border-color:var(--accent);border-left-color:var(--accent);background:rgba(26,82,118,0.06);box-shadow:0 2px 8px rgba(26,82,118,0.1)}
+        .quiz-opt.correct-answer{border-color:#27ae60;border-left-color:#27ae60;background:rgba(39,174,96,0.08);box-shadow:0 2px 8px rgba(39,174,96,0.1)}
+        .quiz-opt.wrong-answer{border-color:#e74c3c;border-left-color:#e74c3c;background:rgba(231,76,60,0.08);box-shadow:0 2px 8px rgba(231,76,60,0.1)}
+        .quiz-opt.disabled{pointer-events:none;opacity:.75}
+        .quiz-opt-prefix{font-weight:700;font-size:14px;color:var(--accent);flex-shrink:0;width:20px;text-align:center;transition:color .15s}
+        .quiz-opt .quiz-opt-status{display:none;margin-left:auto;flex-shrink:0;font-size:15px;font-weight:700;animation:optIconIn .15s ease}
+        .quiz-opt.correct-answer .quiz-opt-status{display:inline-block;color:#27ae60}
+        .quiz-opt.wrong-answer .quiz-opt-status{display:inline-block;color:#e74c3c}
+        @keyframes optIconIn{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:scale(1)}}
         .quiz-explain{display:none;margin-top:12px;padding:12px 14px;background:var(--input-bg);border-radius:12px;font-size:13px;line-height:1.65;color:var(--text);border-left:3px solid var(--accent)}
         .quiz-explain.show{display:block}
         .quiz-explain strong{color:var(--accent)}
@@ -539,10 +550,12 @@
         .doc-header p{font-size:12px;color:var(--text2)}
         .doc-type-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
         .doc-type-card{background:var(--card-bg);border:2px solid var(--card-border);border-radius:14px;padding:14px 12px;cursor:pointer;transition:all .15s;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px}
-        .doc-type-card:active{transform:scale(.96)}
-        .doc-type-card.selected{border-color:var(--accent);background:var(--accent-light)}
-        .doc-type-card .dt-icon{font-size:28px;line-height:1}
-        .doc-type-card .dt-name{font-size:13px;font-weight:600}
+        .doc-type-card:active{transform:scale(.96);box-shadow:0 4px 14px rgba(26,82,118,0.16)}
+        .doc-type-card:hover{border-color:var(--accent)}
+        .doc-type-card.selected{border-color:var(--accent);background:var(--accent-light);box-shadow:0 2px 10px rgba(26,82,118,0.12)}
+        .doc-type-card .dt-icon{font-size:28px;line-height:1;color:var(--accent);transition:transform .15s}
+        .doc-type-card:active .dt-icon{transform:scale(1.1)}
+        .doc-type-card .dt-name{font-size:13px;font-weight:600;color:var(--text)}
         .doc-type-card .dt-desc{font-size:10px;color:var(--text2);line-height:1.4}
         .doc-form{background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:18px;margin-bottom:14px}
         .doc-form h3{font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px}
@@ -572,15 +585,18 @@
 #caseView .case-body{flex:1;overflow-y:auto;padding:12px 14px;-webkit-overflow-scrolling:touch}
 .case-cats{display:flex;gap:6px;overflow-x:auto;padding:6px 0 12px;scrollbar-width:none;flex-shrink:0}
 .case-cats::-webkit-scrollbar{display:none}
-.case-cat-btn{padding:8px 16px;border:1.5px solid var(--card-border);border-radius:18px;background:var(--card-bg);color:var(--text);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:inherit;transition:all .15s}
-.case-cat-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-.case-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:14px 16px;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;gap:12px}
+.case-cat-btn{padding:8px 16px;border:1.5px solid var(--card-border);border-radius:18px;background:var(--card-bg);color:var(--text);font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;font-family:inherit;transition:all .15s}
+.case-cat-btn:hover{border-color:var(--accent)}
+.case-cat-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600}
+.case-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:14px 16px;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .15s ease}
 .case-card:active{background:var(--input-bg)}
+.case-card:hover{box-shadow:0 2px 8px rgba(0,0,0,0.08)}
 .case-card .case-num{flex-shrink:0;width:42px;height:42px;border-radius:12px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;color:var(--accent)}
 .case-card .case-info{flex:1;min-width:0}
-.case-card .case-title{font-size:13px;color:var(--text);line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.case-card .case-sub{font-size:11px;color:var(--text2);line-height:1.5;margin-top:3px;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.case-card .case-arrow{color:var(--text2);flex-shrink:0;font-size:18px}
+.case-card .case-title{font-size:14px;font-weight:600;color:var(--text);line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.case-card .case-sub{font-size:12px;color:var(--text2);line-height:1.5;margin-top:3px;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.case-card .case-arrow{color:var(--accent);opacity:.4;flex-shrink:0;font-size:18px;transition:opacity .15s,transform .15s}
+.case-card:active .case-arrow{opacity:.8;transform:translateX(2px)}
 .case-detail{position:fixed;top:0;left:0;right:0;bottom:0;z-index:200;background:var(--bg);overflow-y:auto;display:none;flex-direction:column}
 .case-detail.show{display:flex}
 .case-detail .cd-nav{display:flex;align-items:center;padding:var(--safe-top) 8px 0;height:calc(48px + var(--safe-top));background:var(--nav-bg);flex-shrink:0;border-bottom:1px solid var(--card-border)}
@@ -593,9 +609,9 @@
 .case-detail .cd-head{background:var(--accent);color:#fff;border-radius:14px;padding:14px 16px;margin-bottom:14px}
 .case-detail .cd-head .cd-cat{display:inline-block;font-size:10px;font-weight:700;padding:2px 9px;border-radius:9px;background:rgba(255,255,255,.25);margin-bottom:7px;letter-spacing:.5px}
 .case-detail .cd-head .cd-t{font-size:14px;font-weight:600;line-height:1.55}
-.case-detail .cd-section.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:12px 14px;margin-bottom:12px;border-left:3px solid var(--accent)}
-.case-detail .cd-section.card h5{font-size:12px;font-weight:700;color:var(--accent);margin-bottom:7px;display:flex;align-items:center;gap:5px;letter-spacing:.3px}
-.case-detail .cd-section.card p{font-size:13px;line-height:1.8;color:var(--text);margin:0 0 6px;white-space:pre-wrap;word-break:break-word}
+.case-detail .cd-section.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:12px 14px;margin-bottom:12px;border-left:3px solid var(--accent)}
+.case-detail .cd-section.card h5{font-size:13px;font-weight:700;color:var(--accent);margin-bottom:7px;display:flex;align-items:center;gap:5px;letter-spacing:.3px}
+.case-detail .cd-section.card p{font-size:14px;line-height:1.8;color:var(--text);margin:0 0 6px;white-space:pre-wrap;word-break:break-word}
 .case-detail .cd-section.card p:last-child{margin-bottom:0}
 
 .api-config{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:14px 16px;margin-bottom:16px}
@@ -813,15 +829,19 @@ body.dark .af-opt{background:#2a2a2a}
 .mat-viewer .mv-loading{text-align:center;color:var(--text2);padding:60px 24px;font-size:14px;line-height:1.8}
 
 /* ===== NOTEBOOK ===== */
-.notebook-body{flex:1;overflow-y:auto;padding:16px 14px calc(16px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch}
+.notebook-body{flex:1;overflow-y:auto;padding:16px 14px calc(84px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch}
 .notebook-toolbar{display:flex;gap:8px;margin-bottom:14px}
-.note-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:all .15s}
+.note-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:all .15s ease}
 .note-card:active{background:var(--input-bg)}
-.note-card .note-date{font-size:10px;color:var(--text2);margin-bottom:4px}
-.note-card .note-title{font-size:15px;font-weight:600;margin-bottom:4px}
-.note-card .note-preview{font-size:12px;color:var(--text2);line-height:1.5;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.note-card .note-tags{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap}
-.note-tag{font-size:10px;padding:2px 8px;border-radius:10px;background:var(--accent-light);color:var(--accent)}
+.note-card:hover{box-shadow:0 2px 8px rgba(0,0,0,0.08);transform:translateY(-1px)}
+.note-card .note-date{font-size:11px;color:var(--text2);margin-bottom:4px}
+.note-card .note-title{font-size:16px;font-weight:600;margin-bottom:4px;color:var(--text)}
+.note-card .note-preview{font-size:14px;color:var(--text2);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.note-card .note-tags{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.note-tag{font-size:12px;font-weight:500;padding:4px 10px;border-radius:12px;background:var(--accent-light);color:var(--accent);border:1px solid rgba(26,82,118,0.2)}
+.note-fab{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom));width:56px;height:56px;border-radius:50%;border:none;background:var(--accent);color:#fff;font-size:28px;font-weight:300;line-height:1;cursor:pointer;box-shadow:0 4px 12px rgba(26,82,118,0.3);display:flex;align-items:center;justify-content:center;z-index:120;transition:transform .15s,box-shadow .15s,background .2s}
+.note-fab:active{transform:scale(.95)}
+.note-fab:hover{box-shadow:0 6px 16px rgba(26,82,118,0.38)}
 .note-editor{background:var(--card-bg);border:2px solid var(--accent);border-radius:16px;padding:16px;margin-bottom:16px;box-shadow:0 4px 16px rgba(74,144,217,0.12)}
 .note-editor input{width:100%;border:none;background:transparent;font-size:17px;font-weight:700;color:var(--text);outline:none;margin-bottom:8px;font-family:inherit}
 .note-editor input::placeholder{color:#ccc;font-weight:400}
@@ -829,8 +849,8 @@ body.dark .af-opt{background:#2a2a2a}
 
 
     /* PROFILE */
-    .profile-card{text-align:center;padding:24px 20px 16px}
-    .profile-card .ph-avatar{width:64px;height:64px;border-radius:50%;background:#f5f5f5;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 10px;border:2px solid transparent}
+    .profile-card{text-align:center;padding:24px 20px 16px;border-radius:18px;margin-bottom:16px;background:linear-gradient(135deg,var(--accent-light),transparent 70%)}
+    .profile-card .ph-avatar{width:76px;height:76px;border-radius:50%;background:#f5f5f5;display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 10px;border:3px solid var(--accent)}
     body.dark .profile-card .ph-avatar{background:#2a2a2a}
     .ph-name-row{display:inline-flex;align-items:center;justify-content:center;gap:2px}
     .ph-name{font-size:18px;font-weight:700;color:#111}
@@ -879,10 +899,11 @@ body.dark .af-opt{background:#2a2a2a}
     .es-timing{display:flex;gap:8px}
     .es-timing .quiz-mode-btn{flex:1;max-width:none}
     .quiz-timer-wrap{padding:0 4px 8px;text-align:center}
-    .quiz-timer{display:inline-flex;align-items:center;gap:4px;background:var(--accent);color:#fff;border-radius:999px;padding:4px 14px;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+    .quiz-timer{display:inline-flex;align-items:center;gap:4px;background:var(--accent);color:#fff;border-radius:999px;padding:5px 16px;font-size:14px;font-weight:700;font-variant-numeric:tabular-nums;box-shadow:0 2px 8px rgba(0,0,0,.15)}
     .quiz-timer.countup{background:#2e9be6}
     .quiz-timer.countdown{background:#f39c12}
-    .quiz-timer.danger{background:#e74c3c;animation:esPulse .8s ease infinite}
+    .quiz-timer.warn{background:#f39c12;animation:esPulse 1s ease infinite}
+    .quiz-timer.danger{background:#e74c3c;animation:esPulse .4s ease infinite}
     @keyframes esPulse{0%,100%{opacity:1}50%{opacity:.55}}
     #pointsView{flex:1;display:none!important;flex-direction:column;overflow:hidden;background:var(--bg)}
     #pointsView.show{display:flex!important}
@@ -1012,13 +1033,15 @@ body.dark .af-opt{background:#2a2a2a}
     .profile-stats-row{display:flex;gap:0;margin:4px 20px 16px;border:1px solid var(--card-border);border-radius:14px;overflow:hidden}
     .profile-stats-row .ps-item{flex:1;text-align:center;padding:14px 8px;border-right:1px solid var(--card-border)}
     .profile-stats-row .ps-item:last-child{border-right:none}
-    .ps-val{font-size:20px;font-weight:700;color:#111}
-    body.dark .ps-val{color:#eee}
+    .ps-val{font-size:20px;font-weight:700;color:var(--accent)}
+    body.dark .ps-val{color:var(--accent)}
     .ps-label{font-size:11px;color:var(--text2);margin-top:2px}
     .profile-menu{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;margin:0 20px 12px;overflow:hidden}
     .pm-item{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;transition:all .15s;border-bottom:1px solid var(--card-border);font-size:14px;color:var(--text)}
     .pm-item:last-child{border-bottom:none}
-    .pm-item:active{background:var(--input-bg)}
+    .pm-item:hover{background:var(--input-bg)}
+    .pm-item:active{background:var(--input-bg);transform:scale(.995)}
+    .pm-item svg{color:var(--accent);flex-shrink:0}
     .pm-arrow{color:#ccc;font-size:18px;margin-left:auto}
     .pm-val{margin-left:auto;font-size:12px;font-weight:600;color:var(--text);background:var(--input-bg);border:1px solid var(--card-border);border-radius:20px;padding:3px 12px;white-space:nowrap}
     .pm-toggle{position:relative;margin-left:auto;width:52px;height:30px;border-radius:999px;border:1px solid var(--card-border);background:var(--input-bg);transition:all .2s ease;box-shadow:inset 0 0 0 1px rgba(0,0,0,0.04)}
@@ -1687,7 +1710,6 @@ body.dark .af-opt{background:#2a2a2a}
       <input type="file" id="restoreFileInput" accept=".json" style="display:none" onchange="handleRestoreFile(this)" />
       <button onclick="logoutAccount()" style="width:100%;padding:10px;border:1px solid rgba(231,76,60,0.3);border-radius:12px;background:rgba(231,76,60,0.05);color:#e74c3c;font-size:12px;cursor:pointer;font-family:inherit;margin-top:8px">🚪 退出登录</button>
     </div>
-    </button>
   </div>
 </div>
 
@@ -1698,6 +1720,8 @@ body.dark .af-opt{background:#2a2a2a}
     <span class="title">设置</span>
   </div>
   <div class="about-body">
+    <div class="settings-section">
+      <div class="settings-section-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>外观偏好</div>
     <div class="profile-menu">
       <div class="pm-item" onclick="toggleQuoteAuto()">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.93 19.07l2.83-2.83"/><path d="M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="4"/></svg>
@@ -1720,7 +1744,10 @@ body.dark .af-opt{background:#2a2a2a}
         <span class="pm-arrow">›</span>
       </div>
     </div>
+    </div>
 
+    <div class="settings-section">
+      <div class="settings-section-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>兑换与账户</div>
     <div class="profile-menu">
       <div style="display:flex;align-items:center;gap:8px;padding:12px 16px">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="flex-shrink:0"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
@@ -1728,6 +1755,7 @@ body.dark .af-opt{background:#2a2a2a}
         <button id="redeemBtn" style="padding:8px 18px;border:none;border-radius:10px;background:#111;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0">兑换</button>
       </div>
       <p id="redeemMsg" style="font-size:11px;color:var(--text2);padding:0 16px 12px;min-height:16px"></p>
+    </div>
     </div>
   </div>
 </div>
@@ -2028,6 +2056,7 @@ body.dark .af-opt{background:#2a2a2a}
     </div>
     <div id="notebookList"></div>
   </div>
+  <button class="note-fab" onclick="startNewNote()" aria-label="新建笔记"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
 </div>
 
 
@@ -6744,7 +6773,7 @@ function sendMsg(text) {
   }
 
   var sessionId = ++chatSessionId;
-  streaming = true; dom.btnSend.disabled = true; dom.typing.style.display = "flex"; scrollBottom();
+  streaming = true; dom.btnSend.disabled = true; dom.btnSend.classList.add("loading"); dom.typing.style.display = "flex"; scrollBottom();
 
   messages.push({ role: "user", content: text, _time: Date.now() });
   renderMsg("user", text); persist();
@@ -6784,7 +6813,7 @@ function sendMsg(text) {
           var mt = document.createElement("div"); mt.className = "msg-time"; mt.textContent = getTimeStr();
           var act = document.createElement("div"); act.className = "msg-actions"; act.innerHTML = '<button class="btn-copy" onclick="copyMsg(this)">复制</button>';
           msgDiv.querySelector(".msg-body").appendChild(mt); msgDiv.querySelector(".msg-body").appendChild(act);
-          streaming = false; dom.btnSend.disabled = false; return;
+          streaming = false; dom.btnSend.disabled = false; dom.btnSend.classList.remove("loading"); return;
         }
         buf += decoder.decode(result.value, { stream: true });
         var lines = buf.split("\n"); buf = lines.pop() || "";
@@ -6798,7 +6827,7 @@ function sendMsg(text) {
         if (resolved || chatSessionId !== sessionId) return; resolved = true; abortController = null;
         if (fullContent) { messages.push({ role: "assistant", content: fullContent, _time: Date.now() }); persist(); contentDiv.innerHTML = renderMD(fullContent); hlAll(); }
         else if (!(e && e.name === "AbortError")) { showError(e.message); msgDiv.remove(); }
-        streaming = false; dom.btnSend.disabled = false; dom.typing.style.display = "none";
+        streaming = false; dom.btnSend.disabled = false; dom.btnSend.classList.remove("loading"); dom.typing.style.display = "none";
       });
     }
     pump();
@@ -6806,7 +6835,7 @@ function sendMsg(text) {
     if (resolved || chatSessionId !== sessionId) return; resolved = true; abortController = null;
     if (fullContent) { messages.push({ role: "assistant", content: fullContent, _time: Date.now() }); persist(); contentDiv.innerHTML = renderMD(fullContent); hlAll(); }
     else if (!(e && e.name === "AbortError")) { showError(e.message); msgDiv.remove(); }
-    streaming = false; dom.btnSend.disabled = false; dom.typing.style.display = "none";
+    streaming = false; dom.btnSend.disabled = false; dom.btnSend.classList.remove("loading"); dom.typing.style.display = "none";
   });
 }
 
@@ -8086,7 +8115,7 @@ function renderNotes() {
   var el = document.getElementById("notebookList");
   if (!el) return;
   if (notes.length === 0) {
-    el.innerHTML = '<div style="text-align:center;padding:30px 16px;color:var(--text2)"><div style="margin-bottom:8px"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/></svg></div><p style="font-size:14px">还没有笔记</p><p style="font-size:12px;margin-top:4px">在上方编辑器中自由书写，点击保存</p></div>';
+    el.innerHTML = '<div style="text-align:center;padding:44px 20px;color:var(--text2)"><div style="margin-bottom:12px;opacity:.3"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/></svg></div><p style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px">暂无笔记</p><p style="font-size:13px;line-height:1.5;color:var(--text2);margin-bottom:16px">点击右下角 + 开始记录你的学习心得</p><button class="quiz-btn primary" style="padding:10px 24px" onclick="startNewNote()">新建笔记</button></div>';
     return;
   }
   var html = "";
@@ -8695,7 +8724,7 @@ function startExamTimer() {
   if (spq < 30) spq = 30; if (spq > 180) spq = 180;
   QUIZ_STATE.timerLimit = QUIZ_STATE.timerMode === "countdown" ? Math.max(60, QUIZ_STATE.questions.length * spq) : 0;
   var el = document.getElementById("quizTimer");
-  if (el) { el.style.display = ""; el.classList.remove("danger"); el.classList.remove("countdown"); el.classList.remove("countup"); }
+  if (el) { el.style.display = ""; el.classList.remove("danger"); el.classList.remove("warn"); el.classList.remove("countdown"); el.classList.remove("countup"); }
   QUIZ_STATE.timerInterval = setInterval(updateExamTimer, 500);
   updateExamTimer();
 }
@@ -8727,11 +8756,13 @@ function updateExamTimer() {
     el.classList.add("countdown");
     el.classList.remove("countup");
     el.classList.toggle("danger", remain <= 120);
+    el.classList.toggle("warn", remain > 120 && remain <= 300);
   } else {
     el.innerHTML = solidClock + "用时 " + fmtClock(elapsed);
     el.classList.add("countup");
     el.classList.remove("countdown");
     el.classList.remove("danger");
+    el.classList.remove("warn");
   }
 }
 
@@ -8826,6 +8857,7 @@ function renderQuizPage() {
         h += '<div class="quiz-opt' + optClass + '" onclick="selectAnswer(' + globalIdx + ',' + j + ')" id="opt' + globalIdx + '_' + j + '">';
         h += '<span class="quiz-opt-prefix">' + labels[j] + '.</span>';
         h += '<span>' + escHtml(q._shuffledOpts ? q._shuffledOpts[j] : q.opts[j]) + '</span>';
+        h += '<span class="quiz-opt-status">' + (isSel && isAns ? '✓' : isSel && !isAns ? '✕' : '') + '</span>';
         if (q.multi) h += '<span style="margin-left:auto;font-size:12px;opacity:.5">' + (isSel ? '✓' : '') + '</span>';
         h += '</div>';
       }
@@ -9027,7 +9059,7 @@ function showWrongBook() {
   setQuizScreen("quiz");
   document.getElementById("quizPlayTitle").textContent = "错题本";
   if (wrongBook.length === 0) {
-    document.getElementById("quizContent").innerHTML = '<div class="quiz-wrongbook-empty"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><p style="font-size:15px;font-weight:600;margin-bottom:6px">错题本为空</p><p style="font-size:12px;color:var(--text2)">做题时答错的题目会自动记录在这里</p></div>';
+    document.getElementById("quizContent").innerHTML = '<div class="quiz-wrongbook-empty"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><p style="font-size:15px;font-weight:600;margin-bottom:6px">暂无错题</p><p style="font-size:12px;color:var(--text2)">完成练习或考试，答错的题目会记录在这里</p><button class="quiz-btn primary" style="margin-top:14px;padding:10px 24px" onclick="goBackFromQuizEmpty()">开始练习</button></div>';
     document.getElementById("quizSubtitle").textContent = "错题本 · 暂无记录";
     renderQuizStats();
     return;
@@ -9049,6 +9081,14 @@ function showWrongBook() {
 function retryWrongBook() {
   wrongBookMode = true;
   showWrongBook();
+}
+
+function goBackFromQuizEmpty() {
+  wrongBookMode = false;
+  QUIZ_STATE.mode = "practice";
+  setQuizScreen("menu");
+  document.getElementById("quizSubtitle").textContent = "法考真题 · 章节练习 · 错题回顾";
+  renderQuizStats();
 }
 
 function removeWrongAfterCorrect(qText) {
@@ -9223,7 +9263,22 @@ function clearDocForm() {
 function renderDocResult() {
   var area = document.getElementById("docResultArea");
   if (!DOC_STATE.result) { area.innerHTML = ''; return; }
-  area.innerHTML = '<div class="lr-content">' + renderMD(DOC_STATE.result) + '</div><div style="margin-top:12px"><button class="btn-copy" style="padding:8px 16px;border:1px solid var(--card-border);border-radius:14px;background:var(--card-bg);color:var(--accent);font-size:13px;cursor:pointer;font-family:inherit" onclick="copyDocResult()">复制全文</button></div>';
+  area.innerHTML = '<div class="doc-result-content" style="max-height:none;background:var(--card-bg);box-shadow:none">' + renderMD(DOC_STATE.result) + '</div><div class="doc-actions" style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">' +
+    '<button class="doc-btn secondary" style="flex:1;min-width:120px;justify-content:center" onclick="copyDocResult()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:4px"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>复制全文</button>' +
+    '<button class="doc-btn primary" style="flex:1;min-width:120px;justify-content:center" onclick="downloadDocResult()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:4px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>下载 TXT</button>' +
+    '</div>';
+}
+function downloadDocResult() {
+  if (!DOC_STATE.result) return;
+  var t = DOC_STATE.result;
+  var name = (DOC_STATE.selectedType && DOC_STATE.selectedType.name) || "法律文书";
+  var blob = new Blob([t], { type: "text/plain;charset=utf-8" });
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = name + ".txt";
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function() { URL.revokeObjectURL(a.href); }, 1000);
+  showToast("正在下载...");
 }
 function copyDocResult() {
   if (!DOC_STATE.result) return;
