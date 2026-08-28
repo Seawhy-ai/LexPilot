@@ -769,23 +769,23 @@ body.dark .wr-bar{background:linear-gradient(180deg,#3d7fb8,#2565a0)}
 .pm-bind-row .bind-btn{border:none;border-radius:10px;background:var(--accent);color:#fff;font-size:12px;font-weight:600;padding:7px 12px;cursor:pointer;font-family:inherit;flex-shrink:0;white-space:nowrap}
 .pm-bind-row .bind-btn.ghost{background:var(--input-bg);color:var(--text);border:1px solid var(--card-border)}
 
-/* ===== 个人中心：称号 / VIP 特权卡 ===== */
+/* ===== 个人中心：称号 / VIP 特权卡（与应用统一的纯色 SVG 中性风格） ===== */
 .title-chip{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;color:#fff;background:linear-gradient(135deg,#f7b733,#fc4a1a);border-radius:20px;padding:3px 10px;margin-top:6px;letter-spacing:.5px}
-.vip-card{position:relative;overflow:hidden;border-radius:14px;padding:11px 13px;margin:14px 20px 20px;background:linear-gradient(135deg,#2c3e50 0%,#4a3728 55%,#6e4c1e 100%);color:#f5e6c8;box-shadow:0 5px 16px rgba(110,76,30,.25)}
-.vip-card::before{content:"";position:absolute;top:-34px;right:-20px;width:110px;height:110px;border-radius:50%;background:radial-gradient(circle,rgba(247,183,51,.25),transparent 70%);pointer-events:none}
+.vip-card{border:1px solid var(--card-border);border-radius:14px;padding:12px 14px;margin:14px 20px 20px;background:var(--card-bg)}
 .vip-card .vc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-.vip-card .vc-title{font-size:13.5px;font-weight:800;letter-spacing:1px;display:flex;align-items:center;gap:5px}
-.vip-card .vc-state{font-size:9.5px;font-weight:700;border-radius:20px;padding:2px 9px;background:rgba(247,183,51,.2);color:#f7b733}
-.vip-card .vc-state.on{background:linear-gradient(135deg,#f7b733,#fc4a1a);color:#fff}
-.vip-card .vc-list{display:grid;grid-template-columns:1fr 1fr;gap:6px 8px}
-.vip-card .vc-item{display:flex;align-items:center;gap:5px;font-size:10.5px;line-height:1.4}
-.vip-card .vc-item .vc-ic{flex-shrink:0;font-size:11px}
-.vip-card .vc-item.off{opacity:.55}
-.vip-card .vc-foot{margin-top:9px;display:flex;align-items:center;justify-content:space-between;gap:8px}
-.vip-card .vc-tip{font-size:9.5px;opacity:.75}
-.vip-card .vc-btn{border:none;border-radius:20px;padding:6px 14px;background:linear-gradient(135deg,#f7b733,#fc4a1a);color:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;flex-shrink:0}
-.vip-card .vc-btn:active{opacity:.85}
-body.dark .vip-card{box-shadow:0 6px 20px rgba(0,0,0,.5)}
+.vip-card .vc-title{font-size:13.5px;font-weight:800;display:flex;align-items:center;gap:5px;color:var(--text)}
+.vip-card .vc-title svg{color:var(--accent)}
+.vip-card .vc-state{font-size:9.5px;font-weight:700;border-radius:20px;padding:2px 9px;background:var(--icon-bg);color:var(--text2)}
+.vip-card .vc-state.on{background:var(--accent);color:#fff}
+.vip-card .vc-list{display:grid;grid-template-columns:1fr 1fr;gap:7px 8px}
+.vip-card .vc-item{display:flex;align-items:center;gap:6px;font-size:10.5px;line-height:1.4;color:var(--text)}
+.vip-card .vc-item svg{flex-shrink:0;color:var(--accent)}
+.vip-card .vc-item.off{opacity:.45}
+.vip-card .vc-item.off svg{color:var(--text2)}
+.vip-card .vc-foot{margin-top:10px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.vip-card .vc-tip{font-size:9.5px;color:var(--text2)}
+.vip-card .vc-btn{border:none;border-radius:10px;padding:6px 14px;background:var(--accent);color:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;flex-shrink:0}
+.vip-card .vc-btn:active{opacity:.8}
 
 /* ===== 行间距偏好 ===== */
 body.lh-wide .lr-art-text,body.lh-wide #lawModalText,body.lh-wide .case-detail .cd-section.card p,body.lh-wide .msg-bubble,body.lh-wide .note-detail-body,body.lh-wide .quiz-stem-text{line-height:2 !important}
@@ -1546,7 +1546,7 @@ body.dark .af-opt{background:#2a2a2a}
     <!-- VIP 特权卡片 -->
     <div class="vip-card" id="vipCard">
       <div class="vc-head">
-        <div class="vc-title">👑 VIP 特权</div>
+        <div class="vc-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h20"/><path d="M4 20L2.5 8.5 8 12l4-8 4 8 5.5-3.5L20 20"/></svg>VIP 特权</div>
         <div class="vc-state" id="vipCardState">未开通</div>
       </div>
       <div class="vc-list" id="vipCardList"></div>
@@ -2078,7 +2078,6 @@ body.dark .af-opt{background:#2a2a2a}
       <div class="learn-card" onclick="openLottery()">
         <div class="lc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/><path d="M12 8S10 2 7 2c-1 0-2 1-2 2 0 3 7 4 7 4"/><path d="M12 8s2-6 5-6c1 0 2 1 2 2 0 3-7 4-7 4"/></svg></div>
         <div class="lc-name">积分夺宝</div>
-        <div class="lc-desc">30积分单抽 · 280积分十连抽 · 365幸运值必中水晶</div>
       </div>
     </div>
   </div>
@@ -2214,7 +2213,6 @@ body.dark .af-opt{background:#2a2a2a}
         </div>
         <div class="lc-info">
           <div class="lc-name">学习时钟</div>
-          <div class="lc-desc" id="learnClockHint">番茄工作法 · 点击开始专注</div>
         </div>
         <span class="mc-arrow">›</span>
       </div>
@@ -7159,19 +7157,22 @@ function renderVipCard() {
     st.textContent = vip ? (remain === "永久" ? "永久 VIP" : "VIP · 剩余 " + remain + " 天") : "未开通";
     st.classList.toggle("on", vip);
   }
+  var vi = function(paths) {
+    return '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + paths + '</svg>';
+  };
   var perks = [
-    { ic: "🔓", txt: "题目解析无限查看", on: true },
-    { ic: "📝", txt: "笔记本免费创建", on: true },
-    { ic: "⚡", txt: "学习积分双倍", on: true },
-    { ic: "📅", txt: "打卡积分翻倍", on: true },
-    { ic: "💬", txt: "更多 AI 咨询次数", on: true },
-    { ic: "👑", txt: "专属 VIP 标识", on: true }
+    { ic: vi('<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>'), txt: "题目解析无限查看", on: true },
+    { ic: vi('<path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>'), txt: "笔记本免费创建", on: true },
+    { ic: vi('<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>'), txt: "学习积分双倍", on: true },
+    { ic: vi('<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M9 16l2 2 4-4"/>'), txt: "打卡积分翻倍", on: true },
+    { ic: vi('<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>'), txt: "更多 AI 咨询次数", on: true },
+    { ic: vi('<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>'), txt: "专属 VIP 标识", on: true }
   ];
   var list = document.getElementById("vipCardList");
   if (list) {
     var h = "";
     for (var i = 0; i < perks.length; i++) {
-      h += '<div class="vc-item' + (perks[i].on ? "" : " off") + '"><span class="vc-ic">' + perks[i].ic + '</span><span>' + perks[i].txt + '</span></div>';
+      h += '<div class="vc-item' + (perks[i].on ? "" : " off") + '">' + perks[i].ic + '<span>' + perks[i].txt + '</span></div>';
     }
     list.innerHTML = h;
   }
