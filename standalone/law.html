@@ -942,11 +942,14 @@ body.dark #lotteryView::before{background:radial-gradient(circle at 50% 0%,rgba(
 .g-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
 .g-card{background:var(--input-bg);border:1px solid var(--card-border);border-radius:12px;padding:10px 8px;text-align:center;display:flex;flex-direction:column;align-items:center}
 .g-card.locked{opacity:.55}
-.g-card.locked .g-char-mini svg{filter:grayscale(1);opacity:.5}
+.g-card.locked .g-char-mini svg,.g-card.locked .g-char-mini img{filter:grayscale(1);opacity:.5}
 .g-card.active{box-shadow:0 0 0 2px var(--accent);opacity:1}
 .g-card .g-ic{font-size:26px;line-height:1.2;margin-bottom:2px}
 .g-card .g-char-mini{width:62px;height:76px;display:flex;align-items:flex-end;justify-content:center;border-radius:10px;overflow:hidden;margin-bottom:3px}
 .g-card .g-char-mini svg{display:block}
+.g-card .g-char-mini img{width:100%;height:100%;object-fit:cover;object-position:top;border-radius:10px}
+.g-char-avatar.has-art{width:128px;height:118px;border-radius:14px;overflow:hidden;background:transparent}
+.g-char-avatar .g-art-img{width:100%;height:100%;object-fit:cover;object-position:top center;cursor:zoom-in;border-radius:14px}
 .badge-medal{width:42px;height:42px;border-radius:50%;border:2px solid var(--card-border);background:var(--input-bg);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:var(--text2);margin-bottom:4px;box-shadow:inset 0 0 0 2px rgba(255,255,255,.25)}
 .g-card .g-name{font-weight:800;font-size:13px;color:var(--text);margin-bottom:2px}
 .g-card .g-rarity{font-size:10px;font-weight:700;margin-bottom:4px}
@@ -4340,7 +4343,7 @@ var SKINS = [
   { key: "aurora",name: "极光律者", cost: 588, icon: "🌈", rarity: "史诗", color: "#2dd4bf", accent: "#0d9488", desc: "极光为冕,律者临风,天边有一道属于你的辉光" },
   { key: "crown", name: "星海执灯人", cost: 988, icon: "🏮", rarity: "传说", color: "#fb7185", accent: "#be185d", desc: "提一盏星灯,行走于浩瀚法海之巅" },
   { key: "lord",  name: "天御法尊", cost: 988, icon: "🛡️", rarity: "传说", color: "#cbd5e1", accent: "#64748b", desc: "白袍法尊,御守正道,为迷途的人指引方向" },
-  { key: "starlord", name: "星河法皇", cost: 1,  icon: "🌟", rarity: "典藏", crystal: true, color: "#8b5cf6", accent: "#f7b733", desc: "典藏限定。星河加冕,法皇临世,以整片星海为袍" }
+  { key: "starlord", name: "星河法皇", cost: 1,  icon: "🌟", rarity: "典藏", crystal: true, color: "#8b5cf6", accent: "#f7b733", desc: "典藏限定。星河加冕,法皇临世,以整片星海为袍", art: "images/skins/starlord.png" }
 ];
 // 限定徽章(法脉·星海典藏), weight 合计 10%
 var BADGES = [
@@ -4807,7 +4810,12 @@ function openSkinGallery() {
     '<div style="font-size:11px;color:var(--text2);margin-top:3px">碎片 <b style="color:var(--accent)">' + frags + '</b> · 法魂水晶 <b style="color:#f7b733">' + cry + '</b></div></div>';
   var wearColor = "#7dd3fc", wearName = "未佩戴";
   for (var wi = 0; wi < SKINS.length; wi++) if (SKINS[wi].key === active) { wearColor = SKINS[wi].color; wearName = SKINS[wi].name; }
-  h += '<div class="g-char"><div class="g-char-avatar">' + characterSVG(active) + '</div>' +
+  var activeSkinObj = null;
+  for (var ai = 0; ai < SKINS.length; ai++) if (SKINS[ai].key === active) activeSkinObj = SKINS[ai];
+  var avatarHtml = (activeSkinObj && activeSkinObj.art)
+    ? '<img class="g-art-img" src="' + activeSkinObj.art + '" alt="" onclick="viewSkinArt(\'' + activeSkinObj.key + '\')" />'
+    : characterSVG(active);
+  h += '<div class="g-char"><div class="g-char-avatar' + (activeSkinObj && activeSkinObj.art ? ' has-art' : '') + '">' + avatarHtml + '</div>' +
     '<div class="g-char-info"><div class="g-char-title">虚拟角色 · 法海星旅</div>' +
     '<div class="g-char-wear" style="color:' + wearColor + '">' + (active ? '穿着「' + escHtml(wearName) + '」' : '未佩戴皮肤') + '</div>' +
     '<div class="g-char-hint">普通88/勇者288/史诗588/传说988碎片,典藏需1法魂水晶</div></div></div>';
@@ -4821,8 +4829,9 @@ function openSkinGallery() {
     var cardStyle = has
       ? 'border-color:' + s.color + ';background:linear-gradient(165deg,' + s.color + '1f,transparent 68%)'
       : '';
+    var preview = s.art ? '<img src="' + s.art + '" alt="" loading="lazy" />' : characterSVG(s.key, 58, 72);
     h += '<div class="' + cls + '" style="' + cardStyle + '">' +
-      '<div class="g-char-mini">' + characterSVG(s.key, 58, 72) + '</div>' +
+      '<div class="g-char-mini">' + preview + '</div>' +
       '<div class="g-name">' + escHtml(s.name) + '</div>' +
       '<div class="g-rarity g-rarity-' + rarityCls(s.rarity) + '" style="color:' + s.color + '">' + s.rarity + ' · ' + (s.crystal ? "1水晶" : s.cost + "碎片") + '</div>' +
       '<div class="g-desc">' + escHtml(s.desc) + '</div>';
@@ -4869,6 +4878,22 @@ function openSkinGallery() {
       showToast(act === "wear" ? "已佩戴「" + skinNameByKey(key) + "」" : "合成成功「" + skinNameByKey(key) + "」");
     };
   }
+}
+
+// 全屏查看皮肤高清立绘
+function viewSkinArt(key) {
+  var s = null;
+  for (var i = 0; i < SKINS.length; i++) if (SKINS[i].key === key) s = SKINS[i];
+  if (!s || !s.art) return;
+  var ov = document.createElement("div");
+  ov.id = "skinArtOverlay";
+  ov.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:900;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;gap:12px;cursor:zoom-out";
+  ov.innerHTML = '<img src="' + s.art + '" style="max-width:100%;max-height:74vh;border-radius:16px;box-shadow:0 12px 48px rgba(0,0,0,.6)" />' +
+    '<div style="color:#fff;font-size:15px;font-weight:800">' + escHtml(s.name) + ' · ' + escHtml(s.rarity) + '</div>' +
+    '<div style="color:rgba(255,255,255,.72);font-size:12px;max-width:320px;text-align:center;line-height:1.6">' + escHtml(s.desc || "") + '</div>' +
+    '<div style="color:rgba(255,255,255,.45);font-size:10px">点击任意位置关闭</div>';
+  ov.onclick = function() { ov.remove(); };
+  document.body.appendChild(ov);
 }
 
 // ===== 限定徽章图鉴（法脉 · 星海典藏） =====
