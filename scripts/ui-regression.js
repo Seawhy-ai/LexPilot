@@ -10,7 +10,7 @@ const SHELL = path.join(
   "chrome-headless-shell-win64",
   "chrome-headless-shell.exe"
 );
-const URL = "file:///" + path.resolve(__dirname, "standalone/law.html").replace(/\\/g, "/");
+const URL = "file:///" + path.resolve(__dirname, "../standalone/law.html").replace(/\\/g, "/");
 const OUT = path.join(__dirname, "_ui_shots");
 if (fs.existsSync(OUT)) fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(OUT, { recursive: true });
