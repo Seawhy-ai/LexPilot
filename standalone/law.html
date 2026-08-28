@@ -939,6 +939,21 @@ body.dark #lotteryView::before{background:radial-gradient(circle at 50% 0%,rgba(
 .g-char-title{font-size:12px;font-weight:800;color:var(--text)}
 .g-char-wear{font-size:12px;font-weight:700;margin-top:4px}
 .g-char-hint{font-size:10px;color:var(--text2);margin-top:3px;line-height:1.4}
+/* 自由搭配页签 */
+.g-tabs{display:flex;gap:8px;margin-bottom:10px}
+.g-tab{flex:1;border:1px solid var(--card-border);background:var(--input-bg);color:var(--text2);border-radius:10px;padding:8px 0;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+.g-tab.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.dw-preview{display:flex;justify-content:center;padding:4px 0 2px}
+.dw-preview svg{filter:drop-shadow(0 6px 14px rgba(0,0,0,.12))}
+.dw-frag{text-align:center;font-size:11px;color:var(--text2);margin-bottom:6px}
+.dw-label{font-size:12px;font-weight:800;color:var(--text);margin:8px 0 6px}
+.dw-row{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+.dw-chip{flex:0 0 auto;border:1.5px solid var(--card-border);background:var(--input-bg);border-radius:12px;padding:7px 9px;font-size:11px;color:var(--text);cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.dw-chip .dw-dot{width:13px;height:13px;border-radius:50%;flex-shrink:0;border:1px solid rgba(0,0,0,.12)}
+.dw-chip.active{border-color:var(--accent);background:var(--accent-light);font-weight:700}
+.dw-chip.locked{opacity:.78}
+.dw-chip .dw-cost{font-size:10px;color:#e67e22;font-weight:700}
+.dw-hint{font-size:10px;color:var(--text2);margin-top:10px;line-height:1.6}
 .g-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
 .g-card{background:var(--input-bg);border:1px solid var(--card-border);border-radius:12px;padding:10px 8px;text-align:center;display:flex;flex-direction:column;align-items:center}
 .g-card.locked{opacity:.55}
@@ -4727,77 +4742,145 @@ function rarityCls(r) {
 }
 function skinNameByKey(key) { for (var i = 0; i < SKINS.length; i++) if (SKINS[i].key === key) return SKINS[i].name; return ""; }
 // 虚拟角色(法海星旅)SVG —— 法袍颜色与饰品随佩戴皮肤变化(back=身后层,front=身前层)
-function characterSVG(skinKey, w, h) {
-  w = w || 96; h = h || 120;
-  var s = null, i;
-  for (i = 0; i < SKINS.length; i++) if (SKINS[i].key === skinKey) s = SKINS[i];
-  var robe = s ? s.color : "#7dd3fc";          // 法袍主色
-  var trim = s ? (s.accent || s.color) : "#0284c7"; // 滚边/腰带
-  var gid = "rg-" + (s ? s.key : "default");   // 法袍渐变 id(按皮肤唯一)
-  var hair = "#3b3a4a", face = "#ffd9b3";
-  var back = "", front = "";
-  if (s) {
-    if (s.key === "gold") { // 鎏金法冕: 头顶小法冕
-      front = '<path d="M48 15 l3 -5 3 5 3 -6 3 6 3 -5 3 5 v4 h-18 Z" fill="#f7b733" stroke="#b45309" stroke-width="1.1"/>';
-    } else if (s.key === "crown") { // 星海执灯人: 右手提星灯
-      front = '<g><rect x="88" y="70" width="3" height="34" rx="1.5" fill="#b45309"/>' +
-        '<rect x="80" y="88" width="19" height="15" rx="3.5" fill="#fbbf24" stroke="#b45309" stroke-width="1.5"/>' +
-        '<rect x="85" y="91" width="9" height="9" rx="2" fill="#fff7d6"/>' +
-        '<circle cx="89.5" cy="95.5" r="9" fill="#fbbf24" opacity=".28"/></g>';
-    } else if (s.key === "sea") { // 沧海法袍: 袍摆波浪
-      front = '<path d="M34 126 q3 -5 6 0 q3 5 6 0 q3 -5 6 0 q3 5 6 0 q3 -5 6 0 q3 5 6 0 q3 -5 6 0 q3 5 6 0" fill="none" stroke="#e0f2fe" stroke-width="2.4" stroke-linecap="round"/>';
-    } else if (s.key === "star") { // 星河律裳: 袍上星芒
-      front = '<path d="M33 74 l3 -5 3 5 5 2 -5 3 -3 5 -3 -5 -5 -3 Z" fill="#ede9fe" opacity=".95"/>' +
-        '<path d="M90 94 l2.5 -4 2.5 4 4 1.5 -4 2.5 -2.5 4 -2.5 -4 -4 -2.5 Z" fill="#f5f3ff" opacity=".9"/>' +
-        '<circle cx="83" cy="78" r="1.8" fill="#fff" opacity=".95"/>';
-    } else if (s.key === "ink") { // 墨海书童: 腰间悬一支墨笔
-      front = '<rect x="40" y="86" width="19" height="3.6" rx="1.8" transform="rotate(-26 49 88)" fill="#0f172a"/>' +
-        '<rect x="40" y="86" width="4" height="3.6" rx="1.8" transform="rotate(-26 49 88)" fill="#f8fafc"/>';
-    } else if (s.key === "tide") { // 碧潮卫士: 双肩护甲 + 胸前小盾
-      front = '<circle cx="40" cy="67" r="4.2" fill="#047857"/><circle cx="80" cy="67" r="4.2" fill="#047857"/>' +
-        '<path d="M54 82 l6 -5 6 5 v6 q-6 5 -6 5 q-6 -5 -6 -5 Z" fill="#a7f3d0" opacity=".95"/>';
-    } else if (s.key === "aurora") { // 极光律者: 袍摆极光弧 + 星光
-      front = '<path d="M34 128 Q46 116 60 128 Q74 116 86 128" stroke="#a5f3fc" fill="none" stroke-width="2.6" stroke-linecap="round"/>' +
-        '<circle cx="78" cy="76" r="1.8" fill="#ccfbf1" opacity=".95"/>';
-    } else if (s.key === "lord") { // 天御法尊: 身后圣光光环
-      back = '<circle cx="60" cy="42" r="29" fill="none" stroke="#fef3c7" stroke-width="2.2" opacity=".75"/>';
-    } else if (s.key === "starlord") { // 星河法皇(典藏): 身后披风 + 大法冕 + 星屑
-      back = '<path d="M40 60 Q22 102 34 140 L86 140 Q98 102 80 60 Z" fill="#6d28d9" opacity=".62"/>';
-      front = '<path d="M46 13 l3 -6 3 6 4 -8 4 8 3 -6 3 6 v5 h-20 Z" fill="#f7b733" stroke="#b45309" stroke-width="1.3"/>' +
-        '<circle cx="55" cy="22" r="2" fill="#fef08a"/><circle cx="65" cy="20" r="1.6" fill="#fef08a"/>' +
-        '<path d="M31 72 l2 -4 2 4 4 1.5 -4 2.5 -2 4 -2 -4 -4 -2.5 Z" fill="#ede9fe" opacity=".95"/>' +
-        '<path d="M88 90 l2 -3 2 3 3.5 1.5 -3.5 2 -2 3 -2 -3 -3.5 -2 Z" fill="#ede9fe" opacity=".9"/>';
-    }
+// ===== 换装系统：女性模特基底 + 上衣/下装部件化自由搭配 =====
+var _HAIR_C = "#4a3b52", _FACE_C = "#ffd9b3";
+
+function _lgStar(x, y, s, fill, op) {
+  return '<path d="M' + x + ' ' + (y - s) + ' L' + (x + s * 0.32) + ' ' + (y - s * 0.32) + ' L' + (x + s) + ' ' + y + ' L' + (x + s * 0.32) + ' ' + (y + s * 0.32) + ' L' + x + ' ' + (y + s) + ' L' + (x - s * 0.32) + ' ' + (y + s * 0.32) + ' L' + (x - s) + ' ' + y + ' L' + (x - s * 0.32) + ' ' + (y - s * 0.32) + ' Z" fill="' + fill + '" opacity="' + (op || ".9") + '"/>';
+}
+// 上衣部件：衣身+衣领+袖+腰带（覆盖图层 y57-96）
+function _topGroup(top, gid) {
+  var g = '<path d="M45 57 Q60 52 75 57 L78 95 Q60 99.5 42 95 Z" fill="url(#' + gid + ')"/>';
+  g += '<path d="M52 57 L60 68 L68 57 Q60 53.5 52 57 Z" fill="' + top.c2 + '"/>';
+  g += '<path d="M52 57 L60 68 L68 57" fill="none" stroke="#ffffff" stroke-width="1" opacity=".35"/>';
+  g += '<path d="M45 58 Q39 60 38.5 92 L47 94 Q48 72 50 62 Z" fill="url(#' + gid + ')"/>';
+  g += '<path d="M75 58 Q81 60 81.5 92 L73 94 Q72 72 70 62 Z" fill="url(#' + gid + ')"/>';
+  g += '<rect x="43.5" y="89" width="33" height="5.5" rx="2.75" fill="' + top.c2 + '"/>';
+  g += '<circle cx="60" cy="91.8" r="1.8" fill="#fff" opacity=".8"/>';
+  if (top.deco === "stars") g += _lgStar(52, 74, 3.4, "#fff") + _lgStar(66, 82, 2.6, "#fff", ".8") + '<circle cx="70" cy="70" r="1.1" fill="#fff" opacity=".8"/>';
+  if (top.deco === "gem") g += '<circle cx="60" cy="77" r="4.2" fill="#fff" opacity=".92"/><circle cx="60" cy="77" r="2.2" fill="#e11d48"/>';
+  if (top.deco === "trim") g += '<path d="M45 57 Q60 52 75 57" fill="none" stroke="#fbbf24" stroke-width="2"/>';
+  return g;
+}
+// 下装部件：短裙/长裙/短裤/长裤（覆盖图层 y93+）
+function _bottomGroup(bottom, gid) {
+  var type = bottom.type || "longskirt";
+  var g;
+  if (type === "skirt") {
+    g = '<path d="M46 93 L41 111 Q60 116 79 111 L74 93 Q60 98 46 93 Z" fill="url(#' + gid + ')"/>';
+    g += '<path d="M50 96 L47 109 M60 97 L60 113 M70 96 L73 109" stroke="#000" opacity=".12" stroke-width="1.4" fill="none"/>';
+  } else if (type === "shorts") {
+    g = '<path d="M47 94 L45.5 112 L56.5 112 L60 100 L63.5 112 L74.5 112 L73 94 Q60 98 47 94 Z" fill="url(#' + gid + ')"/>';
+  } else if (type === "pants") {
+    g = '<path d="M47 94 L45 130 L56.5 130 L59.5 102 L60.5 102 L63.5 130 L75 130 L73 94 Q60 98 47 94 Z" fill="url(#' + gid + ')"/>';
+  } else {
+    g = '<path d="M46 93 L37 126 Q60 132 83 126 L74 93 Q60 98 46 93 Z" fill="url(#' + gid + ')"/>';
+    g += '<path d="M37 126 Q60 132 83 126" stroke="#fff" opacity=".3" stroke-width="1.6" fill="none"/>';
+    g += '<path d="M50 96 L45 124 M60 98 L60 128 M70 96 L75 124" stroke="#000" opacity=".12" stroke-width="1.4" fill="none"/>';
+    if (bottom.deco === "waves") g += '<path d="M40 120 q3 -4 6 0 q3 4 6 0 q3 -4 6 0 q3 4 6 0 q3 -4 6 0 q3 4 6 0 q3 -4 6 0" stroke="#e0f2fe" stroke-width="2" fill="none" stroke-linecap="round"/>';
+    if (bottom.deco === "stars") g += _lgStar(50, 108, 2.8, "#fff", ".85") + _lgStar(68, 116, 2.2, "#fff", ".75");
+    if (bottom.deco === "aurora") g += '<path d="M40 118 Q52 108 62 118 Q72 108 80 116" stroke="#99f6e4" stroke-width="2" fill="none" opacity=".7"/>';
   }
-  return '<svg viewBox="0 0 120 150" width="' + w + '" height="' + h + '" xmlns="http://www.w3.org/2000/svg">' +
-    '<defs><linearGradient id="' + gid + '" x1="0" y1="0" x2="0" y2="1">' +
-    '<stop offset="0" stop-color="' + robe + '"/>' +
-    '<stop offset="1" stop-color="' + trim + '"/>' +
-    '</linearGradient></defs>' +
-    '<path d="M40 42 Q40 16 60 16 Q80 16 80 42 L80 50 Q80 58 72 60 L72 44 Q72 30 60 30 Q48 30 48 44 L48 60 Q40 58 40 50 Z" fill="' + hair + '"/>' +
-    back +
-    '<circle cx="60" cy="44" r="20" fill="' + face + '"/>' +
-    '<path d="M40 42 Q44 26 60 26 Q76 26 80 42 Q76 32 68 29 Q74 44 60 44 Q46 44 50 30 Q44 33 40 42 Z" fill="' + hair + '"/>' +
-    '<circle cx="52" cy="46" r="2.6" fill="#2b2b33"/><circle cx="68" cy="46" r="2.6" fill="#2b2b33"/>' +
-    '<ellipse cx="46" cy="52" rx="3.2" ry="1.9" fill="#ffb3a0" opacity=".7"/><ellipse cx="74" cy="52" rx="3.2" ry="1.9" fill="#ffb3a0" opacity=".7"/>' +
-    '<path d="M55 55 Q60 59 65 55" stroke="#c96f4a" stroke-width="2" fill="none" stroke-linecap="round"/>' +
-    '<path d="M40 62 L32 132 Q60 142 88 132 L80 62 Q60 54 40 62 Z" fill="url(#' + gid + ')"/>' +
-    '<path d="M50 62 L60 78 L70 62 Q60 56 50 62 Z" fill="' + trim + '"/>' +
-    '<path d="M50 62 L60 78 L70 62" fill="none" stroke="#ffffff" stroke-width="1" opacity=".35"/>' +
-    '<rect x="38" y="98" width="44" height="8" rx="4" fill="' + trim + '"/>' +
-    '<circle cx="60" cy="102" r="2.6" fill="#fff" opacity=".85"/>' +
-    '<circle cx="60" cy="86" r="6.5" fill="#fff" opacity=".92"/>' +
-    '<circle cx="60" cy="86" r="3.2" fill="' + robe + '" opacity=".9"/>' +
-    '<path d="M42 64 Q32 86 35 106 L45 104 Q41 84 46 66 Z" fill="url(#' + gid + ')"/>' +
-    '<path d="M78 64 Q88 86 85 106 L75 104 Q79 84 74 66 Z" fill="url(#' + gid + ')"/>' +
-    '<circle cx="36" cy="108" r="5" fill="' + face + '"/><circle cx="84" cy="108" r="5" fill="' + face + '"/>' +
-    front +
-    '</svg>';
+  return g;
+}
+// 组装：后发→腿鞋→下装→躯干手臂→上衣→手→头脸前发→配饰
+function outfitSVG(o, w, h) {
+  w = w || 96; h = h || 120;
+  var top = o.top || { key: "t0", c1: "#f8fafc", c2: "#cbd5e1" };
+  var bottom = o.bottom || { key: "b0", c1: "#334155", c2: "#1e293b", type: "skirt" };
+  var gt = "gt-" + top.key, gb = "gb-" + bottom.key;
+  var s = '<svg viewBox="0 0 120 150" width="' + w + '" height="' + h + '" xmlns="http://www.w3.org/2000/svg">';
+  s += '<defs><linearGradient id="' + gt + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + top.c1 + '"/><stop offset="1" stop-color="' + top.c2 + '"/></linearGradient>'
+     + '<linearGradient id="' + gb + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + bottom.c1 + '"/><stop offset="1" stop-color="' + bottom.c2 + '"/></linearGradient></defs>';
+  if (o.accBack) s += o.accBack;
+  s += '<path d="M40 30 Q38 14 60 12 Q82 14 80 30 L83 84 Q83 96 72 97 L48 97 Q37 96 37 84 Z" fill="' + _HAIR_C + '"/>';
+  s += '<rect x="50.5" y="98" width="8" height="36" rx="4" fill="' + _FACE_C + '"/><rect x="61.5" y="98" width="8" height="36" rx="4" fill="' + _FACE_C + '"/>';
+  s += '<rect x="48" y="131" width="12.5" height="8" rx="4" fill="#8a5a44"/><rect x="59.5" y="131" width="12.5" height="8" rx="4" fill="#8a5a44"/>';
+  s += _bottomGroup(bottom, gb);
+  s += '<path d="M46 58 Q60 53 74 58 L71 96 L49 96 Z" fill="' + _FACE_C + '"/>';
+  s += '<rect x="36.5" y="59" width="7.5" height="40" rx="3.75" fill="' + _FACE_C + '" transform="rotate(7 40 61)"/>';
+  s += '<rect x="76" y="59" width="7.5" height="40" rx="3.75" fill="' + _FACE_C + '" transform="rotate(-7 80 61)"/>';
+  s += _topGroup(top, gt);
+  s += '<circle cx="40.5" cy="101" r="3.8" fill="' + _FACE_C + '"/><circle cx="79.5" cy="101" r="3.8" fill="' + _FACE_C + '"/>';
+  s += '<circle cx="41.5" cy="42" r="3" fill="' + _FACE_C + '"/><circle cx="78.5" cy="42" r="3" fill="' + _FACE_C + '"/>';
+  s += '<circle cx="60" cy="40" r="19" fill="' + _FACE_C + '"/>';
+  s += '<circle cx="52.5" cy="42" r="2.7" fill="#2b2b33"/><circle cx="67.5" cy="42" r="2.7" fill="#2b2b33"/>';
+  s += '<circle cx="53.4" cy="41" r="0.9" fill="#fff"/><circle cx="68.4" cy="41" r="0.9" fill="#fff"/>';
+  s += '<path d="M48.5 38.6 q4 -3.4 8 -1.4" stroke="#2b2b33" stroke-width="1.2" fill="none" stroke-linecap="round"/>';
+  s += '<path d="M63.5 37.2 q4 -2 8 1.4" stroke="#2b2b33" stroke-width="1.2" fill="none" stroke-linecap="round"/>';
+  s += '<circle cx="47" cy="48" r="3.2" fill="#ff9d9d" opacity=".35"/><circle cx="73" cy="48" r="3.2" fill="#ff9d9d" opacity=".35"/>';
+  s += '<path d="M55.5 50.5 Q60 54.5 64.5 50.5" stroke="#c96f4a" stroke-width="1.8" fill="none" stroke-linecap="round"/>';
+  s += '<path d="M41 42 Q40 19 60 18.5 Q80 19 79 42 Q75.5 30 68.5 32.5 Q72 37 62.5 38 Q52.5 38.8 47 33.5 Q44 37.5 41 42 Z" fill="' + _HAIR_C + '"/>';
+  s += '<path d="M41 40 Q38.5 52 43 61 L47.5 59 Q43.5 50 45 41 Z" fill="' + _HAIR_C + '"/>';
+  s += '<path d="M79 40 Q81.5 52 77 61 L72.5 59 Q76.5 50 75 41 Z" fill="' + _HAIR_C + '"/>';
+  if (o.accFront) s += o.accFront;
+  s += '</svg>';
+  return s;
+}
+// 成套皮肤 = 预设搭配（保留各皮肤的专属配饰）
+var SKIN_OUTFITS = {
+  sea:      { top: { key: "tsea", c1: "#38bdf8", c2: "#0284c7" }, bottom: { key: "bsea", c1: "#38bdf8", c2: "#0284c7", type: "longskirt", deco: "waves" } },
+  ink:      { top: { key: "tink", c1: "#94a3b8", c2: "#334155" }, bottom: { key: "bink", c1: "#475569", c2: "#1e293b", type: "pants" },
+              accFront: '<rect x="40" y="86" width="19" height="3.6" rx="1.8" transform="rotate(-26 49 88)" fill="#0f172a"/><rect x="40" y="86" width="4" height="3.6" rx="1.8" transform="rotate(-26 49 88)" fill="#f8fafc"/>' },
+  star:     { top: { key: "tstar", c1: "#a78bfa", c2: "#6d28d9", deco: "stars" }, bottom: { key: "bstar", c1: "#a78bfa", c2: "#6d28d9", type: "longskirt", deco: "stars" } },
+  tide:     { top: { key: "ttide", c1: "#34d399", c2: "#047857" }, bottom: { key: "btide", c1: "#34d399", c2: "#047857", type: "shorts" },
+              accFront: '<circle cx="40" cy="60" r="4.2" fill="#047857"/><circle cx="80" cy="60" r="4.2" fill="#047857"/><path d="M54 76 l6 -5 6 5 v6 q-6 5 -6 5 q-6 -5 -6 -5 Z" fill="#a7f3d0" opacity=".95"/>' },
+  gold:     { top: { key: "tgold", c1: "#f7b733", c2: "#b45309", deco: "gem" }, bottom: { key: "bgold", c1: "#f7b733", c2: "#b45309", type: "longskirt" },
+              accFront: '<path d="M48 14 l3 -5 3 5 3 -6 3 6 3 -5 3 5 v4 h-18 Z" fill="#f7b733" stroke="#b45309" stroke-width="1.1"/><circle cx="60" cy="9" r="1.6" fill="#fde68a"/>' },
+  aurora:   { top: { key: "taur", c1: "#2dd4bf", c2: "#0d9488" }, bottom: { key: "baur", c1: "#2dd4bf", c2: "#0d9488", type: "longskirt", deco: "aurora" } },
+  crown:    { top: { key: "tcrown", c1: "#fb7185", c2: "#be185d", deco: "trim" }, bottom: { key: "bcrown", c1: "#fb7185", c2: "#be185d", type: "longskirt" },
+              accFront: '<g><rect x="88" y="70" width="3" height="34" rx="1.5" fill="#b45309"/><rect x="80" y="88" width="19" height="15" rx="3.5" fill="#fbbf24" stroke="#b45309" stroke-width="1.5"/><rect x="85" y="91" width="9" height="9" rx="2" fill="#fff7d6"/><circle cx="89.5" cy="95.5" r="9" fill="#fbbf24" opacity=".28"/></g>' },
+  lord:     { top: { key: "tlord", c1: "#e2e8f0", c2: "#94a3b8", deco: "trim" }, bottom: { key: "blord", c1: "#e2e8f0", c2: "#94a3b8", type: "longskirt" },
+              accBack: '<circle cx="60" cy="40" r="29" fill="none" stroke="#fef3c7" stroke-width="2.2" opacity=".7"/>' },
+  starlord: { top: { key: "tsl", c1: "#8b5cf6", c2: "#b45309", deco: "gem" }, bottom: { key: "bsl", c1: "#8b5cf6", c2: "#5b21b6", type: "longskirt", deco: "stars" },
+              accBack: '<path d="M42 58 Q24 100 36 140 L84 140 Q96 100 78 58 Z" fill="#6d28d9" opacity=".6"/>',
+              accFront: '<path d="M46 10 l3 -6 3 6 4 -8 4 8 3 -6 3 6 v4 h-20 Z" fill="#f7b733" stroke="#b45309" stroke-width="1.2"/>' + _lgStar(50, 74, 3, "#ede9fe") + _lgStar(72, 88, 2.4, "#ede9fe", ".85") }
+};
+// 成套皮肤渲染入口（图鉴卡片/展示区仍调用此函数）
+function characterSVG(skinKey, w, h) {
+  var o = SKIN_OUTFITS[skinKey] || { top: { key: "t0", c1: "#f8fafc", c2: "#cbd5e1" }, bottom: { key: "b0", c1: "#334155", c2: "#1e293b", type: "skirt" } };
+  return outfitSVG(o, w, h);
+}
+// ===== 自由搭配部件库 =====
+var TOPS = [
+  { key: "shirt",   name: "律政白衬衫", cost: 0,   rarity: "初始", c1: "#f8fafc", c2: "#cbd5e1", free: true },
+  { key: "sea-t",   name: "沧海短衫",   cost: 38,  rarity: "普通", c1: "#38bdf8", c2: "#0284c7" },
+  { key: "ink-t",   name: "墨海书衣",   cost: 38,  rarity: "普通", c1: "#94a3b8", c2: "#334155" },
+  { key: "star-t",  name: "星河衫",     cost: 120, rarity: "勇者", c1: "#a78bfa", c2: "#6d28d9", deco: "stars" },
+  { key: "gold-t",  name: "鎏金华服",   cost: 240, rarity: "史诗", c1: "#f7b733", c2: "#b45309", deco: "gem" },
+  { key: "crown-t", name: "执灯红衣",   cost: 400, rarity: "传说", c1: "#fb7185", c2: "#be185d", deco: "trim" }
+];
+var BOTTOMS = [
+  { key: "skirt",   name: "藏青百褶裙", cost: 0,   rarity: "初始", c1: "#334155", c2: "#1e293b", type: "skirt", free: true },
+  { key: "sea-b",   name: "沧海袍摆",   cost: 38,  rarity: "普通", c1: "#38bdf8", c2: "#0284c7", type: "longskirt", deco: "waves" },
+  { key: "ink-b",   name: "墨色长裤",   cost: 38,  rarity: "普通", c1: "#475569", c2: "#1e293b", type: "pants" },
+  { key: "star-b",  name: "星河长裙",   cost: 120, rarity: "勇者", c1: "#a78bfa", c2: "#6d28d9", type: "longskirt", deco: "stars" },
+  { key: "gold-b",  name: "鎏金舞裙",   cost: 240, rarity: "史诗", c1: "#f7b733", c2: "#b45309", type: "longskirt" },
+  { key: "crown-b", name: "执灯长裙",   cost: 400, rarity: "传说", c1: "#fb7185", c2: "#be185d", type: "longskirt" }
+];
+function topByKey(k) { for (var i = 0; i < TOPS.length; i++) if (TOPS[i].key === k) return TOPS[i]; return null; }
+function bottomByKey(k) { for (var i = 0; i < BOTTOMS.length; i++) if (BOTTOMS[i].key === k) return BOTTOMS[i]; return null; }
+// 迁移：初始化搭配数据；已拥有的成套皮肤自动解锁对应部件
+function ensureOutfitData(p) {
+  var changed = false;
+  if (!p.outfit || !p.outfit.top || !p.outfit.bottom) { p.outfit = { top: "shirt", bottom: "skirt" }; changed = true; }
+  if (!p.topsOwned) { p.topsOwned = ["shirt"]; changed = true; }
+  if (!p.bottomsOwned) { p.bottomsOwned = ["skirt"]; changed = true; }
+  var grantMap = { sea: ["sea-t", "sea-b"], ink: ["ink-t", "ink-b"], star: ["star-t", "star-b"], gold: ["gold-t", "gold-b"], crown: ["crown-t", "crown-b"] };
+  for (var i = 0; i < (p.skinsOwned || []).length; i++) {
+    var g = grantMap[p.skinsOwned[i]];
+    if (!g) continue;
+    if (topByKey(g[0]) && p.topsOwned.indexOf(g[0]) < 0) { p.topsOwned.push(g[0]); changed = true; }
+    if (bottomByKey(g[1]) && p.bottomsOwned.indexOf(g[1]) < 0) { p.bottomsOwned.push(g[1]); changed = true; }
+  }
+  return changed;
 }
 
 // ===== 皮肤图鉴（碎片合成衣服 + 佩戴） =====
+var _skinTab = "sets";
 function openSkinGallery() {
   var p = loadProfile();
+  if (ensureOutfitData(p)) saveProfile(p);
   var frags = p.skinFragments || 0, owned = p.skinsOwned || [], active = p.activeSkin || "";
   var overlay = document.createElement("div");
   overlay.id = "skinGalleryOverlay";
@@ -4806,18 +4889,36 @@ function openSkinGallery() {
   box.className = "lottery-challenge-box gallery-box";
   var cry = p.soulCrystals || 0;
   var h = '<button class="modal-close">✕</button>';
+  h += '<div class="g-tabs"><button class="g-tab' + (_skinTab !== "mix" ? " on" : "") + '" data-tab="sets">成套皮肤</button><button class="g-tab' + (_skinTab === "mix" ? " on" : "") + '" data-tab="mix">自由搭配</button></div>';
+  if (_skinTab === "mix") {
+    h += _renderDressTab(p);
+    box.innerHTML = h;
+    overlay.appendChild(box);
+    document.body.appendChild(overlay);
+    _bindGalleryCommon(box, overlay);
+    _bindDressChips(box, overlay);
+    return;
+  }
   h += '<div style="text-align:center;margin-bottom:2px"><div style="font-size:15px;font-weight:800;color:var(--text)">皮肤图鉴</div>' +
     '<div style="font-size:11px;color:var(--text2);margin-top:3px">碎片 <b style="color:var(--accent)">' + frags + '</b> · 法魂水晶 <b style="color:#f7b733">' + cry + '</b></div></div>';
-  var wearColor = "#7dd3fc", wearName = "未佩戴";
-  for (var wi = 0; wi < SKINS.length; wi++) if (SKINS[wi].key === active) { wearColor = SKINS[wi].color; wearName = SKINS[wi].name; }
   var activeSkinObj = null;
   for (var ai = 0; ai < SKINS.length; ai++) if (SKINS[ai].key === active) activeSkinObj = SKINS[ai];
-  var avatarHtml = (activeSkinObj && activeSkinObj.art)
-    ? '<img class="g-art-img" src="' + activeSkinObj.art + '" alt="" onclick="viewSkinArt(\'' + activeSkinObj.key + '\')" />'
-    : characterSVG(active);
+  var wearColor = "#7dd3fc", wearName = "未佩戴皮肤", avatarHtml;
+  if (activeSkinObj && activeSkinObj.art) {
+    wearColor = activeSkinObj.color; wearName = activeSkinObj.name;
+    avatarHtml = '<img class="g-art-img" src="' + activeSkinObj.art + '" alt="" onclick="viewSkinArt(\'' + activeSkinObj.key + '\')" />';
+  } else if (activeSkinObj) {
+    wearColor = activeSkinObj.color; wearName = activeSkinObj.name;
+    avatarHtml = characterSVG(active);
+  } else if (p.outfit && topByKey(p.outfit.top) && bottomByKey(p.outfit.bottom)) {
+    wearColor = topByKey(p.outfit.top).c1; wearName = "自由搭配";
+    avatarHtml = outfitSVG({ top: topByKey(p.outfit.top), bottom: bottomByKey(p.outfit.bottom) }, 96, 120);
+  } else {
+    avatarHtml = characterSVG("");
+  }
   h += '<div class="g-char"><div class="g-char-avatar' + (activeSkinObj && activeSkinObj.art ? ' has-art' : '') + '">' + avatarHtml + '</div>' +
     '<div class="g-char-info"><div class="g-char-title">虚拟角色 · 法海星旅</div>' +
-    '<div class="g-char-wear" style="color:' + wearColor + '">' + (active ? '穿着「' + escHtml(wearName) + '」' : '未佩戴皮肤') + '</div>' +
+    '<div class="g-char-wear" style="color:' + wearColor + '">' + (active || (p.outfit && p.outfit.top) ? '穿着「' + escHtml(wearName) + '」' : '未佩戴皮肤') + '</div>' +
     '<div class="g-char-hint">普通88/勇者288/史诗588/传说988碎片,典藏需1法魂水晶</div></div></div>';
   h += '<div class="g-grid">';
   for (var i = 0; i < SKINS.length; i++) {
@@ -4847,8 +4948,20 @@ function openSkinGallery() {
   box.innerHTML = h;
   overlay.appendChild(box);
   document.body.appendChild(overlay);
+  _bindGalleryCommon(box, overlay);
+}
+// 图鉴弹层公共绑定（关闭按钮 + 成套皮肤卡片按钮 + 页签切换）
+function _bindGalleryCommon(box, overlay) {
   var mc = box.querySelector(".modal-close");
   if (mc) mc.onclick = function() { overlay.remove(); };
+  var tabs = box.querySelectorAll(".g-tab");
+  for (var ti = 0; ti < tabs.length; ti++) {
+    tabs[ti].onclick = function() {
+      _skinTab = this.getAttribute("data-tab");
+      overlay.remove();
+      openSkinGallery();
+    };
+  }
   var btns = box.querySelectorAll("button[data-action]");
   for (var bi = 0; bi < btns.length; bi++) {
     btns[bi].onclick = function() {
@@ -4876,6 +4989,62 @@ function openSkinGallery() {
       overlay.remove();
       openSkinGallery();
       showToast(act === "wear" ? "已佩戴「" + skinNameByKey(key) + "」" : "合成成功「" + skinNameByKey(key) + "」");
+    };
+  }
+}
+
+// ===== 自由搭配页签：预览 + 上衣/下装选择 =====
+function _renderDressTab(p) {
+  ensureOutfitData(p);
+  var top = topByKey(p.outfit.top) || TOPS[0];
+  var bottom = bottomByKey(p.outfit.bottom) || BOTTOMS[0];
+  var h = '<div class="dw-preview">' + outfitSVG({ top: top, bottom: bottom }, 118, 148) + '</div>';
+  h += '<div class="dw-frag">皮肤碎片 <b style="color:var(--accent)">' + (p.skinFragments || 0) + '</b> · 点击部件直接换上，未拥有的用碎片合成</div>';
+  h += '<div class="dw-label">上衣</div><div class="dw-row">';
+  for (var i = 0; i < TOPS.length; i++) {
+    var t = TOPS[i];
+    var has = p.topsOwned.indexOf(t.key) >= 0, on = p.outfit.top === t.key;
+    h += '<button class="dw-chip' + (on ? " active" : "") + (has ? "" : " locked") + '" data-kind="top" data-key="' + t.key + '"><span class="dw-dot" style="background:' + t.c1 + '"></span>' + t.name + (has ? "" : '<span class="dw-cost">' + t.cost + '碎片</span>') + '</button>';
+  }
+  h += '</div><div class="dw-label">下装</div><div class="dw-row">';
+  for (var j = 0; j < BOTTOMS.length; j++) {
+    var b = BOTTOMS[j];
+    var hasB = p.bottomsOwned.indexOf(b.key) >= 0, onB = p.outfit.bottom === b.key;
+    h += '<button class="dw-chip' + (onB ? " active" : "") + (hasB ? "" : " locked") + '" data-kind="bottom" data-key="' + b.key + '"><span class="dw-dot" style="background:' + b.c1 + '"></span>' + b.name + (hasB ? "" : '<span class="dw-cost">' + b.cost + '碎片</span>') + '</button>';
+  }
+  h += '</div><div class="dw-hint">已拥有的成套皮肤会自动解锁对应部件；上衣下装可跨系列自由组合</div>';
+  return h;
+}
+function _bindDressChips(box, overlay) {
+  var chips = box.querySelectorAll(".dw-chip");
+  for (var i = 0; i < chips.length; i++) {
+    chips[i].onclick = function() {
+      var kind = this.getAttribute("data-kind"), key = this.getAttribute("data-key");
+      var pp = loadProfile();
+      ensureOutfitData(pp);
+      var item = kind === "top" ? topByKey(key) : bottomByKey(key);
+      if (!item) return;
+      var ownedArr = kind === "top" ? pp.topsOwned : pp.bottomsOwned;
+      if (ownedArr.indexOf(key) >= 0) {
+        pp.outfit[kind] = key;
+        saveProfile(pp);
+        renderLottery();
+        overlay.remove();
+        openSkinGallery();
+        showToast("已换上「" + item.name + "」");
+      } else {
+        var frags = pp.skinFragments || 0;
+        if (frags < item.cost) { showToast("碎片不足，还差 " + (item.cost - frags) + " 个"); return; }
+        if (!confirm("用 " + item.cost + " 皮肤碎片合成「" + item.name + "」？")) return;
+        pp.skinFragments = frags - item.cost;
+        ownedArr.push(key);
+        pp.outfit[kind] = key;
+        saveProfile(pp);
+        renderLottery();
+        overlay.remove();
+        openSkinGallery();
+        showToast("合成成功「" + item.name + "」");
+      }
     };
   }
 }
