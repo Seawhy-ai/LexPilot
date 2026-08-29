@@ -849,6 +849,20 @@ body.dark .wr-bar{background:linear-gradient(180deg,#3d7fb8,#2565a0)}
 .st-mode-toggle{display:flex;gap:8px;margin:2px 0 10px}
 .smt-btn{flex:1;border:1px solid var(--card-border);background:var(--input-bg);color:var(--text2);border-radius:10px;padding:7px 0;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
 .smt-btn.on{background:var(--accent);border-color:var(--accent);color:#fff}
+/* 列表视图: 三列格子 */
+.st-chgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.st-tile{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:12px 6px 10px;text-align:center;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:4px;min-height:96px;justify-content:center}
+.st-tile:active{transform:scale(.96)}
+.st-tile.locked{opacity:.45}
+.st-tile.cur{border:1.5px solid var(--accent);box-shadow:0 4px 12px rgba(41,128,185,.18)}
+.st-tile.done{border-color:rgba(39,174,96,.4)}
+.st-tile-num{width:30px;height:30px;border-radius:10px;background:var(--icon-bg);color:var(--text);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800}
+.st-tile.cur .st-tile-num{background:linear-gradient(135deg,#5dade2,#2980b9);color:#fff}
+.st-tile.done .st-tile-num{background:rgba(39,174,96,.15);color:#27ae60}
+.st-tile-name{font-size:10px;color:var(--text);font-weight:700;line-height:1.3;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.st-tile.cur .st-tile-name{color:var(--accent)}
+.st-tile-state{font-size:10px;color:var(--text2)}
+.st-tile.cur .st-tile-state{color:var(--accent);font-weight:800}
 /* 结局徽章卡 */
 .st-ending{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,rgba(247,183,51,.18),rgba(252,74,26,.06));border:1px solid rgba(247,183,51,.5);border-radius:16px;padding:13px 14px;margin-bottom:12px;cursor:pointer}
 .st-ending .se-ic{font-size:28px}
@@ -8740,22 +8754,110 @@ var STORY_CH = [
       { sub: null, diff: 3, n: 4, intro: "律所终面：合伙人亲自出题，综合能力考验。", ic: "🌅" },
       { sub: null, diff: 3, n: 4, intro: "终面附加题：展现你的体系化思维。", ic: "🌅" }
     ],
-    clear: { pts: 100, frag: 30, text: "" }
+    clear: { pts: 60, frag: 20, text: "Offer 邮件在深夜抵达。你以为故事到此为止——不，律师的传奇，此刻才刚刚开始。" } },
+  { id: "ch13", title: "第十三章 · 第一案", year: "执业第一年",
+    seq: [
+      { t: "scene", emoji: "💼", loc: "律所 · 独立工位", text: "拿到执业证的第一周，带教律师把一个民间借贷纠纷案整个交给你：\"从今天起，这案子是你的。当事人只认你。\"" },
+      { t: "choice", text: "第一次独立办案，你决定——", opts: [
+        { t: "去现场走访，眼见为实", fx: { m: 1, r: 1 } },
+        { t: "闭关研究类案判例", fx: { k: 2 } }
+      ] },
+      { t: "gate", gi: 0 }
+    ],
+    gates: [
+      { sub: "民法·分则", diff: 3, n: 3, intro: "借贷纠纷的核心争点，证据与时效缺一不可。", ic: "💼" },
+      { sub: "民法·总则", diff: 2, n: 3, intro: "代理意见成稿前，总则基础再过一遍。", ic: "💼" }
+    ],
+    clear: { pts: 60, frag: 10, text: "调解书签收那天，当事人给你送来一面锦旗。你把它挂在工位上——第一案的分量，比任何积分都重。" } },
+  { id: "ch14", title: "第十四章 · 初次出庭", year: "执业第一年 · 春",
+    seq: [
+      { t: "scene", emoji: "👨‍⚖️", loc: "区人民法院 · 第三法庭", text: "你作为代理人的第一次正式开庭。审判长敲响法槌的瞬间，你想起大学模拟法庭的那个下午——这一次，是真的。" },
+      { t: "gate", gi: 0 },
+      { t: "choice", text: "休庭间隙，对方律师递来名片示好，你——", opts: [
+        { t: "接下名片，同行也是朋友", fx: { r: 2 } },
+        { t: "婉拒后逐句复盘庭审发言", fx: { k: 2 } }
+      ] },
+      { t: "gate", gi: 1 }
+    ],
+    gates: [
+      { sub: "民法·分则", diff: 3, n: 3, intro: "法庭辩论环节：争议焦点的攻防。", ic: "👨‍⚖️" },
+      { sub: "刑事诉讼法", diff: 2, n: 3, intro: "旁听席上刑庭在开审，程序细节顺便复习。", ic: "👨‍⚖️" }
+    ],
+    clear: { pts: 70, frag: 0, text: "判决支持了你的主要诉请。走出法院大门，阳光很好。你给师父发了条消息：\"赢了。\"" } },
+  { id: "ch15", title: "第十五章 · 专业方向", year: "执业第二年",
+    seq: [
+      { t: "scene", emoji: "🧭", loc: "律所 · 职业规划面谈", text: "主任找你谈话：\"万金油律师走不远，选个方向扎下去。\"桌上摆着三张卡片：刑事辩护、资本市场、争议解决。" },
+      { t: "choice", text: "你的专业方向是？", opts: [
+        { t: "刑事辩护——为自由辩护", fx: { m: 2 } },
+        { t: "资本市场——与规则共舞", fx: { k: 2 } },
+        { t: "争议解决——在对抗中求衡", fx: { r: 2 } }
+      ] },
+      { t: "gate", gi: 0 }
+    ],
+    gates: [
+      { sub: null, diff: 3, n: 3, intro: "专业化第一考：前沿实务问题研究。", ic: "🧭" }
+    ],
+    clear: { pts: 60, frag: 15, text: "方向定了，路就清晰了。你把办公桌上的书换成了专业领域的专著——从\"都会一点\"到\"一行最精\"。" } },
+  { id: "ch16", title: "第十六章 · 大案来了", year: "执业第三年",
+    seq: [
+      { t: "scene", emoji: "⚡", loc: "律所 · 大案作战室", text: "一起社会瞩目的重大刑案，团队需要人手。你主动请缨，进了作战室——白板上写满了争议焦点，每一个都足以写进职业生涯。" },
+      { t: "gate", gi: 0 },
+      { t: "choice", text: "媒体围堵律所门口，你——", opts: [
+        { t: "接受采访，做一次法治科普", fx: { r: 1, m: 1 } },
+        { t: "拒绝曝光，闭关打磨辩词", fx: { k: 2 } }
+      ] },
+      { t: "gate", gi: 1 }
+    ],
+    gates: [
+      { sub: "刑法·分则", diff: 3, n: 3, intro: "指控逻辑的每一环，都要找到辩护的支点。", ic: "⚡" },
+      { sub: "刑事诉讼法", diff: 3, n: 3, intro: "非法证据排除——程序辩护的胜负手。", ic: "⚡" }
+    ],
+    clear: { pts: 80, frag: 0, text: "判决落槌，辩护意见被大面积采纳。走出法院时，你觉得肩上的律徽又沉了几分。" } },
+  { id: "ch17", title: "第十七章 · 风浪与坚守", year: "执业第五年",
+    seq: [
+      { t: "scene", emoji: "🌊", loc: "律所 · 深夜", text: "行业风波骤起，流言与压力一起涌来。有同行转行，有客户质疑。你在深夜的办公室里问自己：当初为什么选这条路？" },
+      { t: "gate", gi: 0 },
+      { t: "choice", text: "面对质疑，你的回应是——", opts: [
+        { t: "正面发声，硬刚到底", fx: { m: 2 } },
+        { t: "从长计议，用案子说话", fx: { k: 1, r: 1 } }
+      ] },
+      { t: "gate", gi: 1 }
+    ],
+    gates: [
+      { sub: "宪法", diff: 3, n: 3, intro: "风浪之中，回到法律人的原点——宪法与基本权利。", ic: "🌊" },
+      { sub: null, diff: 3, n: 3, intro: "综合实战：把这一路的积累全部摆上桌面。", ic: "🌊" }
+    ],
+    clear: { pts: 80, frag: 20, text: "风波过去，留下来的都是真金。你在笔记本上写下：\"法律人的一生，就是不断选择坚守的一生。\"" } },
+  { id: "ch18", title: "第十八章 · 律政巅峰", year: "多年以后",
+    seq: [
+      { t: "scene", emoji: "🏙️", loc: "律所 · 合伙人会议室", text: "晋升合伙人答辩日。台下坐着当初把你领进门的师父，和一群像当年的你一样的年轻律师。你的故事，将由你自己的积累来书写结局。" },
+      { t: "gate", gi: 0 },
+      { t: "scene", emoji: "🎯", loc: "答辩 · 最后陈述", text: "\"最后陈述\"——你在白板上画下这一路的路线图：课堂、赛场、考场、律所、法庭。画完最后一个箭头，你停顿了一下：\"这就是我理解的法律人。\"" },
+      { t: "gate", gi: 1 }
+    ],
+    gates: [
+      { sub: null, diff: 3, n: 4, intro: "晋升答辩 · 专业卷：十八年功力的总检验。", ic: "🏙️" },
+      { sub: null, diff: 3, n: 4, intro: "晋升答辩 · 综合卷：知识、人脉与心态的终极答卷。", ic: "🏙️" }
+    ],
+    clear: { pts: 150, frag: 50, text: "" }
   }
 ];
-// 结局判定
+// 结局判定(18 章成长曲线)
 function storyEndingOf(a) {
-  if (a.k >= 20 && a.r >= 6 && a.m >= 8) return { lv: "S", title: "顶级红圈所 Offer", ic: "🏙️", text: "合伙人起身向你伸出手：\"欢迎加入。\"数年后，你带的实习律师也会像当年的你一样熬夜刷题。这一路所有的\"为什么\"，都有了回答。" };
-  if (a.k >= 14) return { lv: "A", title: "精品律所录用", ic: "🏛️", text: "一家精品所看中了你的踏实与专业。虽然不是起点想象中的那家红圈所，但法律人的路很长——你已经走得比大多数人远。" };
-  return { lv: "B", title: "企业法务起步", ic: "💼", text: "你成了一家公司法务。偶尔加班到深夜时，会想起法考出分那晚的自己。别急——知识还在积累，故事还远没有结束。（提升属性后重刷终章可改写结局）" };
+  if (a.k >= 36 && a.r >= 10 && a.m >= 14) return { lv: "S", title: "律政巅峰 · 知名大律师", ic: "🏙️", text: "晋升合伙人的表决全票通过。你站在律所落地窗前俯瞰城市——当年那个在阶梯教室被点名提问的新生，如今成了别人口中\"要去成为\"的那种律师。" };
+  if (a.k >= 24) return { lv: "A", title: "王牌主办律师", ic: "🏛️", text: "你成了所里的王牌主办律师，案卷越摞越高，名字开始出现在行业榜单上。巅峰还有一步之遥——继续积累，终会抵达。" };
+  return { lv: "B", title: "稳健执业律师", ic: "💼", text: "你是一名稳健执业的律师，当事人信任你，同行敬你三分。别急——知识与人脉还在积累，把前面的章节重刷一遍，巅峰的门始终开着。（提升属性后重刷终章可改写结局）" };
 }
 
 var _st = null; // 章内运行状态
 var _storyMapMode = "map"; // 地图 / 列表
 var STORY_MAP_NODES = [
-  { x: 30, y: 93 }, { x: 66, y: 85 }, { x: 30, y: 77 }, { x: 66, y: 69 },
-  { x: 30, y: 61 }, { x: 66, y: 53 }, { x: 30, y: 45 }, { x: 66, y: 37 },
-  { x: 30, y: 29 }, { x: 66, y: 21 }, { x: 30, y: 13 }, { x: 52, y: 5 }
+  { x: 22, y: 94 }, { x: 50, y: 94 }, { x: 78, y: 94 },
+  { x: 78, y: 77 }, { x: 50, y: 77 }, { x: 22, y: 77 },
+  { x: 22, y: 60 }, { x: 50, y: 60 }, { x: 78, y: 60 },
+  { x: 78, y: 43 }, { x: 50, y: 43 }, { x: 22, y: 43 },
+  { x: 22, y: 26 }, { x: 50, y: 26 }, { x: 78, y: 26 },
+  { x: 78, y: 9 }, { x: 50, y: 9 }, { x: 22, y: 9 }
 ];
 function showStory() {
   hideAllViews();
@@ -8811,18 +8913,20 @@ function renderStoryMap() {
     }
     h += '</div>';
   } else {
+    h += '<div class="st-chgrid">';
     for (var i = 0; i < STORY_CH.length; i++) {
       var c = STORY_CH[i];
       var cleared = !!s.cleared[c.id];
       var unlocked = i + 1 <= s.unlocked;
-      var cls = "st-ch" + (cleared ? " done" : "") + (unlocked && i + 1 === s.unlocked && !cleared ? " cur" : "");
+      var cls = "st-tile" + (cleared ? " done" : "") + (unlocked && i + 1 === s.unlocked && !cleared ? " cur" : "");
       if (!unlocked) cls += " locked";
-      var state = cleared ? "✓" : (unlocked ? (i + 1 === s.unlocked && !cleared ? "▶ 继续" : "重玩") : "🔒");
+      var state = cleared ? "✓" : (unlocked ? (i + 1 === s.unlocked && !cleared ? "▶" : "·") : "🔒");
       h += '<div class="' + cls + '" ' + (unlocked ? 'onclick="storyStartChapter(' + i + ')"' : '') + '>'
-        + '<div class="sc-num">' + (cleared ? "✓" : i + 1) + '</div>'
-        + '<div class="sc-info"><div class="sc-title">' + escHtml(c.title.replace(/^第[^章]+章 · /, "")) + '</div><div class="sc-sub"><span class="sc-year">' + escHtml(c.year) + '</span>' + c.gates.length + ' 个题目关卡</div></div>'
-        + '<span class="sc-state">' + state + '</span></div>';
+        + '<div class="st-tile-num">' + (cleared ? "✓" : i + 1) + '</div>'
+        + '<div class="st-tile-name">' + escHtml(c.title.replace(/^第[^章]+章 · /, "")) + '</div>'
+        + '<div class="st-tile-state">' + state + '</div></div>';
     }
+    h += '</div>';
   }
   h += '<div class="st-mode-toggle"><button class="smt-btn' + (_storyMapMode === "map" ? " on" : "") + '" onclick="_storyMapMode=\'map\';renderStoryMap()">🗺️ 地图</button><button class="smt-btn' + (_storyMapMode === "list" ? " on" : "") + '" onclick="_storyMapMode=\'list\';renderStoryMap()">📋 列表</button></div>'
     + '<button class="st-reset" onclick="storyReset()">重置剧情存档</button>';
