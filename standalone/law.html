@@ -816,6 +816,19 @@ body.dark .wr-bar{background:linear-gradient(180deg,#3d7fb8,#2565a0)}
 .st-dlg-text{font-size:14.5px;line-height:1.95;color:#fff;min-height:58px;text-align:left}
 .st-dlg-text.narr{color:rgba(255,255,255,.82);font-style:normal;font-size:13.5px}
 .st-dlg-next{position:absolute;right:14px;bottom:10px;color:#ffd76a;font-size:12px;animation:dlgNextBlink 1s ease-in-out infinite}
+.st-ha-top .st-ha-ic{display:flex;color:rgba(255,255,255,.92)}
+.st-ending .se-ic svg{color:#e67e22}
+.st-banner .sb-ic svg{display:block}
+.st-banner.g-perfect .sb-ic svg{color:#e67e22}
+.st-banner.g-pass .sb-ic svg{color:#2980b9}
+.st-banner.g-fail .sb-ic svg{color:#6c757d}
+.sgi-circle svg{color:#fff}
+.st-emoji-wrap svg{color:var(--accent)}
+.st-vn-emoji svg{filter:drop-shadow(0 4px 10px rgba(0,0,0,.4))}
+.smt-btn svg{vertical-align:-2px;margin-right:3px}
+.st-dlg-next svg{color:#ffd76a;vertical-align:middle}
+.sc-state svg{vertical-align:-2px}
+.st-tile-num svg,.st-tile-state svg{vertical-align:-2px}
 @keyframes dlgNextBlink{0%,100%{opacity:.2;transform:translateY(0)}50%{opacity:1;transform:translateY(3px)}}
 /* 主界面 hero 横幅 */
 .st-hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#22315e 0%,#2b5f9e 70%,#3a76b8 100%);border-radius:18px;padding:16px 16px 14px;margin-bottom:14px;color:#fff;box-shadow:0 8px 24px rgba(34,49,94,.35)}
@@ -8576,6 +8589,55 @@ function setImeEngine(engine, btn) {
 // ============================================================
 var STORY_KEY = "seawhy-lex-story";
 var STORY_ATTR_MAX = { k: 40, r: 20, m: 20 };
+// 纯色线性图标系统(替代表情)
+function stIcon(name, sz) {
+  sz = sz || 20;
+  var P = {
+    book: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/>',
+    users: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+    flame: '<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3 2.5.5 5 2.24 5 5a4 4 0 0 1-8 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 .5 2.5z"/><path d="M12 2c1 3 2.5 3.5 4 5s3 4 3 7a7 7 0 1 1-14 0c0-4 2-7 7-12z"/>',
+    check: '<polyline points="20 6 9 17 4 12"/>',
+    play: '<polygon points="6 4 20 12 6 20 6 4"/>',
+    lock: '<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>',
+    scales: '<line x1="12" y1="3" x2="12" y2="21"/><path d="M8 21h8"/><path d="M5 7l7-4 7 4"/><path d="M5 7L2 13a3.5 3.5 0 0 0 6 0L5 7z"/><path d="M19 7l-3 6a3.5 3.5 0 0 0 6 0l-3-6z"/>',
+    bank: '<path d="M3 21h18"/><path d="M4 18h16"/><path d="M6 18v-7M10 18v-7M14 18v-7M18 18v-7"/><path d="M3 8l9-5 9 5v3H3z"/>',
+    city: '<path d="M3 21h18"/><path d="M5 21V7l7-4v18"/><path d="M12 9h7v12"/><path d="M15 12h.01M18 12h.01M15 16h.01M18 16h.01"/>',
+    snow: '<line x1="12" y1="3" x2="12" y2="21"/><line x1="4.2" y1="7.5" x2="19.8" y2="16.5"/><line x1="19.8" y1="7.5" x2="4.2" y2="16.5"/>',
+    coffee: '<path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/>',
+    sun: '<circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.07" y2="4.93"/>',
+    monitor: '<rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>',
+    cloud: '<path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>',
+    rain: '<path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/><line x1="8" y1="19" x2="8" y2="21"/><line x1="12" y1="19" x2="12" y2="21"/><line x1="16" y1="19" x2="16" y2="21"/>',
+    pen: '<path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>',
+    hourglass: '<path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.17a2 2 0 0 0-.59-1.42L12 12l-4.41 4.41A2 2 0 0 0 7 17.83V22"/><path d="M7 2v4.17a2 2 0 0 0 .59 1.42L12 12l4.41-4.41A2 2 0 0 0 17 6.17V2"/>',
+    phone: '<rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>',
+    sunrise: '<path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="2" x2="12" y2="9"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/><line x1="23" y1="22" x2="1" y2="22"/>',
+    user: '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+    compass: '<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>',
+    zap: '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
+    waves: '<path d="M2 12c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/><path d="M2 17c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/>',
+    target: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+    award: '<circle cx="12" cy="8" r="6"/><path d="M15.5 13l1.5 8-5-3-5 3 1.5-8"/>',
+    star: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+    checkc: '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>',
+    xc: '<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>',
+    sparkles: '<path d="M12 3l1.9 5.8L20 10l-6.1 1.2L12 17l-1.9-5.8L4 10l6.1-1.2z"/><line x1="19" y1="17" x2="19" y2="21"/><line x1="17" y1="19" x2="21" y2="19"/>',
+    briefcase: '<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v14"/>',
+    map: '<polygon points="1 6 8 3 16 6 23 3 23 18 16 21 8 18 1 21"/><line x1="8" y1="3" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="21"/>',
+    list: '<line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>',
+    file: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>',
+    chevdown: '<polyline points="6 9 12 15 18 9"/>'
+  };
+  return '<svg width="' + sz + '" height="' + sz + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + (P[name] || P.file) + '</svg>';
+}
+var ST_EMOJI_MAP = { "📖": "book", "📚": "book", "🤝": "users", "🔥": "flame", "⚖️": "scales", "⚖": "scales", "🏛️": "bank", "🏛": "bank", "🌆": "city", "🏙": "city", "🏙️": "city", "❄️": "snow", "❄": "snow", "☕": "coffee", "🌞": "sun", "🖥️": "monitor", "🖥": "monitor", "😮‍💨": "cloud", "🏢": "briefcase", "📋": "list", "🌧️": "rain", "✍️": "pen", "✍": "pen", "⏳": "hourglass", "📱": "phone", "🌅": "sunrise", "👨‍⚖️": "user", "🧭": "compass", "⚡": "zap", "🌊": "waves", "🎯": "target", "🏆": "award", "🌟": "star", "✅": "checkc", "💥": "xc", "🎉": "sparkles", "📜": "file", "🏫": "bank", "🌤": "sun", "🌤️": "sun", "📗": "book", "🕯": "flame", "🕯️": "flame" };
+function stIconForEmoji(emoji, sz) {
+  var k = String(emoji || "").replace(/\uFE0F/g, "");
+  for (var key in ST_EMOJI_MAP) {
+    if (key.replace(/\uFE0F/g, "") === k) return stIcon(ST_EMOJI_MAP[key], sz);
+  }
+  return stIcon("file", sz);
+}
 function loadStorySave() {
   try {
     var s = JSON.parse(localStorage.getItem(STORY_KEY) || "null");
@@ -9038,12 +9100,12 @@ function renderStoryMap() {
     + '<div class="st-hero-title">律政人生</div>'
     + '<div class="st-hero-sub">从法学院到红圈所 · 剧情进度 ' + doneCount + '/' + STORY_CH.length + '</div>'
     + '<div class="st-hero-attrs">'
-    + '<div class="st-ha"><div class="st-ha-top"><span class="st-ha-ic">📖</span><span class="st-ha-name">知识</span></div><div class="st-ha-mid"><span class="st-ha-val">' + s.attr.k + '</span></div><div class="st-ha-bar"><i style="width:' + Math.min(100, Math.round(s.attr.k / STORY_ATTR_MAX.k * 100)) + '%"></i></div></div>'
-    + '<div class="st-ha"><div class="st-ha-top"><span class="st-ha-ic">🤝</span><span class="st-ha-name">人脉</span></div><div class="st-ha-mid"><span class="st-ha-val">' + s.attr.r + '</span></div><div class="st-ha-bar"><i style="width:' + Math.min(100, Math.round(s.attr.r / STORY_ATTR_MAX.r * 100)) + '%"></i></div></div>'
-    + '<div class="st-ha"><div class="st-ha-top"><span class="st-ha-ic">🔥</span><span class="st-ha-name">心态</span></div><div class="st-ha-mid"><span class="st-ha-val">' + s.attr.m + '</span></div><div class="st-ha-bar"><i style="width:' + Math.min(100, Math.round(s.attr.m / STORY_ATTR_MAX.m * 100)) + '%"></i></div></div>'
+    + '<div class="st-ha"><div class="st-ha-top"><span class="st-ha-ic">"+stIcon("book",13)+"</span><span class="st-ha-name">知识</span></div><div class="st-ha-mid"><span class="st-ha-val">' + s.attr.k + '</span></div><div class="st-ha-bar"><i style="width:' + Math.min(100, Math.round(s.attr.k / STORY_ATTR_MAX.k * 100)) + '%"></i></div></div>'
+    + '<div class="st-ha"><div class="st-ha-top"><span class="st-ha-ic">"+stIcon("users",13)+"</span><span class="st-ha-name">人脉</span></div><div class="st-ha-mid"><span class="st-ha-val">' + s.attr.r + '</span></div><div class="st-ha-bar"><i style="width:' + Math.min(100, Math.round(s.attr.r / STORY_ATTR_MAX.r * 100)) + '%"></i></div></div>'
+    + '<div class="st-ha"><div class="st-ha-top"><span class="st-ha-ic">"+stIcon("flame",13)+"</span><span class="st-ha-name">心态</span></div><div class="st-ha-mid"><span class="st-ha-val">' + s.attr.m + '</span></div><div class="st-ha-bar"><i style="width:' + Math.min(100, Math.round(s.attr.m / STORY_ATTR_MAX.m * 100)) + '%"></i></div></div>'
     + '</div></div>';
   if (ending) {
-    h += '<div class="st-ending" onclick="renderStoryEnding()"><span class="se-ic">' + ending.ic + '</span><div><div class="se-title">已达成结局 · ' + escHtml(ending.title) + '</div><div class="se-sub">点击查看 · 提升属性可改写</div></div><span class="sc-state">›</span></div>';
+    h += '<div class="st-ending" onclick="renderStoryEnding()"><span class="se-ic">' + stIcon(ending.ic, 26) + '</span><div><div class="se-title">已达成结局 · ' + escHtml(ending.title) + '</div><div class="se-sub">点击查看 · 提升属性可改写</div></div><span class="sc-state">›</span></div>';
   }
   if (_storyMapMode === "map") {
     // 闯关地图: 背景插画 + 蜿蜒虚线路径 + 章节节点
@@ -9057,7 +9119,7 @@ function renderStoryMap() {
       var nunlocked = ni + 1 <= s.unlocked;
       var ncls = "st-node" + (ncleared ? " done" : "") + (nunlocked && ni + 1 === s.unlocked && !ncleared ? " cur" : "");
       if (!nunlocked) ncls += " locked";
-      var ninner = ncleared ? "✓" : (nunlocked ? (ni + 1 === s.unlocked && !ncleared ? "▶" : ni + 1) : "🔒");
+      var ninner = ncleared ? stIcon("check", 15) : (nunlocked ? (ni + 1 === s.unlocked && !ncleared ? stIcon("play", 13) : String(ni + 1)) : stIcon("lock", 12));
       h += '<div class="' + ncls + '" style="left:' + n.x + '%;top:' + n.y + '%" ' + (nunlocked ? 'onclick="storyStartChapter(' + ni + ')"' : 'onclick="showToast(\'先完成前面的章节吧\')"') + '>'
         + '<div class="st-node-circle">' + ninner + '</div>'
         + '<div class="st-node-label">' + escHtml(cc.title.replace(/^第[^章]+章 · /, "")) + '</div>'
@@ -9072,15 +9134,15 @@ function renderStoryMap() {
       var unlocked = i + 1 <= s.unlocked;
       var cls = "st-tile" + (cleared ? " done" : "") + (unlocked && i + 1 === s.unlocked && !cleared ? " cur" : "");
       if (!unlocked) cls += " locked";
-      var state = cleared ? "✓" : (unlocked ? (i + 1 === s.unlocked && !cleared ? "▶" : "·") : "🔒");
+      var state = cleared ? stIcon("check", 11) : (unlocked ? (i + 1 === s.unlocked && !cleared ? stIcon("play", 10) : "·") : stIcon("lock", 10));
       h += '<div class="' + cls + '" ' + (unlocked ? 'onclick="storyStartChapter(' + i + ')"' : '') + '>'
-        + '<div class="st-tile-num">' + (cleared ? "✓" : i + 1) + '</div>'
+        + '<div class="st-tile-num">' + (cleared ? stIcon("check", 12) : i + 1) + '</div>'
         + '<div class="st-tile-name">' + escHtml(c.title.replace(/^第[^章]+章 · /, "")) + '</div>'
         + '<div class="st-tile-state">' + state + '</div></div>';
     }
     h += '</div>';
   }
-  h += '<div class="st-mode-toggle"><button class="smt-btn' + (_storyMapMode === "map" ? " on" : "") + '" onclick="_storyMapMode=\'map\';renderStoryMap()">🗺️ 地图</button><button class="smt-btn' + (_storyMapMode === "list" ? " on" : "") + '" onclick="_storyMapMode=\'list\';renderStoryMap()">📋 列表</button></div>'
+  h += '<div class="st-mode-toggle"><button class="smt-btn' + (_storyMapMode === "map" ? " on" : "") + '" onclick="_storyMapMode=\'map\';renderStoryMap()">' + stIcon("map", 13) + ' 地图</button><button class="smt-btn' + (_storyMapMode === "list" ? " on" : "") + '" onclick="_storyMapMode=\'list\';renderStoryMap()">' + stIcon("list", 13) + ' 列表</button></div>'
     + '<button class="st-reset" onclick="storyReset()">重置剧情存档</button>';
   document.getElementById("storyBody").innerHTML = h;
 }
@@ -9115,8 +9177,8 @@ function renderStoryScene(item) {
   _st.dlg = { lines: lines, li: 0, timer: null };
   storyRenderShell('<div class="st-vn" id="stVn" onclick="storyDlgTap()">'
     + '<div class="st-vn-bg"><img src="images/story/map-bg.webp" /><div class="st-vn-tint"></div></div>'
-    + '<div class="st-vn-head"><span class="st-vn-loc">' + escHtml(item.loc || "") + '</span><span class="st-vn-emoji">' + item.emoji + '</span></div>'
-    + '<div class="st-dlgbox"><div class="st-dlg-name" id="stDlgName"></div><div class="st-dlg-text" id="stDlgText"></div><div class="st-dlg-next" id="stDlgNext">▼</div></div>'
+    + '<div class="st-vn-head"><span class="st-vn-loc">' + escHtml(item.loc || "") + '</span><span class="st-vn-emoji">' + stIconForEmoji(item.emoji, 34) + '</span></div>'
+    + '<div class="st-dlgbox"><div class="st-dlg-name" id="stDlgName"></div><div class="st-dlg-text" id="stDlgText"></div><div class="st-dlg-next" id="stDlgNext">' + stIcon("chevdown", 13) + '</div></div>'
     + '</div>');
   storyDlgType();
 }
@@ -9166,7 +9228,7 @@ function storyDlgType() {
   }, 32);
 }
 function renderStoryChoice(item) {
-  var h = '<div class="st-scene"><div class="st-loc">人生抉择</div><div class="st-emoji-wrap">🧭</div><div class="st-text">' + escHtml(item.text) + '</div></div><div class="st-choices">';
+  var h = '<div class="st-scene"><div class="st-loc">人生抉择</div><div class="st-emoji-wrap">' + stIcon("compass", 28) + '</div><div class="st-text">' + escHtml(item.text) + '</div></div><div class="st-choices">';
   for (var i = 0; i < item.opts.length; i++) {
     h += '<button class="st-choice" onclick="storyPickChoice(' + i + ')"><span class="sc-pfx">' + ["A", "B", "C"][i] + '</span><span>' + escHtml(item.opts[i].t) + '</span><span class="sc-arrow">›</span></button>';
   }
@@ -9198,7 +9260,7 @@ function storyNext() {
 function storyStartGate(gi) {
   var c = STORY_CH[_st.ch];
   var g = c.gates[gi];
-  storyRenderShell('<div class="st-gate-intro"><div class="sgi-circle">' + g.ic + '</div><p>' + escHtml(g.intro) + '</p><div class="sgi-meta"><span class="sgi-chip">' + g.n + ' 道题</span><span class="sgi-chip">' + escHtml(g.sub || "全科混合") + '</span>' + (g.diff ? '<span class="sgi-chip">难度 ' + g.diff + '</span>' : '') + '</div><button class="st-btn" onclick="storyBeginGate(' + gi + ')">开始作答</button></div>');
+  storyRenderShell('<div class="st-gate-intro"><div class="sgi-circle">' + stIconForEmoji(g.ic, 34) + '</div><p>' + escHtml(g.intro) + '</p><div class="sgi-meta"><span class="sgi-chip">' + g.n + ' 道题</span><span class="sgi-chip">' + escHtml(g.sub || "全科混合") + '</span>' + (g.diff ? '<span class="sgi-chip">难度 ' + g.diff + '</span>' : '') + '</div><button class="st-btn" onclick="storyBeginGate(' + gi + ')">开始作答</button></div>');
 }
 function storyBeginGate(gi) {
   var c = STORY_CH[_st.ch];
@@ -9309,7 +9371,7 @@ function storyGateFinish(gi) {
     if (s.attr.k >= 16 && !_st.retryUsed[gi]) retryable = true;
   }
   _st.pendingGate = { gi: gi, grade: grade, delta: delta, retryable: retryable };
-  var h = '<div class="st-banner g-' + grade + '"><div class="sb-ic">' + ic + '</div>'
+  var h = '<div class="st-banner g-' + grade + '"><div class="sb-ic">' + stIcon(grade === "perfect" ? "star" : grade === "pass" ? "checkc" : "xc", 30) + '</div>'
     + '<h3>' + (grade === "perfect" ? "完美通过" : grade === "pass" ? "顺利通过" : "遭遇挫折") + '</h3>'
     + '<p>' + escHtml(msg) + '<br>答对 ' + gs.correct + ' / ' + n + ' 题</p>'
     + '<div class="st-deltas">'
@@ -9317,7 +9379,7 @@ function storyGateFinish(gi) {
     + (delta.m ? '<span class="st-delta ' + (delta.m > 0 ? "up" : "down") + '">心态 ' + (delta.m > 0 ? "+" : "") + delta.m + '</span>' : '')
     + '</div>';
   if (retryable) {
-    h += '<p style="font-size:11px">✨ <b>学霸光环</b>发动：知识储备足够，可以重考这一次。</p>'
+    h += '<p style="font-size:11px"><b>学霸光环</b>发动：知识储备足够，可以重考这一次。</p>'
       + '<button class="st-btn" style="margin-bottom:8px" onclick="storyRetryGate()">重考本关</button>'
       + '<button class="st-btn ghost" onclick="storyApplyGate()">不重考，继续剧情</button>';
   } else {
@@ -9364,7 +9426,7 @@ function storyChapterClear() {
       saveProfile(p);
     }
   }
-  var h = '<div class="st-banner g-perfect"><div class="sb-ic">🎉</div><h3>' + escHtml(c.title) + ' · 通关</h3>'
+  var h = '<div class="st-banner g-perfect"><div class="sb-ic">' + stIcon("award", 30) + '</div><h3>' + escHtml(c.title) + ' · 通关</h3>'
     + '<p>' + escHtml(c.clear.text) + '</p>' + rewardTxt;
   if (ci === STORY_CH.length - 1) {
     var e = storyEndingOf(s.attr);
@@ -9386,7 +9448,7 @@ function renderStoryEnding() {
   var s = loadStorySave();
   var e = storyEndingOf(s.attr);
   var theme = e.lv === "S" ? "g-perfect" : e.lv === "A" ? "g-pass" : "g-fail";
-  storyRenderShell('<div class="st-banner ' + theme + '"><div class="sb-ic">' + e.ic + '</div>'
+  storyRenderShell('<div class="st-banner ' + theme + '"><div class="sb-ic">' + stIcon(e.ic, 30) + '</div>'
     + '<h3>' + e.lv + ' 级结局 · ' + escHtml(e.title) + '</h3>'
     + '<p>' + escHtml(e.text) + '</p>'
     + '<div class="st-deltas"><span class="st-delta up">知识 ' + s.attr.k + '</span><span class="st-delta up">人脉 ' + s.attr.r + '</span><span class="st-delta up">心态 ' + s.attr.m + '</span></div>'
