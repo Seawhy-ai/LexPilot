@@ -8780,6 +8780,10 @@ var STORY_CH = [
         ["你", "民法分则……物权、担保、合同……我在每页讲义的角落写下进度百分比。"],
         ["你", "（笔尖沙沙作响）三百天，一天都不能浪费。"]
       ] },
+      { t: "choice", text: "周末，室友喊你出去放松半天。", opts: [
+        { t: "去！劳逸结合，回来更高效", fx: { m: 2 } },
+        { t: "婉拒了，刷题要紧", fx: { k: 1 } }
+      ] },
       { t: "gate", gi: 1 }
     ],
     gates: [
@@ -8844,6 +8848,10 @@ var STORY_CH = [
         ["你", "原来一份尽调报告，要核对上千页材料。"],
         ["你", "（揉了揉眼睛）城市的灯火，成了我今晚的台灯。"]
       ] },
+      { t: "choice", text: "深夜加班，你选择——", opts: [
+        { t: "把今天踩的坑都记进工作笔记", fx: { k: 2 } },
+        { t: "和同事吐槽十分钟，笑一笑减压", fx: { m: 2 } }
+      ] },
       { t: "gate", gi: 1 }
     ],
     gates: [
@@ -8895,10 +8903,18 @@ var STORY_CH = [
         ["narr", "主观题考试当天。四个小时，一整道大案例分析，键盘敲击声连成一片。"],
         ["你", "手指在键盘上飞，脑子在法条里跑。三百天的积累，全部押在这一场。"]
       ] },
+      { t: "choice", text: "开考前的最后几分钟，你——", opts: [
+        { t: "把高频考点再默写一遍", fx: { k: 2 } },
+        { t: "听一段轻音乐，放平心态", fx: { m: 2 } }
+      ] },
       { t: "gate", gi: 0 },
       { t: "scene", emoji: "⏳", loc: "考场 · 倒计时 40 分钟", dlg: [
         ["你", "（还剩四十分钟……）我扫了一眼未答题的数量，手心微微出汗。"],
         ["narr", "深呼吸。把会的全部写上——这就是三百天积累的意义。"]
+      ] },
+      { t: "choice", text: "下半场开始前，你——", opts: [
+        { t: "快速过一遍易错点", fx: { k: 1 } },
+        { t: "闭眼深呼吸，放空自己", fx: { m: 1 } }
       ] },
       { t: "gate", gi: 1 }
     ],
@@ -8914,6 +8930,10 @@ var STORY_CH = [
         ["你", "（刷新……再刷新……）"],
         ["你", "\"通过\"两个字跳出来的瞬间，眼泪毫无预兆地掉了下来。"],
         ["narr", "三百多个日夜的等待，在这一刻，有了回音。"]
+      ] },
+      { t: "choice", text: "出分之夜，你先——", opts: [
+        { t: "给师父打电话报喜道谢", fx: { r: 2 } },
+        { t: "独自写下这三百天的复盘", fx: { k: 2 } }
       ] },
       { t: "gate", gi: 0 },
       { t: "scene", emoji: "🌅", loc: "天台 · 黎明前", dlg: [
@@ -9041,6 +9061,10 @@ var STORY_CH = [
         ["主持人", "下面，有请最后一位候选人进行述职。"],
         ["你", "我深吸一口气，站了起来。"]
       ] },
+      { t: "choice", text: "答辩开场，你决定——", opts: [
+        { t: "从成长故事讲起，以情动人", fx: { m: 2 } },
+        { t: "从专业成就讲起，以理服人", fx: { k: 2 } }
+      ] },
       { t: "gate", gi: 0 },
       { t: "scene", emoji: "🎯", loc: "答辩 · 最后陈述", dlg: [
         ["你", "我在白板上画下这一路的路线图：课堂、赛场、考场、法庭。"],
@@ -9100,9 +9124,9 @@ function renderStoryMap() {
     + '<div class="st-hero-title">律政人生</div>'
     + '<div class="st-hero-sub">从法学院到红圈所 · 剧情进度 ' + doneCount + '/' + STORY_CH.length + '</div>'
     + '<div class="st-hero-attrs">'
-    + '<div class="st-ha"><div class="st-ha-top"><span class="st-ha-ic">"+stIcon("book",13)+"</span><span class="st-ha-name">知识</span></div><div class="st-ha-mid"><span class="st-ha-val">' + s.attr.k + '</span></div><div class="st-ha-bar"><i style="width:' + Math.min(100, Math.round(s.attr.k / STORY_ATTR_MAX.k * 100)) + '%"></i></div></div>'
-    + '<div class="st-ha"><div class="st-ha-top"><span class="st-ha-ic">"+stIcon("users",13)+"</span><span class="st-ha-name">人脉</span></div><div class="st-ha-mid"><span class="st-ha-val">' + s.attr.r + '</span></div><div class="st-ha-bar"><i style="width:' + Math.min(100, Math.round(s.attr.r / STORY_ATTR_MAX.r * 100)) + '%"></i></div></div>'
-    + '<div class="st-ha"><div class="st-ha-top"><span class="st-ha-ic">"+stIcon("flame",13)+"</span><span class="st-ha-name">心态</span></div><div class="st-ha-mid"><span class="st-ha-val">' + s.attr.m + '</span></div><div class="st-ha-bar"><i style="width:' + Math.min(100, Math.round(s.attr.m / STORY_ATTR_MAX.m * 100)) + '%"></i></div></div>'
+    + '<div class="st-ha"><div class="st-ha-top"><span class="st-ha-ic">' + stIcon("book", 13) + '</span><span class="st-ha-name">知识</span></div><div class="st-ha-mid"><span class="st-ha-val">' + s.attr.k + '</span></div><div class="st-ha-bar"><i style="width:' + Math.min(100, Math.round(s.attr.k / STORY_ATTR_MAX.k * 100)) + '%"></i></div></div>'
+    + '<div class="st-ha"><div class="st-ha-top"><span class="st-ha-ic">' + stIcon("users", 13) + '</span><span class="st-ha-name">人脉</span></div><div class="st-ha-mid"><span class="st-ha-val">' + s.attr.r + '</span></div><div class="st-ha-bar"><i style="width:' + Math.min(100, Math.round(s.attr.r / STORY_ATTR_MAX.r * 100)) + '%"></i></div></div>'
+    + '<div class="st-ha"><div class="st-ha-top"><span class="st-ha-ic">' + stIcon("flame", 13) + '</span><span class="st-ha-name">心态</span></div><div class="st-ha-mid"><span class="st-ha-val">' + s.attr.m + '</span></div><div class="st-ha-bar"><i style="width:' + Math.min(100, Math.round(s.attr.m / STORY_ATTR_MAX.m * 100)) + '%"></i></div></div>'
     + '</div></div>';
   if (ending) {
     h += '<div class="st-ending" onclick="renderStoryEnding()"><span class="se-ic">' + stIcon(ending.ic, 26) + '</span><div><div class="se-title">已达成结局 · ' + escHtml(ending.title) + '</div><div class="se-sub">点击查看 · 提升属性可改写</div></div><span class="sc-state">›</span></div>';
