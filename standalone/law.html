@@ -801,6 +801,22 @@ body.dark .wr-bar{background:linear-gradient(180deg,#3d7fb8,#2565a0)}
 #storyView.show{display:flex!important}
 #storyView .wx-nav{border-bottom:1px solid var(--card-border)}
 .story-body{flex:1;overflow-y:auto;padding:14px 14px calc(20px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch;max-width:560px;margin:0 auto;width:100%}
+/* 垂直居中容器(内容不足一屏时上下居中) */
+.st-vwrap{min-height:calc(100vh - 160px);display:flex;flex-direction:column;justify-content:center;justify-content:safe center}
+/* 乙游对话界面 */
+.st-vn{position:relative;min-height:calc(100vh - 200px);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;cursor:pointer;box-shadow:0 8px 24px rgba(12,18,44,.3)}
+.st-vn-bg{position:absolute;inset:0}
+.st-vn-bg img{width:100%;height:100%;object-fit:cover;filter:saturate(.9)}
+.st-vn-tint{position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,18,44,.15),rgba(12,18,44,.25) 55%,rgba(12,18,44,.55))}
+.st-vn-head{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:6px;padding:18px 12px 0}
+.st-vn-loc{font-size:10px;font-weight:800;letter-spacing:2px;color:#fff;background:rgba(12,18,44,.55);border-radius:14px;padding:4px 14px;backdrop-filter:blur(3px)}
+.st-vn-emoji{font-size:40px;filter:drop-shadow(0 4px 10px rgba(0,0,0,.4))}
+.st-dlgbox{position:relative;z-index:2;margin:26px 12px 14px;background:rgba(16,20,38,.88);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:14px 16px 16px;min-height:118px;backdrop-filter:blur(8px)}
+.st-dlg-name{display:inline-block;font-size:12px;font-weight:800;color:#fff;background:linear-gradient(135deg,#5dade2,#2b5f9e);border-radius:9px 9px 9px 2px;padding:3px 12px;margin-bottom:8px;letter-spacing:1px}
+.st-dlg-text{font-size:14.5px;line-height:1.95;color:#fff;min-height:58px;text-align:left}
+.st-dlg-text.narr{color:rgba(255,255,255,.82);font-style:normal;font-size:13.5px}
+.st-dlg-next{position:absolute;right:14px;bottom:10px;color:#ffd76a;font-size:12px;animation:dlgNextBlink 1s ease-in-out infinite}
+@keyframes dlgNextBlink{0%,100%{opacity:.2;transform:translateY(0)}50%{opacity:1;transform:translateY(3px)}}
 /* 主界面 hero 横幅 */
 .st-hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#22315e 0%,#2b5f9e 70%,#3a76b8 100%);border-radius:18px;padding:16px 16px 14px;margin-bottom:14px;color:#fff;box-shadow:0 8px 24px rgba(34,49,94,.35)}
 .st-hero::before{content:"";position:absolute;top:-46px;right:-26px;width:170px;height:170px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.16),transparent 70%);pointer-events:none}
@@ -8589,13 +8605,25 @@ function storyAttrClamp(a) {
   a.m = Math.max(0, Math.min(20, a.m));
   return a;
 }
-// 章节: id 为存档稳定键; seq 为顺序脚本(scene/choice/gate), gates 为题关配置
+// 章节: id 为存档稳定键; seq 顺序脚本: scene(乙游对话, dlg 为台词数组 [说话人,台词], "narr" 为旁白) / choice 抉择 / gate 关卡引索
 var STORY_CH = [
   { id: "ch1", title: "第一章 · 法学院的新生", year: "大二 · 秋",
     seq: [
-      { t: "scene", emoji: "🏫", loc: "法学院 · 民法总论课堂", text: "九月的阳光斜洒在阶梯教室。开学第一课，民法总论的教授合上书本扫视全班：\"学法律，先学会问为什么。\"话音未落，他的手指向了你。" },
+      { t: "scene", emoji: "🏫", loc: "法学院 · 民法总论课堂", dlg: [
+        ["narr", "九月的阳光斜洒进阶梯教室，粉笔灰在光柱里缓缓浮动。开学第一课，民法总论。"],
+        ["教授", "同学们，翻开民法典第一页之前，我先问一个问题——学法律，最先要学会的是什么？"],
+        ["你", "（和周围人面面相觑）是……背法条吗？"],
+        ["教授", "是问\"为什么\"。"], 
+        ["教授", "法条会改，判例会变，只有追问为什么的习惯，能带你走完整个职业生涯。"],
+        ["教授", "这位同学——就你了。请回答：民法调整的是什么关系？"]
+      ] },
       { t: "gate", gi: 0 },
-      { t: "scene", emoji: "🌆", loc: "傍晚 · 操场", text: "下课铃响，学长拉你去社团招新：\"法学生不能只会读书。\"可你也惦记着图书馆里那本没读完的讲义。两条路，你选哪条？" },
+      { t: "scene", emoji: "🌆", loc: "傍晚 · 操场", dlg: [
+        ["narr", "下课铃响，傍晚的操场被夕阳染成橘色。"],
+        ["学长", "同学！法学会招新，辩论队也在抢人——你这脑子不来，可惜了！"],
+        ["你", "我看了看手里那本没读完的讲义，又看了看热闹的招新摊位。"],
+        ["学长", "别犹豫啦。法律人，可不能只会读书。"]
+      ] },
       { t: "choice", text: "今晚怎么过？", opts: [
         { t: "泡图书馆，把讲义啃完", fx: { k: 2 } },
         { t: "加入辩论队，多认识人", fx: { r: 2 } }
@@ -8609,9 +8637,18 @@ var STORY_CH = [
     clear: { pts: 20, frag: 0, text: "第一学期在忙碌中过去。你在日记本扉页写下一行字：通过法考，成为一名真正的律师。" } },
   { id: "ch2", title: "第二章 · 辩论队的冬天", year: "大二 · 冬",
     seq: [
-      { t: "scene", emoji: "❄️", loc: "辩论队 · 训练室", text: "加入辩论队后的第一个冬天。窗外飘着雪，屋里热火朝天——队长把一沓刑法案例拍在桌上：\"周一晨训，人人过关。\"" },
+      { t: "scene", emoji: "❄️", loc: "辩论队 · 训练室", dlg: [
+        ["narr", "加入辩论队后的第一个冬天。窗外飘着雪，训练室的灯总是亮到很晚。"],
+        ["队长", "下周一晨训，宪法基础卷，人人过关。挂科的——操场十圈，我陪着跑。"],
+        ["你", "（呵出一口白气）这冬天，比案例还冷。"],
+        ["队长", "冷？法庭上的法官，可不会给你哈气暖手的时间。"]
+      ] },
       { t: "gate", gi: 0 },
-      { t: "choice", text: "队里来了犹豫要不要退出的新生，你——", opts: [
+      { t: "scene", emoji: "🤝", loc: "训练室 · 傍晚", dlg: [
+        ["新生队员", "学长……我可能不适合辩论队。我连法条都背不完。"],
+        ["你", "我看着他通红的眼睛，想起刚入学时的自己。"]
+      ] },
+      { t: "choice", text: "面对想退出的新生，你——", opts: [
         { t: "拉着他一起加练，倾囊相授", fx: { r: 2 } },
         { t: "鼓励他留下，自己转身去刷题", fx: { k: 2 } }
       ] },
@@ -8621,10 +8658,16 @@ var STORY_CH = [
       { sub: "宪法", diff: 1, n: 3, intro: "晨训第一卷：宪法基础，热身开始。", ic: "❄️" },
       { sub: "刑法·总则", diff: 2, n: 3, intro: "年底队内考核：刑法案例循环赛，输了做俯卧撑。", ic: "❄️" }
     ],
-    clear: { pts: 30, frag: 0, text: "那个冬天你的口才和法条一样疯长。队长在总结会上说：\"明年模拟法庭，就看你们的了。\"" } },
+    clear: { pts: 30, frag: 0, text: "那个冬天，你的口才和法条一样疯长。队长在总结会上说：\"明年模拟法庭，就看你们的了。\"" } },
   { id: "ch3", title: "第三章 · 模拟法庭前夜", year: "大二 · 春",
     seq: [
-      { t: "scene", emoji: "⚖️", loc: "模拟法庭备赛室", text: "校模拟法庭大赛临近，你被选为控方一辩。案卷堆成小山，队友的目光齐刷刷落在你身上。" },
+      { t: "scene", emoji: "⚖️", loc: "模拟法庭备赛室", dlg: [
+        ["narr", "校模拟法庭大赛临近。备赛室的灯、案卷、还有墙上的倒计时牌。"],
+        ["学姐", "你是控方一辩。开篇陈述三十秒内，必须让审判长抬起头。"],
+        ["你", "我把辩词改到第七版，还是觉得不够。"],
+        ["队友", "差不多了吧？我连标点都背下来了。"],
+        ["你", "再过一遍。程序上任何一个漏洞，都可能输掉整场比赛。"]
+      ] },
       { t: "gate", gi: 0 },
       { t: "choice", text: "赛前一晚，你的选择？", opts: [
         { t: "熬夜把案卷再过三遍", fx: { k: 2 } },
@@ -8639,24 +8682,42 @@ var STORY_CH = [
     clear: { pts: 30, frag: 0, text: "比赛当天，你庭辩流畅、有条不紊，拿下最佳辩手提名。那张奖状，成了你法学生涯的第一件\"装备\"。" } },
   { id: "ch4", title: "第四章 · 决赛之巅", year: "大二 · 春末",
     seq: [
-      { t: "scene", emoji: "🏛️", loc: "市联合模拟法庭邀请赛", text: "从校赛杀出重围，你代表学校站上了市级邀请赛的舞台。对手是政法大学的王牌队——他们的顺手案例，正是你们的赛题。" },
+      { t: "scene", emoji: "🏛️", loc: "市联合模拟法庭邀请赛", dlg: [
+        ["narr", "市级邀请赛的聚光灯打在主席台上，台下坐满了各校的代表队。"],
+        ["对方一辩", "久仰贵校名号。不过这次的赛题——恰好是我们研究了一个月的方向。"],
+        ["你", "（他们有备而来。但我也有——一整个冬天的训练，和一屋子的队友。）"],
+        ["学姐", "别被他们吓到。法庭上，准备充分的人才有底气。"]
+      ] },
       { t: "gate", gi: 0 },
       { t: "choice", text: "决赛前夜收到对手队伍的交流邀请，你——", opts: [
         { t: "大方赴约，切磋交换思路", fx: { r: 2 } },
         { t: "婉言谢绝，闭关打磨辩词", fx: { k: 2 } }
       ] },
-      { t: "gate", gi: 1 }
+      { t: "gate", gi: 1 },
+      { t: "scene", emoji: "🏆", loc: "颁奖典礼", dlg: [
+        ["narr", "掌声落下，亚军的奖杯在灯光下发亮。"],
+        ["学姐", "虽败犹荣。明年——把冠军也一起带回来。"]
+      ] }
     ],
     gates: [
       { sub: "刑事诉讼法", diff: 2, n: 3, intro: "决赛预案：法庭程序的每一处细节都可能决定胜负。", ic: "🏛️" },
       { sub: "刑法·分则", diff: 2, n: 3, intro: "决赛焦点：罪与非罪、此罪与彼罪的辨析。", ic: "🏛️" }
     ],
-    clear: { pts: 40, frag: 10, text: "总决赛的掌声落下的那一刻，你们捧起了亚军的奖杯。虽败犹荣——判决书一样的赛评里，写满了对你的期待。" } },
+    clear: { pts: 40, frag: 10, text: "总决赛的赛评里，写满了对你的期待。虽败犹荣——判决书一样的评语，是给辩论人最高的褒奖。" } },
   { id: "ch5", title: "第五章 · 法考启动", year: "大三 · 秋",
     seq: [
-      { t: "scene", emoji: "📚", loc: "自习室 · 备考计划表前", text: "大三开学，你在日历上圈下一个日期——法考。从今天起，所有娱乐都给刷题让路。" },
+      { t: "scene", emoji: "📚", loc: "宿舍 · 开学第一天", dlg: [
+        ["narr", "大三开学第一天，你在日历上郑重圈下一个日期。"],
+        ["你", "法考。从今天起，所有娱乐都给它让路。"],
+        ["室友", "至于吗？才大三啊。"],
+        ["你", "三百天，看起来很长，其实很短。我把手机里的游戏图标全拖进了文件夹。"]
+      ] },
       { t: "gate", gi: 0 },
-      { t: "scene", emoji: "☕", loc: "深夜 · 自习室", text: "错题本越来越厚，咖啡越喝越浓。你在每页讲义的角落写下进度百分比。" },
+      { t: "scene", emoji: "☕", loc: "深夜 · 自习室", dlg: [
+        ["narr", "深夜的自习室只剩你一个人。咖啡见底，错题本越来越厚。"],
+        ["你", "民法分则……物权、担保、合同……我在每页讲义的角落写下进度百分比。"],
+        ["你", "（笔尖沙沙作响）三百天，一天都不能浪费。"]
+      ] },
       { t: "gate", gi: 1 }
     ],
     gates: [
@@ -8666,24 +8727,40 @@ var STORY_CH = [
     clear: { pts: 40, frag: 0, text: "备考计划终于上了正轨。手机里多了一条备忘：\"距离法考还有 300 天。\"" } },
   { id: "ch6", title: "第六章 · 魔鬼集训营", year: "大三 · 夏",
     seq: [
-      { t: "scene", emoji: "🌞", loc: "法考暑期集训营", text: "暑期集训营，每天十小时高强度训练，同学们叫它\"魔鬼夏令营\"。有人在哭，有人在笑，你没时间 emoting——题还在等你。" },
+      { t: "scene", emoji: "🌞", loc: "法考暑期集训营", dlg: [
+        ["narr", "法考暑期集训营。清晨六点半，走廊里全是背书声。"],
+        ["班主任", "同学们，欢迎来到\"魔鬼夏令营\"。两周后，你们会感谢现在拼命的自己。"],
+        ["你", "有人在哭，有人在笑。我翻开第一份阶段测试卷。"]
+      ] },
       { t: "gate", gi: 0 },
       { t: "choice", text: "集训营的两周，你选择——", opts: [
         { t: "和战友组队互相抽背", fx: { r: 2 } },
         { t: "一个人留在教室加练", fx: { k: 2 } }
       ] },
-      { t: "gate", gi: 1 }
+      { t: "gate", gi: 1 },
+      { t: "scene", emoji: "📜", loc: "结营 · 结业榜前", dlg: [
+        ["narr", "结营那天，结业榜前围满了人。"],
+        ["你", "我在年级前列的位置找到了自己的名字。盛夏的热风里，法考的味道越来越近了。"]
+      ] }
     ],
     gates: [
       { sub: null, diff: 2, n: 4, intro: "阶段测试 · 上：全科混考，查漏补缺。", ic: "🌞" },
       { sub: null, diff: 2, n: 3, intro: "阶段测试 · 下：错过的题，不许再错。", ic: "🌞" }
     ],
-    clear: { pts: 45, frag: 10, text: "结营那天，你在结业榜上看到了自己的名字——年级前列。盛夏的热风里，法考的味道越来越近了。" } },
+    clear: { pts: 45, frag: 10, text: "两周一晃而过。行李箱的滚轮声里，你带着更厚的笔记和更稳的心态，走向法考。" } },
   { id: "ch7", title: "第七章 · 客观题战场", year: "法考 · 首战",
     seq: [
-      { t: "scene", emoji: "🖥️", loc: "考区 · 检录口", text: "客观题考试当天。检录、安检、落座——屏幕亮起，第一题出现在眼前。" },
+      { t: "scene", emoji: "🖥️", loc: "考区 · 检录口", dlg: [
+        ["narr", "客观题考试当天。检录、安检、落座。"],
+        ["监考员", "考试开始。"],
+        ["你", "屏幕亮起，第一题出现。深呼吸——这就是练习了三百天的战场。"]
+      ] },
       { t: "gate", gi: 0 },
-      { t: "scene", emoji: "😮‍💨", loc: "考场 · 中场休息", text: "中场休息，隔壁座位的考生在低声叹气。你深吸一口气，把水杯里的水一口喝完。" },
+      { t: "scene", emoji: "😮‍💨", loc: "考场 · 中场休息", dlg: [
+        ["narr", "中场休息，走廊里安静得能听见空调的风声。"],
+        ["邻座考生", "（低声叹气）……好难。"],
+        ["你", "我深吸一口气，把水杯里的水一口喝完。稳住——还有下半场。"]
+      ] },
       { t: "gate", gi: 1 }
     ],
     gates: [
@@ -8693,9 +8770,18 @@ var STORY_CH = [
     clear: { pts: 50, frag: 0, text: "走出考场，天色刚暗。你不敢对答案，只在心里默念：稳住，还有主观题。" } },
   { id: "ch8", title: "第八章 · 红圈实习", year: "大四 · 冬",
     seq: [
-      { t: "scene", emoji: "🏢", loc: "红圈所 · 18 层", text: "凭着一纸客观题成绩，你挤进一家红圈所实习。带教律师扔来一摞卷宗：\"先从基础的做起。\"" },
+      { t: "scene", emoji: "🏢", loc: "红圈所 · 18 层", dlg: [
+        ["narr", "红圈所十八层，落地窗外是整座城市。"],
+        ["带教律师", "（把一摞卷宗放在你桌上）欢迎来到真实世界。这个案子，从今天起跟着你。"],
+        ["你", "我翻开第一页——比想象中厚得多。"],
+        ["带教律师", "别怕厚。每一页，都是你以后吃饭的本事。"]
+      ] },
       { t: "gate", gi: 0 },
-      { t: "scene", emoji: "📋", loc: "深夜 · 工位", text: "你第一次知道，一份尽调报告要核对上千页材料。加班到深夜，城市的灯火成了你的台灯。" },
+      { t: "scene", emoji: "📋", loc: "深夜 · 工位", dlg: [
+        ["narr", "深夜的工位：台灯、尽调报告、还有凉透的外卖。"],
+        ["你", "原来一份尽调报告，要核对上千页材料。"],
+        ["你", "（揉了揉眼睛）城市的灯火，成了我今晚的台灯。"]
+      ] },
       { t: "gate", gi: 1 }
     ],
     gates: [
@@ -8705,7 +8791,12 @@ var STORY_CH = [
     clear: { pts: 40, frag: 0, text: "实习结束那天，带教律师难得地点了点头：\"基本功还行。\"这句话让你高兴了一整晚。" } },
   { id: "ch9", title: "第九章 · 第一位客户", year: "转正候补期",
     seq: [
-      { t: "scene", emoji: "🤝", loc: "律所 · 会议室", text: "转正候补期的第一场正式会见。当事人是位焦急的中年父亲，你负责记录与初步咨询。" },
+      { t: "scene", emoji: "🤝", loc: "律所 · 会议室", dlg: [
+        ["narr", "转正候补期的第一场正式会见。"],
+        ["当事人", "（声音发颤）律师，我儿子他……他真的是被冤枉的。求你们，帮帮他。"],
+        ["你", "我第一次以\"律师\"的身份坐在会议桌前，忽然理解了这两个字的重量。"],
+        ["你", "您放心，我们会认真研究案卷的每一个细节。"]
+      ] },
       { t: "choice", text: "会见结束后，你做了什么？", opts: [
         { t: "连夜整理会见纪要发给带教律师", fx: { k: 1, r: 1 } },
         { t: "陪当事人多聊半小时，安抚情绪", fx: { m: 1, r: 1 } }
@@ -8718,7 +8809,12 @@ var STORY_CH = [
     clear: { pts: 50, frag: 15, text: "当事人临走前连声道谢。你忽然明白：法条背得再熟，落到实处才是本事。" } },
   { id: "ch10", title: "第十章 · 律所风波", year: "执业前夜",
     seq: [
-      { t: "scene", emoji: "🌧️", loc: "律所 · 走廊尽头的会议室", text: "临近转正，所里突然接了一起棘手的刑案，全组连夜作战。你被推上了证据整理的核心位置——没人有时间等你成长。" },
+      { t: "scene", emoji: "🌧️", loc: "律所 · 走廊尽头的会议室", dlg: [
+        ["narr", "临近转正，所里突然接了一起棘手的刑案。全组连夜作战。"],
+        ["合伙人", "证据整理的核心位置——交给新来的。他看向你：没时间等你成长，直接上。"],
+        ["你", "明白。"],
+        ["合伙人", "好。法律这行，就要这份干脆。"]
+      ] },
       { t: "gate", gi: 0 },
       { t: "choice", text: "案件攻坚的深夜，你——", opts: [
         { t: "主动请缨外出调取关键证据", fx: { r: 1, m: 1 } },
@@ -8733,9 +8829,15 @@ var STORY_CH = [
     clear: { pts: 55, frag: 15, text: "风波平息，案件尘埃落定。合伙人在群里 @了你：\"这批年轻人，靠得住。\"" } },
   { id: "ch11", title: "第十一章 · 主观题决战", year: "法考 · 终战",
     seq: [
-      { t: "scene", emoji: "✍️", loc: "主观题考场", text: "主观题考试当天。四个小时，一整道大案例分析，键盘敲击声连成一片。" },
+      { t: "scene", emoji: "✍️", loc: "主观题考场", dlg: [
+        ["narr", "主观题考试当天。四个小时，一整道大案例分析，键盘敲击声连成一片。"],
+        ["你", "手指在键盘上飞，脑子在法条里跑。三百天的积累，全部押在这一场。"]
+      ] },
       { t: "gate", gi: 0 },
-      { t: "scene", emoji: "⏳", loc: "考场 · 倒计时 40 分钟", text: "还剩四十分钟。你扫了一眼未答题的数量，手心微微出汗。" },
+      { t: "scene", emoji: "⏳", loc: "考场 · 倒计时 40 分钟", dlg: [
+        ["你", "（还剩四十分钟……）我扫了一眼未答题的数量，手心微微出汗。"],
+        ["narr", "深呼吸。把会的全部写上——这就是三百天积累的意义。"]
+      ] },
       { t: "gate", gi: 1 }
     ],
     gates: [
@@ -8743,21 +8845,34 @@ var STORY_CH = [
       { sub: null, diff: 3, n: 3, intro: "最后的关键考点，一锤定音。", ic: "✍️" }
     ],
     clear: { pts: 60, frag: 0, text: "交卷铃响。你瘫在椅子上仰头看着天花板——无论结果如何，你已拼尽全力。" } },
-  { id: "ch12", title: "第十二章 · 终局之 Offer", year: "成绩公布之夜",
+  { id: "ch12", title: "第十二章 · 金榜题名", year: "成绩公布之夜",
     seq: [
-      { t: "scene", emoji: "📱", loc: "深夜 · 出租屋", text: "成绩公布那天夜里，你盯着手机屏幕，心跳如鼓。看到\"通过\"两个字的瞬间，眼泪毫无预兆地掉了下来。" },
+      { t: "scene", emoji: "📱", loc: "深夜 · 出租屋", dlg: [
+        ["narr", "成绩公布那天夜里，出租屋里静得能听见心跳。"],
+        ["你", "（刷新……再刷新……）"],
+        ["你", "\"通过\"两个字跳出来的瞬间，眼泪毫无预兆地掉了下来。"],
+        ["narr", "三百多个日夜的等待，在这一刻，有了回音。"]
+      ] },
       { t: "gate", gi: 0 },
-      { t: "scene", emoji: "🌅", loc: "天台 · 黎明前", text: "等 Offer 的一周格外漫长。你站在天台吹风，回望这一路——课堂、赛场、考场、律所。而终点，取决于你的积累。" },
+      { t: "scene", emoji: "🌅", loc: "天台 · 黎明前", dlg: [
+        ["narr", "天台，黎明前。"],
+        ["你", "等 Offer 的一周格外漫长。课堂、赛场、考场、律所……这一路的画面，像放电影一样闪过。"],
+        ["你", "而下一站，是一家红圈所。真正的律师生涯，开始了。"]
+      ] },
       { t: "gate", gi: 1 }
     ],
     gates: [
-      { sub: null, diff: 3, n: 4, intro: "律所终面：合伙人亲自出题，综合能力考验。", ic: "🌅" },
-      { sub: null, diff: 3, n: 4, intro: "终面附加题：展现你的体系化思维。", ic: "🌅" }
+      { sub: null, diff: 3, n: 4, intro: "入职培训终考：合伙人亲自出题，综合能力考验。", ic: "🌅" },
+      { sub: null, diff: 3, n: 4, intro: "培训附加题：展现你的体系化思维。", ic: "🌅" }
     ],
     clear: { pts: 60, frag: 20, text: "Offer 邮件在深夜抵达。你以为故事到此为止——不，律师的传奇，此刻才刚刚开始。" } },
   { id: "ch13", title: "第十三章 · 第一案", year: "执业第一年",
     seq: [
-      { t: "scene", emoji: "💼", loc: "律所 · 独立工位", text: "拿到执业证的第一周，带教律师把一个民间借贷纠纷案整个交给你：\"从今天起，这案子是你的。当事人只认你。\"" },
+      { t: "scene", emoji: "💼", loc: "律所 · 独立工位", dlg: [
+        ["带教律师", "拿到执业证了？恭喜。他把一份卷宗推到你面前：民间借贷纠纷，整个案子交给你。"],
+        ["你", "我？我愣了一下：当事人……只跟我对接？"],
+        ["带教律师", "对。从今天起，这案子是你的。律师这条路，总要自己走出第一步。"]
+      ] },
       { t: "choice", text: "第一次独立办案，你决定——", opts: [
         { t: "去现场走访，眼见为实", fx: { m: 1, r: 1 } },
         { t: "闭关研究类案判例", fx: { k: 2 } }
@@ -8768,39 +8883,60 @@ var STORY_CH = [
       { sub: "民法·分则", diff: 3, n: 3, intro: "借贷纠纷的核心争点，证据与时效缺一不可。", ic: "💼" },
       { sub: "民法·总则", diff: 2, n: 3, intro: "代理意见成稿前，总则基础再过一遍。", ic: "💼" }
     ],
-    clear: { pts: 60, frag: 10, text: "调解书签收那天，当事人给你送来一面锦旗。你把它挂在工位上——第一案的分量，比任何积分都重。" } },
+    clear: { pts: 60, frag: 10, text: "调解书签收那天，当事人送来一面锦旗。你把它挂在工位上——第一案的分量，比任何积分都重。" } },
   { id: "ch14", title: "第十四章 · 初次出庭", year: "执业第一年 · 春",
     seq: [
-      { t: "scene", emoji: "👨‍⚖️", loc: "区人民法院 · 第三法庭", text: "你作为代理人的第一次正式开庭。审判长敲响法槌的瞬间，你想起大学模拟法庭的那个下午——这一次，是真的。" },
+      { t: "scene", emoji: "👨‍⚖️", loc: "区人民法院 · 第三法庭", dlg: [
+        ["narr", "区人民法院第三法庭。法槌敲响的瞬间，你想起大学模拟法庭的那个下午——这一次，是真的。"],
+        ["审判长", "现在进行法庭调查。请原告代理人陈述。"],
+        ["你", "我站起身。声音比自己预想的要稳。"]
+      ] },
       { t: "gate", gi: 0 },
       { t: "choice", text: "休庭间隙，对方律师递来名片示好，你——", opts: [
         { t: "接下名片，同行也是朋友", fx: { r: 2 } },
         { t: "婉拒后逐句复盘庭审发言", fx: { k: 2 } }
       ] },
-      { t: "gate", gi: 1 }
+      { t: "gate", gi: 1 },
+      { t: "scene", emoji: "🌤️", loc: "法院 · 门口", dlg: [
+        ["narr", "判决支持了你的主要诉请。"],
+        ["你", "走出法院大门，阳光很好。我给师父发了条消息：\"赢了。\""]
+      ] }
     ],
     gates: [
       { sub: "民法·分则", diff: 3, n: 3, intro: "法庭辩论环节：争议焦点的攻防。", ic: "👨‍⚖️" },
       { sub: "刑事诉讼法", diff: 2, n: 3, intro: "旁听席上刑庭在开审，程序细节顺便复习。", ic: "👨‍⚖️" }
     ],
-    clear: { pts: 70, frag: 0, text: "判决支持了你的主要诉请。走出法院大门，阳光很好。你给师父发了条消息：\"赢了。\"" } },
+    clear: { pts: 70, frag: 0, text: "第一次独立出庭的胜利，比任何模拟都踏实。你在执业日志上写下：第一页，已翻过。" } },
   { id: "ch15", title: "第十五章 · 专业方向", year: "执业第二年",
     seq: [
-      { t: "scene", emoji: "🧭", loc: "律所 · 职业规划面谈", text: "主任找你谈话：\"万金油律师走不远，选个方向扎下去。\"桌上摆着三张卡片：刑事辩护、资本市场、争议解决。" },
+      { t: "scene", emoji: "🧭", loc: "律所 · 主任办公室", dlg: [
+        ["主任", "万金油律师，走不远。他把三张卡片摆在你面前：刑事辩护、资本市场、争议解决。"],
+        ["主任", "选一个方向，扎下去。五年后，让别人提起这个领域就想到你。"],
+        ["你", "我看着三张卡片，想起这一路的每一步。"]
+      ] },
       { t: "choice", text: "你的专业方向是？", opts: [
         { t: "刑事辩护——为自由辩护", fx: { m: 2 } },
         { t: "资本市场——与规则共舞", fx: { k: 2 } },
         { t: "争议解决——在对抗中求衡", fx: { r: 2 } }
       ] },
-      { t: "gate", gi: 0 }
+      { t: "gate", gi: 0 },
+      { t: "scene", emoji: "📗", loc: "工位 · 专业专著", dlg: [
+        ["narr", "你把办公桌上的书，全部换成了专业领域的专著。"],
+        ["你", "从\"都会一点\"，到\"一行最精\"。这是律师的分水岭。"]
+      ] }
     ],
     gates: [
       { sub: null, diff: 3, n: 3, intro: "专业化第一考：前沿实务问题研究。", ic: "🧭" }
     ],
-    clear: { pts: 60, frag: 15, text: "方向定了，路就清晰了。你把办公桌上的书换成了专业领域的专著——从\"都会一点\"到\"一行最精\"。" } },
+    clear: { pts: 60, frag: 15, text: "方向定了，路就清晰了。行业活动上，开始有人主动向你咨询专业问题。" } },
   { id: "ch16", title: "第十六章 · 大案来了", year: "执业第三年",
     seq: [
-      { t: "scene", emoji: "⚡", loc: "律所 · 大案作战室", text: "一起社会瞩目的重大刑案，团队需要人手。你主动请缨，进了作战室——白板上写满了争议焦点，每一个都足以写进职业生涯。" },
+      { t: "scene", emoji: "⚡", loc: "律所 · 大案作战室", dlg: [
+        ["narr", "一起社会瞩目的重大刑案，团队连夜作战。"],
+        ["合伙人", "白板上的争议焦点，每一个都足以写进职业生涯。他看向你：敢不敢接？"],
+        ["你", "敢。"],
+        ["合伙人", "好。作战室钥匙给你——这案子，拼的是细节。"]
+      ] },
       { t: "gate", gi: 0 },
       { t: "choice", text: "媒体围堵律所门口，你——", opts: [
         { t: "接受采访，做一次法治科普", fx: { r: 1, m: 1 } },
@@ -8815,24 +8951,40 @@ var STORY_CH = [
     clear: { pts: 80, frag: 0, text: "判决落槌，辩护意见被大面积采纳。走出法院时，你觉得肩上的律徽又沉了几分。" } },
   { id: "ch17", title: "第十七章 · 风浪与坚守", year: "执业第五年",
     seq: [
-      { t: "scene", emoji: "🌊", loc: "律所 · 深夜", text: "行业风波骤起，流言与压力一起涌来。有同行转行，有客户质疑。你在深夜的办公室里问自己：当初为什么选这条路？" },
+      { t: "scene", emoji: "🌊", loc: "律所 · 深夜", dlg: [
+        ["narr", "行业风波骤起。流言、压力、质疑，一起涌来。"],
+        ["同行", "（叹息）这行越来越难了。要不……转行吧？"],
+        ["你", "深夜的办公室，我在心里问自己：当初为什么选这条路？"]
+      ] },
       { t: "gate", gi: 0 },
       { t: "choice", text: "面对质疑，你的回应是——", opts: [
         { t: "正面发声，硬刚到底", fx: { m: 2 } },
         { t: "从长计议，用案子说话", fx: { k: 1, r: 1 } }
       ] },
-      { t: "gate", gi: 1 }
+      { t: "gate", gi: 1 },
+      { t: "scene", emoji: "🕯️", loc: "办公室 · 笔记本前", dlg: [
+        ["narr", "风波过去，留下来的都是真金。"],
+        ["你", "我在笔记本上写下一行字：法律人的一生，就是不断选择坚守的一生。"]
+      ] }
     ],
     gates: [
       { sub: "宪法", diff: 3, n: 3, intro: "风浪之中，回到法律人的原点——宪法与基本权利。", ic: "🌊" },
       { sub: null, diff: 3, n: 3, intro: "综合实战：把这一路的积累全部摆上桌面。", ic: "🌊" }
     ],
-    clear: { pts: 80, frag: 20, text: "风波过去，留下来的都是真金。你在笔记本上写下：\"法律人的一生，就是不断选择坚守的一生。\"" } },
+    clear: { pts: 80, frag: 20, text: "潮水退去，你的名字反而更响亮了。坚守，本身就是最有力量的回答。" } },
   { id: "ch18", title: "第十八章 · 律政巅峰", year: "多年以后",
     seq: [
-      { t: "scene", emoji: "🏙️", loc: "律所 · 合伙人会议室", text: "晋升合伙人答辩日。台下坐着当初把你领进门的师父，和一群像当年的你一样的年轻律师。你的故事，将由你自己的积累来书写结局。" },
+      { t: "scene", emoji: "🏙️", loc: "律所 · 合伙人会议室", dlg: [
+        ["narr", "晋升合伙人答辩日。台下坐着当初领你入门的师父，和一群像当年的你一样的年轻律师。"],
+        ["主持人", "下面，有请最后一位候选人进行述职。"],
+        ["你", "我深吸一口气，站了起来。"]
+      ] },
       { t: "gate", gi: 0 },
-      { t: "scene", emoji: "🎯", loc: "答辩 · 最后陈述", text: "\"最后陈述\"——你在白板上画下这一路的路线图：课堂、赛场、考场、律所、法庭。画完最后一个箭头，你停顿了一下：\"这就是我理解的法律人。\"" },
+      { t: "scene", emoji: "🎯", loc: "答辩 · 最后陈述", dlg: [
+        ["你", "我在白板上画下这一路的路线图：课堂、赛场、考场、法庭。"],
+        ["你", "画完最后一个箭头，我停顿了一下。"],
+        ["你", "「这，就是我理解的法律人。」台下，掌声响起。"]
+      ] },
       { t: "gate", gi: 1 }
     ],
     gates: [
@@ -8953,17 +9105,70 @@ function storyAdvance() {
   else if (item.t === "gate") storyStartGate(item.gi);
 }
 function storyRenderShell(inner) {
-  document.getElementById("storyBody").innerHTML = inner;
+  document.getElementById("storyBody").innerHTML = '<div class="st-vwrap">' + inner + '</div>';
   document.getElementById("storyBody").scrollTop = 0;
 }
+// 乙游式对话界面: 打字机 + 说话人名牌 + 点击推进
 function renderStoryScene(item) {
-  storyRenderShell('<div class="st-scene"><div class="st-loc">' + escHtml(item.loc || "") + '</div><div class="st-emoji-wrap">' + item.emoji + '</div><div class="st-text">' + escHtml(item.text) + '</div></div>'
-    + '<button class="st-btn" onclick="storyNext()">继续</button>');
+  var me = (loadProfile().nickname || "你");
+  var lines = item.dlg.map(function(l) { return [l[0] === "你" ? me : l[0], l[1]]; });
+  _st.dlg = { lines: lines, li: 0, timer: null };
+  storyRenderShell('<div class="st-vn" id="stVn" onclick="storyDlgTap()">'
+    + '<div class="st-vn-bg"><img src="images/story/map-bg.webp" /><div class="st-vn-tint"></div></div>'
+    + '<div class="st-vn-head"><span class="st-vn-loc">' + escHtml(item.loc || "") + '</span><span class="st-vn-emoji">' + item.emoji + '</span></div>'
+    + '<div class="st-dlgbox"><div class="st-dlg-name" id="stDlgName"></div><div class="st-dlg-text" id="stDlgText"></div><div class="st-dlg-next" id="stDlgNext">▼</div></div>'
+    + '</div>');
+  storyDlgType();
+}
+function storyDlgTap() {
+  var d = _st && _st.dlg;
+  if (!d) return;
+  if (d.timer) {
+    clearInterval(d.timer); d.timer = null;
+    var tEl = document.getElementById("stDlgText");
+    if (tEl) tEl.textContent = d.lines[d.li][1];
+    var nx = document.getElementById("stDlgNext");
+    if (nx) nx.style.visibility = "visible";
+    return;
+  }
+  d.li++;
+  if (d.li >= d.lines.length) { storyNext(); return; }
+  storyDlgType();
+}
+function storyDlgType() {
+  var d = _st.dlg;
+  var line = d.lines[d.li];
+  var who = line[0], text = line[1];
+  var nameEl = document.getElementById("stDlgName");
+  var textEl = document.getElementById("stDlgText");
+  if (!nameEl || !textEl) return;
+  if (who === "narr") {
+    nameEl.style.display = "none";
+    textEl.classList.add("narr");
+  } else {
+    nameEl.style.display = "inline-block";
+    nameEl.textContent = who;
+    textEl.classList.remove("narr");
+  }
+  textEl.textContent = "";
+  var nx = document.getElementById("stDlgNext");
+  if (nx) nx.style.visibility = "hidden";
+  var ci = 0;
+  d.timer = setInterval(function() {
+    ci++;
+    if (textEl) textEl.textContent = text.slice(0, ci);
+    if (ci >= text.length) {
+      clearInterval(d.timer);
+      if (_st && _st.dlg) _st.dlg.timer = null;
+      var nx2 = document.getElementById("stDlgNext");
+      if (nx2) nx2.style.visibility = "visible";
+    }
+  }, 32);
 }
 function renderStoryChoice(item) {
   var h = '<div class="st-scene"><div class="st-loc">人生抉择</div><div class="st-emoji-wrap">🧭</div><div class="st-text">' + escHtml(item.text) + '</div></div><div class="st-choices">';
   for (var i = 0; i < item.opts.length; i++) {
-    h += '<button class="st-choice" onclick="storyPickChoice(' + i + ')"><span class="sc-pfx">' + ["A", "B"][i] + '</span><span>' + escHtml(item.opts[i].t) + '</span><span class="sc-arrow">›</span></button>';
+    h += '<button class="st-choice" onclick="storyPickChoice(' + i + ')"><span class="sc-pfx">' + ["A", "B", "C"][i] + '</span><span>' + escHtml(item.opts[i].t) + '</span><span class="sc-arrow">›</span></button>';
   }
   h += '</div>';
   storyRenderShell(h);
@@ -8984,7 +9189,11 @@ function storyPickChoice(oi) {
   showToast(parts.join(" · "));
   storyNext();
 }
-function storyNext() { _st.seqIdx++; storyAdvance(); }
+function storyNext() {
+  if (_st.dlg && _st.dlg.timer) { clearInterval(_st.dlg.timer); _st.dlg.timer = null; }
+  _st.seqIdx++;
+  storyAdvance();
+}
 // ===== 剧情题目关卡 =====
 function storyStartGate(gi) {
   var c = STORY_CH[_st.ch];
