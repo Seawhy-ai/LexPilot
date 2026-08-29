@@ -8885,7 +8885,18 @@ function imeHaptic() {
     var el = e.target;
     if (!el || !el.tagName) return;
     // 系统键盘模式: 不接管输入框
-    if (options.kbdMode === "system") { try { el.removeAttribute("readonly"); } catch (e2) {} return; }
+    if (options.kbdMode === "system") {
+      var wasRO = el.hasAttribute && el.hasAttribute("readonly");
+      try { el.removeAttribute("readonly"); } catch (e2) {}
+      // iOS: 聚焦时才解除只读的输入框, 需要一次 blur+focus 才会唤起原生键盘
+      if (wasRO && !el._sysRefocused) {
+        el._sysRefocused = true;
+        setTimeout(function() {
+          try { if (document.activeElement === el) { el.blur(); el.focus(); } } catch (e3) {}
+        }, 0);
+      }
+      return;
+    }
     // fcitx5 已接管(就绪且处于 fcitx 模式):内置键盘不弹出,交由 fcitx 引擎/键盘处理
     if (window.FCITX5 && window.FCITX5.isActive()) return;
     var tag = el.tagName;
@@ -8929,7 +8940,7 @@ function applyKbdMode() {
     });
   }
   if (system && typeof imeDone === "function" && IME.open) imeDone();
-  if (window.FCITX5) window.FCITX5.configure(system ? "builtin" : (options.imeEngine || "fcitx"));
+  try { if (window.FCITX5) window.FCITX5.configure(system ? "builtin" : (options.imeEngine || "fcitx")); } catch (e5) {}
   setBtnGroup("kbdModeGroup", options.kbdMode);
 }
 
