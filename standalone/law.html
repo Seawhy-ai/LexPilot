@@ -821,27 +821,25 @@ body.dark .exam-rec.bad .er-score{background:rgba(231,76,60,.2);color:#ee9a86}
 body.dark #lotteryView::before{background:radial-gradient(circle at 50% 0%,rgba(247,183,51,.13),transparent 55%)}
 #lotteryView.show{display:flex!important}
 .lottery-body{position:relative;z-index:1;flex:1;overflow-y:auto;padding:14px 14px calc(20px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch;max-width:600px;margin:0 auto;width:100%}
-.lottery-stats{display:grid;grid-template-columns:1.15fr 1fr;gap:8px;margin-bottom:14px}
+.lottery-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
 .lottery-stat{position:relative;background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:10px 12px;min-width:0}
 .lottery-stat .ls-val{font-size:16px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;white-space:nowrap;line-height:1.1}
 .lottery-stat .ls-label{font-size:10px;color:var(--text2);margin-top:1px}
 .lottery-stat .ls-ic{font-size:20px;line-height:1}
 .lottery-stat .ls-main{display:flex;flex-direction:column;justify-content:center;min-width:0}
-.lottery-stat.hero{display:flex;align-items:center;gap:10px;padding:14px 14px;background:linear-gradient(135deg,rgba(247,183,51,.18),rgba(252,74,26,.06));border-color:rgba(247,183,51,.45);box-shadow:0 4px 14px rgba(247,183,51,.18)}
-.lottery-stat.hero .ls-coin{width:52px;height:52px;border-radius:50%;background:radial-gradient(circle at 32% 28%,rgba(255,255,255,.55),rgba(255,224,138,.25) 55%,transparent 75%);display:flex;align-items:center;justify-content:center;flex-shrink:0;filter:drop-shadow(0 3px 6px rgba(232,160,32,.45))}
-.lottery-stat.hero .ls-val{font-size:27px;color:#c8870e;letter-spacing:.5px}
+.lottery-stat.hero{display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,rgba(247,183,51,.16),rgba(252,74,26,.05));border-color:rgba(247,183,51,.45)}
+.lottery-stat.hero .ls-coin{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;filter:drop-shadow(0 2px 4px rgba(232,160,32,.4))}
+.lottery-stat.hero .ls-val{font-size:19px;color:#c8870e}
 body.dark .lottery-stat.hero .ls-val{color:#f7b733}
-.lottery-stat.hero .ls-label{font-size:11px;font-weight:700;color:#b47b0e}
+.lottery-stat.hero .ls-label{font-size:10px;font-weight:700;color:#b47b0e}
 body.dark .lottery-stat.hero .ls-label{color:#f7b733}
-.lot-side{display:flex;flex-direction:column;gap:8px;min-width:0}
-.lot-stat.mini{flex:1;display:flex;align-items:center;gap:8px;padding:7px 10px}
-.lot-stat.mini .ls-ic{flex-shrink:0;display:flex}
-.lot-stat.mini .ls-val{font-size:14px}
-.lot-stat.mini .ls-label{font-size:9.5px;margin-top:0}
-.lot-stat.mini .ls-main{flex:1}
-.lot-stat.mini.luck{cursor:pointer}
-.lot-stat.mini.luck:active{background:var(--input-bg)}
-.lottery-luck-bar{height:7px;background:var(--card-border);border-radius:4px;margin-top:5px;overflow:hidden}
+.lottery-stat.luck{display:flex;flex-direction:column;justify-content:center}
+.lottery-stat.luck .ls-top{display:flex;align-items:baseline;justify-content:space-between;gap:6px}
+.lottery-stat.luck .ls-label{margin-top:0}
+.lottery-stat.sub{display:flex;align-items:center;gap:8px}
+.lottery-stat.sub .ls-ic{display:flex;flex-shrink:0}
+.lottery-stat.sub .ls-val{font-size:15px}
+.lottery-luck-bar{height:8px;background:var(--card-border);border-radius:4px;margin-top:6px;overflow:hidden;cursor:pointer}
 .lottery-luck-fill{height:100%;width:0%;background:linear-gradient(90deg,#f7b733,#fc4a1a);border-radius:4px;transition:width .4s}
 .lottery-luck-fill.near{background:linear-gradient(90deg,#f7b733,#ff4d4f);box-shadow:0 0 10px rgba(247,183,51,.75);animation:luckPulse 1.1s ease-in-out infinite}
 .lottery-luck-fill.full{background:linear-gradient(90deg,#f7b733,#ff4d4f);box-shadow:0 0 12px rgba(255,77,79,.8)}
@@ -895,7 +893,8 @@ body.dark .lc-tag.t-purple{background:rgba(167,139,250,.16);color:#c3b1fc}
 @keyframes cellFlicker{from{opacity:.5}to{opacity:1}}
 @keyframes crystalPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
 .lottery-draw-row{display:flex;gap:10px;margin-bottom:14px}
-.l-draw-wrap{flex:1;position:relative;min-width:0}
+.l-draw-wrap{flex:1;position:relative;min-width:0;display:flex}
+.l-draw-wrap .l-draw-btn{width:100%}
 .l-draw-btn{flex:1;position:relative;border:none;border-radius:16px;padding:13px 8px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;color:#fff;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:2px;overflow:hidden}
 .l-draw-btn .ld-cost{font-size:10px;font-weight:600;opacity:.9}
 .l-draw-btn.primary{background:linear-gradient(135deg,#f7b733,#fc4a1a);box-shadow:0 6px 20px rgba(247,183,51,.45),0 2px 6px rgba(0,0,0,.15);animation:btnBreath 2s ease-in-out infinite}
@@ -2155,32 +2154,31 @@ body.dark .af-opt{background:#2a2a2a}
     <span class="title">积分夺宝</span>
   </div>
   <div class="lottery-body">
+    <svg width="0" height="0" style="position:absolute"><defs><linearGradient id="coinG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe08a"/><stop offset="1" stop-color="#e8a020"/></linearGradient></defs></svg>
     <div class="lottery-stats">
       <div class="lottery-stat hero">
         <div class="ls-coin">
-          <svg width="36" height="36" viewBox="0 0 24 24"><defs><linearGradient id="coinG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe08a"/><stop offset="1" stop-color="#e8a020"/></linearGradient></defs><circle cx="12" cy="12" r="10" fill="url(#coinG)" stroke="#b47b0e" stroke-width="1.2"/><circle cx="12" cy="12" r="7" fill="none" stroke="#fff3c9" stroke-width="1" opacity=".75"/><path d="M12 6.8v10.4M14.9 9.1c-.6-.9-1.7-1.4-2.9-1.4-1.7 0-3 .9-3 2.1 0 2.7 6 1.4 6 4.1 0 1.2-1.3 2.1-3 2.1-1.2 0-2.3-.5-2.9-1.4" stroke="#7c520a" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+          <svg width="26" height="26" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="url(#coinG)" stroke="#b47b0e" stroke-width="1.2"/><circle cx="12" cy="12" r="7" fill="none" stroke="#fff3c9" stroke-width="1" opacity=".75"/><path d="M12 6.8v10.4M14.9 9.1c-.6-.9-1.7-1.4-2.9-1.4-1.7 0-3 .9-3 2.1 0 2.7 6 1.4 6 4.1 0 1.2-1.3 2.1-3 2.1-1.2 0-2.3-.5-2.9-1.4" stroke="#7c520a" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
         </div>
         <div class="ls-main">
           <div class="ls-val" id="lotPoints">0</div>
           <div class="ls-label">积分</div>
         </div>
       </div>
-      <div class="lot-side">
-        <div class="lot-stat mini luck" onclick="showLuckDetail()" title="查看保底进度">
-          <div class="ls-top">
-            <div class="ls-val" id="lotLuck">0/365</div>
-            <div class="ls-label">幸运值</div>
-          </div>
-          <div class="lottery-luck-bar"><div class="lottery-luck-fill" id="lotLuckFill"></div></div>
+      <div class="lottery-stat luck">
+        <div class="ls-top">
+          <div class="ls-val" id="lotLuck">0/365</div>
+          <div class="ls-label">幸运值</div>
         </div>
-        <div class="lot-stat mini">
-          <div class="ls-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7aa8ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 12L2 9z"/><path d="M2 9h20"/><path d="M12 21L8 9l4-6 4 6z"/></svg></div>
-          <div class="ls-main"><div class="ls-val" id="lotCrystals">0</div><div class="ls-label">法魂水晶</div></div>
-        </div>
-        <div class="lot-stat mini">
-          <div class="ls-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 19c4-2 6-2 9-4s4-5 4-5"/><path d="M20 3l-9 9"/><path d="M20 3l1 5-4 1"/><circle cx="6" cy="17" r="3"/></svg></div>
-          <div class="ls-main"><div class="ls-val" id="lotSkinFrags">0</div><div class="ls-label">皮肤碎片</div></div>
-        </div>
+        <div class="lottery-luck-bar" onclick="showLuckDetail()" title="查看保底进度"><div class="lottery-luck-fill" id="lotLuckFill"></div></div>
+      </div>
+      <div class="lottery-stat sub">
+        <div class="ls-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#7aa8ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 12L2 9z"/><path d="M2 9h20"/><path d="M12 21L8 9l4-6 4 6z"/></svg></div>
+        <div class="ls-main"><div class="ls-val" id="lotCrystals">0</div><div class="ls-label">法魂水晶</div></div>
+      </div>
+      <div class="lottery-stat sub">
+        <div class="ls-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 19c4-2 6-2 9-4s4-5 4-5"/><path d="M20 3l-9 9"/><path d="M20 3l1 5-4 1"/><circle cx="6" cy="17" r="3"/></svg></div>
+        <div class="ls-main"><div class="ls-val" id="lotSkinFrags">0</div><div class="ls-label">皮肤碎片</div></div>
       </div>
     </div>
 
@@ -4728,7 +4726,6 @@ function lotteryDraw(n) {
   var cost = n === 10 ? 280 : 30;
   var p0 = loadProfile();
   if ((p0.points || 0) < cost) { showToast("积分不足，无法抽奖"); renderLottery(); return; }
-  if (n === 10 && !confirm("今日特惠 · 十连抽 280 积分（比单抽省 20）\n确定来一发十连吗？")) return;
   _lotteryBusy = true;
   addPoints(-cost, "积分夺宝" + (n === 10 ? "十连抽" : "单抽"));
   var results = [], i;
@@ -4934,20 +4931,20 @@ function characterSVG(skinKey, w, h) {
 // ===== 自由搭配部件库（AI 生图素材: images/dress/*.webp, fit 为叠加定位百分比） =====
 var DRESS_BASE = "images/dress/base.webp";
 var TOPS = [
-  { key: "shirt",   name: "律政白衬衫", cost: 0,   rarity: "初始", c1: "#f8fafc", c2: "#cbd5e1", free: true, img: "images/dress/top-shirt.webp", fit: { w: 74, y: 22 } },
-  { key: "sea-t",   name: "沧海短衫",   cost: 38,  rarity: "普通", c1: "#38bdf8", c2: "#0284c7", img: "images/dress/top-sea.webp", fit: { w: 76, y: 25 } },
-  { key: "ink-t",   name: "墨海书衣",   cost: 38,  rarity: "普通", c1: "#94a3b8", c2: "#334155", img: "images/dress/top-ink.webp", fit: { w: 80, y: 22 } },
-  { key: "star-t",  name: "星河衫",     cost: 120, rarity: "勇者", c1: "#a78bfa", c2: "#6d28d9", img: "images/dress/top-star.webp", fit: { w: 74, y: 24 } },
-  { key: "gold-t",  name: "鎏金华服",   cost: 240, rarity: "史诗", c1: "#f7b733", c2: "#b45309", img: "images/dress/top-gold.webp", fit: { w: 78, y: 24 } },
-  { key: "crown-t", name: "执灯红衣",   cost: 400, rarity: "传说", c1: "#fb7185", c2: "#be185d", img: "images/dress/top-crown.webp", fit: { w: 80, y: 22 } }
+  { key: "shirt",   name: "律政白衬衫", cost: 0,   rarity: "初始", c1: "#f8fafc", c2: "#cbd5e1", free: true, img: "images/dress/top-shirt.webp", fit: { w: 58, y: 20 } },
+  { key: "sea-t",   name: "沧海短衫",   cost: 38,  rarity: "普通", c1: "#38bdf8", c2: "#0284c7", img: "images/dress/top-sea.webp", fit: { w: 62, y: 21 } },
+  { key: "ink-t",   name: "墨海书衣",   cost: 38,  rarity: "普通", c1: "#94a3b8", c2: "#334155", img: "images/dress/top-ink.webp", fit: { w: 66, y: 19 } },
+  { key: "star-t",  name: "星河衫",     cost: 120, rarity: "勇者", c1: "#a78bfa", c2: "#6d28d9", img: "images/dress/top-star.webp", fit: { w: 60, y: 20 } },
+  { key: "gold-t",  name: "鎏金华服",   cost: 240, rarity: "史诗", c1: "#f7b733", c2: "#b45309", img: "images/dress/top-gold.webp", fit: { w: 64, y: 19 } },
+  { key: "crown-t", name: "执灯红衣",   cost: 400, rarity: "传说", c1: "#fb7185", c2: "#be185d", img: "images/dress/top-crown.webp", fit: { w: 62, y: 20 } }
 ];
 var BOTTOMS = [
-  { key: "skirt",   name: "藏青百褶裙", cost: 0,   rarity: "初始", c1: "#334155", c2: "#1e293b", type: "skirt", free: true, img: "images/dress/bottom-skirt.webp", fit: { w: 70, y: 42 } },
-  { key: "sea-b",   name: "沧海袍摆",   cost: 38,  rarity: "普通", c1: "#38bdf8", c2: "#0284c7", type: "longskirt", img: "images/dress/bottom-sea.webp", fit: { w: 68, y: 30 } },
-  { key: "ink-b",   name: "墨色长裤",   cost: 38,  rarity: "普通", c1: "#475569", c2: "#1e293b", type: "pants", img: "images/dress/bottom-ink.webp", fit: { w: 56, y: 22 } },
-  { key: "star-b",  name: "星河长裙",   cost: 120, rarity: "勇者", c1: "#a78bfa", c2: "#6d28d9", type: "longskirt", img: "images/dress/bottom-star.webp", fit: { w: 76, y: 22 } },
-  { key: "gold-b",  name: "鎏金舞裙",   cost: 240, rarity: "史诗", c1: "#f7b733", c2: "#b45309", type: "longskirt", img: "images/dress/bottom-gold.webp", fit: { w: 72, y: 26 } },
-  { key: "crown-b", name: "执灯长裙",   cost: 400, rarity: "传说", c1: "#fb7185", c2: "#be185d", type: "longskirt", img: "images/dress/bottom-crown.webp", fit: { w: 62, y: 26 } }
+  { key: "skirt",   name: "藏青百褶裙", cost: 0,   rarity: "初始", c1: "#334155", c2: "#1e293b", type: "skirt", free: true, img: "images/dress/bottom-skirt.webp", fit: { w: 58, y: 46 } },
+  { key: "sea-b",   name: "沧海袍摆",   cost: 38,  rarity: "普通", c1: "#38bdf8", c2: "#0284c7", type: "longskirt", img: "images/dress/bottom-sea.webp", fit: { w: 64, y: 46 } },
+  { key: "ink-b",   name: "墨色长裤",   cost: 38,  rarity: "普通", c1: "#475569", c2: "#1e293b", type: "pants", img: "images/dress/bottom-ink.webp", fit: { w: 38, y: 46 } },
+  { key: "star-b",  name: "星河长裙",   cost: 120, rarity: "勇者", c1: "#a78bfa", c2: "#6d28d9", type: "longskirt", img: "images/dress/bottom-star.webp", fit: { w: 62, y: 46 } },
+  { key: "gold-b",  name: "鎏金舞裙",   cost: 240, rarity: "史诗", c1: "#f7b733", c2: "#b45309", type: "longskirt", img: "images/dress/bottom-gold.webp", fit: { w: 66, y: 45 } },
+  { key: "crown-b", name: "执灯长裙",   cost: 400, rarity: "传说", c1: "#fb7185", c2: "#be185d", type: "longskirt", img: "images/dress/bottom-crown.webp", fit: { w: 58, y: 46 } }
 ];
 // 三层叠加换装视觉: 基底 → 下装 → 上衣
 function outfitVisualHTML(top, bottom, wPx) {
