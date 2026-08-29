@@ -1574,6 +1574,8 @@ body.dark .af-opt{background:#2a2a2a}
     <button class="ime-tool" data-act="done">收起</button>
     <button class="ime-tool on" id="imeLangBtn" data-act="lang">中</button>
     <button class="ime-tool" id="imeLayoutBtn" data-act="layout">123</button>
+    <button class="ime-tool" data-act="copy">复制</button>
+    <button class="ime-tool" data-act="paste">粘贴</button>
     <span class="ime-state" id="imeState"></span>
   </div>
   <div class="ime-keys" id="imeKeys"></div>
@@ -7852,10 +7854,10 @@ function ensureProfileId(p) {
   return p;
 }
 function isPrettyId(id) {
-  if (/([0-9])/.test(id)) return true;   // 三连号
+  if (/([0-9])\1\1/.test(id)) return true;   // 三连号
   if (id === id.split("").reverse().join("")) return true; // 回文
   if (/(0123|1234|2345|3456|4567|5678|6789)/.test(id)) return true; // 顺子
-  if (/([0-9][0-9])/.test(id)) return true; // ABAB
+  if (/([0-9][0-9])\1/.test(id)) return true; // ABAB
   return false;
 }
 function rollPrettyId() {
@@ -8780,6 +8782,48 @@ function imeAct(key) {
   else if (a === "left") imeMoveCaret(-1);
   else if (a === "right") imeMoveCaret(1);
 }
+function imeCopy() {
+  var el = IME.target;
+  if (!el) { showToast("请先点选输入框"); return; }
+  var v = el.value || "";
+  var s = (typeof el.selectionStart === "number") ? el.selectionStart : 0;
+  var e2 = (typeof el.selectionEnd === "number") ? el.selectionEnd : 0;
+  var text = (e2 > s) ? v.slice(s, e2) : v;
+  if (!text) { showToast("没有可复制的内容"); return; }
+  var done = function() { showToast((e2 > s ? "已复制选中内容" : "已复制全部内容") + "（" + text.length + " 字）"); };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done).catch(function() { imeCopyFallback(text); done(); });
+  } else { imeCopyFallback(text); done(); }
+}
+function imeCopyFallback(text) {
+  var t = document.createElement("textarea");
+  t.value = text;
+  t.style.cssText = "position:fixed;left:-999px;top:-999px";
+  document.body.appendChild(t);
+  t.select();
+  try { document.execCommand("copy"); } catch (e) {}
+  t.remove();
+}
+function imePaste() {
+  var el = IME.target;
+  if (!el) { showToast("请先点选输入框"); return; }
+  if (!navigator.clipboard || !navigator.clipboard.readText) { showToast("当前环境不支持粘贴"); return; }
+  navigator.clipboard.readText().then(function(t) {
+    if (!t) { showToast("剪贴板是空的"); return; }
+    imeInsertText(t);
+    showToast("已粘贴 " + t.length + " 字");
+  }).catch(function() { showToast("粘贴未授权：可在系统键盘里长按粘贴"); });
+}
+function imeInsertText(t) {
+  var el = IME.target;
+  if (!el) return;
+  var v = el.value || "";
+  var s = (typeof el.selectionStart === "number") ? el.selectionStart : v.length;
+  var e2 = (typeof el.selectionEnd === "number") ? el.selectionEnd : s;
+  el.value = v.slice(0, s) + t + v.slice(e2);
+  try { el.selectionStart = el.selectionEnd = s + t.length; } catch (err) {}
+  try { el.dispatchEvent(new Event("input", { bubbles: true })); } catch (err) {}
+}
 function imeMoveCaret(dir) {
   // 拼音组合中不移动光标（候选交由候选条处理）
   if (IME.lang === "cn" && IME.py) return;
@@ -8822,6 +8866,7 @@ function imeHaptic() {
     if (tool) {
       var a = tool.getAttribute("data-act");
       if (a === "done") imeDone(); else if (a === "lang") imeSwitchLang(); else if (a === "layout") imeSwitchLayout();
+      else if (a === "copy") imeCopy(); else if (a === "paste") imePaste();
     }
   });
   // 任意文本输入框聚焦 -> 打开内置键盘（只读，避免原生键盘）
