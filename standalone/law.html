@@ -846,6 +846,8 @@ body.dark .wr-bar{background:linear-gradient(180deg,#3d7fb8,#2565a0)}
 .st-vn-emoji svg{filter:drop-shadow(0 4px 10px rgba(0,0,0,.4))}
 .smt-btn svg{vertical-align:-2px;margin-right:3px}
 .st-dlg-next svg{color:#ffd76a;vertical-align:middle}
+body.kbd-system #ime{display:none!important}
+body.kbd-system #globalBg{pointer-events:none}
 .sc-state svg{vertical-align:-2px}
 .st-tile-num svg,.st-tile-state svg{vertical-align:-2px}
 @keyframes dlgNextBlink{0%,100%{opacity:.2;transform:translateY(0)}50%{opacity:1;transform:translateY(3px)}}
@@ -8883,7 +8885,7 @@ function imeHaptic() {
     var el = e.target;
     if (!el || !el.tagName) return;
     // 系统键盘模式: 不接管输入框
-    if (options.kbdMode === "system") return;
+    if (options.kbdMode === "system") { try { el.removeAttribute("readonly"); } catch (e2) {} return; }
     // fcitx5 已接管(就绪且处于 fcitx 模式):内置键盘不弹出,交由 fcitx 引擎/键盘处理
     if (window.FCITX5 && window.FCITX5.isActive()) return;
     var tag = el.tagName;
@@ -8916,14 +8918,16 @@ function setKbdMode(mode) {
   showToast(mode === "system" ? "已切换系统键盘（原生输入，支持系统复制粘贴/语音）" : "已切换内置键盘");
 }
 function applyKbdMode() {
-  var ids = ["userInput","noteTitle","noteContent","noteTags","noteDetailTitleInput","noteDetailContentInput","noteDetailTagsInput","dbSearch","lrSearch","todoInput","globalSearchInput"];
   var system = options.kbdMode === "system";
-  ids.forEach(function(id) {
-    var el = document.getElementById(id);
-    if (!el) return;
-    if (system) el.removeAttribute("readonly");
-    else el.setAttribute("readonly", "readonly");
-  });
+  document.body.classList.toggle("kbd-system", system);
+  if (system) {
+    document.querySelectorAll('input[type="text"], input[type="search"], input[type="tel"], input[type="number"], input[type="password"], input[type="date"], textarea').forEach(function(el) { el.removeAttribute("readonly"); });
+  } else {
+    ["userInput","noteTitle","noteContent","noteTags","noteDetailTitleInput","noteDetailContentInput","noteDetailTagsInput","dbSearch","lrSearch","todoInput","globalSearchInput"].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.setAttribute("readonly", "readonly");
+    });
+  }
   if (system && typeof imeDone === "function" && IME.open) imeDone();
   if (window.FCITX5) window.FCITX5.configure(system ? "builtin" : (options.imeEngine || "fcitx"));
   setBtnGroup("kbdModeGroup", options.kbdMode);
