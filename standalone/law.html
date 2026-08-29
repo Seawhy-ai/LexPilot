@@ -860,7 +860,7 @@ body.dark .wr-bar{background:linear-gradient(180deg,#3d7fb8,#2565a0)}
 .st-scene::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#5dade2,#a78bfa)}
 .st-loc{font-size:10px;color:var(--accent);font-weight:800;letter-spacing:1.5px;text-align:center;margin-bottom:12px}
 .st-emoji-wrap{width:64px;height:64px;border-radius:50%;background:var(--icon-bg);display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 12px}
-.st-text{font-size:14px;line-height:2;color:var(--text);white-space:pre-wrap;text-align:justify}
+.st-text{font-size:14px;line-height:2;color:var(--text);white-space:pre-wrap;text-align:center}
 .st-choices{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
 .st-choice{display:flex;align-items:center;gap:10px;border:1.5px solid var(--card-border);background:var(--card-bg);border-radius:14px;padding:13px 14px;font-size:13px;color:var(--text);cursor:pointer;font-family:inherit;text-align:left;transition:all .15s;line-height:1.6}
 .st-choice:active{transform:scale(.98);border-color:var(--accent);background:var(--accent-light)}
@@ -881,7 +881,7 @@ body.dark .wr-bar{background:linear-gradient(180deg,#3d7fb8,#2565a0)}
 .st-qprog{height:4px;background:var(--card-border);border-radius:0 0 3px 3px;margin:0 -14px 12px;overflow:hidden}
 .st-qprog i{display:block;height:100%;background:linear-gradient(90deg,#5dade2,#2980b9);border-radius:0 3px 3px 0;transition:width .3s}
 .st-qmeta{font-size:10px;color:var(--text2);margin-bottom:8px;display:flex;justify-content:space-between;font-weight:700}
-.st-qtext{font-size:15px;font-weight:700;color:var(--text);line-height:1.7;margin-bottom:14px}
+.st-qtext{font-size:15px;font-weight:700;color:var(--text);line-height:1.7;margin-bottom:14px;text-align:center}
 .st-opt{display:flex;gap:9px;align-items:flex-start;background:var(--input-bg);border:2px solid transparent;border-radius:13px;padding:12px 12px;margin-bottom:8px;font-size:13.5px;color:var(--text);cursor:pointer;transition:all .15s;line-height:1.5}
 .st-opt .so-prefix{width:22px;height:22px;border-radius:7px;background:var(--card-bg);color:var(--accent);font-weight:800;font-size:11.5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(--card-border)}
 .st-opt.sel{border-color:var(--accent);background:var(--accent-light)}
@@ -2522,7 +2522,7 @@ body.dark .af-opt{background:#2a2a2a}
 <!-- ===== STORY GAME 律政人生 ===== -->
 <div id="storyView">
   <div class="wx-nav">
-    <button class="back" onclick="showLearningCenter()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="back" onclick="storyBack()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
     <span class="title">律政人生</span>
   </div>
   <div class="story-body" id="storyBody"></div>
@@ -8553,10 +8553,20 @@ function loadStorySave() {
       if (!s.cleared) s.cleared = {};
       if (!s.unlocked) s.unlocked = 1;
       if (!s.ending) s.ending = 0;
+      // 旧版(8章索引存档)迁移为 12 章 id 存档
+      if (!s.v || s.v < 2) {
+        var OLD2NEW = ["ch1", "ch3", "ch5", "ch7", "ch8", "ch9", "ch11", "ch12"];
+        var nc = {};
+        for (var ok in s.cleared) if (s.cleared[ok] && OLD2NEW[ok]) nc[OLD2NEW[ok]] = true;
+        s.cleared = nc;
+        s.unlocked = Math.min(STORY_CH.length, s.unlocked || 1);
+        s.v = 2;
+        saveStorySave(s);
+      }
       return s;
     }
   } catch(e) {}
-  return { unlocked: 1, cleared: {}, attr: { k: 4, r: 2, m: 5 }, ending: 0 };
+  return { v: 2, unlocked: 1, cleared: {}, attr: { k: 4, r: 2, m: 5 }, ending: 0 };
 }
 function saveStorySave(s) { try { localStorage.setItem(STORY_KEY, JSON.stringify(s)); } catch(e) {} }
 function storyAttrClamp(a) {
@@ -8565,9 +8575,9 @@ function storyAttrClamp(a) {
   a.m = Math.max(0, Math.min(20, a.m));
   return a;
 }
-// 章节: seq 为顺序脚本(scene 场景 / choice 抉择 / gate 关卡引索), gates 为题关配置
+// 章节: id 为存档稳定键; seq 为顺序脚本(scene/choice/gate), gates 为题关配置
 var STORY_CH = [
-  { title: "第一章 · 法学院的新生", year: "大二 · 秋",
+  { id: "ch1", title: "第一章 · 法学院的新生", year: "大二 · 秋",
     seq: [
       { t: "scene", emoji: "🏫", loc: "法学院 · 民法总论课堂", text: "九月的阳光斜洒在阶梯教室。开学第一课，民法总论的教授合上书本扫视全班：\"学法律，先学会问为什么。\"话音未落，他的手指向了你。" },
       { t: "gate", gi: 0 },
@@ -8583,7 +8593,22 @@ var STORY_CH = [
       { sub: "宪法", diff: 1, n: 3, intro: "周末读书小组讨论宪法基础，轮到你作主题发言。", ic: "📖" }
     ],
     clear: { pts: 20, frag: 0, text: "第一学期在忙碌中过去。你在日记本扉页写下一行字：通过法考，成为一名真正的律师。" } },
-  { title: "第二章 · 模拟法庭前夜", year: "大二 · 春",
+  { id: "ch2", title: "第二章 · 辩论队的冬天", year: "大二 · 冬",
+    seq: [
+      { t: "scene", emoji: "❄️", loc: "辩论队 · 训练室", text: "加入辩论队后的第一个冬天。窗外飘着雪，屋里热火朝天——队长把一沓刑法案例拍在桌上：\"周一晨训，人人过关。\"" },
+      { t: "gate", gi: 0 },
+      { t: "choice", text: "队里来了犹豫要不要退出的新生，你——", opts: [
+        { t: "拉着他一起加练，倾囊相授", fx: { r: 2 } },
+        { t: "鼓励他留下，自己转身去刷题", fx: { k: 2 } }
+      ] },
+      { t: "gate", gi: 1 }
+    ],
+    gates: [
+      { sub: "宪法", diff: 1, n: 3, intro: "晨训第一卷：宪法基础，热身开始。", ic: "❄️" },
+      { sub: "刑法·总则", diff: 2, n: 3, intro: "年底队内考核：刑法案例循环赛，输了做俯卧撑。", ic: "❄️" }
+    ],
+    clear: { pts: 30, frag: 0, text: "那个冬天你的口才和法条一样疯长。队长在总结会上说：\"明年模拟法庭，就看你们的了。\"" } },
+  { id: "ch3", title: "第三章 · 模拟法庭前夜", year: "大二 · 春",
     seq: [
       { t: "scene", emoji: "⚖️", loc: "模拟法庭备赛室", text: "校模拟法庭大赛临近，你被选为控方一辩。案卷堆成小山，队友的目光齐刷刷落在你身上。" },
       { t: "gate", gi: 0 },
@@ -8598,7 +8623,22 @@ var STORY_CH = [
       { sub: "刑事诉讼法", diff: 1, n: 3, intro: "指导学姐提醒：程序问题最容易翻车，再过一遍。", ic: "⚖️" }
     ],
     clear: { pts: 30, frag: 0, text: "比赛当天，你庭辩流畅、有条不紊，拿下最佳辩手提名。那张奖状，成了你法学生涯的第一件\"装备\"。" } },
-  { title: "第三章 · 法考启动", year: "大三 · 秋",
+  { id: "ch4", title: "第四章 · 决赛之巅", year: "大二 · 春末",
+    seq: [
+      { t: "scene", emoji: "🏛️", loc: "市联合模拟法庭邀请赛", text: "从校赛杀出重围，你代表学校站上了市级邀请赛的舞台。对手是政法大学的王牌队——他们的顺手案例，正是你们的赛题。" },
+      { t: "gate", gi: 0 },
+      { t: "choice", text: "决赛前夜收到对手队伍的交流邀请，你——", opts: [
+        { t: "大方赴约，切磋交换思路", fx: { r: 2 } },
+        { t: "婉言谢绝，闭关打磨辩词", fx: { k: 2 } }
+      ] },
+      { t: "gate", gi: 1 }
+    ],
+    gates: [
+      { sub: "刑事诉讼法", diff: 2, n: 3, intro: "决赛预案：法庭程序的每一处细节都可能决定胜负。", ic: "🏛️" },
+      { sub: "刑法·分则", diff: 2, n: 3, intro: "决赛焦点：罪与非罪、此罪与彼罪的辨析。", ic: "🏛️" }
+    ],
+    clear: { pts: 40, frag: 10, text: "总决赛的掌声落下的那一刻，你们捧起了亚军的奖杯。虽败犹荣——判决书一样的赛评里，写满了对你的期待。" } },
+  { id: "ch5", title: "第五章 · 法考启动", year: "大三 · 秋",
     seq: [
       { t: "scene", emoji: "📚", loc: "自习室 · 备考计划表前", text: "大三开学，你在日历上圈下一个日期——法考。从今天起，所有娱乐都给刷题让路。" },
       { t: "gate", gi: 0 },
@@ -8609,8 +8649,23 @@ var STORY_CH = [
       { sub: "民法·分则", diff: 2, n: 3, intro: "第一轮：民法分则专项训练，物权与合同是重灾区。", ic: "📚" },
       { sub: "刑法·分则", diff: 2, n: 3, intro: "第二轮：刑法分则，罪名一个都不能漏。", ic: "📚" }
     ],
-    clear: { pts: 40, frag: 10, text: "备考计划终于上了正轨。手机里多了一条备忘：\"距离法考还有 300 天。\"" } },
-  { title: "第四章 · 客观题战场", year: "法考 · 首战",
+    clear: { pts: 40, frag: 0, text: "备考计划终于上了正轨。手机里多了一条备忘：\"距离法考还有 300 天。\"" } },
+  { id: "ch6", title: "第六章 · 魔鬼集训营", year: "大三 · 夏",
+    seq: [
+      { t: "scene", emoji: "🌞", loc: "法考暑期集训营", text: "暑期集训营，每天十小时高强度训练，同学们叫它\"魔鬼夏令营\"。有人在哭，有人在笑，你没时间 emoting——题还在等你。" },
+      { t: "gate", gi: 0 },
+      { t: "choice", text: "集训营的两周，你选择——", opts: [
+        { t: "和战友组队互相抽背", fx: { r: 2 } },
+        { t: "一个人留在教室加练", fx: { k: 2 } }
+      ] },
+      { t: "gate", gi: 1 }
+    ],
+    gates: [
+      { sub: null, diff: 2, n: 4, intro: "阶段测试 · 上：全科混考，查漏补缺。", ic: "🌞" },
+      { sub: null, diff: 2, n: 3, intro: "阶段测试 · 下：错过的题，不许再错。", ic: "🌞" }
+    ],
+    clear: { pts: 45, frag: 10, text: "结营那天，你在结业榜上看到了自己的名字——年级前列。盛夏的热风里，法考的味道越来越近了。" } },
+  { id: "ch7", title: "第七章 · 客观题战场", year: "法考 · 首战",
     seq: [
       { t: "scene", emoji: "🖥️", loc: "考区 · 检录口", text: "客观题考试当天。检录、安检、落座——屏幕亮起，第一题出现在眼前。" },
       { t: "gate", gi: 0 },
@@ -8622,7 +8677,7 @@ var STORY_CH = [
       { sub: null, diff: 2, n: 4, intro: "客观题 · 下半场，顶住，胜利就在前面。", ic: "🖥️" }
     ],
     clear: { pts: 50, frag: 0, text: "走出考场，天色刚暗。你不敢对答案，只在心里默念：稳住，还有主观题。" } },
-  { title: "第五章 · 红圈实习", year: "大四 · 冬",
+  { id: "ch8", title: "第八章 · 红圈实习", year: "大四 · 冬",
     seq: [
       { t: "scene", emoji: "🏢", loc: "红圈所 · 18 层", text: "凭着一纸客观题成绩，你挤进一家红圈所实习。带教律师扔来一摞卷宗：\"先从基础的做起。\"" },
       { t: "gate", gi: 0 },
@@ -8634,7 +8689,7 @@ var STORY_CH = [
       { sub: "刑事诉讼法", diff: 2, n: 3, intro: "刑案团队借调你核对证据，程序意识不能少。", ic: "🏢" }
     ],
     clear: { pts: 40, frag: 0, text: "实习结束那天，带教律师难得地点了点头：\"基本功还行。\"这句话让你高兴了一整晚。" } },
-  { title: "第六章 · 第一位客户", year: "转正候补期",
+  { id: "ch9", title: "第九章 · 第一位客户", year: "转正候补期",
     seq: [
       { t: "scene", emoji: "🤝", loc: "律所 · 会议室", text: "转正候补期的第一场正式会见。当事人是位焦急的中年父亲，你负责记录与初步咨询。" },
       { t: "choice", text: "会见结束后，你做了什么？", opts: [
@@ -8647,7 +8702,22 @@ var STORY_CH = [
       { sub: "刑法·分则", diff: 2, n: 3, intro: "当事人问到的罪名问题，一个字都不能答错——这是别人的身家自由。", ic: "🤝" }
     ],
     clear: { pts: 50, frag: 15, text: "当事人临走前连声道谢。你忽然明白：法条背得再熟，落到实处才是本事。" } },
-  { title: "第七章 · 主观题决战", year: "法考 · 终战",
+  { id: "ch10", title: "第十章 · 律所风波", year: "执业前夜",
+    seq: [
+      { t: "scene", emoji: "🌧️", loc: "律所 · 走廊尽头的会议室", text: "临近转正，所里突然接了一起棘手的刑案，全组连夜作战。你被推上了证据整理的核心位置——没人有时间等你成长。" },
+      { t: "gate", gi: 0 },
+      { t: "choice", text: "案件攻坚的深夜，你——", opts: [
+        { t: "主动请缨外出调取关键证据", fx: { r: 1, m: 1 } },
+        { t: "留守所里通宵完成检索报告", fx: { k: 2 } }
+      ] },
+      { t: "gate", gi: 1 }
+    ],
+    gates: [
+      { sub: "刑事诉讼法", diff: 2, n: 3, intro: "证据链梳理：程序正义容不得半点马虎。", ic: "🌧️" },
+      { sub: "刑法·分则", diff: 3, n: 2, intro: "案件定性讨论会：合伙人的圈子里没有侥幸。", ic: "🌧️" }
+    ],
+    clear: { pts: 55, frag: 15, text: "风波平息，案件尘埃落定。合伙人在群里 @了你：\"这批年轻人，靠得住。\"" } },
+  { id: "ch11", title: "第十一章 · 主观题决战", year: "法考 · 终战",
     seq: [
       { t: "scene", emoji: "✍️", loc: "主观题考场", text: "主观题考试当天。四个小时，一整道大案例分析，键盘敲击声连成一片。" },
       { t: "gate", gi: 0 },
@@ -8659,7 +8729,7 @@ var STORY_CH = [
       { sub: null, diff: 3, n: 3, intro: "最后的关键考点，一锤定音。", ic: "✍️" }
     ],
     clear: { pts: 60, frag: 0, text: "交卷铃响。你瘫在椅子上仰头看着天花板——无论结果如何，你已拼尽全力。" } },
-  { title: "第八章 · 终局之 Offer", year: "成绩公布之夜",
+  { id: "ch12", title: "第十二章 · 终局之 Offer", year: "成绩公布之夜",
     seq: [
       { t: "scene", emoji: "📱", loc: "深夜 · 出租屋", text: "成绩公布那天夜里，你盯着手机屏幕，心跳如鼓。看到\"通过\"两个字的瞬间，眼泪毫无预兆地掉了下来。" },
       { t: "gate", gi: 0 },
@@ -8683,13 +8753,23 @@ function storyEndingOf(a) {
 var _st = null; // 章内运行状态
 var _storyMapMode = "map"; // 地图 / 列表
 var STORY_MAP_NODES = [
-  { x: 30, y: 91 }, { x: 66, y: 79 }, { x: 30, y: 67 }, { x: 66, y: 55 },
-  { x: 30, y: 43 }, { x: 66, y: 31 }, { x: 30, y: 19 }, { x: 52, y: 7 }
+  { x: 30, y: 93 }, { x: 66, y: 85 }, { x: 30, y: 77 }, { x: 66, y: 69 },
+  { x: 30, y: 61 }, { x: 66, y: 53 }, { x: 30, y: 45 }, { x: 66, y: 37 },
+  { x: 30, y: 29 }, { x: 66, y: 21 }, { x: 30, y: 13 }, { x: 52, y: 5 }
 ];
 function showStory() {
   hideAllViews();
   document.getElementById("storyView").classList.add("show");
   renderStoryMap();
+}
+function storyBack() {
+  if (_st) {
+    if (!confirm("退出将丢弃本章本次的闯关进度，确定退出吗？")) return;
+    _st = null;
+    renderStoryMap();
+    return;
+  }
+  showLearningCenter();
 }
 function storyAttrBar(v, max, color) {
   return '<div class="sa-bar"><div class="sa-fill" style="width:' + Math.min(100, Math.round(v / max * 100)) + '%;background:' + color + '"></div></div>';
@@ -8726,21 +8806,21 @@ function renderStoryMap() {
       var ninner = ncleared ? "✓" : (nunlocked ? (ni + 1 === s.unlocked && !ncleared ? "▶" : ni + 1) : "🔒");
       h += '<div class="' + ncls + '" style="left:' + n.x + '%;top:' + n.y + '%" ' + (nunlocked ? 'onclick="storyStartChapter(' + ni + ')"' : 'onclick="showToast(\'先完成前面的章节吧\')"') + '>'
         + '<div class="st-node-circle">' + ninner + '</div>'
-        + '<div class="st-node-label">' + escHtml(cc.title.replace(/^第.章 · /, "")) + '</div>'
+        + '<div class="st-node-label">' + escHtml(cc.title.replace(/^第[^章]+章 · /, "")) + '</div>'
         + '</div>';
     }
     h += '</div>';
   } else {
     for (var i = 0; i < STORY_CH.length; i++) {
       var c = STORY_CH[i];
-      var cleared = !!s.cleared[i];
+      var cleared = !!s.cleared[c.id];
       var unlocked = i + 1 <= s.unlocked;
       var cls = "st-ch" + (cleared ? " done" : "") + (unlocked && i + 1 === s.unlocked && !cleared ? " cur" : "");
       if (!unlocked) cls += " locked";
       var state = cleared ? "✓" : (unlocked ? (i + 1 === s.unlocked && !cleared ? "▶ 继续" : "重玩") : "🔒");
       h += '<div class="' + cls + '" ' + (unlocked ? 'onclick="storyStartChapter(' + i + ')"' : '') + '>'
         + '<div class="sc-num">' + (cleared ? "✓" : i + 1) + '</div>'
-        + '<div class="sc-info"><div class="sc-title">' + escHtml(c.title.replace(/^第.章 · /, "")) + '</div><div class="sc-sub"><span class="sc-year">' + escHtml(c.year) + '</span>' + c.gates.length + ' 个题目关卡</div></div>'
+        + '<div class="sc-info"><div class="sc-title">' + escHtml(c.title.replace(/^第[^章]+章 · /, "")) + '</div><div class="sc-sub"><span class="sc-year">' + escHtml(c.year) + '</span>' + c.gates.length + ' 个题目关卡</div></div>'
         + '<span class="sc-state">' + state + '</span></div>';
     }
   }
@@ -8957,10 +9037,10 @@ function storyChapterClear() {
   var ci = _st.ch;
   var c = STORY_CH[ci];
   var s = loadStorySave();
-  var first = !s.cleared[ci];
+  var first = !s.cleared[c.id];
   var rewardTxt = "";
   if (first) {
-    s.cleared[ci] = true;
+    s.cleared[c.id] = true;
     s.unlocked = Math.max(s.unlocked, Math.min(STORY_CH.length, ci + 2));
     addPoints(c.clear.pts, "律政人生 · " + c.title);
     rewardTxt = '<div class="st-deltas"><span class="st-delta up">积分 +' + c.clear.pts + '</span>'
