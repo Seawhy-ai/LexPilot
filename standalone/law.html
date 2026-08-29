@@ -2213,6 +2213,14 @@ body.dark .af-opt{background:#2a2a2a}
         <input type="range" id="lineHeightSlider" min="140" max="220" step="5" style="width:100%;accent-color:var(--accent)" oninput="setLineHeight(this.value/100)" />
         <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text2);margin-top:2px"><span>紧凑</span><span>宽松</span></div>
       </div>
+      <div style="padding:12px 16px;border-bottom:1px solid var(--card-border)">
+        <span class="sf-label" style="margin-bottom:8px">键盘模式</span>
+        <div class="app-btn-row" id="kbdModeGroup">
+          <button class="app-btn" data-val="ime" onclick="setKbdMode('ime')">内置键盘</button>
+          <button class="app-btn" data-val="system" onclick="setKbdMode('system')">系统键盘</button>
+        </div>
+        <div style="font-size:9px;color:var(--text2);margin-top:4px;line-height:1.6">系统键盘 = 使用手机原生键盘，可正常呼出语音输入、系统复制粘贴与自动纠错</div>
+      </div>
       <div class="pm-item" onclick="showAbout()">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="0.5" fill="currentColor"/></svg>
         <span>关于我们</span>
@@ -4002,7 +4010,7 @@ try { var s = JSON.parse(localStorage.getItem("seawhy-lex-config") || "{}"); SET
 var userTheme = "light";
 try { userTheme = JSON.parse(localStorage.getItem("seawhy-lex-theme") || '"light"'); } catch(e) {}
 
-var options = { deep: true, multi: false, practical: false, compare: false, quoteAuto: true, showNickname: false, homeBg: "default", bubbleStyle: "classic", homeWidget: "todo", imeEngine: "fcitx" };
+var options = { deep: true, multi: false, practical: false, compare: false, quoteAuto: true, showNickname: false, homeBg: "default", bubbleStyle: "classic", homeWidget: "todo", imeEngine: "fcitx", kbdMode: "ime" };
 try { var o = JSON.parse(localStorage.getItem("seawhy-lex-opts") || "{}"); Object.keys(options).forEach(function(k){ if(k in o) options[k] = o[k]; }); } catch(e) {}
 // 立即应用已保存的背景与气泡样式（不等 DOMContentLoaded，避免外部脚本加载慢导致重开后恢复默认）
 try { applyHomeBg(); } catch(e) {}
@@ -8659,6 +8667,7 @@ function imeDone() {
 }
 function imeOpenFor(el) {
   if (!el) return;
+  if (options.kbdMode === "system") return;
   IME.target = el; IME.open = true;
   try { el.setAttribute("readonly", "readonly"); } catch (e) {}
   // 数字类输入框自动切到 123 键盘层
@@ -8873,6 +8882,8 @@ function imeHaptic() {
   document.addEventListener("focusin", function (e) {
     var el = e.target;
     if (!el || !el.tagName) return;
+    // 系统键盘模式: 不接管输入框
+    if (options.kbdMode === "system") return;
     // fcitx5 已接管(就绪且处于 fcitx 模式):内置键盘不弹出,交由 fcitx 引擎/键盘处理
     if (window.FCITX5 && window.FCITX5.isActive()) return;
     var tag = el.tagName;
@@ -8886,6 +8897,7 @@ function imeHaptic() {
   document.addEventListener("touchstart", function (e) {
     var el = e.target;
     if (!el || !el.matches) return;
+    if (options.kbdMode === "system") return;
     if (el.matches('input[type="text"], input[type="search"], textarea')) {
       if (el.id === "apiKeyInput" || el.id === "redeemCodeInput") return;
       if (el.closest && el.closest(".mat-viewer")) return;
@@ -8893,6 +8905,29 @@ function imeHaptic() {
     }
   }, { passive: true, capture: true });
 })();
+
+// ============================================================
+// 键盘模式切换(内置键盘 / 系统键盘)
+// ============================================================
+function setKbdMode(mode) {
+  options.kbdMode = mode === "system" ? "system" : "ime";
+  try { localStorage.setItem("seawhy-lex-opts", JSON.stringify(options)); } catch(e) {}
+  applyKbdMode();
+  showToast(mode === "system" ? "已切换系统键盘（原生输入，支持系统复制粘贴/语音）" : "已切换内置键盘");
+}
+function applyKbdMode() {
+  var ids = ["userInput","noteTitle","noteContent","noteTags","noteDetailTitleInput","noteDetailContentInput","noteDetailTagsInput","dbSearch","lrSearch","todoInput","globalSearchInput"];
+  var system = options.kbdMode === "system";
+  ids.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    if (system) el.removeAttribute("readonly");
+    else el.setAttribute("readonly", "readonly");
+  });
+  if (system && typeof imeDone === "function" && IME.open) imeDone();
+  if (window.FCITX5) window.FCITX5.configure(system ? "builtin" : (options.imeEngine || "fcitx"));
+  setBtnGroup("kbdModeGroup", options.kbdMode);
+}
 
 // ============================================================
 // 输入法引擎切换(fcitx5 拼音 / 内置键盘)
@@ -10445,6 +10480,7 @@ function showStoryPoster() {
 (function init() {
   applyTheme();
   applyFontPrefs();
+  applyKbdMode();
   bindEvents();
   renderAllMessages();
   renderDatabase();
@@ -10455,6 +10491,7 @@ function showStoryPoster() {
   }
   // 内置键盘：静态输入框预置只读（真正输入交给 IME，避免 iOS 原生键盘整页滚动）
   (function imeInitStatic() {
+    if (options.kbdMode === "system") return;
     var ids = ["userInput","noteTitle","noteContent","noteTags","noteDetailTitleInput","noteDetailContentInput","noteDetailTagsInput","dbSearch","lrSearch","todoInput","globalSearchInput"];
     for (var i = 0; i < ids.length; i++) {
       var el = document.getElementById(ids[i]);
