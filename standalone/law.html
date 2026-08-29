@@ -796,62 +796,97 @@ body.dark .wr-bar{background:linear-gradient(180deg,#3d7fb8,#2565a0)}
 .vip-card .vc-btn{border:none;border-radius:10px;padding:6px 14px;background:var(--accent);color:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;flex-shrink:0}
 .vip-card .vc-btn:active{opacity:.8}
 
-/* ===== 律政人生(剧情刷题) ===== */
+/* ===== 律政人生(剧情刷题) · 游戏化视觉 ===== */
 #storyView{flex:1;display:none!important;flex-direction:column;overflow:hidden;overscroll-behavior:none;background:var(--bg)}
 #storyView.show{display:flex!important}
 #storyView .wx-nav{border-bottom:1px solid var(--card-border)}
-.story-body{flex:1;overflow-y:auto;padding:16px 16px calc(20px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch;max-width:560px;margin:0 auto;width:100%}
-.st-attrs{display:flex;gap:8px;margin-bottom:14px}
-.st-attr{flex:1;background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:8px 10px}
-.st-attr .sa-name{font-size:10px;color:var(--text2);display:flex;align-items:center;gap:4px}
-.st-attr .sa-val{font-size:16px;font-weight:800;color:var(--text);margin:2px 0 4px}
-.st-attr .sa-bar{height:5px;background:var(--card-border);border-radius:3px;overflow:hidden}
-.st-attr .sa-fill{height:100%;border-radius:3px;transition:width .4s}
-.st-ch{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:13px 14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .15s}
+.story-body{flex:1;overflow-y:auto;padding:14px 14px calc(20px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch;max-width:560px;margin:0 auto;width:100%}
+/* 主界面 hero 横幅 */
+.st-hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#22315e 0%,#2b5f9e 70%,#3a76b8 100%);border-radius:18px;padding:16px 16px 14px;margin-bottom:14px;color:#fff;box-shadow:0 8px 24px rgba(34,49,94,.35)}
+.st-hero::before{content:"";position:absolute;top:-46px;right:-26px;width:170px;height:170px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.16),transparent 70%);pointer-events:none}
+.st-hero-title{font-size:19px;font-weight:800;letter-spacing:1px;display:flex;align-items:center;gap:6px}
+.st-hero-sub{font-size:10.5px;opacity:.82;margin-top:3px}
+.st-hero-badge{position:absolute;top:14px;right:14px;font-size:10px;font-weight:800;background:linear-gradient(135deg,#f7b733,#fc4a1a);color:#fff;border-radius:20px;padding:3px 10px;letter-spacing:.5px}
+.st-hero-attrs{display:flex;gap:8px;margin-top:13px}
+.st-ha{flex:1;background:rgba(255,255,255,.14);border-radius:12px;padding:8px 9px;backdrop-filter:blur(4px);display:flex;flex-direction:column;gap:3px}
+.st-ha-top{display:flex;align-items:center;gap:5px}
+.st-ha-top .st-ha-ic{font-size:12px}
+.st-ha-top .st-ha-name{font-size:9.5px;opacity:.85}
+.st-ha-mid{display:flex;align-items:baseline;gap:3px}
+.st-ha-val{font-size:17px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.st-ha-bar{height:4px;background:rgba(255,255,255,.22);border-radius:3px;overflow:hidden}
+.st-ha-bar i{display:block;height:100%;border-radius:3px;background:#fff;transition:width .4s}
+/* 章节列表 */
+.st-ch{background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:13px 14px;margin-bottom:9px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .15s;position:relative;overflow:hidden}
 .st-ch:active{transform:scale(.98)}
-.st-ch.locked{opacity:.5;cursor:default}
-.st-ch .sc-num{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0;background:var(--icon-bg);color:var(--text)}
-.st-ch.done .sc-num{background:rgba(39,174,96,.15);color:#27ae60}
-.st-ch.cur .sc-num{background:var(--accent);color:#fff}
+.st-ch.locked{opacity:.45;cursor:default}
+.st-ch .sc-num{width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0;background:var(--icon-bg);color:var(--text2)}
+.st-ch.cur{border:1.5px solid var(--accent);box-shadow:0 4px 14px rgba(41,128,185,.18)}
+.st-ch.cur .sc-num{background:linear-gradient(135deg,#5dade2,#2980b9);color:#fff;box-shadow:0 3px 8px rgba(41,128,185,.4)}
+.st-ch.done .sc-num{background:rgba(39,174,96,.14);color:#27ae60}
 .st-ch .sc-info{flex:1;min-width:0}
 .st-ch .sc-title{font-size:14px;font-weight:700;color:var(--text)}
-.st-ch .sc-sub{font-size:11px;color:var(--text2);margin-top:2px}
-.st-ch .sc-state{font-size:11px;font-weight:700;color:var(--text2);flex-shrink:0}
-.st-ch.cur .sc-state{color:var(--accent)}
-.st-ending{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,rgba(247,183,51,.16),rgba(252,74,26,.05));border:1px solid rgba(247,183,51,.5);border-radius:14px;padding:13px 14px;margin-bottom:12px;cursor:pointer}
-.st-ending .se-ic{font-size:26px}
+.st-ch.cur .sc-title{color:var(--accent)}
+.st-ch .sc-sub{font-size:10.5px;color:var(--text2);margin-top:3px;display:flex;align-items:center;gap:5px}
+.st-ch .sc-year{background:var(--icon-bg);border-radius:6px;padding:1px 6px;font-size:9.5px}
+.st-ch .sc-state{font-size:11px;font-weight:800;color:var(--text2);flex-shrink:0}
+.st-ch.cur .sc-state{color:#fff;background:var(--accent);border-radius:14px;padding:4px 11px;font-size:11px}
+.st-reset{margin-top:10px;width:100%;padding:10px;border:1px dashed var(--card-border);border-radius:12px;background:transparent;color:var(--text2);font-size:11px;cursor:pointer;font-family:inherit}
+/* 结局徽章卡 */
+.st-ending{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,rgba(247,183,51,.18),rgba(252,74,26,.06));border:1px solid rgba(247,183,51,.5);border-radius:16px;padding:13px 14px;margin-bottom:12px;cursor:pointer}
+.st-ending .se-ic{font-size:28px}
 .st-ending .se-title{font-size:13px;font-weight:800;color:var(--text)}
 .st-ending .se-sub{font-size:10.5px;color:var(--text2);margin-top:2px}
 .st-ending .sc-state{margin-left:auto;font-size:16px;color:var(--text2)}
-.st-scene{background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:18px 16px;margin-bottom:12px;animation:fadeIn .35s ease}
-.st-scene .st-loc{font-size:10px;color:var(--accent);font-weight:700;letter-spacing:1px;text-align:center;margin-bottom:8px}
-.st-scene .st-emoji{font-size:34px;text-align:center;margin-bottom:10px}
-.st-scene .st-text{font-size:14px;line-height:1.9;color:var(--text);white-space:pre-wrap}
+/* 剧情/抉择 场景卡 */
+.st-scene{position:relative;overflow:hidden;background:var(--card-bg);border:1px solid var(--card-border);border-radius:18px;padding:20px 16px 18px;margin-bottom:12px;animation:fadeIn .35s ease}
+.st-scene::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#5dade2,#a78bfa)}
+.st-loc{font-size:10px;color:var(--accent);font-weight:800;letter-spacing:1.5px;text-align:center;margin-bottom:12px}
+.st-emoji-wrap{width:64px;height:64px;border-radius:50%;background:var(--icon-bg);display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 12px}
+.st-text{font-size:14px;line-height:2;color:var(--text);white-space:pre-wrap;text-align:justify}
 .st-choices{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
-.st-choice{border:1.5px solid var(--card-border);background:var(--card-bg);border-radius:12px;padding:12px 14px;font-size:13px;color:var(--text);cursor:pointer;font-family:inherit;text-align:left;transition:all .15s;line-height:1.6}
-.st-choice:active{transform:scale(.98);border-color:var(--accent)}
-.st-btn{display:block;width:100%;padding:12px;border:none;border-radius:12px;background:var(--accent);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;text-align:center}
-.st-btn.ghost{background:var(--input-bg);color:var(--text);border:1px solid var(--card-border)}
-.st-btn:active{opacity:.85}
-.st-gate-intro{text-align:center;padding:30px 10px;animation:fadeIn .35s ease}
-.st-gate-intro .sgi-ic{font-size:40px;margin-bottom:10px}
-.st-gate-intro p{font-size:14px;color:var(--text);line-height:1.8;margin:0 0 12px}
-.st-qcard{background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:16px 14px;margin-bottom:12px;animation:fadeIn .3s ease}
-.st-qmeta{font-size:10px;color:var(--text2);margin-bottom:8px;display:flex;justify-content:space-between}
+.st-choice{display:flex;align-items:center;gap:10px;border:1.5px solid var(--card-border);background:var(--card-bg);border-radius:14px;padding:13px 14px;font-size:13px;color:var(--text);cursor:pointer;font-family:inherit;text-align:left;transition:all .15s;line-height:1.6}
+.st-choice:active{transform:scale(.98);border-color:var(--accent);background:var(--accent-light)}
+.st-choice .sc-pfx{width:24px;height:24px;border-radius:8px;background:var(--icon-bg);color:var(--accent);font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.st-choice .sc-arrow{margin-left:auto;color:var(--text2);font-size:16px;flex-shrink:0}
+/* 按钮体系 */
+.st-btn{display:block;width:100%;padding:13px;border:none;border-radius:14px;background:var(--accent);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;text-align:center;box-shadow:0 4px 14px rgba(41,128,185,.3)}
+.st-btn.ghost{background:var(--input-bg);color:var(--text);border:1px solid var(--card-border);box-shadow:none}
+.st-btn:active{opacity:.85;transform:scale(.98)}
+/* 关卡引导 */
+.st-gate-intro{text-align:center;padding:26px 12px;animation:fadeIn .35s ease}
+.sgi-circle{width:76px;height:76px;border-radius:50%;margin:0 auto 14px;background:linear-gradient(135deg,#5dade2,#2b5f9e);display:flex;align-items:center;justify-content:center;font-size:36px;box-shadow:0 6px 18px rgba(41,128,185,.35)}
+.st-gate-intro p{font-size:14px;color:var(--text);line-height:1.8;margin:0 0 14px;font-weight:600}
+.sgi-meta{display:flex;justify-content:center;gap:6px;margin-bottom:18px;flex-wrap:wrap}
+.sgi-chip{font-size:10.5px;font-weight:700;color:var(--text2);background:var(--icon-bg);border-radius:14px;padding:4px 11px}
+/* 答题卡 */
+.st-qcard{background:var(--card-bg);border:1px solid var(--card-border);border-radius:18px;padding:0 14px 14px;margin-bottom:12px;animation:fadeIn .3s ease;overflow:hidden}
+.st-qprog{height:4px;background:var(--card-border);border-radius:0 0 3px 3px;margin:0 -14px 12px;overflow:hidden}
+.st-qprog i{display:block;height:100%;background:linear-gradient(90deg,#5dade2,#2980b9);border-radius:0 3px 3px 0;transition:width .3s}
+.st-qmeta{font-size:10px;color:var(--text2);margin-bottom:8px;display:flex;justify-content:space-between;font-weight:700}
 .st-qtext{font-size:15px;font-weight:700;color:var(--text);line-height:1.7;margin-bottom:14px}
-.st-opt{display:flex;gap:8px;align-items:flex-start;background:var(--input-bg);border:2px solid transparent;border-radius:12px;padding:11px 12px;margin-bottom:8px;font-size:13.5px;color:var(--text);cursor:pointer;transition:all .15s;line-height:1.5}
-.st-opt .so-prefix{font-weight:800;color:var(--accent);flex-shrink:0}
+.st-opt{display:flex;gap:9px;align-items:flex-start;background:var(--input-bg);border:2px solid transparent;border-radius:13px;padding:12px 12px;margin-bottom:8px;font-size:13.5px;color:var(--text);cursor:pointer;transition:all .15s;line-height:1.5}
+.st-opt .so-prefix{width:22px;height:22px;border-radius:7px;background:var(--card-bg);color:var(--accent);font-weight:800;font-size:11.5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(--card-border)}
 .st-opt.sel{border-color:var(--accent);background:var(--accent-light)}
+.st-opt.sel .so-prefix{background:var(--accent);color:#fff;border-color:var(--accent)}
 .st-opt.correct{border-color:#2ecc71;background:rgba(46,204,113,.1)}
+.st-opt.correct .so-prefix{background:#2ecc71;color:#fff;border-color:#2ecc71}
 .st-opt.wrong{border-color:#e74c3c;background:rgba(231,76,60,.1)}
+.st-opt.wrong .so-prefix{background:#e74c3c;color:#fff;border-color:#e74c3c}
 .st-opt.disabled{cursor:default}
-.st-exp{margin-top:10px;font-size:12px;color:var(--text2);background:var(--input-bg);border-radius:10px;padding:10px 12px;line-height:1.7}
-.st-banner{text-align:center;padding:26px 12px 20px;animation:fadeIn .35s ease}
-.st-banner .sb-ic{font-size:44px}
-.st-banner h3{font-size:19px;margin:8px 0 6px;color:var(--text)}
+.st-exp{margin-top:10px;font-size:12px;color:var(--text2);background:var(--input-bg);border-radius:12px;padding:11px 13px;line-height:1.8}
+/* 结算横幅(按评级换肤) */
+.st-banner{text-align:center;padding:26px 14px 20px;border-radius:18px;animation:fadeIn .35s ease;margin-bottom:12px}
+.st-banner.g-perfect{background:linear-gradient(160deg,rgba(247,183,51,.2),rgba(252,74,26,.07));border:1px solid rgba(247,183,51,.55)}
+.st-banner.g-pass{background:linear-gradient(160deg,rgba(41,128,185,.12),rgba(41,128,185,.03));border:1px solid rgba(41,128,185,.4)}
+.st-banner.g-fail{background:linear-gradient(160deg,rgba(108,117,125,.12),rgba(108,117,125,.03));border:1px solid rgba(108,117,125,.35)}
+.st-banner .sb-ic{width:68px;height:68px;border-radius:50%;background:var(--card-bg);display:flex;align-items:center;justify-content:center;font-size:34px;margin:0 auto 10px;box-shadow:0 4px 14px rgba(0,0,0,.1)}
+.st-banner h3{font-size:19px;margin:0 0 6px;color:var(--text)}
 .st-banner p{font-size:12.5px;color:var(--text2);margin:0 0 14px;line-height:1.8}
-.st-deltas{display:flex;justify-content:center;gap:8px;margin-bottom:16px}
-.st-delta{font-size:12px;font-weight:800;border-radius:10px;padding:5px 10px;background:var(--icon-bg)}
+.st-banner .st-btn{margin-top:4px}
+.st-banner .st-btn.ghost{margin-top:8px}
+.st-deltas{display:flex;justify-content:center;gap:8px;margin-bottom:6px}
+.st-delta{font-size:12px;font-weight:800;border-radius:10px;padding:5px 11px;background:var(--card-bg);box-shadow:0 2px 8px rgba(0,0,0,.08)}
 .st-delta.up{color:#27ae60}
 .st-delta.down{color:#e74c3c}
 
@@ -2330,7 +2365,6 @@ body.dark .af-opt{background:#2a2a2a}
         </div>
         <div class="lc-info">
           <div class="lc-name">律政人生</div>
-          <div class="lc-desc">剧情刷题 · 从法学院到红圈所</div>
         </div>
       </div>
       <div class="learn-card" onclick="showQuizModule()">
@@ -8642,11 +8676,16 @@ function renderStoryMap() {
   var s = loadStorySave();
   s.attr = storyAttrClamp(s.attr);
   var ending = s.ending ? storyEndingOf(s.attr) : null;
-  var h = '<div class="st-attrs">'
-    + '<div class="st-attr"><div class="sa-name">📖 知识</div><div class="sa-val">' + s.attr.k + '</div>' + storyAttrBar(s.attr.k, STORY_ATTR_MAX.k, "linear-gradient(90deg,#5dade2,#2980b9)") + '</div>'
-    + '<div class="st-attr"><div class="sa-name">🤝 人脉</div><div class="sa-val">' + s.attr.r + '</div>' + storyAttrBar(s.attr.r, STORY_ATTR_MAX.r, "linear-gradient(90deg,#58d68d,#27ae60)") + '</div>'
-    + '<div class="st-attr"><div class="sa-name">🔥 心态</div><div class="sa-val">' + s.attr.m + '</div>' + storyAttrBar(s.attr.m, STORY_ATTR_MAX.m, "linear-gradient(90deg,#f7b733,#fc4a1a)") + '</div>'
-    + '</div>';
+  var doneCount = Object.keys(s.cleared).length;
+  var h = '<div class="st-hero">'
+    + '<div class="st-hero-badge">Lv.' + (s.unlocked > STORY_CH.length ? "MAX" : s.unlocked) + '</div>'
+    + '<div class="st-hero-title">律政人生</div>'
+    + '<div class="st-hero-sub">从法学院到红圈所 · 剧情进度 ' + doneCount + '/' + STORY_CH.length + '</div>'
+    + '<div class="st-hero-attrs">'
+    + '<div class="st-ha"><div class="st-ha-top"><span class="st-ha-ic">📖</span><span class="st-ha-name">知识</span></div><div class="st-ha-mid"><span class="st-ha-val">' + s.attr.k + '</span></div><div class="st-ha-bar"><i style="width:' + Math.min(100, Math.round(s.attr.k / STORY_ATTR_MAX.k * 100)) + '%"></i></div></div>'
+    + '<div class="st-ha"><div class="st-ha-top"><span class="st-ha-ic">🤝</span><span class="st-ha-name">人脉</span></div><div class="st-ha-mid"><span class="st-ha-val">' + s.attr.r + '</span></div><div class="st-ha-bar"><i style="width:' + Math.min(100, Math.round(s.attr.r / STORY_ATTR_MAX.r * 100)) + '%"></i></div></div>'
+    + '<div class="st-ha"><div class="st-ha-top"><span class="st-ha-ic">🔥</span><span class="st-ha-name">心态</span></div><div class="st-ha-mid"><span class="st-ha-val">' + s.attr.m + '</span></div><div class="st-ha-bar"><i style="width:' + Math.min(100, Math.round(s.attr.m / STORY_ATTR_MAX.m * 100)) + '%"></i></div></div>'
+    + '</div></div>';
   if (ending) {
     h += '<div class="st-ending" onclick="renderStoryEnding()"><span class="se-ic">' + ending.ic + '</span><div><div class="se-title">已达成结局 · ' + escHtml(ending.title) + '</div><div class="se-sub">点击查看 · 提升属性可改写</div></div><span class="sc-state">›</span></div>';
   }
@@ -8656,13 +8695,13 @@ function renderStoryMap() {
     var unlocked = i + 1 <= s.unlocked;
     var cls = "st-ch" + (cleared ? " done" : "") + (unlocked && i + 1 === s.unlocked && !cleared ? " cur" : "");
     if (!unlocked) cls += " locked";
-    var state = cleared ? "✓ 已通关" : (unlocked ? (i + 1 === s.unlocked && !cleared ? "▶ 继续" : "重玩") : "🔒");
+    var state = cleared ? "✓" : (unlocked ? (i + 1 === s.unlocked && !cleared ? "▶ 继续" : "重玩") : "🔒");
     h += '<div class="' + cls + '" ' + (unlocked ? 'onclick="storyStartChapter(' + i + ')"' : '') + '>'
-      + '<div class="sc-num">' + (i + 1) + '</div>'
-      + '<div class="sc-info"><div class="sc-title">' + escHtml(c.title) + '</div><div class="sc-sub">' + escHtml(c.year) + ' · ' + c.gates.length + ' 关</div></div>'
+      + '<div class="sc-num">' + (cleared ? "✓" : i + 1) + '</div>'
+      + '<div class="sc-info"><div class="sc-title">' + escHtml(c.title.replace(/^第.章 · /, "")) + '</div><div class="sc-sub"><span class="sc-year">' + escHtml(c.year) + '</span>' + c.gates.length + ' 个题目关卡</div></div>'
       + '<span class="sc-state">' + state + '</span></div>';
   }
-  h += '<button class="st-btn ghost" style="margin-top:8px" onclick="storyReset()">重置剧情存档</button>';
+  h += '<button class="st-reset" onclick="storyReset()">重置剧情存档</button>';
   document.getElementById("storyBody").innerHTML = h;
 }
 function storyReset() {
@@ -8690,13 +8729,13 @@ function storyRenderShell(inner) {
   document.getElementById("storyBody").scrollTop = 0;
 }
 function renderStoryScene(item) {
-  storyRenderShell('<div class="st-scene"><div class="st-loc">' + escHtml(item.loc || "") + '</div><div class="st-emoji">' + item.emoji + '</div><div class="st-text">' + escHtml(item.text) + '</div></div>'
+  storyRenderShell('<div class="st-scene"><div class="st-loc">' + escHtml(item.loc || "") + '</div><div class="st-emoji-wrap">' + item.emoji + '</div><div class="st-text">' + escHtml(item.text) + '</div></div>'
     + '<button class="st-btn" onclick="storyNext()">继续</button>');
 }
 function renderStoryChoice(item) {
-  var h = '<div class="st-scene"><div class="st-emoji">🧭</div><div class="st-text">' + escHtml(item.text) + '</div></div><div class="st-choices">';
+  var h = '<div class="st-scene"><div class="st-loc">人生抉择</div><div class="st-emoji-wrap">🧭</div><div class="st-text">' + escHtml(item.text) + '</div></div><div class="st-choices">';
   for (var i = 0; i < item.opts.length; i++) {
-    h += '<button class="st-choice" onclick="storyPickChoice(' + i + ')">' + escHtml(item.opts[i].t) + '</button>';
+    h += '<button class="st-choice" onclick="storyPickChoice(' + i + ')"><span class="sc-pfx">' + ["A", "B"][i] + '</span><span>' + escHtml(item.opts[i].t) + '</span><span class="sc-arrow">›</span></button>';
   }
   h += '</div>';
   storyRenderShell(h);
@@ -8722,7 +8761,7 @@ function storyNext() { _st.seqIdx++; storyAdvance(); }
 function storyStartGate(gi) {
   var c = STORY_CH[_st.ch];
   var g = c.gates[gi];
-  storyRenderShell('<div class="st-gate-intro"><div class="sgi-ic">' + g.ic + '</div><p>' + escHtml(g.intro) + '</p><div style="font-size:11px;color:var(--text2);margin-bottom:16px">' + g.n + ' 道题 · ' + (g.sub || "全科混合") + (g.diff ? " · 难度" + g.diff : "") + '</div><button class="st-btn" onclick="storyBeginGate(' + gi + ')">开始作答</button></div>');
+  storyRenderShell('<div class="st-gate-intro"><div class="sgi-circle">' + g.ic + '</div><p>' + escHtml(g.intro) + '</p><div class="sgi-meta"><span class="sgi-chip">' + g.n + ' 道题</span><span class="sgi-chip">' + escHtml(g.sub || "全科混合") + '</span>' + (g.diff ? '<span class="sgi-chip">难度 ' + g.diff + '</span>' : '') + '</div><button class="st-btn" onclick="storyBeginGate(' + gi + ')">开始作答</button></div>');
 }
 function storyBeginGate(gi) {
   var c = STORY_CH[_st.ch];
@@ -8743,10 +8782,10 @@ function renderStoryGate(gi) {
   var gs = _st.gates[gi];
   var q = gs.qs[gs.qi];
   var labels = ["A", "B", "C", "D", "E", "F"];
-  var h = '<div class="st-qcard"><div class="st-qmeta"><span>' + (gs.qi + 1) + ' / ' + gs.qs.length + '</span><span>答对 ' + gs.correct + '</span></div>'
+  var h = '<div class="st-qcard"><div class="st-qprog"><i style="width:' + Math.round(gs.qi / gs.qs.length * 100) + '%"></i></div><div class="st-qmeta"><span>第 ' + (gs.qi + 1) + ' 题 / 共 ' + gs.qs.length + ' 题</span><span>已答对 ' + gs.correct + '</span></div>'
     + '<div class="st-qtext">' + (q.multi ? "[多选] " : "") + escHtml(q.q) + '</div><div id="stOpts">';
   for (var i = 0; i < q.opts.length; i++) {
-    h += '<div class="st-opt" id="stopt' + i + '" onclick="storyToggleOpt(' + gi + ',' + i + ')"><span class="so-prefix">' + labels[i] + '.</span><span>' + escHtml(q.opts[i]) + '</span></div>';
+    h += '<div class="st-opt" id="stopt' + i + '" onclick="storyToggleOpt(' + gi + ',' + i + ')"><span class="so-prefix">' + labels[i] + '</span><span>' + escHtml(q.opts[i]) + '</span></div>';
   }
   h += '</div><div id="stExpWrap"></div>';
   h += q.multi
@@ -8833,7 +8872,7 @@ function storyGateFinish(gi) {
     if (s.attr.k >= 16 && !_st.retryUsed[gi]) retryable = true;
   }
   _st.pendingGate = { gi: gi, grade: grade, delta: delta, retryable: retryable };
-  var h = '<div class="st-banner"><div class="sb-ic">' + ic + '</div>'
+  var h = '<div class="st-banner g-' + grade + '"><div class="sb-ic">' + ic + '</div>'
     + '<h3>' + (grade === "perfect" ? "完美通过" : grade === "pass" ? "顺利通过" : "遭遇挫折") + '</h3>'
     + '<p>' + escHtml(msg) + '<br>答对 ' + gs.correct + ' / ' + n + ' 题</p>'
     + '<div class="st-deltas">'
@@ -8888,7 +8927,7 @@ function storyChapterClear() {
       saveProfile(p);
     }
   }
-  var h = '<div class="st-banner"><div class="sb-ic">🎉</div><h3>' + escHtml(c.title) + ' · 通关</h3>'
+  var h = '<div class="st-banner g-perfect"><div class="sb-ic">🎉</div><h3>' + escHtml(c.title) + ' · 通关</h3>'
     + '<p>' + escHtml(c.clear.text) + '</p>' + rewardTxt;
   if (ci === STORY_CH.length - 1) {
     var e = storyEndingOf(s.attr);
@@ -8909,7 +8948,8 @@ function storyChapterClear() {
 function renderStoryEnding() {
   var s = loadStorySave();
   var e = storyEndingOf(s.attr);
-  storyRenderShell('<div class="st-banner"><div class="sb-ic">' + e.ic + '</div>'
+  var theme = e.lv === "S" ? "g-perfect" : e.lv === "A" ? "g-pass" : "g-fail";
+  storyRenderShell('<div class="st-banner ' + theme + '"><div class="sb-ic">' + e.ic + '</div>'
     + '<h3>' + e.lv + ' 级结局 · ' + escHtml(e.title) + '</h3>'
     + '<p>' + escHtml(e.text) + '</p>'
     + '<div class="st-deltas"><span class="st-delta up">知识 ' + s.attr.k + '</span><span class="st-delta up">人脉 ' + s.attr.r + '</span><span class="st-delta up">心态 ' + s.attr.m + '</span></div>'
