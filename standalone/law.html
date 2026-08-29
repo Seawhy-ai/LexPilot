@@ -832,6 +832,23 @@ body.dark .wr-bar{background:linear-gradient(180deg,#3d7fb8,#2565a0)}
 .st-ch .sc-state{font-size:11px;font-weight:800;color:var(--text2);flex-shrink:0}
 .st-ch.cur .sc-state{color:#fff;background:var(--accent);border-radius:14px;padding:4px 11px;font-size:11px}
 .st-reset{margin-top:10px;width:100%;padding:10px;border:1px dashed var(--card-border);border-radius:12px;background:transparent;color:var(--text2);font-size:11px;cursor:pointer;font-family:inherit}
+/* 闯关地图 */
+.st-map{position:relative;border-radius:18px;overflow:hidden;aspect-ratio:560/980;background:#22315e;box-shadow:0 8px 24px rgba(34,49,94,.3);margin-bottom:10px}
+.st-map-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.st-map::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,18,44,.18),rgba(12,18,44,.05) 40%,rgba(12,18,44,.3));z-index:1;pointer-events:none}
+.st-map-path{position:absolute;inset:0;width:100%;height:100%;z-index:2}
+.st-node{position:absolute;transform:translate(-50%,-50%);z-index:3;display:flex;flex-direction:column;align-items:center;cursor:pointer;width:86px;margin-left:0}
+.st-node-circle{width:46px;height:46px;border-radius:50%;background:var(--card-bg);border:2.5px solid rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:var(--text2);box-shadow:0 4px 12px rgba(12,18,44,.45);transition:transform .15s}
+.st-node:active .st-node-circle{transform:scale(.92)}
+.st-node.done .st-node-circle{background:linear-gradient(135deg,#58d68d,#27ae60);color:#fff;border-color:rgba(255,255,255,.95)}
+.st-node.cur .st-node-circle{background:linear-gradient(135deg,#5dade2,#2980b9);color:#fff;border-color:#fff;animation:nodePulse 1.6s ease-in-out infinite}
+@keyframes nodePulse{0%,100%{box-shadow:0 4px 12px rgba(12,18,44,.45),0 0 0 0 rgba(93,173,226,.6)}50%{box-shadow:0 4px 12px rgba(12,18,44,.45),0 0 0 9px rgba(93,173,226,0)}}
+.st-node.locked .st-node-circle{background:rgba(30,38,70,.72);color:rgba(255,255,255,.55);border-color:rgba(255,255,255,.4);font-size:13px}
+.st-node-label{margin-top:5px;font-size:9.5px;font-weight:700;color:#fff;background:rgba(12,18,44,.6);border-radius:9px;padding:2.5px 8px;white-space:nowrap;backdrop-filter:blur(2px)}
+.st-node.cur .st-node-label{background:linear-gradient(135deg,#5dade2,#2980b9)}
+.st-mode-toggle{display:flex;gap:8px;margin:2px 0 10px}
+.smt-btn{flex:1;border:1px solid var(--card-border);background:var(--input-bg);color:var(--text2);border-radius:10px;padding:7px 0;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+.smt-btn.on{background:var(--accent);border-color:var(--accent);color:#fff}
 /* 结局徽章卡 */
 .st-ending{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,rgba(247,183,51,.18),rgba(252,74,26,.06));border:1px solid rgba(247,183,51,.5);border-radius:16px;padding:13px 14px;margin-bottom:12px;cursor:pointer}
 .st-ending .se-ic{font-size:28px}
@@ -8664,6 +8681,11 @@ function storyEndingOf(a) {
 }
 
 var _st = null; // 章内运行状态
+var _storyMapMode = "map"; // 地图 / 列表
+var STORY_MAP_NODES = [
+  { x: 30, y: 91 }, { x: 66, y: 79 }, { x: 30, y: 67 }, { x: 66, y: 55 },
+  { x: 30, y: 43 }, { x: 66, y: 31 }, { x: 30, y: 19 }, { x: 52, y: 7 }
+];
 function showStory() {
   hideAllViews();
   document.getElementById("storyView").classList.add("show");
@@ -8689,19 +8711,41 @@ function renderStoryMap() {
   if (ending) {
     h += '<div class="st-ending" onclick="renderStoryEnding()"><span class="se-ic">' + ending.ic + '</span><div><div class="se-title">已达成结局 · ' + escHtml(ending.title) + '</div><div class="se-sub">点击查看 · 提升属性可改写</div></div><span class="sc-state">›</span></div>';
   }
-  for (var i = 0; i < STORY_CH.length; i++) {
-    var c = STORY_CH[i];
-    var cleared = !!s.cleared[i];
-    var unlocked = i + 1 <= s.unlocked;
-    var cls = "st-ch" + (cleared ? " done" : "") + (unlocked && i + 1 === s.unlocked && !cleared ? " cur" : "");
-    if (!unlocked) cls += " locked";
-    var state = cleared ? "✓" : (unlocked ? (i + 1 === s.unlocked && !cleared ? "▶ 继续" : "重玩") : "🔒");
-    h += '<div class="' + cls + '" ' + (unlocked ? 'onclick="storyStartChapter(' + i + ')"' : '') + '>'
-      + '<div class="sc-num">' + (cleared ? "✓" : i + 1) + '</div>'
-      + '<div class="sc-info"><div class="sc-title">' + escHtml(c.title.replace(/^第.章 · /, "")) + '</div><div class="sc-sub"><span class="sc-year">' + escHtml(c.year) + '</span>' + c.gates.length + ' 个题目关卡</div></div>'
-      + '<span class="sc-state">' + state + '</span></div>';
+  if (_storyMapMode === "map") {
+    // 闯关地图: 背景插画 + 蜿蜒虚线路径 + 章节节点
+    var pts = STORY_MAP_NODES.map(function(n) { return n.x + "," + n.y; }).join(" ");
+    h += '<div class="st-map"><img class="st-map-bg" src="images/story/map-bg.webp" />'
+      + '<svg class="st-map-path" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M' + pts.replace(/ /g, " L ") + '" fill="none" stroke="rgba(255,255,255,.75)" stroke-width="3" stroke-dasharray="1 3" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>';
+    for (var ni = 0; ni < STORY_MAP_NODES.length; ni++) {
+      var n = STORY_MAP_NODES[ni];
+      var cc = STORY_CH[ni];
+      var ncleared = !!s.cleared[ni];
+      var nunlocked = ni + 1 <= s.unlocked;
+      var ncls = "st-node" + (ncleared ? " done" : "") + (nunlocked && ni + 1 === s.unlocked && !ncleared ? " cur" : "");
+      if (!nunlocked) ncls += " locked";
+      var ninner = ncleared ? "✓" : (nunlocked ? (ni + 1 === s.unlocked && !ncleared ? "▶" : ni + 1) : "🔒");
+      h += '<div class="' + ncls + '" style="left:' + n.x + '%;top:' + n.y + '%" ' + (nunlocked ? 'onclick="storyStartChapter(' + ni + ')"' : 'onclick="showToast(\'先完成前面的章节吧\')"') + '>'
+        + '<div class="st-node-circle">' + ninner + '</div>'
+        + '<div class="st-node-label">' + escHtml(cc.title.replace(/^第.章 · /, "")) + '</div>'
+        + '</div>';
+    }
+    h += '</div>';
+  } else {
+    for (var i = 0; i < STORY_CH.length; i++) {
+      var c = STORY_CH[i];
+      var cleared = !!s.cleared[i];
+      var unlocked = i + 1 <= s.unlocked;
+      var cls = "st-ch" + (cleared ? " done" : "") + (unlocked && i + 1 === s.unlocked && !cleared ? " cur" : "");
+      if (!unlocked) cls += " locked";
+      var state = cleared ? "✓" : (unlocked ? (i + 1 === s.unlocked && !cleared ? "▶ 继续" : "重玩") : "🔒");
+      h += '<div class="' + cls + '" ' + (unlocked ? 'onclick="storyStartChapter(' + i + ')"' : '') + '>'
+        + '<div class="sc-num">' + (cleared ? "✓" : i + 1) + '</div>'
+        + '<div class="sc-info"><div class="sc-title">' + escHtml(c.title.replace(/^第.章 · /, "")) + '</div><div class="sc-sub"><span class="sc-year">' + escHtml(c.year) + '</span>' + c.gates.length + ' 个题目关卡</div></div>'
+        + '<span class="sc-state">' + state + '</span></div>';
+    }
   }
-  h += '<button class="st-reset" onclick="storyReset()">重置剧情存档</button>';
+  h += '<div class="st-mode-toggle"><button class="smt-btn' + (_storyMapMode === "map" ? " on" : "") + '" onclick="_storyMapMode=\'map\';renderStoryMap()">🗺️ 地图</button><button class="smt-btn' + (_storyMapMode === "list" ? " on" : "") + '" onclick="_storyMapMode=\'list\';renderStoryMap()">📋 列表</button></div>'
+    + '<button class="st-reset" onclick="storyReset()">重置剧情存档</button>';
   document.getElementById("storyBody").innerHTML = h;
 }
 function storyReset() {
