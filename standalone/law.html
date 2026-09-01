@@ -8586,7 +8586,6 @@ function imeAfterEdit() {
   var el = IME.target;
   if (!el) return;
   try { el.dispatchEvent(new Event("input", { bubbles: true })); } catch (e) {}
-  try { el.scrollIntoView({ block: "center" }); } catch (e) { el.scrollIntoView(); }
 }
 function imeSpace() {
   if (IME.lang === "cn" && IME.py) {
