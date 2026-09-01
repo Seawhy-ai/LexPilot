@@ -1725,11 +1725,6 @@ body.dark .af-opt{background:#2a2a2a}
           <button class="bubble-swatch s-aurora" title="极光紫" onclick="selectBubbleStyle('aurora')"></button>
           <button class="bubble-swatch s-ocean" title="深海蓝" onclick="selectBubbleStyle('ocean')"></button>
         </div>
-        <div class="s-label" style="margin-top:8px">输入法</div>
-        <div class="s-row">
-          <button class="s-btn" id="sImeFcitx" onclick="setImeEngine('fcitx',this)">fcitx5 拼音</button>
-          <button class="s-btn" id="sImeBuiltin" onclick="setImeEngine('builtin',this)">内置键盘</button>
-        </div>
         <div class="s-row" style="margin-top:8px">
           <button class="s-btn danger" onclick="clearHistory()">清空对话</button>
         </div>
@@ -2214,14 +2209,6 @@ body.dark .af-opt{background:#2a2a2a}
         <div class="sf-label" style="display:flex;justify-content:space-between;margin-bottom:8px"><span>行间距（阅读法条更舒适）</span><span id="lineHeightVal" style="color:var(--accent);font-weight:800">1.75</span></div>
         <input type="range" id="lineHeightSlider" min="140" max="220" step="5" style="width:100%;accent-color:var(--accent)" oninput="setLineHeight(this.value/100)" />
         <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text2);margin-top:2px"><span>紧凑</span><span>宽松</span></div>
-      </div>
-      <div style="padding:12px 16px;border-bottom:1px solid var(--card-border)">
-        <span class="sf-label" style="margin-bottom:8px">键盘模式</span>
-        <div class="app-btn-row" id="kbdModeGroup">
-          <button class="app-btn" data-val="ime" onclick="setKbdMode('ime')">内置键盘</button>
-          <button class="app-btn" data-val="system" onclick="setKbdMode('system')">系统键盘</button>
-        </div>
-        <div style="font-size:9px;color:var(--text2);margin-top:4px;line-height:1.6">系统键盘 = 使用手机原生键盘，可正常呼出语音输入、系统复制粘贴与自动纠错</div>
       </div>
       <div class="pm-item" onclick="showAbout()">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><circle cx="12" cy="8" r="0.5" fill="currentColor"/></svg>
@@ -3974,8 +3961,10 @@ try { var s = JSON.parse(localStorage.getItem("seawhy-lex-config") || "{}"); SET
 var userTheme = "light";
 try { userTheme = JSON.parse(localStorage.getItem("seawhy-lex-theme") || '"light"'); } catch(e) {}
 
-var options = { deep: true, multi: false, practical: false, compare: false, quoteAuto: true, showNickname: false, homeBg: "default", bubbleStyle: "classic", homeWidget: "todo", imeEngine: "fcitx", kbdMode: "ime" };
+var options = { deep: true, multi: false, practical: false, compare: false, quoteAuto: true, showNickname: false, homeBg: "default", bubbleStyle: "classic", homeWidget: "todo", imeEngine: "fcitx", kbdMode: "system" };
 try { var o = JSON.parse(localStorage.getItem("seawhy-lex-opts") || "{}"); Object.keys(options).forEach(function(k){ if(k in o) options[k] = o[k]; }); } catch(e) {}
+// 【临时】停用内置键盘，强制系统键盘：无论本地是否存过 kbdMode=ime，一律走系统键盘（内置键盘实现保留，稳定后可删本行恢复）
+options.kbdMode = "system";
 // 立即应用已保存的背景与气泡样式（不等 DOMContentLoaded，避免外部脚本加载慢导致重开后恢复默认）
 try { applyHomeBg(); } catch(e) {}
 try { applyBubbleStyle(); } catch(e) {}
