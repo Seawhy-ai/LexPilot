@@ -4766,7 +4766,9 @@ var _lotteryBusy = false;
 
 function openLottery() {
   hideAllViews();
-  document.getElementById("lotteryView").classList.add("show");
+  var el = document.getElementById("lotteryView");
+  el.style.display = "";
+  el.classList.add("show");
   renderLottery();
 }
 function renderLottery() {
@@ -11080,7 +11082,9 @@ var _fromPlaza = false;
 function showPlaza() {
   hideAllViews();
   _fromPlaza = true;
-  document.getElementById("plazaView").classList.add("show");
+  var el = document.getElementById("plazaView");
+  el.style.display = "";
+  el.classList.add("show");
 }
 
 function showProfile() {
