@@ -1069,155 +1069,148 @@ body.dark .exam-rec.bad .er-score{background:rgba(231,76,60,.2);color:#ee9a86}
 
 /* ===== 积分夺宝 (LOTTERY) ===== */
 #lotteryView{position:relative;flex:1;display:none!important;flex-direction:column;overflow:hidden;overscroll-behavior:none;background:var(--bg)}
-#lotteryView::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle at 50% 0%,rgba(247,183,51,.10),transparent 52%)}
-body.dark #lotteryView::before{background:radial-gradient(circle at 50% 0%,rgba(247,183,51,.13),transparent 55%)}
+#lotteryView::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle at 50% 0%,rgba(247,183,51,.10),transparent 52%),radial-gradient(circle at 50% 100%,rgba(122,168,255,.06),transparent 60%)}
+body.dark #lotteryView::before{background:radial-gradient(circle at 50% 0%,rgba(247,183,51,.13),transparent 55%),radial-gradient(circle at 50% 100%,rgba(122,168,255,.08),transparent 60%)}
 #lotteryView.show{display:flex!important}
 .lottery-body{position:relative;z-index:1;flex:1;overflow-y:auto;padding:14px 14px calc(20px + env(safe-area-inset-bottom));max-width:600px;margin:0 auto;width:100%}
-.lottery-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
-.lottery-stat{position:relative;background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:10px 12px;min-width:0}
+.lottery-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.lottery-stat{position:relative;background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:12px 14px;min-width:0;transition:all .25s cubic-bezier(.16,1,.3,1);backdrop-filter:blur(8px)}
 .lottery-stat .ls-val{font-size:16px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;white-space:nowrap;line-height:1.1}
-.lottery-stat .ls-label{font-size:10px;color:var(--text2);margin-top:1px}
+.lottery-stat .ls-label{font-size:10px;color:var(--text2);margin-top:2px;letter-spacing:.3px}
 .lottery-stat .ls-ic{font-size:20px;line-height:1}
 .lottery-stat .ls-main{display:flex;flex-direction:column;justify-content:center;min-width:0}
-.lottery-stat.hero{display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,rgba(247,183,51,.16),rgba(252,74,26,.05));border-color:rgba(247,183,51,.45)}
-.lottery-stat.hero .ls-coin{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;filter:drop-shadow(0 2px 4px rgba(232,160,32,.4))}
-.lottery-stat.hero .ls-val{font-size:19px;color:#c8870e}
-body.dark .lottery-stat.hero .ls-val{color:#f7b733}
-.lottery-stat.hero .ls-label{font-size:10px;font-weight:700;color:#b47b0e}
-body.dark .lottery-stat.hero .ls-label{color:#f7b733}
-.lottery-stat.luck{display:flex;flex-direction:column;justify-content:center}
+.lottery-stat.hero{display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,rgba(247,183,51,.18),rgba(252,74,26,.08));border:1.5px solid rgba(247,183,51,.5);box-shadow:0 8px 24px rgba(247,183,51,.12),inset 0 1px 2px rgba(255,255,255,.08)}
+.lottery-stat.hero .ls-coin{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;filter:drop-shadow(0 3px 8px rgba(232,160,32,.5));background:radial-gradient(135deg,rgba(255,224,138,.15),transparent 70%)}
+.lottery-stat.hero .ls-val{font-size:20px;color:#d49d1d;letter-spacing:.5px}
+body.dark .lottery-stat.hero .ls-val{color:#fac858}
+.lottery-stat.hero .ls-label{font-size:10px;font-weight:700;color:#c89c20;letter-spacing:.4px}
+body.dark .lottery-stat.hero .ls-label{color:#fac858}
+.lottery-stat.luck{display:flex;flex-direction:column;justify-content:center;background:linear-gradient(135deg,rgba(122,168,255,.12),rgba(167,139,250,.08));border:1.5px solid rgba(122,168,255,.35)}
 .lottery-stat.luck .ls-top{display:flex;align-items:baseline;justify-content:space-between;gap:6px}
 .lottery-stat.luck .ls-label{margin-top:0}
-.lottery-stat.sub{display:flex;align-items:center;gap:8px}
+.lottery-stat.luck .ls-val{color:#5BA3F5}
+body.dark .lottery-stat.luck .ls-val{color:#7aa8ff}
+.lottery-stat.sub{display:flex;align-items:center;gap:10px;background:var(--input-bg);border-radius:14px;padding:10px 12px}
 .lottery-stat.sub .ls-ic{display:flex;flex-shrink:0}
-.lottery-stat.sub .ls-val{font-size:15px}
-.lottery-luck-bar{height:8px;background:var(--card-border);border-radius:4px;margin-top:6px;overflow:hidden;cursor:pointer}
-.lottery-luck-fill{height:100%;width:0%;background:linear-gradient(90deg,#f7b733,#fc4a1a);border-radius:4px;transition:width .4s}
-.lottery-luck-fill.near{background:linear-gradient(90deg,#f7b733,#ff4d4f);box-shadow:0 0 10px rgba(247,183,51,.75);animation:luckPulse 1.1s ease-in-out infinite}
-.lottery-luck-fill.full{background:linear-gradient(90deg,#f7b733,#ff4d4f);box-shadow:0 0 12px rgba(255,77,79,.8)}
-@keyframes luckPulse{0%,100%{box-shadow:0 0 8px rgba(247,183,51,.6)}50%{box-shadow:0 0 16px rgba(247,183,51,.95)}}
-.lottery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:2px 0 16px}
-.lottery-cell{position:relative;background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:6px;overflow:hidden;transition:transform .12s}
-.lottery-cell::before{content:"";position:absolute;left:0;top:0;right:0;height:3px;background:var(--rarity-c,#94a3b8);opacity:.9}
-.lottery-cell .lc-ic{line-height:1;color:var(--rarity-c,#64748b);display:flex;align-items:center;justify-content:center}
-.lottery-cell .lc-tx{font-size:10px;color:var(--text2);text-align:center;line-height:1.25;font-weight:600}
-/* 分类标签 */
-.lc-tag{position:absolute;top:5px;left:5px;z-index:3;font-size:8.5px;font-weight:800;padding:1.5px 6px;border-radius:7px;letter-spacing:.5px}
-.lc-tag.t-gold{background:rgba(247,183,51,.22);color:#b45309}
-body.dark .lc-tag.t-gold{background:rgba(247,183,51,.18);color:#f7b733}
-.lc-tag.t-purple{background:rgba(167,139,250,.2);color:#6d28d9}
-body.dark .lc-tag.t-purple{background:rgba(167,139,250,.16);color:#c3b1fc}
-.lc-tag.t-gray{background:rgba(100,116,139,.15);color:#64748b}
-/* 稀有度边框: 次大奖微拟物 */
-.lottery-cell.rarity-gold{border:2px solid rgba(247,183,51,.7);background:linear-gradient(160deg,rgba(247,183,51,.2),rgba(252,74,26,.07));box-shadow:inset 0 1px 8px rgba(247,183,51,.18)}
-.lottery-cell.rarity-epic{border:2px solid rgba(167,139,250,.55);background:linear-gradient(160deg,rgba(167,139,250,.16),rgba(167,139,250,.04));box-shadow:inset 0 1px 8px rgba(167,139,250,.15)}
-/* 普通物品: 轻微阴影 */
-.lottery-cell.common{--rarity-c:#94a3b8;box-shadow:0 2px 6px rgba(0,0,0,.07)}
-.lottery-cell.legend{--rarity-c:#f7b733;background:linear-gradient(160deg,rgba(247,183,51,.16),rgba(252,74,26,.06));border-color:rgba(247,183,51,.5)}
-.lottery-cell.legend .lc-ic{filter:drop-shadow(0 2px 6px rgba(247,183,51,.7))}
-.lottery-cell.legend .lc-tx{color:#f7b733;font-weight:800}
-.lottery-cell.epic{--rarity-c:#a78bfa;background:linear-gradient(160deg,rgba(167,139,250,.14),rgba(167,139,250,.04));border-color:rgba(167,139,250,.45)}
-.lottery-cell.epic .lc-ic{filter:drop-shadow(0 2px 5px rgba(167,139,250,.55))}
-.lottery-cell.epic .lc-tx{color:#a78bfa;font-weight:700}
-.lottery-cell.brave{--rarity-c:#38bdf8;background:linear-gradient(160deg,rgba(56,189,248,.12),rgba(56,189,248,.03));border-color:rgba(56,189,248,.4)}
-.lottery-cell.brave .lc-tx{color:#0ea5e9;font-weight:700}
-/* 谢谢参与: 灰度降存在感 */
-.lottery-cell.empty{--rarity-c:#9ca3af;background:repeating-linear-gradient(45deg,transparent,transparent 6px,rgba(107,114,128,.05) 6px,rgba(107,114,128,.05) 11px);border-style:dashed;border-color:rgba(107,114,128,.35);filter:grayscale(.85);opacity:.7}
-.lottery-cell.empty .lc-ic{opacity:.55}
-.lottery-cell.empty .lc-tx{opacity:.6;font-size:9px}
-/* 大奖C位: 法魂水晶呼吸光效 + 漂浮粒子 */
-.lottery-cell.center-piece{border-width:2px;border-color:rgba(247,183,51,.85);animation:crystalBreath 2.2s ease-in-out infinite}
-@keyframes crystalBreath{0%,100%{box-shadow:0 0 8px rgba(247,183,51,.35),inset 0 0 10px rgba(247,183,51,.18)}50%{box-shadow:0 0 22px rgba(247,183,51,.65),inset 0 0 16px rgba(247,183,51,.32)}}
-.lottery-cell.center-piece .lc-ic svg{animation:crystalFloat 2.6s ease-in-out infinite}
-@keyframes crystalFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
-.cp-dot{position:absolute;width:4px;height:4px;border-radius:50%;background:#ffe08a;opacity:0;animation:cpFloat 3s ease-in-out infinite;z-index:2;pointer-events:none}
-.cp-dot.d1{left:16%;bottom:32%;box-shadow:0 0 6px rgba(255,224,138,.9)}
-.cp-dot.d2{left:72%;top:22%;animation-delay:1s;box-shadow:0 0 6px rgba(255,224,138,.9)}
-.cp-dot.d3{left:58%;bottom:16%;animation-delay:2s;box-shadow:0 0 6px rgba(255,224,138,.9)}
-@keyframes cpFloat{0%,100%{opacity:0;transform:translateY(2px)}50%{opacity:.95;transform:translateY(-9px)}}
-/* 大奖流光:传说格一道高光循环扫过 */
-.lottery-cell.jackpot-cell::after{content:"";position:absolute;top:-30%;left:-70%;width:45%;height:160%;background:linear-gradient(100deg,transparent,rgba(255,236,180,.55),transparent);transform:skewX(-20deg);animation:cellSweep 2.8s ease-in-out infinite;pointer-events:none;z-index:2}
+.lottery-stat.sub .ls-val{font-size:15px;font-weight:700}
+.lottery-luck-bar{height:10px;background:var(--card-border);border-radius:5px;margin-top:8px;overflow:hidden;cursor:pointer;box-shadow:inset 0 1px 3px rgba(0,0,0,.1)}
+.lottery-luck-fill{height:100%;width:0%;background:linear-gradient(90deg,#f7b733 0%,#fc4a1a 50%,#fac858 100%);border-radius:5px;transition:width .5s cubic-bezier(.16,1,.3,1);box-shadow:0 2px 8px rgba(247,183,51,.4)}
+.lottery-luck-fill.near{background:linear-gradient(90deg,#f7b733,#ff6b6b,#ff4d4f);box-shadow:0 0 16px rgba(255,107,107,.65),inset 0 1px 2px rgba(255,255,255,.3);animation:luckPulse 1s ease-in-out infinite}
+.lottery-luck-fill.full{background:linear-gradient(90deg,#fac858,#ff4d4f);box-shadow:0 0 20px rgba(255,77,79,.85)}
+@keyframes luckPulse{0%,100%{box-shadow:0 0 12px rgba(247,183,51,.5),inset 0 1px 2px rgba(255,255,255,.2)}50%{box-shadow:0 0 24px rgba(255,107,107,.75),inset 0 1px 3px rgba(255,255,255,.4)}}
+.lottery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:6px 0 20px;perspective:1000px}
+.lottery-cell{position:relative;background:var(--card-bg);border:1.5px solid var(--card-border);border-radius:16px;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;padding:7px;overflow:hidden;transition:all .18s cubic-bezier(.16,1,.3,1);transform-style:preserve-3d;will-change:transform}
+.lottery-cell::before{content:"";position:absolute;left:0;top:0;right:0;height:3px;background:var(--rarity-c,#94a3b8);opacity:.95;z-index:2}
+.lottery-cell .lc-ic{line-height:1;color:var(--rarity-c,#64748b);display:flex;align-items:center;justify-content:center;transition:all .2s}
+.lottery-cell .lc-tx{font-size:11px;color:var(--text2);text-align:center;line-height:1.2;font-weight:600;transition:color .2s}
+.lc-tag{position:absolute;top:6px;left:6px;z-index:3;font-size:8px;font-weight:800;padding:2px 7px;border-radius:8px;letter-spacing:.5px;backdrop-filter:blur(4px)}
+.lc-tag.t-gold{background:rgba(247,183,51,.25);color:#d49d1d}
+body.dark .lc-tag.t-gold{background:rgba(247,183,51,.22);color:#fac858}
+.lc-tag.t-purple{background:rgba(167,139,250,.22);color:#7c3aed}
+body.dark .lc-tag.t-purple{background:rgba(167,139,250,.18);color:#d8b4fe}
+.lc-tag.t-gray{background:rgba(100,116,139,.18);color:#64748b}
+.lottery-cell.rarity-gold{border:2px solid rgba(247,183,51,.75);background:linear-gradient(160deg,rgba(247,183,51,.22),rgba(252,74,26,.09));box-shadow:0 8px 24px rgba(247,183,51,.15),inset 0 1px 3px rgba(255,255,255,.1)}
+.lottery-cell.rarity-epic{border:2px solid rgba(167,139,250,.6);background:linear-gradient(160deg,rgba(167,139,250,.18),rgba(167,139,250,.06));box-shadow:0 8px 24px rgba(167,139,250,.15),inset 0 1px 3px rgba(255,255,255,.08)}
+.lottery-cell.common{--rarity-c:#94a3b8;box-shadow:0 4px 12px rgba(0,0,0,.08),inset 0 1px 2px rgba(255,255,255,.05)}
+.lottery-cell.legend{--rarity-c:#f7b733;background:linear-gradient(160deg,rgba(247,183,51,.18),rgba(252,74,26,.08));border-color:rgba(247,183,51,.55);box-shadow:0 6px 20px rgba(247,183,51,.18)}
+.lottery-cell.legend .lc-ic{filter:drop-shadow(0 2px 8px rgba(247,183,51,.6))}
+.lottery-cell.legend .lc-tx{color:#f7b733;font-weight:700}
+.lottery-cell.epic{--rarity-c:#a78bfa;background:linear-gradient(160deg,rgba(167,139,250,.16),rgba(167,139,250,.05));border-color:rgba(167,139,250,.5);box-shadow:0 6px 20px rgba(167,139,250,.15)}
+.lottery-cell.epic .lc-ic{filter:drop-shadow(0 2px 7px rgba(167,139,250,.5))}
+.lottery-cell.epic .lc-tx{color:#c7a2fa;font-weight:700}
+.lottery-cell.brave{--rarity-c:#38bdf8;background:linear-gradient(160deg,rgba(56,189,248,.14),rgba(56,189,248,.04));border-color:rgba(56,189,248,.45);box-shadow:0 6px 20px rgba(56,189,248,.12)}
+.lottery-cell.brave .lc-tx{color:#22d3ee;font-weight:700}
+.lottery-cell.empty{--rarity-c:#9ca3af;background:repeating-linear-gradient(45deg,transparent,transparent 6px,rgba(107,114,128,.06) 6px,rgba(107,114,128,.06) 11px);border-style:dashed;border-color:rgba(107,114,128,.35);filter:grayscale(.85);opacity:.65}
+.lottery-cell.empty .lc-ic{opacity:.5}
+.lottery-cell.empty .lc-tx{opacity:.55;font-size:10px}
+.lottery-cell.center-piece{border-width:2px;border-color:rgba(247,183,51,.9);animation:crystalBreath 2.4s ease-in-out infinite}
+@keyframes crystalBreath{0%,100%{box-shadow:0 0 12px rgba(247,183,51,.35),inset 0 0 12px rgba(247,183,51,.2)}50%{box-shadow:0 0 28px rgba(247,183,51,.7),inset 0 0 20px rgba(247,183,51,.35)}}
+.lottery-cell.center-piece .lc-ic svg{animation:crystalFloat 2.8s ease-in-out infinite}
+@keyframes crystalFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-4px) scale(1.05)}}
+.cp-dot{position:absolute;width:5px;height:5px;border-radius:50%;background:#ffe08a;opacity:0;animation:cpFloat 3.2s ease-in-out infinite;z-index:2;pointer-events:none;filter:drop-shadow(0 0 8px rgba(255,224,138,.8))}
+.cp-dot.d1{left:16%;bottom:32%}
+.cp-dot.d2{left:72%;top:22%;animation-delay:1s}
+.cp-dot.d3{left:58%;bottom:16%;animation-delay:2s}
+@keyframes cpFloat{0%,100%{opacity:0;transform:translateY(3px) scale(.8)}50%{opacity:1;transform:translateY(-12px) scale(1.1)}}
+.lottery-cell.jackpot-cell::after{content:"";position:absolute;top:-30%;left:-70%;width:45%;height:160%;background:linear-gradient(100deg,transparent,rgba(255,240,200,.65),transparent);transform:skewX(-20deg);animation:cellSweep 3s ease-in-out infinite;pointer-events:none;z-index:2}
 @keyframes cellSweep{0%{left:-70%}55%,100%{left:130%}}
-.lottery-cell.hit{transform:scale(1.08);border-color:var(--accent);background:var(--accent-light);box-shadow:0 0 0 2px var(--accent),0 4px 14px rgba(74,144,217,.35);z-index:2}
-.lottery-cell.hit .lc-ic{transform:scale(1.15)}
-/* 抽奖中: 九宫格快速闪烁 */
-.lottery-grid.drawing .lottery-cell{animation:cellFlicker .12s linear infinite alternate}
-@keyframes cellFlicker{from{opacity:.5}to{opacity:1}}
-@keyframes crystalPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
-.lottery-draw-row{display:flex;gap:10px;margin-bottom:14px}
+.lottery-cell.hit{transform:scale(1.12) perspective(1000px) rotateY(5deg);border-color:var(--accent);background:var(--accent-light);box-shadow:0 0 0 3px var(--accent),0 8px 24px rgba(74,144,217,.5);z-index:3}
+.lottery-cell.hit .lc-ic{transform:scale(1.2);animation:hitPulse .4s cubic-bezier(.34,1.56,.64,1)}
+@keyframes hitPulse{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1.2)}}
+.lottery-grid.drawing .lottery-cell{animation:cellFlicker .1s linear infinite alternate}
+@keyframes cellFlicker{from{opacity:.55}to{opacity:1}}
+.lottery-draw-row{display:flex;gap:12px;margin-bottom:18px}
 .l-draw-wrap{flex:1;position:relative;min-width:0;display:flex}
 .l-draw-wrap .l-draw-btn{width:100%}
-.l-draw-btn{flex:1;position:relative;border:none;border-radius:16px;padding:13px 8px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;color:#fff;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:2px;overflow:hidden}
-.l-draw-btn .ld-cost{font-size:10px;font-weight:600;opacity:.9}
-.l-draw-btn.primary{background:linear-gradient(135deg,#f7b733,#fc4a1a);box-shadow:0 6px 20px rgba(247,183,51,.45),0 2px 6px rgba(0,0,0,.15);animation:btnBreath 2s ease-in-out infinite}
-@keyframes btnBreath{0%,100%{box-shadow:0 6px 18px rgba(247,183,51,.4),0 2px 6px rgba(0,0,0,.12)}50%{box-shadow:0 6px 30px rgba(247,183,51,.85),0 2px 8px rgba(252,74,26,.35);transform:translateY(-1px)}}
-.l-draw-btn.primary::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);animation:btnShimmer 2.6s ease-in-out infinite;transform:skewX(-18deg)}
+.l-draw-btn{flex:1;position:relative;border:none;border-radius:18px;padding:14px 10px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;color:#fff;transition:all .18s cubic-bezier(.16,1,.3,1);display:flex;flex-direction:column;align-items:center;gap:3px;overflow:hidden;active:scale(.94)}
+.l-draw-btn .ld-cost{font-size:10px;font-weight:600;opacity:.92;letter-spacing:.2px}
+.l-draw-btn.primary{background:linear-gradient(135deg,#fac858 0%,#f7b733 50%,#fc4a1a 100%);box-shadow:0 8px 28px rgba(247,183,51,.48),0 3px 8px rgba(252,74,26,.3),inset 0 1px 2px rgba(255,255,255,.2);animation:btnBreath 2.2s ease-in-out infinite}
+@keyframes btnBreath{0%,100%{box-shadow:0 8px 24px rgba(247,183,51,.42),0 3px 8px rgba(252,74,26,.25),inset 0 1px 2px rgba(255,255,255,.15)}50%{box-shadow:0 8px 36px rgba(247,183,51,.92),0 4px 12px rgba(252,74,26,.45),inset 0 1px 3px rgba(255,255,255,.25);transform:translateY(-2px)}}
+.l-draw-btn.primary::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.42),transparent);animation:btnShimmer 2.8s ease-in-out infinite;transform:skewX(-18deg);pointer-events:none}
 @keyframes btnShimmer{0%{left:-60%}55%,100%{left:120%}}
-.ld-bubble{position:absolute;top:-13px;right:6px;background:linear-gradient(135deg,#ff6b6b,#fc4a1a);color:#fff;font-size:10px;font-weight:800;padding:3px 9px;border-radius:11px 11px 11px 2px;box-shadow:0 3px 10px rgba(252,74,26,.4);animation:bubbleFloat 1.8s ease-in-out infinite;z-index:3;letter-spacing:.5px}
-@keyframes bubbleFloat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-4px) rotate(2deg)}}
-.l-draw-btn.ghost{background:transparent;color:#f7b733;border:2px solid rgba(247,183,51,.55);box-shadow:none}
-.l-draw-btn.ghost .ld-cost{color:var(--text2);opacity:.85}
-.l-draw-btn:active{transform:scale(.96)}
-.l-draw-btn:disabled{opacity:.5;transform:none;cursor:not-allowed;box-shadow:none;animation:none}
+.ld-bubble{position:absolute;top:-14px;right:8px;background:linear-gradient(135deg,#ff6b6b 0%,#fc4a1a 100%);color:#fff;font-size:11px;font-weight:800;padding:4px 11px;border-radius:12px 12px 12px 3px;box-shadow:0 4px 14px rgba(252,74,26,.48);animation:bubbleFloat 2s ease-in-out infinite;z-index:3;letter-spacing:.5px}
+@keyframes bubbleFloat{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-6px) rotate(2deg)}}
+.l-draw-btn.ghost{background:transparent;color:#fac858;border:2.5px solid rgba(247,183,51,.6);box-shadow:0 4px 12px rgba(247,183,51,.15),inset 0 1px 2px rgba(255,255,255,.05)}
+.l-draw-btn.ghost .ld-cost{color:var(--text2);opacity:.8}
+.l-draw-btn.ghost:active{background:rgba(247,183,51,.08);border-color:rgba(247,183,51,.8)}
+.l-draw-btn:active{transform:scale(.94)}
+.l-draw-btn:disabled{opacity:.48;transform:none;cursor:not-allowed;box-shadow:none;animation:none}
 .l-draw-btn.ghost:disabled{background:var(--card-bg);color:var(--text2);border-color:var(--card-border)}
-.lottery-cta-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.l-cta{position:relative;border:1px solid var(--card-border);background:var(--card-bg);color:var(--text);border-radius:14px;padding:12px 10px 12px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px;transition:all .15s;overflow:hidden}
-.l-cta::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--cta-c,var(--accent))}
-.l-cta:active{transform:scale(.97)}
-.l-cta .l-cta-badge{margin-left:auto;background:var(--accent);color:#fff;border-radius:10px;padding:1px 7px;font-size:11px;font-weight:800}
+.lottery-cta-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px}
+.l-cta{position:relative;border:1.5px solid var(--card-border);background:var(--card-bg);color:var(--text);border-radius:16px;padding:13px 11px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:7px;transition:all .2s cubic-bezier(.16,1,.3,1);overflow:hidden;flex-direction:column;text-align:center;active:scale(.92)}
+.l-cta::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3.5px;background:var(--cta-c,var(--accent));border-radius:2px;transition:width .2s}
+.l-cta:hover::before{width:5px}
+.l-cta:active{transform:scale(.92)}
+.l-cta .l-cta-badge{margin-left:auto;background:var(--accent);color:#fff;border-radius:10px;padding:2px 8px;font-size:10px;font-weight:800;position:absolute;top:2px;right:2px}
 .l-cta.c-challenge{--cta-c:#38bdf8}
 .l-cta.c-skin{--cta-c:#14b8a6}
 .l-cta.c-badge{--cta-c:#a78bfa}
-.l-cta.crystal-cta{--cta-c:#f7b733;background:linear-gradient(135deg,rgba(247,183,51,.1),transparent)}
-.l-cta.crystal-cta .l-cta-badge{background:linear-gradient(135deg,#f7b733,#fc4a1a)}
-.l-cta:disabled{opacity:.5;cursor:not-allowed}
-/* 红点提示: 有可领取/可合成/可兑换 */
-.l-cta.has-dot::after{content:"";position:absolute;top:7px;right:7px;width:8px;height:8px;border-radius:50%;background:#ff4d4f;border:1.5px solid #fff;box-shadow:0 0 6px rgba(255,77,79,.8);animation:dotPulse 1.4s ease-in-out infinite}
-@keyframes dotPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.35)}}
-.lottery-note{margin-top:14px;text-align:center;font-size:10.5px;color:var(--text2);letter-spacing:.3px}
-.lottery-result-list{display:flex;flex-direction:column;gap:8px;margin-top:6px}
-.lottery-result-list.multi{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.lr-item{display:flex;align-items:center;gap:10px;background:var(--input-bg);border-radius:12px;padding:10px 12px;border-left:3px solid var(--lr-c,#94a3b8)}
-.lr-item.r-legend{--lr-c:#f7b733}.lr-item.r-epic{--lr-c:#a78bfa}.lr-item.r-brave{--lr-c:#38bdf8}.lr-item.r-common{--lr-c:#94a3b8}
-.lr-item .lr-ic{line-height:1;display:flex;align-items:center;justify-content:center;color:var(--lr-c,#64748b)}
-.lr-item .lr-name{font-size:13px;font-weight:700;color:var(--text)}
-.lr-item .lr-desc{font-size:11px;color:var(--text2)}
-.lottery-result-list.multi .lr-item{padding:8px 10px;gap:8px}
+.l-cta.crystal-cta{--cta-c:#f7b733;background:linear-gradient(135deg,rgba(247,183,51,.12),rgba(122,168,255,.06))}
+.l-cta.crystal-cta .l-cta-badge{background:linear-gradient(135deg,#fac858,#fc4a1a)}
+.l-cta:disabled{opacity:.45;cursor:not-allowed}
+.l-cta.has-dot::after{content:"";position:absolute;top:6px;right:6px;width:9px;height:9px;border-radius:50%;background:#ff4d4f;border:2px solid #fff;box-shadow:0 0 8px rgba(255,77,79,.9);animation:dotPulse 1.5s ease-in-out infinite}
+@keyframes dotPulse{0%,100%{transform:scale(1);box-shadow:0 0 8px rgba(255,77,79,.7)}50%{transform:scale(1.4);box-shadow:0 0 16px rgba(255,77,79,.95)}}
+.lottery-note{margin-top:16px;text-align:center;font-size:11px;color:var(--text2);letter-spacing:.3px;line-height:1.5}
+.lottery-result-list{display:flex;flex-direction:column;gap:9px;margin-top:8px}
+.lottery-result-list.multi{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.lr-item{display:flex;align-items:center;gap:12px;background:var(--input-bg);border-radius:14px;padding:12px 14px;border-left:4px solid var(--lr-c,#94a3b8);transition:all .25s;animation:lrSlideIn .4s cubic-bezier(.34,1.56,.64,1) backwards}
+.lr-item.r-legend{--lr-c:#fac858}.lr-item.r-epic{--lr-c:#d8b4fe}.lr-item.r-brave{--lr-c:#38bdf8}.lr-item.r-common{--lr-c:#94a3b8}
+.lr-item .lr-ic{line-height:1;display:flex;align-items:center;justify-content:center;color:var(--lr-c,#64748b);font-size:24px;flex-shrink:0}
+.lr-item .lr-name{font-size:13px;font-weight:700;color:var(--text);word-break:break-word}
+.lr-item .lr-desc{font-size:11px;color:var(--text2);margin-top:2px}
+.lottery-result-list.multi .lr-item{padding:10px 12px;gap:9px}
 .lottery-result-list.multi .lr-ic{font-size:20px}
 .lottery-result-list.multi .lr-desc{display:none}
 .lottery-result-list.multi .lr-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.lr-item.rare{background:linear-gradient(160deg,rgba(247,183,51,.2),rgba(252,74,26,.1));border:1px solid rgba(247,183,51,.5)}
-.lr-item.rare .lr-name{color:#f7b733}
-.lr-item.jackpot{position:relative;overflow:hidden;animation:lrfShine 1.6s ease-in-out .25s infinite;background:linear-gradient(160deg,rgba(247,183,51,.22),rgba(252,74,26,.12));border:1px solid rgba(247,183,51,.55)}
-.lr-item.jackpot::after{content:"";position:absolute;top:-40%;left:-70%;width:45%;height:180%;background:linear-gradient(100deg,transparent,rgba(255,240,200,.6),transparent);transform:skewX(-20deg);animation:cellSweep 1.8s ease-in-out infinite;pointer-events:none}
-.lr-item.jackpot .lr-name{color:#f7b733}
-.lr-item.crystal-prize{background:linear-gradient(160deg,rgba(122,168,255,.3),rgba(247,183,51,.22));border:1px solid rgba(122,168,255,.7);box-shadow:0 0 18px rgba(122,168,255,.45);animation:lrfShine 1.2s ease-in-out 0s infinite,crystalGlow 2s ease-in-out infinite}
-.lr-item.crystal-prize .lr-name{background:linear-gradient(90deg,#7aa8ff,#f7b733);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-@keyframes crystalGlow{0%,100%{box-shadow:0 0 14px 2px rgba(122,168,255,.35)}50%{box-shadow:0 0 26px 8px rgba(247,183,51,.55)}}
-@keyframes lrfShine{0%,100%{box-shadow:0 0 0 0 rgba(247,183,51,0)}50%{box-shadow:0 0 22px 6px rgba(247,183,51,.55)}}
-.lrf{position:absolute;inset:0;margin:auto;width:420px;height:420px;border-radius:50%;pointer-events:none;z-index:0;background:radial-gradient(circle,rgba(247,183,51,.55),rgba(247,183,51,.14) 45%,transparent 68%);animation:lrfBurst 1.15s cubic-bezier(.22,.61,.36,1) forwards}
-@keyframes resultShake{0%,100%{transform:none}20%{transform:translate(-5px,2px)}40%{transform:translate(5px,-3px)}60%{transform:translate(-4px,-2px)}80%{transform:translate(4px,2px)}}
-.lrBox.shake{animation:resultShake .45s ease .12s}
-@keyframes lrfBurst{0%{transform:scale(.35);opacity:0}22%{opacity:1}100%{transform:scale(1.5);opacity:0}}
-/* 王者祈愿式抽奖动画: 光球升腾 → 爆发放光 → 卡片翻牌揭晓 */
-.wish{position:fixed;inset:0;z-index:675;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 42%,rgba(56,92,150,.55),rgba(6,12,26,.93) 72%);overflow:hidden}
-.wish-glow{position:absolute;inset:0;margin:auto;width:270px;height:270px;border-radius:50%;background:radial-gradient(circle,rgba(247,183,51,.28),transparent 66%);animation:wishPulse .75s ease-out}
-@keyframes wishPulse{0%{transform:scale(.5);opacity:0}50%{opacity:1}100%{transform:scale(1.3);opacity:0}}
-.wish-orb{position:relative;z-index:1;width:86px;height:86px;border-radius:50%;background:radial-gradient(circle,#fff8e1,#f7b733 45%,#fc4a1a 92%);box-shadow:0 0 42px 15px rgba(247,183,51,.55),0 0 130px 42px rgba(247,183,51,.25);animation:wishFloat .75s ease-out forwards}
-@keyframes wishFloat{0%{transform:translateY(40px) scale(.55);opacity:0}25%{opacity:1}70%{transform:translateY(-4px) scale(1)}100%{transform:translateY(-8px) scale(.98)}}
-.wish-title{position:relative;z-index:1;color:#fff;font-size:13px;letter-spacing:5px;font-weight:700;margin-top:36px;text-shadow:0 0 14px rgba(247,183,51,.6);text-align:center}
-.wish-title small{display:block;font-size:10px;letter-spacing:2px;opacity:.6;margin-top:7px;font-weight:400}
-.wish-dot{position:absolute;border-radius:50%;background:radial-gradient(circle,#fff,#ffd166);animation:wishRise linear forwards}
-@keyframes wishRise{0%{transform:translateY(0);opacity:0}18%{opacity:.9}100%{transform:translateY(-150px);opacity:0}}
-.wish-burst{position:absolute;inset:0;margin:auto;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,rgba(255,236,179,.95),rgba(247,183,51,.5) 40%,transparent 72%);animation:wishBurst .5s ease-out forwards;pointer-events:none;z-index:2}
-@keyframes wishBurst{0%{transform:scale(.4);opacity:0}30%{opacity:1}100%{transform:scale(3.4);opacity:0}}
-.wish-particle{position:absolute;width:7px;height:7px;border-radius:50%;background:#ffd166;box-shadow:0 0 8px rgba(255,209,102,.8);animation:wishFly .5s ease-out forwards;pointer-events:none;z-index:2}
-@keyframes wishFly{0%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(var(--fx),var(--fy)) scale(.3);opacity:0}}
-/* 结果卡片翻牌入场 */
-.lrBox{animation:lrBoxIn .4s ease-out}
-@keyframes lrBoxIn{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:scale(1)}}
-.lottery-result-list .lr-item{animation:cardFlip .5s cubic-bezier(.34,1.56,.64,1) backwards}
-@keyframes cardFlip{0%{transform:perspective(320px) rotateX(-85deg) translateY(16px);opacity:0}100%{transform:perspective(320px) rotateX(0) translateY(0);opacity:1}}
+@keyframes lrSlideIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+.lr-item.rare{background:linear-gradient(160deg,rgba(247,183,51,.22),rgba(252,74,26,.12));border:1px solid rgba(247,183,51,.55);border-left-width:4px}
+.lr-item.rare .lr-name{color:#fac858}
+.lr-item.jackpot{position:relative;overflow:hidden;animation:lrfShine 1.8s ease-in-out .3s infinite;background:linear-gradient(160deg,rgba(247,183,51,.25),rgba(252,74,26,.15));border:1.5px solid rgba(247,183,51,.6);border-left-width:4px}
+.lr-item.jackpot::after{content:"";position:absolute;top:-40%;left:-70%;width:45%;height:180%;background:linear-gradient(100deg,transparent,rgba(255,245,220,.7),transparent);transform:skewX(-20deg);animation:cellSweep 2s ease-in-out infinite;pointer-events:none}
+.lr-item.jackpot .lr-name{color:#fac858;font-weight:800}
+.lr-item.crystal-prize{background:linear-gradient(160deg,rgba(122,168,255,.35),rgba(247,183,51,.25));border:1.5px solid rgba(122,168,255,.75);box-shadow:0 0 24px rgba(122,168,255,.5);animation:lrfShine 1.3s ease-in-out 0s infinite,crystalGlow 2.2s ease-in-out infinite}
+.lr-item.crystal-prize .lr-name{background:linear-gradient(90deg,#7aa8ff,#fac858);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-weight:800}
+@keyframes crystalGlow{0%,100%{box-shadow:0 0 16px 3px rgba(122,168,255,.4)}50%{box-shadow:0 0 32px 10px rgba(247,183,51,.6)}}
+@keyframes lrfShine{0%,100%{box-shadow:0 0 0 0 rgba(247,183,51,0)}50%{box-shadow:0 0 28px 8px rgba(247,183,51,.6)}}
+.lrf{position:absolute;inset:0;margin:auto;width:420px;height:420px;border-radius:50%;pointer-events:none;z-index:0;background:radial-gradient(circle,rgba(247,183,51,.65),rgba(247,183,51,.18) 48%,transparent 72%);animation:lrfBurst 1.2s cubic-bezier(.22,.61,.36,1) forwards}
+@keyframes lrfBurst{0%{transform:scale(.3);opacity:0}22%{opacity:1}100%{transform:scale(1.6);opacity:0}}
+@keyframes resultShake{0%,100%{transform:none}20%{transform:translate(-6px,2px)}40%{transform:translate(6px,-3px)}60%{transform:translate(-5px,-2px)}80%{transform:translate(5px,2px)}}
+.lrBox.shake{animation:resultShake .5s ease .15s}
+.wish{position:fixed;inset:0;z-index:675;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 42%,rgba(56,92,150,.62),rgba(6,12,26,.96) 75%);overflow:hidden;backdrop-filter:blur(2px)}
+.wish-glow{position:absolute;inset:0;margin:auto;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(247,183,51,.35),transparent 68%);animation:wishPulse .8s ease-out}
+@keyframes wishPulse{0%{transform:scale(.4);opacity:0}50%{opacity:1.2}100%{transform:scale(1.4);opacity:0}}
+.wish-orb{position:relative;z-index:1;width:92px;height:92px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fffaeb,#fac858 40%,#fc4a1a 88%);box-shadow:0 0 48px 18px rgba(247,183,51,.65),0 0 150px 50px rgba(247,183,51,.32),inset -2px -2px 8px rgba(252,74,26,.3),inset 2px 2px 8px rgba(255,245,220,.4);animation:wishFloat .8s ease-out forwards;filter:drop-shadow(0 4px 12px rgba(0,0,0,.3))}
+@keyframes wishFloat{0%{transform:translateY(50px) scale(.48);opacity:0}25%{opacity:1}70%{transform:translateY(-3px) scale(1.02)}100%{transform:translateY(-10px) scale(.96)}}
+.wish-title{position:relative;z-index:1;color:#fff;font-size:14px;letter-spacing:6px;font-weight:800;margin-top:40px;text-shadow:0 0 18px rgba(247,183,51,.7);text-align:center}
+.wish-title small{display:block;font-size:11px;letter-spacing:3px;opacity:.65;margin-top:8px;font-weight:500;text-shadow:0 0 8px rgba(247,183,51,.4)}
+.wish-dot{position:absolute;border-radius:50%;background:radial-gradient(circle at 30% 30%,#fff,#ffd166);animation:wishRise linear forwards;filter:drop-shadow(0 0 8px rgba(255,224,138,.8))}
+@keyframes wishRise{0%{transform:translateY(0);opacity:0}15%{opacity:1}100%{transform:translateY(-180px);opacity:0}}
+.wish-burst{position:absolute;inset:0;margin:auto;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(255,245,220,.98),rgba(247,183,51,.6) 45%,transparent 75%);animation:wishBurst .55s ease-out forwards;pointer-events:none;z-index:2;box-shadow:inset 0 0 20px rgba(255,255,255,.5)}
+@keyframes wishBurst{0%{transform:scale(.35);opacity:0}32%{opacity:1}100%{transform:scale(3.8);opacity:0}}
+.wish-particle{position:absolute;width:8px;height:8px;border-radius:50%;background:#ffd166;box-shadow:0 0 10px rgba(255,224,138,.9);animation:wishFly .55s ease-out forwards;pointer-events:none;z-index:2}
+@keyframes wishFly{0%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(var(--fx),var(--fy)) scale(.2);opacity:0}}
+.lrBox{animation:lrBoxIn .45s cubic-bezier(.34,1.56,.64,1)}
+@keyframes lrBoxIn{from{opacity:0;transform:scale(.85) rotateY(-15deg)}to{opacity:1;transform:scale(1) rotateY(0)}}
 .lottery-challenge{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:650;display:flex;align-items:center;justify-content:center;padding:20px}
 .lottery-challenge-box{position:relative;background:var(--card-bg);border-radius:20px;padding:20px;max-width:360px;width:100%;max-height:80vh;display:flex;flex-direction:column;overflow-y:auto}
 /* 皮肤/徽章图鉴 */
@@ -1265,7 +1258,9 @@ body.dark .lc-tag.t-purple{background:rgba(167,139,250,.16);color:#c3b1fc}
 .g-btn.craft{background:linear-gradient(135deg,#f7b733,#fc4a1a);color:#fff}
 .g-btn.craft.off{background:var(--card-border);color:var(--text2)}
 .g-btn.on{background:#34d399}
-@media (max-width:400px){.lottery-stat{padding:8px 4px}.g-grid{grid-template-columns:1fr 1fr}.g-card{padding:8px 4px}}
+@media (max-width:420px){.lottery-stat{padding:10px 12px;font-size:14px;border-radius:14px}.lottery-stats{gap:8px;margin-bottom:14px}.lottery-grid{gap:8px}.lottery-cell{border-radius:14px;padding:6px}.lottery-cell .lc-ic{font-size:22px}.lottery-cell .lc-tx{font-size:10px}.lottery-draw-row{gap:10px;margin-bottom:14px}.l-draw-btn{padding:12px 8px;font-size:14px}.l-draw-btn .ld-cost{font-size:9px}.lottery-cta-row{grid-template-columns:1fr 1fr;gap:8px}.l-cta{padding:11px 9px;font-size:12px}.l-cta .l-cta-badge{font-size:9px;padding:1px 6px;top:3px;right:3px}.lottery-note{font-size:10px}}
+@media (max-width:360px){.lottery-stat{padding:9px 11px}.lottery-stat .ls-val{font-size:15px}.lottery-grid{gap:7px;margin:4px 0 16px}.lottery-cell{aspect-ratio:1;gap:5px;padding:5px}.lottery-cell .lc-ic{font-size:20px}.lottery-cell .lc-tx{font-size:9px}.lc-tag{font-size:7px;padding:1px 5px}.lottery-draw-row{gap:9px}.l-draw-btn{padding:11px 7px;font-size:13px}.l-draw-btn .ld-cost{font-size:8px}.lottery-cta-row{grid-template-columns:1fr 1fr}.l-cta{padding:10px 8px;gap:5px;font-size:11px}.l-cta-badge{top:2px;right:2px;font-size:8px}}
+@media (prefers-reduced-motion:reduce){.lottery-stat,.lottery-cell,.l-draw-btn,.l-cta{transition:none!important;animation:none!important}.lottery-luck-fill{transition:width .2s linear}.lottery-cell:active,.l-draw-btn:active,.l-cta:active{transform:none}.lottery-cell.hit{transform:none}.wish-orb,.wish-burst,.wish-particle,.wish-dot{animation:none!important}.lrBox{animation:none!important}.lottery-result-list .lr-item{animation:none!important}}
 .lq-diff{display:inline-block;font-size:10px;font-weight:700;border-radius:8px;padding:2px 8px;margin-bottom:8px}
 .lq-diff.d3{background:rgba(231,76,60,.15);color:#e74c3c}
 .lq-diff.d2{background:rgba(247,183,51,.18);color:#e67e22}
