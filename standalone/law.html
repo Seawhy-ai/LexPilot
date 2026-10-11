@@ -7563,7 +7563,7 @@ function showAbout() {
 function hideAllViews() {
   ["homeScreen","chatView","dbView","aboutView","settingsView","quizView","docView","caseView","caseDetail","learnCenterView","materialsView","notebookView","plazaView","lotteryView","noteDetailView","profileView","pointsView","scheduleView","scheduleSettingsView","scheduleAppearanceView","videoView","clockView","storyView","calcView","flashView","debateView","juristView"].forEach(function(id) {
     var el = document.getElementById(id);
-    if (el) el.classList.remove("show");
+    if (el) { el.classList.remove("show"); el.style.display = "none"; }
   });
   window.scrollTo(0, 0);
   // 新界面默认滚到最顶端（聊天保留阅读位置）
