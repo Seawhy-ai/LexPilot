@@ -372,8 +372,15 @@
     .lr-result-nav{display:flex;gap:6px;margin-bottom:10px;overflow-x:auto;flex-wrap:wrap}
     .lr-result-nav button{padding:5px 12px;border:1px solid var(--card-border);border-radius:14px;background:var(--card-bg);color:var(--text);font-size:11px;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s}
     .lr-result-nav button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+    #lawReaderView .lr-voice-toolbar{display:flex;align-items:center;gap:12px;padding:8px 0;background:var(--bg);flex-wrap:wrap;margin-bottom:12px}
+    .voice-btn{display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border:none;border-radius:12px;background:var(--accent);color:#fff;font-size:13px;cursor:pointer;transition:all .15s;flex-shrink:0;font-family:inherit}
+    .voice-btn:active{opacity:0.8}
+    .voice-speed-group{display:flex;align-items:center;gap:6px;font-size:13px;flex-shrink:0}
+    .voice-speed-group .label{color:var(--text)}
+    .voice-speed-group select{padding:4px 8px;border:1px solid var(--card-border);border-radius:6px;background:var(--bg);color:var(--text);font-size:13px;cursor:pointer;font-family:inherit}
+    .voice-progress{flex:1;min-width:120px;font-size:12px;color:var(--text2)}
 
-    /* ===== SETTINGS VIEW ===== */
+
     #settingsView{flex:1;display:none!important;flex-direction:column;overflow:hidden;overscroll-behavior:none;background:var(--bg)}
     #settingsView.show{display:flex!important}
     #settingsView .wx-nav{border-bottom:1px solid var(--card-border)}
@@ -2951,6 +2958,22 @@ body.dark .af-opt{background:#2a2a2a}
     <span class="title" id="lrTitle">法律全文</span>
   </div>
   <div class="lr-body">
+    <div class="lr-voice-toolbar" id="lrVoiceBar">
+      <button class="voice-btn" id="voicePlayBtn" onclick="toggleLawVoice()" title="播放/暂停"><span>▶ 朗读</span></button>
+      <button class="voice-btn" id="voiceStopBtn" onclick="stopLawVoice()" title="停止">■ 停止</button>
+      <div class="voice-speed-group">
+        <span class="label">速度：</span>
+        <select id="voiceSpeed" onchange="setLawVoiceSpeed(this.value)">
+          <option value="0.5">0.5x</option>
+          <option value="1" selected>1x</option>
+          <option value="1.5">1.5x</option>
+          <option value="2">2x</option>
+        </select>
+      </div>
+      <div class="voice-progress">
+        <span id="voiceInfo">准备就绪</span>
+      </div>
+    </div>
     <div class="lr-search-wrap">
       <input type="text" id="lrSearch" placeholder="输入关键词搜索法条…" oninput="searchInLaw()" />
       <button onclick="searchInLaw()">搜索</button>
@@ -7414,6 +7437,10 @@ document.getElementById("lawModal").addEventListener("click", function(e) {
 var lawReaderText = "";
 var lawReaderName = "";
 var lawMatchNodes = [];
+var lawVoiceSpeaker = null;
+var isLawVoicePlaying = false;
+var lawVoiceSpeed = 1;
+var lawVoiceText = "";
 
 // 法条阅读器可视化：按「第X章」分节、「第X条」分卡渲染，替代纯文本
 function renderLawVisual() {
@@ -7473,6 +7500,10 @@ function openLawReader(file, name, keyword) {
       if (!lawReaderText) throw new Error("empty");
       renderLawVisual();
       document.getElementById("lrInfo").textContent = "全文共约 " + Math.round(lawReaderText.length/1000) + " 千字";
+      // 初始化语音朗读
+      initLawVoiceSpeaker();
+      lawVoiceText = lawReaderText;
+      updateVoiceUI("准备就绪");
       // 从首页搜索进入时，自动定位到关键词命中的条文
       if (keyword) { try { searchInLaw(); } catch(e2) {} }
     }).catch(function() {
@@ -7491,8 +7522,81 @@ function openLawReader(file, name, keyword) {
 }
 
 function closeLawReader() {
+  stopLawVoice();
   document.getElementById("lawReaderView").classList.remove("show");
   showDatabase();
+}
+
+// 【语音朗读函数】
+function initLawVoiceSpeaker() {
+  if (!window.speechSynthesis) return false;
+  lawVoiceSpeaker = window.speechSynthesis;
+  return true;
+}
+
+function toggleLawVoice() {
+  if (!lawVoiceText) return;
+  if (isLawVoicePlaying) {
+    lawVoiceSpeaker.pause();
+    isLawVoicePlaying = false;
+    updateVoiceUI("暂停");
+  } else {
+    if (lawVoiceSpeaker.paused) {
+      lawVoiceSpeaker.resume();
+    } else {
+      speakLawText(lawVoiceText);
+    }
+    isLawVoicePlaying = true;
+    updateVoiceUI("播放中...");
+  }
+}
+
+function stopLawVoice() {
+  if (lawVoiceSpeaker) {
+    lawVoiceSpeaker.cancel();
+    isLawVoicePlaying = false;
+    updateVoiceUI("已停止");
+  }
+}
+
+function speakLawText(text) {
+  stopLawVoice();
+  var utterance = new SpeechSynthesisUtterance(text);
+  utterance.rate = lawVoiceSpeed;
+  utterance.lang = "zh-CN";
+
+  utterance.onstart = function() {
+    isLawVoicePlaying = true;
+    updateVoiceUI("播放中...");
+  };
+
+  utterance.onend = function() {
+    isLawVoicePlaying = false;
+    updateVoiceUI("已完成");
+  };
+
+  utterance.onerror = function(e) {
+    updateVoiceUI("出错：" + (e.error || "未知错误"));
+  };
+
+  lawVoiceSpeaker.speak(utterance);
+}
+
+function setLawVoiceSpeed(speed) {
+  lawVoiceSpeed = parseFloat(speed);
+  if (isLawVoicePlaying) {
+    stopLawVoice();
+    speakLawText(lawVoiceText);
+  }
+}
+
+function updateVoiceUI(status) {
+  var infoEl = document.getElementById("voiceInfo");
+  if (infoEl) infoEl.textContent = status;
+  var playBtn = document.getElementById("voicePlayBtn");
+  if (playBtn) {
+    playBtn.textContent = isLawVoicePlaying ? "⏸ 暂停" : "▶ 朗读";
+  }
 }
 
 function searchInLaw() {
