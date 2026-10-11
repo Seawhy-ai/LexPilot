@@ -1298,6 +1298,10 @@ body.dark .badge-medal.rare{--badge-bg-1:#0c4a6e;--badge-bg-2:#082f49}
 body.dark .badge-medal.epic{--badge-bg-1:#4c1d95;--badge-bg-2:#3d0d7a}
 .badge-medal.legend{--badge-border:#fac858;--badge-bg-1:#fef3c7;--badge-bg-2:#fde047;box-shadow:0 4px 20px rgba(250,200,88,.35),inset 0 1px 4px rgba(255,255,255,.5)!important;animation:legendShine 2s ease-in-out infinite}
 body.dark .badge-medal.legend{--badge-bg-1:#713f12;--badge-bg-2:#5a2e0c}
+.badge-medal svg{width:100%;height:100%;display:block}
+.badge-medal.rare svg{filter:drop-shadow(0 0 3px rgba(56,189,248,.5))}
+.badge-medal.epic svg{filter:drop-shadow(0 0 3px rgba(167,139,250,.5))}
+.badge-medal.legend svg{filter:drop-shadow(0 0 4px rgba(250,200,88,.7)) drop-shadow(0 0 8px rgba(250,200,88,.3))}
 @keyframes legendShine{0%,100%{box-shadow:0 4px 20px rgba(250,200,88,.3),inset 0 1px 4px rgba(255,255,255,.3)}50%{box-shadow:0 4px 28px rgba(250,200,88,.5),inset 0 1px 4px rgba(255,255,255,.5)}}
 .g-btn{border:none;border-radius:11px;padding:8px 16px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;background:var(--accent);color:#fff;transition:all .2s;box-shadow:0 4px 12px rgba(74,144,217,.3)}
 .g-btn:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(74,144,217,.4)}
@@ -4805,17 +4809,32 @@ var SKINS = [
   { key: "lord",  name: "天御法尊", cost: 988, icon: "🛡️", rarity: "传说", color: "#cbd5e1", accent: "#64748b", desc: "白袍法尊,御守正道,为迷途的人指引方向" },
   { key: "starlord", name: "星河法皇", cost: 1,  icon: "🌟", rarity: "典藏", crystal: true, color: "#8b5cf6", accent: "#f7b733", desc: "典藏限定。星河加冕,法皇临世,以整片星海为袍", art: "images/skins/starlord.png" }
 ];
+// 徽章 SVG 图标生成函数
+function _badgeSvg(type) {
+  var svgs = {
+    qingjian: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="30" width="60" height="40" rx="4" fill="#e5e7eb" stroke="#9ca3af" stroke-width="2"/><rect x="18" y="28" width="10" height="44" rx="5" fill="#9ca3af"/><rect x="72" y="28" width="10" height="44" rx="5" fill="#9ca3af"/><line x1="40" y1="40" x2="40" y2="60" stroke="#6b7280" stroke-width="2"/><line x1="50" y1="40" x2="50" y2="60" stroke="#6b7280" stroke-width="2"/><line x1="60" y1="40" x2="60" y2="60" stroke="#6b7280" stroke-width="2"/><line x1="38" y1="45" x2="62" y2="45" stroke="#6b7280" stroke-width="1.5"/><line x1="38" y1="52" x2="62" y2="52" stroke="#6b7280" stroke-width="1.5"/><circle cx="50" cy="50" r="48" fill="none" stroke="#9ca3af" stroke-width="1" opacity="0.3"/></svg>',
+    zhuyin: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="25" y="35" width="50" height="50" rx="6" fill="#d1d5db" stroke="#9ca3af" stroke-width="2"/><rect x="43" y="20" width="14" height="15" fill="#9ca3af"/><rect x="35" y="45" width="30" height="30" fill="none" stroke="#6b7280" stroke-width="2"/><line x1="40" y1="50" x2="60" y2="50" stroke="#6b7280" stroke-width="1.5"/><line x1="50" y1="48" x2="50" y2="70" stroke="#6b7280" stroke-width="1.5"/><circle cx="50" cy="60" r="3" fill="#6b7280"/></svg>',
+    hengmen: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="30" y="25" width="6" height="55" fill="#9ca3af"/><rect x="64" y="25" width="6" height="55" fill="#9ca3af"/><rect x="30" y="22" width="40" height="8" fill="#d1d5db" stroke="#9ca3af" stroke-width="1"/><rect x="37" y="35" width="13" height="40" fill="#e5e7eb" stroke="#9ca3af" stroke-width="1.5"/><rect x="50" y="35" width="13" height="40" fill="#e5e7eb" stroke="#9ca3af" stroke-width="1.5"/><circle cx="50" cy="55" r="2" fill="#9ca3af"/><rect x="28" y="78" width="44" height="4" fill="#9ca3af"/></svg>',
+    lvhai: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M 20 50 Q 30 40 40 50 T 60 50 T 80 50" fill="none" stroke="#38bdf8" stroke-width="2" opacity="0.6"/><path d="M 20 60 Q 30 50 40 60 T 60 60 T 80 60" fill="none" stroke="#38bdf8" stroke-width="2" opacity="0.8"/><path d="M 20 70 Q 30 60 40 70 T 60 70 T 80 70" fill="none" stroke="#0284c7" stroke-width="2"/><circle cx="35" cy="45" r="3" fill="#fbbf24" opacity="0.9"/><circle cx="55" cy="35" r="2.5" fill="#fbbf24" opacity="0.7"/><circle cx="70" cy="50" r="2" fill="#fbbf24" opacity="0.5"/><circle cx="50" cy="55" r="45" fill="none" stroke="#38bdf8" stroke-width="1.5" opacity="0.4"/></svg>',
+    xinghe: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="42" fill="#f0f4ff" stroke="#38bdf8" stroke-width="2"/><circle cx="50" cy="30" r="3" fill="#38bdf8"/><circle cx="65" cy="45" r="2.5" fill="#38bdf8"/><circle cx="50" cy="65" r="2.5" fill="#38bdf8"/><circle cx="35" cy="45" r="2" fill="#38bdf8"/><circle cx="50" cy="50" r="2" fill="#38bdf8"/><line x1="50" y1="30" x2="65" y2="45" stroke="#38bdf8" stroke-width="1" opacity="0.6"/><line x1="65" y1="45" x2="50" y2="65" stroke="#38bdf8" stroke-width="1" opacity="0.6"/><line x1="50" y1="65" x2="35" y2="45" stroke="#38bdf8" stroke-width="1" opacity="0.6"/><line x1="35" y1="45" x2="50" y2="30" stroke="#38bdf8" stroke-width="1" opacity="0.6"/><line x1="50" y1="50" x2="50" y2="30" stroke="#38bdf8" stroke-width="0.8" opacity="0.4"/></svg>',
+    mohen: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="42" y="20" width="6" height="50" rx="3" fill="#a78bfa" stroke="#7c3aed" stroke-width="1"/><path d="M 43 70 L 38 85 L 50 82 L 57 85 L 52 70 Z" fill="#6b21a8" stroke="#7c3aed" stroke-width="1"/><path d="M 65 40 Q 70 35 75 45" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" opacity="0.8"/><path d="M 65 55 Q 75 50 78 65" fill="none" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/><circle cx="50" cy="50" r="43" fill="none" stroke="#a78bfa" stroke-width="1.5" opacity="0.3"/></svg>',
+    buxiu: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="25" y="50" width="16" height="12" rx="2" fill="#f3e8ff" stroke="#a78bfa" stroke-width="1.5"/><rect x="59" y="50" width="16" height="12" rx="2" fill="#f3e8ff" stroke="#a78bfa" stroke-width="1.5"/><line x1="38" y1="50" x2="36" y2="35" stroke="#a78bfa" stroke-width="1.5"/><line x1="62" y1="50" x2="64" y2="35" stroke="#a78bfa" stroke-width="1.5"/><line x1="36" y1="35" x2="64" y2="35" stroke="#a78bfa" stroke-width="2"/><rect x="25" y="45" width="50" height="3" fill="#a78bfa" stroke="#7c3aed" stroke-width="1"/><circle cx="50" cy="48" r="3" fill="#7c3aed"/><circle cx="50" cy="32" r="2" fill="#7c3aed"/></svg>',
+    fayu: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M 20 60 L 30 35 L 40 45 L 50 25 L 60 45 L 70 35 L 80 60 Z" fill="#fef3c7" stroke="#f7b733" stroke-width="2"/><rect x="15" y="60" width="70" height="12" rx="3" fill="#fde047" stroke="#f7b733" stroke-width="1.5"/><circle cx="50" cy="32" r="4" fill="#fbbf24" stroke="#f59e0b" stroke-width="1"/><circle cx="35" cy="45" r="3" fill="#fbbf24" stroke="#f59e0b" stroke-width="1"/><circle cx="65" cy="45" r="3" fill="#fbbf24" stroke="#f59e0b" stroke-width="1"/><circle cx="50" cy="50" r="48" fill="none" stroke="#f7b733" stroke-width="1.5" opacity="0.2"/></svg>'
+  };
+  return svgs[type] || '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#e5e7eb" stroke="#9ca3af" stroke-width="2"/></svg>';
+}
 // 限定徽章(法脉·星海典藏), weight 合计 10%
 var BADGES = [
-  { key: "qingjian", name: "青简遗章", weight: 2.2, rarity: "基础", color: "#9ca3af", icon: "📜", desc: "一卷青简,承载古今法意。象征法律知识跨越时间的传承与积淀。" },
-  { key: "zhuyin",   name: "朱印流光", weight: 1.7, rarity: "基础", color: "#9ca3af", icon: "✒️", desc: "一枚印记,留下属于法治文明的独特痕迹。象征规则被确立、被遵循,也被一代代人铭记。" },
-  { key: "hengmen",  name: "衡门问道", weight: 1.5, rarity: "基础", color: "#9ca3af", icon: "🏛️", desc: "推开法理之门,始见规则背后的秩序与价值。象征从记忆法律条文走向理解法律精神。" },
-  { key: "lvhai",    name: "律海拾光", weight: 1.3, rarity: "稀有", color: "#38bdf8", icon: "🌊", desc: "法海浩瀚,每一次学习都是拾取一束属于自己的光。象征持续学习与知识积累。" },
-  { key: "xinghe",   name: "星河法脉", weight: 1.1, rarity: "稀有", color: "#38bdf8", icon: "🌌", desc: "无数知识汇聚成星河,无数思考延续成法脉。象征法律知识体系的连接与传承。" },
-  { key: "mohen",    name: "墨痕成律", weight: 0.9, rarity: "史诗", color: "#a78bfa", icon: "🖋️", desc: "落笔成文,墨痕最终化为规则。象征从思想、文字到法律规范的形成过程。" },
-  { key: "buxiu",    name: "不朽誓约", weight: 0.8, rarity: "史诗", color: "#a78bfa", icon: "⚖️", desc: "真正的规则不仅写在纸上,也存在于人们对公平与秩序的共同守护之中。象征法律所承载的责任与信念。" },
-  { key: "fayu",     name: "法域星冠", weight: 0.5, rarity: "传说", color: "#f7b733", icon: "👑", desc: "星光汇聚于法域之上,象征在漫长的求法之路上抵达属于自己的高光时刻。" }
+  { key: "qingjian", name: "青简遗章", weight: 2.2, rarity: "基础", color: "#9ca3af", icon: _badgeSvg("qingjian"), desc: "一卷青简,承载古今法意。象征法律知识跨越时间的传承与积淀。" },
+  { key: "zhuyin",   name: "朱印流光", weight: 1.7, rarity: "基础", color: "#9ca3af", icon: _badgeSvg("zhuyin"), desc: "一枚印记,留下属于法治文明的独特痕迹。象征规则被确立、被遵循,也被一代代人铭记。" },
+  { key: "hengmen",  name: "衡门问道", weight: 1.5, rarity: "基础", color: "#9ca3af", icon: _badgeSvg("hengmen"), desc: "推开法理之门,始见规则背后的秩序与价值。象征从记忆法律条文走向理解法律精神。" },
+  { key: "lvhai",    name: "律海拾光", weight: 1.3, rarity: "稀有", color: "#38bdf8", icon: _badgeSvg("lvhai"), desc: "法海浩瀚,每一次学习都是拾取一束属于自己的光。象征持续学习与知识积累。" },
+  { key: "xinghe",   name: "星河法脉", weight: 1.1, rarity: "稀有", color: "#38bdf8", icon: _badgeSvg("xinghe"), desc: "无数知识汇聚成星河,无数思考延续成法脉。象征法律知识体系的连接与传承。" },
+  { key: "mohen",    name: "墨痕成律", weight: 0.9, rarity: "史诗", color: "#a78bfa", icon: _badgeSvg("mohen"), desc: "落笔成文,墨痕最终化为规则。象征从思想、文字到法律规范的形成过程。" },
+  { key: "buxiu",    name: "不朽誓约", weight: 0.8, rarity: "史诗", color: "#a78bfa", icon: _badgeSvg("buxiu"), desc: "真正的规则不仅写在纸上,也存在于人们对公平与秩序的共同守护之中。象征法律所承载的责任与信念。" },
+  { key: "fayu",     name: "法域星冠", weight: 0.5, rarity: "传说", color: "#f7b733", icon: _badgeSvg("fayu"), desc: "星光汇聚于法域之上,象征在漫长的求法之路上抵达属于自己的高光时刻。" }
 ];
+
 var AVATAR_FRAMES = [
   { key: "gold",     name: "金色传说", borderColor: "#f7b733", boxShadow: "0 0 8px rgba(247,183,51,.85)" },
   { key: "fire",     name: "烈焰",     borderColor: "#fc4a1a", boxShadow: "0 0 8px rgba(252,74,26,.8)" },
