@@ -3001,6 +3001,7 @@ body.dark .af-opt{background:#2a2a2a}
 <div id="toast" style="position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--toast-bg);color:var(--toast-text);padding:10px 20px;border-radius:20px;font-size:13px;z-index:300;opacity:0;pointer-events:none;transition:opacity .3s;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,0.2)"></div>
 
 <script src="templates.js?v=1.2.6"></script>
+<script src="badge-icons.js?v=3.12.2"></script>
 <script src="quiz_data.js?v=1.5.0"></script>
 <script src="case_data.js?v=1.2.6"></script>
 <script src="quiz_extra.js?v=1.0.0"></script>
@@ -4807,14 +4808,14 @@ var SKINS = [
 ];
 // 限定徽章(法脉·星海典藏), weight 合计 10%
 var BADGES = [
-  { key: "qingjian", name: "青简遗章", weight: 2.2, rarity: "基础", color: "#9ca3af", icon: "📜", desc: "一卷青简,承载古今法意。象征法律知识跨越时间的传承与积淀。" },
-  { key: "zhuyin",   name: "朱印流光", weight: 1.7, rarity: "基础", color: "#9ca3af", icon: "✒️", desc: "一枚印记,留下属于法治文明的独特痕迹。象征规则被确立、被遵循,也被一代代人铭记。" },
-  { key: "hengmen",  name: "衡门问道", weight: 1.5, rarity: "基础", color: "#9ca3af", icon: "🏛️", desc: "推开法理之门,始见规则背后的秩序与价值。象征从记忆法律条文走向理解法律精神。" },
-  { key: "lvhai",    name: "律海拾光", weight: 1.3, rarity: "稀有", color: "#38bdf8", icon: "🌊", desc: "法海浩瀚,每一次学习都是拾取一束属于自己的光。象征持续学习与知识积累。" },
-  { key: "xinghe",   name: "星河法脉", weight: 1.1, rarity: "稀有", color: "#38bdf8", icon: "🌌", desc: "无数知识汇聚成星河,无数思考延续成法脉。象征法律知识体系的连接与传承。" },
-  { key: "mohen",    name: "墨痕成律", weight: 0.9, rarity: "史诗", color: "#a78bfa", icon: "🖋️", desc: "落笔成文,墨痕最终化为规则。象征从思想、文字到法律规范的形成过程。" },
-  { key: "buxiu",    name: "不朽誓约", weight: 0.8, rarity: "史诗", color: "#a78bfa", icon: "⚖️", desc: "真正的规则不仅写在纸上,也存在于人们对公平与秩序的共同守护之中。象征法律所承载的责任与信念。" },
-  { key: "fayu",     name: "法域星冠", weight: 0.5, rarity: "传说", color: "#f7b733", icon: "👑", desc: "星光汇聚于法域之上,象征在漫长的求法之路上抵达属于自己的高光时刻。" }
+  { key: "qingjian", name: "青简遗章", weight: 2.2, rarity: "基础", color: "#9ca3af", icon: BADGE_ICONS.qingjian, desc: "一卷青简,承载古今法意。象征法律知识跨越时间的传承与积淀。" },
+  { key: "zhuyin",   name: "朱印流光", weight: 1.7, rarity: "基础", color: "#9ca3af", icon: BADGE_ICONS.zhuyin, desc: "一枚印记,留下属于法治文明的独特痕迹。象征规则被确立、被遵循,也被一代代人铭记。" },
+  { key: "hengmen",  name: "衡门问道", weight: 1.5, rarity: "基础", color: "#9ca3af", icon: BADGE_ICONS.hengmen, desc: "推开法理之门,始见规则背后的秩序与价值。象征从记忆法律条文走向理解法律精神。" },
+  { key: "lvhai",    name: "律海拾光", weight: 1.3, rarity: "稀有", color: "#38bdf8", icon: BADGE_ICONS.lvhai, desc: "法海浩瀚,每一次学习都是拾取一束属于自己的光。象征持续学习与知识积累。" },
+  { key: "xinghe",   name: "星河法脉", weight: 1.1, rarity: "稀有", color: "#38bdf8", icon: BADGE_ICONS.xinghe, desc: "无数知识汇聚成星河,无数思考延续成法脉。象征法律知识体系的连接与传承。" },
+  { key: "mohen",    name: "墨痕成律", weight: 0.9, rarity: "史诗", color: "#a78bfa", icon: BADGE_ICONS.mohen, desc: "落笔成文,墨痕最终化为规则。象征从思想、文字到法律规范的形成过程。" },
+  { key: "buxiu",    name: "不朽誓约", weight: 0.8, rarity: "史诗", color: "#a78bfa", icon: BADGE_ICONS.buxiu, desc: "真正的规则不仅写在纸上,也存在于人们对公平与秩序的共同守护之中。象征法律所承载的责任与信念。" },
+  { key: "fayu",     name: "法域星冠", weight: 0.5, rarity: "传说", color: "#f7b733", icon: BADGE_ICONS.fayu, desc: "星光汇聚于法域之上,象征在漫长的求法之路上抵达属于自己的高光时刻。" }
 ];
 var AVATAR_FRAMES = [
   { key: "gold",     name: "金色传说", borderColor: "#f7b733", boxShadow: "0 0 8px rgba(247,183,51,.85)" },
