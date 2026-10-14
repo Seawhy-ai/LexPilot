@@ -1,4 +1,4 @@
-var CACHE = "lexpilot-v134";
+var CACHE = "lexpilot-v135";
 self.addEventListener("install", function(e) { self.skipWaiting(); });
 self.addEventListener("activate", function(e) {
   e.waitUntil(caches.keys().then(function(keys) {
