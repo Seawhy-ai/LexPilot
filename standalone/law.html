@@ -1178,6 +1178,19 @@ body.dark .lc-tag.t-purple{background:rgba(167,139,250,.18);color:#d8b4fe}
 .l-cta.has-dot::after{content:"";position:absolute;top:6px;right:6px;width:9px;height:9px;border-radius:50%;background:#ff4d4f;border:2px solid #fff;box-shadow:0 0 8px rgba(255,77,79,.9);animation:dotPulse 1.5s ease-in-out infinite}
 @keyframes dotPulse{0%,100%{transform:scale(1);box-shadow:0 0 8px rgba(255,77,79,.7)}50%{transform:scale(1.4);box-shadow:0 0 16px rgba(255,77,79,.95)}}
 .lottery-note{margin-top:16px;text-align:center;font-size:11px;color:var(--text2);letter-spacing:.3px;line-height:1.5}
+/* 限定夺宝 · 法脉星海典藏主题 */
+#lotteryView{background:#061326;color:#eaf4ff}
+#lotteryView::before{background:radial-gradient(circle at 75% 6%,rgba(59,130,246,.28),transparent 28%),radial-gradient(circle at 18% 32%,rgba(14,165,233,.13),transparent 36%),linear-gradient(180deg,#071a35 0%,#061326 44%,#04101f 100%)}
+.lottery-event-hero{position:relative;overflow:hidden;min-height:178px;border:1px solid rgba(121,198,255,.34);border-radius:22px;padding:18px 17px;margin:2px 0 14px;background:linear-gradient(125deg,rgba(7,27,57,.95),rgba(14,65,111,.64));box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 14px 30px rgba(0,0,0,.22)}
+.lottery-event-hero::before{content:"";position:absolute;width:190px;height:190px;right:-37px;top:-44px;border:1px solid rgba(118,203,255,.45);border-radius:50%;box-shadow:0 0 0 18px rgba(43,137,220,.05),0 0 0 39px rgba(43,137,220,.04)}
+.lottery-event-hero::after{content:"⚖";position:absolute;right:23px;top:33px;font-size:70px;color:#d9b76e;text-shadow:0 0 24px rgba(89,191,255,.75);opacity:.9}
+.le-kicker,.lottery-section-title{font-size:11px;letter-spacing:1.2px;font-weight:800;color:#75c9ff}
+.le-title{position:relative;z-index:1;margin:7px 0 4px;font-size:24px;letter-spacing:1px;color:#fff5d5;font-weight:900;font-family:serif}.le-desc{position:relative;z-index:1;max-width:68%;font-size:12px;line-height:1.65;color:#b9d8ef}.le-countdown{position:relative;z-index:1;display:inline-flex;align-items:center;margin-top:10px;padding:5px 9px;border:1px solid rgba(159,211,255,.38);border-radius:20px;font-size:10px;color:#d9eeff;background:rgba(0,15,40,.28)}
+.lottery-stats{grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px}.lottery-stat{border-color:rgba(122,189,241,.22);background:rgba(9,32,62,.74);backdrop-filter:blur(12px)}.lottery-stat.hero{background:linear-gradient(135deg,rgba(19,85,137,.62),rgba(18,44,78,.8));border-color:rgba(106,197,255,.5);box-shadow:none}.lottery-stat.hero .ls-val,.lottery-stat.hero .ls-label{color:#d8f0ff}.lottery-stat.luck{background:linear-gradient(135deg,rgba(35,52,107,.65),rgba(9,32,62,.82));border-color:rgba(153,130,255,.4)}.lottery-stat.sub{background:rgba(8,27,55,.78)}
+.lottery-section-head{display:flex;align-items:center;justify-content:space-between;margin:2px 2px 8px}.lottery-section-title{color:#eef7ff;font-size:16px;letter-spacing:.6px}.lottery-section-more{font-size:10px;color:#8fc8ef}
+.lottery-grid{gap:8px;margin:0 0 14px}.lottery-cell{background:linear-gradient(155deg,rgba(15,48,88,.94),rgba(5,22,47,.94));border-color:rgba(105,183,237,.34);border-radius:14px}.lottery-cell.common{--rarity-c:#78c7f4}.lottery-cell.brave{background:linear-gradient(155deg,rgba(20,76,117,.88),rgba(7,32,63,.96));border-color:rgba(62,180,239,.55)}.lottery-cell.epic{background:linear-gradient(155deg,rgba(71,46,126,.76),rgba(15,29,70,.96));border-color:rgba(174,126,255,.65)}.lottery-cell.legend,.lottery-cell.rarity-gold{background:linear-gradient(155deg,rgba(119,84,25,.66),rgba(16,35,72,.97));border-color:rgba(244,198,99,.7)}.lottery-cell .lc-tx{color:#d2e8f8}.lottery-cell.empty{background:repeating-linear-gradient(45deg,rgba(255,255,255,.02),rgba(255,255,255,.02) 6px,rgba(10,31,60,.38) 6px,rgba(10,31,60,.38) 12px)}
+.limited-collection{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 14px}.limited-card{min-height:62px;padding:9px 10px;border:1px solid rgba(112,181,233,.32);border-radius:14px;background:linear-gradient(135deg,rgba(19,59,98,.8),rgba(9,24,54,.92));color:#eaf6ff;text-align:left;cursor:pointer;font-family:inherit}.limited-card.featured{border-color:rgba(224,181,83,.6);background:linear-gradient(135deg,rgba(90,55,128,.67),rgba(19,34,71,.95))}.limited-card b{display:block;font-size:12px;margin-bottom:3px}.limited-card span{font-size:10px;color:#9fc6e4}
+.lottery-draw-row{margin-top:4px}.l-draw-btn.ghost{color:#c6e9ff;border-color:rgba(94,188,246,.65);background:linear-gradient(135deg,rgba(17,73,131,.84),rgba(10,39,78,.88))}.l-draw-btn.primary{background:linear-gradient(135deg,#dbbd69,#b58431 55%,#805f25);box-shadow:0 8px 24px rgba(208,165,67,.32);animation:none}.ld-bubble{background:linear-gradient(135deg,#8c6bd6,#5266c9)}.lottery-note{color:#91b9d5}
 .lottery-result-list{display:flex;flex-direction:column;gap:9px;margin-top:8px}
 .lottery-result-list.multi{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .lr-item{display:flex;align-items:center;gap:12px;background:var(--input-bg);border-radius:14px;padding:12px 14px;border-left:4px solid var(--lr-c,#94a3b8);transition:all .25s;animation:lrSlideIn .4s cubic-bezier(.34,1.56,.64,1) backwards}
@@ -2450,10 +2463,17 @@ body.dark .af-opt{background:#2a2a2a}
 <div id="lotteryView" style="display:none">
   <div class="wx-nav">
     <button class="back" onclick="showPlaza()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
-    <span class="title">积分夺宝</span>
+    <span class="title">限定夺宝</span>
+    <button class="back" onclick="showToast('法脉·星海典藏：法律知识如星辰汇聚成法脉，探索浩瀚法海。')" aria-label="活动规则" style="margin-left:auto;font-size:12px;width:auto;padding:0 9px">规则</button>
   </div>
   <div class="lottery-body">
     <svg width="0" height="0" style="position:absolute"><defs><linearGradient id="coinG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe08a"/><stop offset="1" stop-color="#e8a020"/></linearGradient></defs></svg>
+    <section class="lottery-event-hero" aria-label="法脉星海典藏活动介绍">
+      <div class="le-kicker">第一期限定主题</div>
+      <h1 class="le-title">法脉 · 星海典藏</h1>
+      <div class="le-desc">以法为舟，循星而行。在浩瀚法海中，见证知识星辰汇聚成法的传承。</div>
+      <div class="le-countdown">◷ 限时主题 · 探索进行中</div>
+    </section>
     <div class="lottery-stats">
       <div class="lottery-stat hero">
         <div class="ls-coin">
@@ -2481,6 +2501,7 @@ body.dark .af-opt{background:#2a2a2a}
       </div>
     </div>
 
+    <div class="lottery-section-head"><div class="lottery-section-title">本期奖池</div><div class="lottery-section-more">9 类奖励 · 查看概率</div></div>
     <div class="lottery-grid" id="lotteryGrid">
       <div class="lottery-cell legend jackpot-cell rarity-gold" id="lotCell0"><span class="lc-tag t-gold">稀有</span><div class="lc-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h20"/><path d="M4 20L2.5 8.5 8 12l4-8 4 8 5.5-3.5L20 20"/></svg></div><div class="lc-tx">VIP卡</div></div>
       <div class="lottery-cell common" id="lotCell1"><span class="lc-tag t-gray">道具</span><div class="lc-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg></div><div class="lc-tx">解析时间</div></div>
@@ -2493,11 +2514,16 @@ body.dark .af-opt{background:#2a2a2a}
       <div class="lottery-cell empty" id="lotCell8"><div class="lc-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.59 4.59A2 2 0 1 1 11 8H2"/><path d="M12.59 19.41A2 2 0 1 0 14 16H2"/><path d="M17.73 7.73A2.5 2.5 0 1 1 19.5 12H2"/></svg></div><div class="lc-tx">谢谢参与</div></div>
     </div>
 
+    <section class="limited-collection" aria-label="限定收藏">
+      <button class="limited-card" onclick="openBadgeGallery()"><b>法脉限定徽章</b><span>本期限定徽章一览 ›</span></button>
+      <button class="limited-card featured" onclick="openSkinGallery()"><b>星河法皇</b><span>收集皮肤碎片合成 ›</span></button>
+    </section>
+
     <div class="lottery-draw-row">
-      <button class="l-draw-btn ghost" id="lotDraw1" onclick="lotteryDraw(1)">单抽<span class="ld-cost">30 积分</span></button>
+      <button class="l-draw-btn ghost" id="lotDraw1" onclick="lotteryDraw(1)">单次祈愿<span class="ld-cost">30 积分</span></button>
       <div class="l-draw-wrap">
-        <button class="l-draw-btn primary" id="lotDraw10" onclick="lotteryDraw(10)">十连抽<span class="ld-cost">280 积分 · 省 20</span></button>
-        <span class="ld-bubble">🔥 今日特惠</span>
+        <button class="l-draw-btn primary" id="lotDraw10" onclick="lotteryDraw(10)">十连祈愿<span class="ld-cost">280 积分 · 省 20</span></button>
+        <span class="ld-bubble">限定</span>
       </div>
     </div>
 
@@ -2508,7 +2534,7 @@ body.dark .af-opt{background:#2a2a2a}
       <button class="l-cta crystal-cta" id="lotExchangeBtn" onclick="openLotteryExchange()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 12L2 9z"/><path d="M2 9h20"/><path d="M12 21L8 9l4-6 4 6z"/></svg>兑换<span class="l-cta-badge" id="lotExchangeCount">0</span></button>
     </div>
 
-    <div class="lottery-note">每次抽奖积累幸运值，幸运值越高越接近法魂水晶</div>
+    <div class="lottery-note">每次祈愿积累法魂水晶保底进度，365 次必得法魂水晶</div>
   </div>
 </div>
 
