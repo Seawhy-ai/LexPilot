@@ -1200,6 +1200,8 @@ body.dark .lc-tag.t-purple{background:rgba(167,139,250,.18);color:#d8b4fe}
 .lottery-stats{grid-template-columns:repeat(3,1fr)}.lottery-stat{padding:10px 9px}.lottery-stat.hero{gap:7px}.lottery-stat.hero .ls-coin{width:30px;height:30px}.lottery-stat.hero .ls-val{font-size:16px}.lottery-stat.sub{flex-direction:column;align-items:flex-start;gap:4px}.lottery-stat.sub .ls-val{font-size:15px}
 .lottery-stat .ls-val{color:#f4fbff!important;text-shadow:0 1px 2px rgba(0,0,0,.35)}.lottery-stat .ls-label{color:#aed2ec!important;font-weight:700}.lottery-stat.sub .ls-ic{filter:drop-shadow(0 2px 4px rgba(0,0,0,.42))}
 .lottery-pity{display:flex;align-items:center;gap:9px;padding:10px 11px;margin:0 0 14px;border:1px solid rgba(116,196,248,.34);border-radius:14px;background:rgba(7,28,58,.78);color:#d7efff}.lottery-pity-label{font-size:11px;font-weight:800;white-space:nowrap}.lottery-pity .lottery-luck-bar{flex:1;margin:0;height:8px;background:rgba(148,198,241,.18)}.lottery-pity .lottery-luck-fill{background:linear-gradient(90deg,#35bdf5,#7aa8ff,#d5b85b)}.lottery-pity-num{font-size:12px;font-weight:800;white-space:nowrap;color:#eaf5ff}
+/* 独立皮肤图鉴 */
+#skinView{position:relative;display:none!important;flex:1;flex-direction:column;overflow:hidden;background:#06101f;color:#edf6ff}#skinView.show{display:flex!important}#skinView .wx-nav{background:#071526;color:#edf6ff;border-bottom-color:rgba(202,174,104,.2)}#skinView .wx-nav .title,#skinView .wx-nav .back{color:#edf6ff}.skin-page{flex:1;overflow-y:auto;padding:14px 14px calc(20px + env(safe-area-inset-bottom));background:radial-gradient(circle at 70% 6%,rgba(113,75,196,.28),transparent 35%),linear-gradient(180deg,#08182c,#050d19)}.skin-stage{position:relative;min-height:350px;overflow:hidden;border:1px solid rgba(207,178,105,.5);border-radius:22px;background:linear-gradient(120deg,rgba(7,13,33,.52),rgba(10,19,45,.05)),radial-gradient(circle at 50% 15%,rgba(110,78,178,.42),transparent 55%);box-shadow:inset 0 1px 1px rgba(255,255,255,.13),0 14px 32px rgba(0,0,0,.3)}.skin-stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;opacity:.9}.skin-stage-copy{position:relative;z-index:1;padding:16px;max-width:48%;text-shadow:0 2px 8px #000}.skin-stage-copy h2{margin:4px 0 5px;font-size:24px;color:#fff0bd}.skin-stage-copy p{margin:0;font-size:11px;line-height:1.65;color:#d6e5f5}.skin-rarity-pill{display:inline-block;padding:3px 10px;border:1px solid currentColor;border-radius:12px;font-size:11px;font-weight:800}.skin-actions{position:absolute;right:12px;bottom:12px;z-index:1;display:flex;gap:6px}.skin-actions button{border:1px solid rgba(255,255,255,.28);border-radius:16px;background:rgba(4,11,27,.7);color:#fff;padding:7px 9px;font:inherit;font-size:10px}.skin-tabs{display:flex;margin:14px 0 10px;border:1px solid rgba(132,167,210,.28);border-radius:15px;overflow:hidden}.skin-tabs span{flex:1;padding:9px;text-align:center;font-size:12px;font-weight:800;background:rgba(11,28,54,.8);color:#c8d8ea}.skin-tabs span.on{color:#ffedb4;background:linear-gradient(135deg,rgba(157,112,42,.65),rgba(51,36,68,.9))}.skin-rail{display:flex;gap:9px;overflow-x:auto;padding:4px 1px 14px;scroll-snap-type:x mandatory}.sp-card{position:relative;flex:0 0 76px;min-height:142px;border:1.5px solid rgba(149,174,207,.3);border-radius:12px;overflow:hidden;background:#0b1930;color:#fff;scroll-snap-align:start;padding:0;cursor:pointer}.sp-card.selected{border-color:var(--sc);box-shadow:0 0 14px color-mix(in srgb,var(--sc) 60%,transparent)}.sp-card img{width:100%;height:91px;object-fit:cover;object-position:top}.sp-card .sp-name{padding:4px 3px 1px;font-size:10px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sp-card .sp-meta{font-size:9px;color:var(--sc);padding:0 3px 5px}.sp-lock{position:absolute;right:4px;top:4px;padding:2px 4px;border-radius:7px;background:rgba(0,0,0,.6);font-size:9px}.skin-bottom{display:flex;align-items:center;gap:8px;padding:11px;border:1px solid rgba(146,180,223,.28);border-radius:16px;background:rgba(8,22,45,.92)}.skin-currency{flex:1;font-size:11px;color:#b7d4ed;line-height:1.7}.skin-currency b{font-size:15px;color:#fff;margin-left:4px}.skin-main-btn{border:1px solid #e7c579;border-radius:18px;background:linear-gradient(135deg,#d8bb6f,#8a6328);color:#fff8dc;padding:11px 18px;font:inherit;font-size:14px;font-weight:900;white-space:nowrap}.skin-main-btn.off{opacity:.55;filter:grayscale(.4)}
 /* 奖池与资源插画：使用限定主题的实装图标资产 */
 .lottery-cell .lc-ic{width:58px;height:46px;background-position:center;background-repeat:no-repeat;background-size:contain;filter:drop-shadow(0 3px 7px rgba(0,0,0,.32));mix-blend-mode:screen}.lottery-cell .lc-ic svg{display:none}
 #lotCell0 .lc-ic{background-image:url('images/lottery/rewards/vip.webp')}#lotCell1 .lc-ic{background-image:url('images/lottery/rewards/unlock.webp')}#lotCell2 .lc-ic{background-image:url('images/lottery/rewards/frame.webp')}#lotCell3 .lc-ic{background-image:url('images/lottery/rewards/points.webp')}#lotCell4 .lc-ic{background-image:url('images/lottery/rewards/crystal.webp')}#lotCell5 .lc-ic{background-image:url('images/lottery/rewards/challenge.webp')}#lotCell6 .lc-ic{background-image:url('images/lottery/rewards/skin.webp')}#lotCell7 .lc-ic{background-image:url('images/lottery/rewards/badge.webp')}#lotCell8 .lc-ic{background-image:url('images/lottery/rewards/empty.webp')}
@@ -2548,6 +2550,15 @@ body.dark .af-opt{background:#2a2a2a}
 
     <div class="lottery-note">每次祈愿积累法魂水晶保底进度，365 次必得法魂水晶</div>
   </div>
+</div>
+
+<!-- ===== 独立皮肤图鉴 ===== -->
+<div id="skinView" style="display:none">
+  <div class="wx-nav">
+    <button class="back" onclick="openLottery()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span class="title">法海星旅 · 皮肤图鉴</span>
+  </div>
+  <div class="skin-page" id="skinPage"></div>
 </div>
 
 <!-- ===== LEARNING CENTER VIEW ===== -->
@@ -5609,6 +5620,44 @@ function _bindDressChips(box, overlay) {
   }
 }
 
+// ===== 独立皮肤图鉴：仅保留成套皮肤（覆盖旧弹层入口） =====
+var _skinSelected = "";
+function openSkinGallery() {
+  hideAllViews();
+  var view = document.getElementById("skinView");
+  view.style.display = "";
+  view.classList.add("show");
+  renderSkinView();
+}
+function renderSkinView() {
+  var p = loadProfile(), owned = p.skinsOwned || [], active = p.activeSkin || "";
+  if (!_skinSelected || !SKINS.some(function(s) { return s.key === _skinSelected; })) _skinSelected = active || SKINS[0].key;
+  var selected = SKINS.filter(function(s) { return s.key === _skinSelected; })[0] || SKINS[0];
+  var has = owned.indexOf(selected.key) >= 0, isActive = active === selected.key;
+  var can = selected.crystal ? (p.soulCrystals || 0) >= 1 : (p.skinFragments || 0) >= selected.cost;
+  var art = selected.art || "images/skins/" + selected.key + ".webp";
+  var h = '<section class="skin-stage" style="--sc:' + selected.color + '"><img src="' + art + '" alt="" /><div class="skin-stage-copy"><span class="skin-rarity-pill" style="color:' + selected.color + '">' + selected.rarity + '</span><h2>' + escHtml(selected.name) + '</h2><p>' + escHtml(selected.desc) + '</p></div><div class="skin-actions"><button onclick="showToast(\'展示动作敬请期待\')">▷ 展示动作</button><button onclick="showToast(\'“' + escHtml(selected.name) + '” · ' + escHtml(selected.desc) + '\')">▣ 皮肤故事</button></div></section>';
+  h += '<div class="skin-tabs"><span class="on">成套皮肤</span></div><div class="skin-rail">';
+  for (var i = 0; i < SKINS.length; i++) {
+    var s = SKINS[i], own = owned.indexOf(s.key) >= 0;
+    var thumb = s.art || "images/skins/" + s.key + ".webp";
+    h += '<button class="sp-card' + (s.key === selected.key ? ' selected' : '') + '" style="--sc:' + s.color + '" onclick="selectSkin(\'' + s.key + '\')"><img src="' + thumb + '" alt="" /><span class="sp-name">' + escHtml(s.name) + '</span><span class="sp-meta">' + s.rarity + '</span>' + (own ? '' : '<span class="sp-lock">🔒</span>') + '</button>';
+  }
+  h += '</div><div class="skin-bottom"><div class="skin-currency">皮肤碎片 <b>' + (p.skinFragments || 0) + '</b>　法魂水晶 <b>' + (p.soulCrystals || 0) + '</b></div>';
+  h += '<button class="skin-main-btn' + ((has || can) ? '' : ' off') + '" onclick="applySelectedSkin()">' + (has ? (isActive ? '佩戴中' : '穿戴') : (selected.crystal ? '1 水晶兑换' : selected.cost + ' 碎片合成')) + '</button></div>';
+  document.getElementById("skinPage").innerHTML = h;
+}
+function selectSkin(key) { _skinSelected = key; renderSkinView(); }
+function applySelectedSkin() {
+  var p = loadProfile(), s = SKINS.filter(function(x) { return x.key === _skinSelected; })[0];
+  if (!s) return;
+  if (!p.skinsOwned) p.skinsOwned = [];
+  if (p.skinsOwned.indexOf(s.key) >= 0) { p.activeSkin = s.key; saveProfile(p); renderSkinView(); showToast('已穿戴「' + s.name + '」'); return; }
+  if (s.crystal) { if ((p.soulCrystals || 0) < 1) { showToast('法魂水晶不足'); return; } p.soulCrystals--; }
+  else { if ((p.skinFragments || 0) < s.cost) { showToast('皮肤碎片不足'); return; } p.skinFragments -= s.cost; }
+  p.skinsOwned.push(s.key); p.activeSkin = s.key; saveProfile(p); renderLottery(); renderSkinView(); showToast('合成成功「' + s.name + '」');
+}
+
 // 全屏查看皮肤高清立绘
 function viewSkinArt(key) {
   var s = null;
@@ -7715,7 +7764,7 @@ function showAbout() {
 // SCREEN MANAGEMENT
 // ============================================================
 function hideAllViews() {
-  ["homeScreen","chatView","dbView","aboutView","settingsView","quizView","docView","caseView","caseDetail","learnCenterView","materialsView","notebookView","plazaView","lotteryView","noteDetailView","profileView","pointsView","scheduleView","scheduleSettingsView","scheduleAppearanceView","videoView","clockView","storyView","calcView","flashView","debateView","juristView"].forEach(function(id) {
+  ["homeScreen","chatView","dbView","aboutView","settingsView","quizView","docView","caseView","caseDetail","learnCenterView","materialsView","notebookView","plazaView","lotteryView","skinView","noteDetailView","profileView","pointsView","scheduleView","scheduleSettingsView","scheduleAppearanceView","videoView","clockView","storyView","calcView","flashView","debateView","juristView"].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) { el.classList.remove("show"); el.style.display = "none"; }
   });
