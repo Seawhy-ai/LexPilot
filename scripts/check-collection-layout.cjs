@@ -65,7 +65,21 @@ const EXPECTED_RARITIES = ['普通', '普通', '勇者', '勇者', '史诗', '�
     assert.equal(lottery.legacyCards, 0);
     assert.ok(lottery.stats.every(h => h <= 56));
     await page.screenshot({ path: `/tmp/lottery-${width}.png`, fullPage: true });
-    console.log(JSON.stringify({ width, badges, skin, rarity, lottery }));
+    await page.evaluate(() => showLawFirm());
+    const firm = await page.evaluate(() => {
+      const body = document.getElementById('firmBody');
+      const view = document.getElementById('lawFirmView');
+      return { shown: view.classList.contains('show'), scrollable: body.scrollHeight > body.clientHeight,
+        overflowY: getComputedStyle(body).overflowY, backCount: view.querySelectorAll('.wx-nav .back').length };
+    });
+    assert.equal(firm.shown, true);
+    assert.equal(firm.scrollable, true);
+    assert.equal(firm.overflowY, 'auto');
+    assert.equal(firm.backCount, 1);
+    await page.screenshot({ path: `/tmp/law-firm-${width}.png`, fullPage: true });
+    await page.locator('#lawFirmView .wx-nav .back').click();
+    assert.equal(await page.evaluate(() => document.getElementById('learnCenterView').classList.contains('show')), true);
+    console.log(JSON.stringify({ width, badges, skin, rarity, lottery, firm }));
     await page.close();
   }
   await browser.close();
