@@ -4693,7 +4693,7 @@ function showAbout() {
 // SCREEN MANAGEMENT
 // ============================================================
 function hideAllViews() {
-  ["homeScreen","chatView","dbView","aboutView","settingsView","quizView","docView","caseView","caseDetail","learnCenterView","dailyCaseView","materialsView","notebookView","plazaView","lotteryView","skinView","badgeView","noteDetailView","profileView","pointsView","scheduleView","scheduleSettingsView","scheduleAppearanceView","videoView","clockView","storyView","calcView","flashView","debateView","juristView"].forEach(function(id) {
+  ["homeScreen","chatView","dbView","aboutView","settingsView","quizView","docView","caseView","caseDetail","learnCenterView","dailyCaseView","mootCourtView","materialsView","notebookView","plazaView","lotteryView","skinView","badgeView","noteDetailView","profileView","pointsView","scheduleView","scheduleSettingsView","scheduleAppearanceView","videoView","clockView","storyView","calcView","flashView","debateView","juristView"].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) { el.classList.remove("show"); el.style.display = "none"; }
   });
@@ -9901,5 +9901,76 @@ function resetDailyCaseReview() {
   state.completed = false;
   saveDailyCaseState(state);
   renderDailyCase();
+}
+
+// ============================================================
+// 模拟法庭：选择角色，完成开庭、质证、总结三回合
+// ============================================================
+var MOOT_COURT_KEY = "seawhy-lex-moot-court-v1";
+var MOOT_STATE = {role:null, round:0, answers:[]};
+var MOOT_ROLES = {
+  plaintiff:{name:"原告代理人", desc:"围绕损害、因果关系和请求权组织主张", opponent:"被告代理人主张：现有证据不足以证明其应承担全部责任。", rounds:[
+    {stage:"开庭陈述", question:"你的首要任务是什么？", options:["先概括争议焦点，并明确待证明的法律要件","直接要求法官支持全部请求，不说明理由","只描述个人感受，不关联案件事实"], answer:0, why:"有效开庭陈述应把事实、争点和法律要件连起来，让法官知道后续证据要证明什么。"},
+    {stage:"证据质证", question:"面对对方的否认，最有力的回应是？", options:["追问关键证据来源，并说明它与待证事实的联系","重复自己的结论，不回应对方问题","要求对方立刻承认全部责任"], answer:0, why:"质证的重点是证据的真实性、关联性与证明力，而不是重复结论。"},
+    {stage:"法庭总结", question:"总结陈词应当如何收束？", options:["按“事实—规则—结论”重申请求与理由","增加与本案无关的新事实","只强调对方态度不好"], answer:0, why:"好的总结要将已查明事实对应法律规则，再回到具体请求。"}
+  ]},
+  defendant:{name:"被告代理人", desc:"围绕事实争点、证据边界和责任范围展开答辩", opponent:"原告代理人主张：现有事实已经足以支持其全部赔偿请求。", rounds:[
+    {stage:"开庭答辩", question:"第一回应更应聚焦于？", options:["区分已证明事实与尚待证明的要件","否认所有事实且不说明理由","只谈双方私交"], answer:0, why:"答辩不是笼统否认，而是准确指出对方尚未证明的关键事实或法律要件。"},
+    {stage:"证据质证", question:"审查对方证据时，优先问什么？", options:["证据是否真实、相关，并足以证明待证事实","证据是否对自己不利","证人是否穿着正式"], answer:0, why:"真实性、关联性、合法性和证明力，是质证中可被检验的核心。"},
+    {stage:"法庭总结", question:"一个稳妥的总结策略是？", options:["明确可承担与不可承担的责任边界，并对应证据说明","回避所有争点","重复质疑但不提出结论"], answer:0, why:"即使存在一定责任，也应围绕过错、因果关系和损失范围提出清晰的边界。"}
+  ]},
+  judge:{name:"审判长", desc:"主持争点整理、证据审查与裁判说理", opponent:"双方对事实和责任范围存在分歧，法庭需要先厘清可裁判的争点。", rounds:[
+    {stage:"法庭调查", question:"主持庭审时最先要做什么？", options:["归纳双方无争议事实与核心争点","立即宣布结果","让双方同时陈述且不作引导"], answer:0, why:"先组织争点能让举证、质证和辩论围绕真正需要裁判的问题展开。"},
+    {stage:"证据审查", question:"面对一项关键证据，应重点审查？", options:["来源、真实性、关联性和证明力","证据篇幅是否够长","提交人是否表达得激动"], answer:0, why:"裁判判断应建立在可核验的证据规则上，而非表达风格。"},
+    {stage:"裁判说理", question:"形成裁判意见时，应遵循什么结构？", options:["确认事实、说明规则、逐项回应主要争点","只写最终结论","以一方的情绪替代法律分析"], answer:0, why:"清晰裁判说理需要让当事人看见事实认定与法律适用之间的路径。"}
+  ]}
+};
+function loadMootCourtRecord() {
+  try { return JSON.parse(localStorage.getItem(MOOT_COURT_KEY) || "{}"); } catch(e) { return {}; }
+}
+function saveMootCourtRecord(record) { try { localStorage.setItem(MOOT_COURT_KEY, JSON.stringify(record)); } catch(e) {} }
+function showMootCourt() {
+  hideAllViews();
+  var view = document.getElementById("mootCourtView");
+  view.style.display = "";
+  view.classList.add("show");
+  MOOT_STATE = {role:null, round:0, answers:[]};
+  renderMootCourt();
+  var body = document.getElementById("mootCourtBody");
+  if (body) body.focus();
+}
+function courtIcon() {
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21h16"/><path d="M7 21V10l5-6 5 6v11"/><path d="M3 10h18"/><path d="M9 14h6M9 18h6"/></svg>';
+}
+function renderMootCourt() {
+  var body = document.getElementById("mootCourtBody");
+  if (!body) return;
+  var caseData = DAILY_CASES[dailyCaseIndex()];
+  if (!MOOT_STATE.role) {
+    body.innerHTML = '<div class="mc-kicker"><i></i>3 回合 · 约 5 分钟</div><h1 class="mc-title">在同一案件中，换一个角度思考</h1><p class="mc-lead">选择你的庭审角色。每一回合都有明确的争点与即时复盘，不需要 API Key。</p><section class="mc-case"><strong>本次案情 · ' + escHtml(caseData.area) + '</strong>' + escHtml(caseData.fact) + '</section><div class="mc-roles">' + Object.keys(MOOT_ROLES).map(function(key) { var role=MOOT_ROLES[key]; return '<button type="button" class="mc-role" onclick="selectMootRole(\'' + key + '\')">' + courtIcon() + '<span><strong>' + role.name + '</strong><small>' + role.desc + '</small></span></button>'; }).join('') + '</div>';
+    return;
+  }
+  var role = MOOT_ROLES[MOOT_STATE.role];
+  if (MOOT_STATE.round >= role.rounds.length) { renderMootResult(body, role); return; }
+  var round = role.rounds[MOOT_STATE.round];
+  body.innerHTML = '<div class="mc-stage"><b>' + escHtml(round.stage) + ' · 第 ' + (MOOT_STATE.round + 1) + '/3 回合</b><span class="mc-role-pill">' + escHtml(role.name) + '</span></div><section class="mc-case"><strong>案情回顾 · ' + escHtml(caseData.title) + '</strong>' + escHtml(caseData.fact) + '</section><div class="mc-opponent"><strong>对方观点</strong><br>' + escHtml(role.opponent) + '</div><h1 class="mc-question">' + escHtml(round.question) + '</h1><div class="mc-options">' + round.options.map(function(option, index) { return '<button type="button" class="mc-option" onclick="answerMootRound(' + index + ')">' + escHtml(option) + '</button>'; }).join('') + '</div>';
+}
+function selectMootRole(role) { MOOT_STATE.role = role; MOOT_STATE.round = 0; MOOT_STATE.answers = []; renderMootCourt(); }
+function answerMootRound(choice) {
+  var role = MOOT_ROLES[MOOT_STATE.role];
+  var round = role.rounds[MOOT_STATE.round];
+  if (!round || typeof MOOT_STATE.answers[MOOT_STATE.round] !== "undefined") return;
+  MOOT_STATE.answers.push(choice);
+  document.querySelectorAll('.mc-option').forEach(function(button, index) { button.disabled=true; if(index===round.answer)button.classList.add('correct'); else if(index===choice)button.classList.add('incorrect'); });
+  var feedback = document.createElement('div'); feedback.className='mc-feedback'; feedback.innerHTML='<strong>' + (choice===round.answer ? '这一轮处理得很好' : '可以再靠近证据与规则') + '</strong>' + escHtml(round.why);
+  var next = document.createElement('button'); next.type='button'; next.className='mc-cta'; next.textContent = MOOT_STATE.round === 2 ? '查看庭审复盘' : '进入下一回合'; next.onclick=function(){MOOT_STATE.round++;renderMootCourt();};
+  var body = document.getElementById('mootCourtBody'); body.appendChild(feedback); body.appendChild(next);
+}
+function renderMootResult(body, role) {
+  var score = 0; role.rounds.forEach(function(round, index){if(MOOT_STATE.answers[index]===round.answer)score++;});
+  var record = loadMootCourtRecord(), today=getTodayStr(), reward=0;
+  if (record.date !== today || !record.rewarded) { reward = score===3 ? 6 : 3; awardPoints(vipRate(reward), '模拟法庭'); record={date:today,rewarded:true}; saveMootCourtRecord(record); recordStudyTime(0,3); }
+  var label = score===3 ? '论证链条非常完整' : score===2 ? '你的庭审思路已具雏形' : '完成庭审，开始建立论证习惯';
+  body.innerHTML='<section class="dc-card mc-result"><div class="mc-kicker" style="justify-content:center"><i></i>庭审复盘</div><div class="mc-score">' + score + '/3</div><h1 class="mc-title">' + label + '</h1><p class="mc-lead">你以「' + escHtml(role.name) + '」完成了三回合。' + (reward ? '本次获得 ' + vipRate(reward) + ' 学习积分。' : '今日模拟法庭积分已领取。') + '</p><div class="mc-rubric"><div><span>事实与争点</span><b>' + (MOOT_STATE.answers[0]===0?'清晰':'可加强') + '</b></div><div><span>证据与质证</span><b>' + (MOOT_STATE.answers[1]===0?'清晰':'可加强') + '</b></div><div><span>规则与结论</span><b>' + (MOOT_STATE.answers[2]===0?'清晰':'可加强') + '</b></div></div><button class="mc-cta" type="button" onclick="showLearningCenter()">回到学习中心</button><button class="dc-secondary" type="button" onclick="showMootCourt()" style="width:100%;margin-top:9px">换个角色再审一次</button></section>';
 }
 

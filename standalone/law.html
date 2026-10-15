@@ -19,7 +19,7 @@
   <script defer src="https://cdn.bootcdn.net/ajax/libs/marked/11.1.1/marked.min.js"></script>
   <link id="hlTheme" rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css" />
   <script defer src="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-  <link rel="stylesheet" href="law.css?v=137" />
+  <link rel="stylesheet" href="law.css?v=138" />
 </head>
 <body>
 <!-- ===== 内置键盘 IME ===== -->
@@ -1038,6 +1038,10 @@
       <span class="dce-arrow" aria-hidden="true">›</span>
     </button>
     <div class="learn-cards">
+      <div class="learn-card" onclick="showMootCourt()">
+        <div class="lc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21h16"/><path d="M7 21V10l5-6 5 6v11"/><path d="M9 13h6M9 17h6"/><path d="M3 10h18"/></svg></div>
+        <div class="lc-info"><div class="lc-name">模拟法庭</div><div class="lc-desc">选择角色 · 三回合庭审 · 论证复盘</div></div>
+      </div>
       <div class="learn-card" onclick="showStory()">
         <div class="lc-icon">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 15v3a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1v-3"/><path d="M4 15V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10"/><path d="M8 21h8"/><circle cx="12" cy="8" r="2.4"/><path d="M8.2 12.4c.7-1.2 2.1-2 3.8-2s3.1.8 3.8 2"/></svg>
@@ -1088,6 +1092,15 @@
     <span class="title">今日案件推理</span>
   </div>
   <main class="daily-case-body" id="dailyCaseBody" tabindex="-1" aria-live="polite"></main>
+</div>
+
+<!-- ===== MOOT COURT VIEW ===== -->
+<div id="mootCourtView" style="display:none">
+  <div class="wx-nav">
+    <button class="back" onclick="showLearningCenter()" aria-label="返回学习中心"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span class="title">模拟法庭</span>
+  </div>
+  <main class="moot-court-body" id="mootCourtBody" tabindex="-1" aria-live="polite"></main>
 </div>
 
 <!-- ===== MATERIALS VIEW (我的资料 · 上传查看) ===== -->
@@ -1471,7 +1484,7 @@
 <script src="quiz_extra.js?v=1.0.0"></script>
 <script src="ime_data.js?v=1.0.0"></script>
 <script src="fcitx5-bridge.js?v=1.0.0"></script>
-<script src="law-app.js?v=137"></script>
+<script src="law-app.js?v=138"></script>
 </body>
 </html>
 
