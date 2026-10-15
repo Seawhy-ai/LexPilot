@@ -19,7 +19,7 @@
   <script defer src="https://cdn.bootcdn.net/ajax/libs/marked/11.1.1/marked.min.js"></script>
   <link id="hlTheme" rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css" />
   <script defer src="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-  <link rel="stylesheet" href="law.css?v=140" />
+  <link rel="stylesheet" href="law.css?v=141" />
 </head>
 <body>
 <!-- ===== 内置键盘 IME ===== -->
@@ -1037,6 +1037,11 @@
       <span class="dce-copy"><strong>今日案件推理</strong><small id="dailyCaseEntryMeta">3 个线索 · 约 3 分钟 · 完成得学习积分</small></span>
       <span class="dce-arrow" aria-hidden="true">›</span>
     </button>
+    <button class="firm-entry" type="button" onclick="showLawFirm()" aria-label="进入我的律所">
+      <span class="firm-entry-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V9l7-5 7 5v12"/><path d="M9 21v-6h6v6"/><path d="M8 11h.01M16 11h.01"/></svg></span>
+      <span class="dce-copy"><strong>我的律所</strong><small id="firmEntryMeta">完成学习任务，让你的律所逐步开张</small></span>
+      <span class="dce-arrow" aria-hidden="true">›</span>
+    </button>
     <div class="learn-cards">
       <div class="learn-card" onclick="showKnowledgeMap()"><div class="lc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3V6z"/><path d="M9 3v15M15 6v15"/></svg></div><div class="lc-info"><div class="lc-name">法律知识地图</div><div class="lc-desc">点亮区域 · 直达学习 · 长期进度</div></div></div>
       <div class="learn-card" onclick="showPersonaRoutes()">
@@ -1113,6 +1118,7 @@
   <main class="persona-body" id="personaBody" tabindex="-1"></main>
 </div>
 <div id="mapView" style="display:none"><div class="wx-nav"><button class="back" onclick="showLearningCenter()" aria-label="返回学习中心"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button><span class="title">法律知识地图</span></div><main class="map-body" id="mapBody" tabindex="-1"></main></div>
+<div id="lawFirmView" style="display:none"><div class="wx-nav"><button class="back" onclick="showLearningCenter()" aria-label="返回学习中心"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button><span class="title">我的律所</span></div><main class="firm-body" id="firmBody" tabindex="-1" aria-live="polite"></main></div>
 
 <!-- ===== MATERIALS VIEW (我的资料 · 上传查看) ===== -->
 <div id="materialsView" style="display:none">
@@ -1495,7 +1501,7 @@
 <script src="quiz_extra.js?v=1.0.0"></script>
 <script src="ime_data.js?v=1.0.0"></script>
 <script src="fcitx5-bridge.js?v=1.0.0"></script>
-<script src="law-app.js?v=140"></script>
+<script src="law-app.js?v=141"></script>
 </body>
 </html>
 

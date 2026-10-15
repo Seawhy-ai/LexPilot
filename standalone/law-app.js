@@ -4693,7 +4693,7 @@ function showAbout() {
 // SCREEN MANAGEMENT
 // ============================================================
 function hideAllViews() {
-  ["homeScreen","chatView","dbView","aboutView","settingsView","quizView","docView","caseView","caseDetail","learnCenterView","dailyCaseView","mootCourtView","personaView","mapView","materialsView","notebookView","plazaView","lotteryView","skinView","badgeView","noteDetailView","profileView","pointsView","scheduleView","scheduleSettingsView","scheduleAppearanceView","videoView","clockView","storyView","calcView","flashView","debateView","juristView"].forEach(function(id) {
+  ["homeScreen","chatView","dbView","aboutView","settingsView","quizView","docView","caseView","caseDetail","learnCenterView","dailyCaseView","mootCourtView","personaView","mapView","lawFirmView","materialsView","notebookView","plazaView","lotteryView","skinView","badgeView","noteDetailView","profileView","pointsView","scheduleView","scheduleSettingsView","scheduleAppearanceView","videoView","clockView","storyView","calcView","flashView","debateView","juristView"].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) { el.classList.remove("show"); el.style.display = "none"; }
   });
@@ -8007,6 +8007,7 @@ function updateLearnDashboard() {
   renderWeekReport(); // 本周学习报告
   renderContinueFab(); // 一键继续学习悬浮按钮
   renderDailyCaseEntry();
+  renderLawFirmEntry();
   var stats = loadLearnStats();
   var today = getTodayStr();
   var todayData = stats.days[today] || {};
@@ -9890,6 +9891,7 @@ function renderDailyCaseResult(body, data, state) {
       state.rewarded = true;
       state.reward = vipRate(reward);
       addPersonaXp("evidence", 1);
+      addFirmReputation(2, "完成今日案件推理");
     }
     saveDailyCaseState(state);
   }
@@ -9970,7 +9972,7 @@ function answerMootRound(choice) {
 function renderMootResult(body, role) {
   var score = 0; role.rounds.forEach(function(round, index){if(MOOT_STATE.answers[index]===round.answer)score++;});
   var record = loadMootCourtRecord(), today=getTodayStr(), reward=0;
-  if (record.date !== today || !record.rewarded) { reward = score===3 ? 6 : 3; awardPoints(vipRate(reward), '模拟法庭'); addPersonaXp(MOOT_STATE.role === 'judge' ? 'judgment' : (MOOT_STATE.role === 'defendant' ? 'procedure' : 'contract'), 1); record={date:today,rewarded:true}; saveMootCourtRecord(record); recordStudyTime(0,3); }
+  if (record.date !== today || !record.rewarded) { reward = score===3 ? 6 : 3; awardPoints(vipRate(reward), '模拟法庭'); addPersonaXp(MOOT_STATE.role === 'judge' ? 'judgment' : (MOOT_STATE.role === 'defendant' ? 'procedure' : 'contract'), 1); addFirmReputation(3, "完成模拟法庭"); record={date:today,rewarded:true}; saveMootCourtRecord(record); recordStudyTime(0,3); }
   var label = score===3 ? '论证链条非常完整' : score===2 ? '你的庭审思路已具雏形' : '完成庭审，开始建立论证习惯';
   body.innerHTML='<section class="dc-card mc-result"><div class="mc-kicker" style="justify-content:center"><i></i>庭审复盘</div><div class="mc-score">' + score + '/3</div><h1 class="mc-title">' + label + '</h1><p class="mc-lead">你以「' + escHtml(role.name) + '」完成了三回合。' + (reward ? '本次获得 ' + vipRate(reward) + ' 学习积分。' : '今日模拟法庭积分已领取。') + '</p><div class="mc-rubric"><div><span>事实与争点</span><b>' + (MOOT_STATE.answers[0]===0?'清晰':'可加强') + '</b></div><div><span>证据与质证</span><b>' + (MOOT_STATE.answers[1]===0?'清晰':'可加强') + '</b></div><div><span>规则与结论</span><b>' + (MOOT_STATE.answers[2]===0?'清晰':'可加强') + '</b></div></div><button class="mc-cta" type="button" onclick="showLearningCenter()">回到学习中心</button><button class="dc-secondary" type="button" onclick="showMootCourt()" style="width:100%;margin-top:9px">换个角色再审一次</button></section>';
 }
@@ -9992,5 +9994,21 @@ function renderPersonaRoutes() {
 }
 
 function showKnowledgeMap(){hideAllViews();var v=document.getElementById('mapView');v.style.display='';v.classList.add('show');renderKnowledgeMap();var b=document.getElementById('mapBody');if(b)b.focus();}
+
+// 我的律所：学习成果只用于解锁空间，不扣除学习积分。
+var LAW_FIRM_KEY = "seawhy-lex-law-firm-v1";
+var FIRM_ROOMS = [
+  {key:"reception", name:"接待区", need:0, desc:"记录今天的学习节奏", action:"showLearningCenter()", actionLabel:"回到学习中心"},
+  {key:"archive", name:"案例档案室", need:6, desc:"把案件推理沉淀为办案直觉", action:"showDailyCase()", actionLabel:"做今日推理"},
+  {key:"court", name:"模拟法庭", need:14, desc:"在角色切换中练习庭审表达", action:"showMootCourt()", actionLabel:"进入庭审"},
+  {key:"library", name:"研究图书室", need:24, desc:"用知识地图规划下一段学习", action:"showKnowledgeMap()", actionLabel:"查看地图"}
+];
+function loadLawFirm(){try{return JSON.parse(localStorage.getItem(LAW_FIRM_KEY)||"{\\\"reputation\\\":0,\\\"notes\\\":[]}");}catch(e){return {reputation:0,notes:[]};}}
+function saveLawFirm(data){try{localStorage.setItem(LAW_FIRM_KEY,JSON.stringify(data));}catch(e){}}
+function addFirmReputation(amount, reason){var firm=loadLawFirm();firm.reputation=(firm.reputation||0)+amount;firm.notes=(firm.notes||[]).slice(-3);firm.notes.push({reason:reason,amount:amount,date:getTodayStr()});saveLawFirm(firm);}
+function firmIcon(){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M5 21V9l7-5 7 5v12"/><path d="M9 21v-6h6v6"/><path d="M8 11h.01M16 11h.01"/></svg>';}
+function renderLawFirmEntry(){var el=document.getElementById("firmEntryMeta");if(!el)return;var rep=loadLawFirm().reputation||0;var unlocked=FIRM_ROOMS.filter(function(room){return rep>=room.need;}).length;el.textContent="律所声望 " + rep + " · 已启用 " + unlocked + "/" + FIRM_ROOMS.length + " 个空间";}
+function showLawFirm(){hideAllViews();var view=document.getElementById("lawFirmView");view.style.display="";view.classList.add("show");renderLawFirm();var body=document.getElementById("firmBody");if(body)body.focus();}
+function renderLawFirm(){var body=document.getElementById("firmBody");if(!body)return;var firm=loadLawFirm(),rep=firm.reputation||0;var unlocked=FIRM_ROOMS.filter(function(room){return rep>=room.need;}).length;var next=FIRM_ROOMS.filter(function(room){return rep<room.need;})[0];var helper=next?"再完成一次学习任务，向「"+next.name+"」靠近。":"四个空间都已启用，今天适合挑一个薄弱环节继续打磨。";body.innerHTML='<section class="firm-hero"><div class="firm-hero-icon">'+firmIcon()+'</div><div><p class="firm-eyebrow">你的学习成果，正在变成一间律所</p><h1>知行法律事务所</h1><p>声望 '+rep+' · 已启用 '+unlocked+'/'+FIRM_ROOMS.length+' 个空间</p></div></section><section class="firm-assistant"><div class="firm-assistant-mark" aria-hidden="true">'+firmIcon()+'</div><div><strong>小律 · 学习助理</strong><p>'+helper+'</p></div></section><section class="firm-section"><div class="firm-section-head"><h2>律所空间</h2><span>学习解锁</span></div><div class="firm-grid">'+FIRM_ROOMS.map(function(room){var open=rep>=room.need;return '<article class="firm-room '+(open?'is-open':'is-locked')+'"><div class="firm-room-top">'+firmIcon()+'<span>'+ (open?'已启用':'还需 '+(room.need-rep)+' 声望')+'</span></div><h3>'+room.name+'</h3><p>'+room.desc+'</p>'+(open?'<button type="button" onclick="'+room.action+'">'+room.actionLabel+'</button>':'<div class="firm-lock">完成案件推理或模拟法庭即可获得声望</div>')+'</article>';}).join('')+'</div></section><section class="firm-how"><h2>声望怎么来？</h2><p>完成「今日案件推理」得 2 点；完成「模拟法庭」得 3 点。它只用于展示你的成长，不会扣除学习积分。</p></section>';}
 function renderKnowledgeMap(){var b=document.getElementById('mapBody');if(!b)return;var p=loadPersona(), stats=loadLearnStats(), q=stats.totalQ||0;var regions=[{n:'民法城',d:'合同、侵权与人格权益',x:(p.contract||0)+(p.evidence||0),go:'showDailyCase()'},{n:'刑法岛',d:'构成要件与责任判断',x:Math.floor(q/10),go:'showQuizModule()'},{n:'行政法庭',d:'公权力与救济路径',x:(p.procedure||0),go:'showMootCourt()'},{n:'诉讼法港',d:'证据、程序与裁判说理',x:(p.judgment||0)+(p.evidence||0),go:'showMootCourt()'}];b.innerHTML='<section class="map-hero"><h1>法律知识地图</h1><p>学习会点亮区域。完成案件推理、模拟法庭和题库练习后，回到这里查看你的探索路线。</p></section><div class="map-grid">'+regions.map(function(r){var on=r.x>0;return '<button class="map-card '+(on?'on':'')+'" type="button" onclick="'+r.go+'"><b>'+ (on?'已点亮':'待探索') +'</b><h2>'+r.n+'</h2><p>'+r.d+'</p><p style="margin-top:9px">探索值 '+r.x+' · 点击前往</p></button>';}).join('')+'</div>';}
 
