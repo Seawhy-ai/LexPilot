@@ -1,5 +1,5 @@
-var CACHE = "lexpilot-v140";
-var APP_SHELL = ["./", "./law.html", "./law.css?v=140", "./law-app.js?v=140", "./law-manifest.json", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png"];
+var CACHE = "lexpilot-v141";
+var APP_SHELL = ["./", "./law.html", "./law.css?v=141", "./law-app.js?v=141", "./law-manifest.json", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png"];
 
 self.addEventListener("install", function(event) {
   event.waitUntil(caches.open(CACHE).then(function(cache) {
