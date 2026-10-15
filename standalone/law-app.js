@@ -4693,7 +4693,7 @@ function showAbout() {
 // SCREEN MANAGEMENT
 // ============================================================
 function hideAllViews() {
-  ["homeScreen","chatView","dbView","aboutView","settingsView","quizView","docView","caseView","caseDetail","learnCenterView","materialsView","notebookView","plazaView","lotteryView","skinView","badgeView","noteDetailView","profileView","pointsView","scheduleView","scheduleSettingsView","scheduleAppearanceView","videoView","clockView","storyView","calcView","flashView","debateView","juristView"].forEach(function(id) {
+  ["homeScreen","chatView","dbView","aboutView","settingsView","quizView","docView","caseView","caseDetail","learnCenterView","dailyCaseView","materialsView","notebookView","plazaView","lotteryView","skinView","badgeView","noteDetailView","profileView","pointsView","scheduleView","scheduleSettingsView","scheduleAppearanceView","videoView","clockView","storyView","calcView","flashView","debateView","juristView"].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) { el.classList.remove("show"); el.style.display = "none"; }
   });
@@ -8006,6 +8006,7 @@ function updateLearnDashboard() {
   renderExamCd(); // 法考倒计时
   renderWeekReport(); // 本周学习报告
   renderContinueFab(); // 一键继续学习悬浮按钮
+  renderDailyCaseEntry();
   var stats = loadLearnStats();
   var today = getTodayStr();
   var todayData = stats.days[today] || {};
@@ -9780,5 +9781,125 @@ function generateDoc() {
 function regenerateDoc() {
   DOC_STATE.result = "";
   generateDoc();
+}
+
+// ============================================================
+// 每日案件推理：三步微型案例，奖励与学习完成度直接绑定
+// ============================================================
+var DAILY_CASE_KEY = "seawhy-lex-daily-case-v1";
+var DAILY_CASES = [
+  { title:"深夜的花盆", area:"侵权责任", fact:"深夜，一只花盆从某小区 12 楼坠落，砸伤正在经过的小周。警方无法确认具体抛掷人，但能确认花盆来自 12 楼东侧相邻住户使用的公共外窗区域。", steps:[
+    { q:"第一步：本案首先应围绕什么法律关系展开？", options:["劳动争议","高空抛物、坠物损害责任","买卖合同纠纷","行政处罚"], answer:1, why:"本案属于物件脱落、坠落造成他人损害的侵权责任问题，应先审查高空抛物、坠物规则。" },
+    { q:"第二步：无法查明具体侵权人时，可能承担补偿责任的是？", options:["小区所有住户","可能加害的建筑物使用人","物业公司当然全额赔偿","受害人自行承担"], answer:1, why:"在难以确定具体侵权人的情况下，可能加害的建筑物使用人可能依法给予补偿；具体范围仍须结合证据判断。" },
+    { q:"第三步：物业服务企业的合理义务更接近哪一项？", options:["完全免责","采取必要安全保障措施并及时报告","代替住户承担全部赔偿","只在发生事故后张贴通知"], answer:1, why:"物业等建筑物管理人应采取必要的安全保障措施；未尽到义务的，可能依法承担相应责任。" }
+  ]},
+  { title:"被撤回的订金", area:"合同法", fact:"小林在二手平台看中一台相机，向卖家转了 500 元并备注“订金”。卖家随后以价格上涨为由拒绝交易。双方没有书面约定违约后如何处理。", steps:[
+    { q:"第一步：判断“订金”法律效果时，最关键的材料是什么？", options:["转账金额大小","双方对款项性质和违约后果的明确约定","卖家是否后悔","平台粉丝数量"], answer:1, why:"定金罚则需要当事人对定金性质及相应法律效果有明确合意，不能仅凭备注机械认定。" },
+    { q:"第二步：若无法证明存在定金合意，500 元通常更可能被认定为？", options:["赠与","预付款或订约款","行政罚款","保证金"], answer:1, why:"没有充分证据证明定金合意时，款项通常按预付款、订约款等性质处理，再依交易是否成立判断返还。" },
+    { q:"第三步：小林保留聊天记录的主要价值是？", options:["证明双方意思表示与交易内容","替代法院裁判","自动获得双倍返还","让平台直接处罚卖家"], answer:0, why:"聊天记录可用于证明商品、价格、交付、款项性质等意思表示，是判断合同关系的重要证据。" }
+  ]},
+  { title:"借来的车", area:"侵权责任", fact:"小许将汽车借给朋友小陈使用，明知小陈刚拿到驾照且夜间视力较差。小陈夜间发生追尾，造成他人车辆损坏。", steps:[
+    { q:"第一步：事故直接侵害他人财产的行为人是？", options:["小许","小陈","保险公司","车辆生产商"], answer:1, why:"小陈驾驶车辆发生追尾，是直接实施侵害行为的一方。" },
+    { q:"第二步：小许是否可能承担责任，重点要看？", options:["车辆颜色","出借时是否存在过错","双方是否是朋友","事故发生的季节"], answer:1, why:"机动车所有人、管理人对损害发生有过错的，可能承担相应责任；本案需审查其明知风险仍出借的情形。" },
+    { q:"第三步：处理此类案件，优先固定哪类证据？", options:["朋友圈截图","驾驶资格、借车沟通和事故责任认定","两人认识多久","车辆装饰照片"], answer:1, why:"驾驶资格、出借时的沟通记录和事故责任认定，直接关系到各方过错及责任范围。" }
+  ]}
+];
+
+function dailyCaseIndex() {
+  var base = Date.UTC(2026, 0, 1);
+  return Math.abs(Math.floor((Date.now() - base) / 86400000)) % DAILY_CASES.length;
+}
+function loadDailyCaseState() {
+  var today = getTodayStr();
+  try {
+    var state = JSON.parse(localStorage.getItem(DAILY_CASE_KEY) || "{}");
+    if (state.date === today && Array.isArray(state.answers)) return state;
+  } catch(e) {}
+  return {date:today, answers:[], completed:false, rewarded:false};
+}
+function saveDailyCaseState(state) { try { localStorage.setItem(DAILY_CASE_KEY, JSON.stringify(state)); } catch(e) {} }
+function showDailyCase() {
+  hideAllViews();
+  var view = document.getElementById("dailyCaseView");
+  view.style.display = "";
+  view.classList.add("show");
+  recordLastStudy("dailyCaseView");
+  renderDailyCase();
+  var body = document.getElementById("dailyCaseBody");
+  if (body) body.focus();
+}
+function renderDailyCaseEntry() {
+  var meta = document.getElementById("dailyCaseEntryMeta");
+  if (!meta) return;
+  var state = loadDailyCaseState();
+  meta.textContent = state.completed ? "今日已完成 · 可回看推理过程" : "3 个线索 · 约 3 分钟 · 完成得学习积分";
+}
+function renderDailyCase() {
+  var body = document.getElementById("dailyCaseBody");
+  if (!body) return;
+  var data = DAILY_CASES[dailyCaseIndex()];
+  var state = loadDailyCaseState();
+  var current = Math.min(state.answers.length, data.steps.length);
+  if (state.completed || current === data.steps.length) { renderDailyCaseResult(body, data, state); return; }
+  var step = data.steps[current];
+  var progress = "";
+  for (var i=0;i<data.steps.length;i++) progress += '<span class="' + (i < current ? 'done' : '') + '"></span>';
+  var letters = ["A","B","C","D"];
+  var options = step.options.map(function(option, index) {
+    return '<button class="dc-option" type="button" onclick="answerDailyCase(' + index + ')" aria-label="选项 ' + letters[index] + '：' + escHtml(option) + '"><span class="dc-letter">' + letters[index] + '</span><span>' + escHtml(option) + '</span></button>';
+  }).join("");
+  body.innerHTML = '<div class="dc-kicker"><i></i>今日案例 · ' + escHtml(data.area) + '</div><h1 class="dc-title">' + escHtml(data.title) + '</h1><p class="dc-subtitle">先读案情，再用三步梳理法律问题。答错也能继续，重点是理解推理路径。</p><div class="dc-progress" aria-label="第 ' + (current + 1) + ' 步，共 ' + data.steps.length + ' 步">' + progress + '</div><section class="dc-card"><h2>案情</h2><p>' + escHtml(data.fact) + '</p><div class="dc-hint"><span aria-hidden="true">提示</span><span>' + escHtml(step.q) + '</span></div><div class="dc-options">' + options + '</div></section>';
+}
+function answerDailyCase(choice) {
+  var data = DAILY_CASES[dailyCaseIndex()];
+  var state = loadDailyCaseState();
+  var stepIndex = state.answers.length;
+  var step = data.steps[stepIndex];
+  if (!step || typeof state.answers[stepIndex] !== "undefined") return;
+  state.answers.push(choice);
+  saveDailyCaseState(state);
+  var buttons = document.querySelectorAll(".dc-option");
+  buttons.forEach(function(btn, idx) {
+    btn.disabled = true;
+    if (idx === step.answer) btn.classList.add("correct");
+    else if (idx === choice) btn.classList.add("incorrect");
+  });
+  var correct = choice === step.answer;
+  var card = document.querySelector(".dc-card");
+  if (!card) return;
+  var feedback = document.createElement("div");
+  feedback.className = "dc-feedback";
+  feedback.innerHTML = '<strong>' + (correct ? '判断正确' : '这一项不太准确') + '</strong>' + escHtml(step.why);
+  card.appendChild(feedback);
+  var next = document.createElement("button");
+  next.className = "dc-next";
+  next.type = "button";
+  next.textContent = stepIndex === data.steps.length - 1 ? "查看今日复盘" : "继续下一步";
+  next.onclick = function() { renderDailyCase(); };
+  card.appendChild(next);
+}
+function renderDailyCaseResult(body, data, state) {
+  var correct = 0;
+  data.steps.forEach(function(step, i) { if (state.answers[i] === step.answer) correct++; });
+  if (!state.completed) {
+    state.completed = true;
+    if (!state.rewarded) {
+      var reward = correct === data.steps.length ? 8 : 4;
+      awardPoints(vipRate(reward), "每日案件推理");
+      recordStudyTime(0, data.steps.length);
+      state.rewarded = true;
+      state.reward = vipRate(reward);
+    }
+    saveDailyCaseState(state);
+  }
+  body.innerHTML = '<div class="dc-kicker"><i></i>今日复盘</div><section class="dc-card dc-result"><div class="dc-score">' + correct + '/' + data.steps.length + '</div><h1 class="dc-title">' + (correct === data.steps.length ? '推理路径很完整' : '完成一次有效推理') + '</h1><p>你已完成「' + escHtml(data.title) + '」。' + (state.reward ? '本次获得 ' + state.reward + ' 学习积分。' : '今天的学习积分已发放。') + '</p><div class="dc-result-actions"><button class="dc-next" type="button" onclick="showLearningCenter()">回到学习中心</button><button class="dc-secondary" type="button" onclick="resetDailyCaseReview()">回看本题</button></div></section>';
+  renderDailyCaseEntry();
+}
+function resetDailyCaseReview() {
+  var state = loadDailyCaseState();
+  state.answers = [];
+  state.completed = false;
+  saveDailyCaseState(state);
+  renderDailyCase();
 }
 
