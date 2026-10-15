@@ -5636,12 +5636,12 @@ function renderSkinView() {
   var has = owned.indexOf(selected.key) >= 0, isActive = active === selected.key;
   var can = selected.crystal ? (p.soulCrystals || 0) >= 1 : (p.skinFragments || 0) >= selected.cost;
   var art = selected.art || "images/skins/" + selected.key + ".webp";
-  var h = '<section class="skin-stage" style="--sc:' + selected.color + '"><img src="' + art + '" alt="" /><div class="skin-stage-copy"><span class="skin-rarity-pill" style="color:' + selected.color + '">' + selected.rarity + '</span><h2>' + escHtml(selected.name) + '</h2><p>' + escHtml(selected.desc) + '</p></div><div class="skin-actions"><button onclick="showToast(\'展示动作敬请期待\')">▷ 展示动作</button><button onclick="showToast(\'“' + escHtml(selected.name) + '” · ' + escHtml(selected.desc) + '\')">▣ 皮肤故事</button></div></section>';
+  var h = '<section class="skin-stage" style="--sc:' + selected.color + '"><img src="' + art + '" alt="" /><div class="skin-stage-copy"><h2>' + escHtml(selected.name) + '</h2><p>' + escHtml(selected.desc) + '</p></div><div class="skin-actions"><button onclick="showToast(\'展示动作敬请期待\')">▷ 展示动作</button><button onclick="showToast(\'“' + escHtml(selected.name) + '” · ' + escHtml(selected.desc) + '\')">▣ 皮肤故事</button></div></section>';
   h += '<div class="skin-tabs"><span class="on">成套皮肤</span></div><div class="skin-rail">';
   for (var i = 0; i < SKINS.length; i++) {
     var s = SKINS[i], own = owned.indexOf(s.key) >= 0;
     var thumb = s.art || "images/skins/" + s.key + ".webp";
-    h += '<button class="sp-card' + (s.key === selected.key ? ' selected' : '') + '" style="--sc:' + s.color + '" onclick="selectSkin(\'' + s.key + '\')"><img src="' + thumb + '" alt="" /><span class="sp-name">' + escHtml(s.name) + '</span><span class="sp-meta">' + s.rarity + '</span>' + (own ? '' : '<span class="sp-lock">🔒</span>') + '</button>';
+    h += '<button class="sp-card' + (s.key === selected.key ? ' selected' : '') + '" style="--sc:' + s.color + '" onclick="selectSkin(\'' + s.key + '\')"><img src="' + thumb + '" alt="" /><span class="sp-name">' + escHtml(s.name) + '</span>' + (own ? '' : '<span class="sp-lock">🔒</span>') + '</button>';
   }
   h += '</div><div class="skin-bottom"><div class="skin-currency">皮肤碎片 <b>' + (p.skinFragments || 0) + '</b>　法魂水晶 <b>' + (p.soulCrystals || 0) + '</b></div>';
   h += '<button class="skin-main-btn' + ((has || can) ? '' : ' off') + '" onclick="applySelectedSkin()">' + (has ? (isActive ? '佩戴中' : '穿戴') : (selected.crystal ? '1 水晶兑换' : selected.cost + ' 碎片合成')) + '</button></div>';
