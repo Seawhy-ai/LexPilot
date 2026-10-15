@@ -1,5 +1,6 @@
 const { chromium } = require('playwright-core');
 const assert = require('node:assert/strict');
+const EXPECTED_RARITIES = ['普通', '普通', '勇者', '勇者', '史诗', '史诗', '传说', '传说', '典藏'];
 (async () => {
   const fs = require('node:fs'), path = require('node:path');
   const root = path.resolve(__dirname, '../standalone');
@@ -38,7 +39,33 @@ const assert = require('node:assert/strict');
     }))));
     assert.ok(allArt.every(a => a.width >= 1024 && a.height >= 1536));
     await page.screenshot({ path: `/tmp/skins-${width}.png`, fullPage: true });
-    console.log(JSON.stringify({ width, badges, skin }));
+    const rarity = await page.evaluate(() => ({
+      labels: [...document.querySelectorAll('.sp-rarity')].map(el => el.textContent),
+      animated: [...document.querySelectorAll('.sp-rarity.legendary,.sp-rarity.collector')].every(el => getComputedStyle(el).animationName !== 'none')
+    }));
+    assert.deepEqual(rarity.labels, EXPECTED_RARITIES);
+    assert.equal(rarity.animated, true);
+    await page.evaluate(() => openLottery());
+    const lottery = await page.evaluate(() => {
+      const nav = document.querySelector('#lotteryView .wx-nav');
+      const back = nav.querySelector('.back').getBoundingClientRect();
+      const rules = nav.querySelector('.lottery-rules').getBoundingClientRect();
+      const stats = [...document.querySelectorAll('#lotteryView .lottery-stat')].map(el => el.getBoundingClientRect().height);
+      const ctas = [...document.querySelectorAll('#lotteryView .l-cta')];
+      const row = document.querySelector('#lotteryView .lottery-cta-row');
+      return { navOverlap: !(back.right <= rules.left || rules.right <= back.left), stats, ctaCount: ctas.length,
+        ctaRows: new Set(ctas.map(el => Math.round(el.getBoundingClientRect().top))).size,
+        ctaOverflow: row.scrollWidth > row.clientWidth + 1,
+        legacyCards: document.querySelectorAll('#lotteryView .limited-collection').length };
+    });
+    assert.equal(lottery.navOverlap, false);
+    assert.equal(lottery.ctaCount, 4);
+    assert.equal(lottery.ctaRows, 1);
+    assert.equal(lottery.ctaOverflow, false);
+    assert.equal(lottery.legacyCards, 0);
+    assert.ok(lottery.stats.every(h => h <= 56));
+    await page.screenshot({ path: `/tmp/lottery-${width}.png`, fullPage: true });
+    console.log(JSON.stringify({ width, badges, skin, rarity, lottery }));
     await page.close();
   }
   await browser.close();

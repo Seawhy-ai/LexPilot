@@ -868,7 +868,7 @@
   <div class="wx-nav">
     <button class="back" onclick="showPlaza()" aria-label="返回"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
     <span class="title">成长奖励</span>
-    <button class="back" onclick="showToast('法脉·星海典藏：法律知识如星辰汇聚成法脉，探索浩瀚法海。')" aria-label="活动规则" style="margin-left:auto;font-size:12px;width:auto;padding:0 9px">规则</button>
+    <button class="lottery-rules" onclick="showToast('法脉·星海典藏：法律知识如星辰汇聚成法脉，探索浩瀚法海。')" aria-label="活动规则">规则</button>
   </div>
   <div class="lottery-body">
     <svg width="0" height="0" style="position:absolute"><defs><linearGradient id="coinG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe08a"/><stop offset="1" stop-color="#e8a020"/></linearGradient></defs></svg>
@@ -910,11 +910,6 @@
       <div class="lottery-cell epic rarity-epic" id="lotCell7"><span class="lc-tag t-purple">道具</span><div class="lc-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.5 13l1.5 8-5-3-5 3 1.5-8"/></svg></div><div class="lc-tx">限定徽章</div></div>
       <div class="lottery-cell empty" id="lotCell8"><div class="lc-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.59 4.59A2 2 0 1 1 11 8H2"/><path d="M12.59 19.41A2 2 0 1 0 14 16H2"/><path d="M17.73 7.73A2.5 2.5 0 1 1 19.5 12H2"/></svg></div><div class="lc-tx">谢谢参与</div></div>
     </div>
-
-    <section class="limited-collection" aria-label="限定收藏">
-      <button class="limited-card" onclick="openBadgeGallery()"><b>法脉限定徽章</b><span>本期限定徽章一览 ›</span></button>
-      <button class="limited-card featured" onclick="openSkinGallery()"><b>星河法皇</b><span>收集皮肤碎片合成 ›</span></button>
-    </section>
 
     <div class="lottery-pity" onclick="showLuckDetail()" title="查看保底进度">
       <span class="lottery-pity-label">✦ 法魂水晶保底</span>
