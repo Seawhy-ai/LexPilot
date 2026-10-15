@@ -4693,7 +4693,7 @@ function showAbout() {
 // SCREEN MANAGEMENT
 // ============================================================
 function hideAllViews() {
-  ["homeScreen","chatView","dbView","aboutView","settingsView","quizView","docView","caseView","caseDetail","learnCenterView","dailyCaseView","mootCourtView","materialsView","notebookView","plazaView","lotteryView","skinView","badgeView","noteDetailView","profileView","pointsView","scheduleView","scheduleSettingsView","scheduleAppearanceView","videoView","clockView","storyView","calcView","flashView","debateView","juristView"].forEach(function(id) {
+  ["homeScreen","chatView","dbView","aboutView","settingsView","quizView","docView","caseView","caseDetail","learnCenterView","dailyCaseView","mootCourtView","personaView","materialsView","notebookView","plazaView","lotteryView","skinView","badgeView","noteDetailView","profileView","pointsView","scheduleView","scheduleSettingsView","scheduleAppearanceView","videoView","clockView","storyView","calcView","flashView","debateView","juristView"].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) { el.classList.remove("show"); el.style.display = "none"; }
   });
@@ -9889,6 +9889,7 @@ function renderDailyCaseResult(body, data, state) {
       recordStudyTime(0, data.steps.length);
       state.rewarded = true;
       state.reward = vipRate(reward);
+      addPersonaXp("evidence", 1);
     }
     saveDailyCaseState(state);
   }
@@ -9969,8 +9970,24 @@ function answerMootRound(choice) {
 function renderMootResult(body, role) {
   var score = 0; role.rounds.forEach(function(round, index){if(MOOT_STATE.answers[index]===round.answer)score++;});
   var record = loadMootCourtRecord(), today=getTodayStr(), reward=0;
-  if (record.date !== today || !record.rewarded) { reward = score===3 ? 6 : 3; awardPoints(vipRate(reward), '模拟法庭'); record={date:today,rewarded:true}; saveMootCourtRecord(record); recordStudyTime(0,3); }
+  if (record.date !== today || !record.rewarded) { reward = score===3 ? 6 : 3; awardPoints(vipRate(reward), '模拟法庭'); addPersonaXp(MOOT_STATE.role === 'judge' ? 'judgment' : (MOOT_STATE.role === 'defendant' ? 'procedure' : 'contract'), 1); record={date:today,rewarded:true}; saveMootCourtRecord(record); recordStudyTime(0,3); }
   var label = score===3 ? '论证链条非常完整' : score===2 ? '你的庭审思路已具雏形' : '完成庭审，开始建立论证习惯';
   body.innerHTML='<section class="dc-card mc-result"><div class="mc-kicker" style="justify-content:center"><i></i>庭审复盘</div><div class="mc-score">' + score + '/3</div><h1 class="mc-title">' + label + '</h1><p class="mc-lead">你以「' + escHtml(role.name) + '」完成了三回合。' + (reward ? '本次获得 ' + vipRate(reward) + ' 学习积分。' : '今日模拟法庭积分已领取。') + '</p><div class="mc-rubric"><div><span>事实与争点</span><b>' + (MOOT_STATE.answers[0]===0?'清晰':'可加强') + '</b></div><div><span>证据与质证</span><b>' + (MOOT_STATE.answers[1]===0?'清晰':'可加强') + '</b></div><div><span>规则与结论</span><b>' + (MOOT_STATE.answers[2]===0?'清晰':'可加强') + '</b></div></div><button class="mc-cta" type="button" onclick="showLearningCenter()">回到学习中心</button><button class="dc-secondary" type="button" onclick="showMootCourt()" style="width:100%;margin-top:9px">换个角色再审一次</button></section>';
+}
+
+// 法律人格：由真实学习行为驱动的长期称号，不单独售卖或抽取。
+var PERSONA_KEY = "seawhy-lex-persona-v1";
+var PERSONAS = [
+  {key:"evidence", name:"证据猎手", desc:"善于从事实中识别待证问题", levels:["见习记录员","线索分析师","证据猎手"]},
+  {key:"contract", name:"合同侦探", desc:"重视意思表示与交易结构", levels:["条款观察者","交易分析师","合同侦探"]},
+  {key:"procedure", name:"程序守望者", desc:"关注举证边界与权利保障", levels:["庭审学徒","程序协调员","程序守望者"]},
+  {key:"judgment", name:"裁判思维者", desc:"用事实、规则与结论完成说理", levels:["裁判助理","说理研习者","裁判思维者"]}
+];
+function loadPersona() { try { return JSON.parse(localStorage.getItem(PERSONA_KEY) || "{}"); } catch(e) { return {}; } }
+function addPersonaXp(key, amount) { var data=loadPersona(); data[key]=(data[key]||0)+(amount||1); try { localStorage.setItem(PERSONA_KEY,JSON.stringify(data)); } catch(e) {} }
+function showPersonaRoutes() { hideAllViews(); var view=document.getElementById("personaView"); view.style.display="";view.classList.add("show");renderPersonaRoutes();var body=document.getElementById("personaBody");if(body)body.focus(); }
+function renderPersonaRoutes() {
+  var body=document.getElementById("personaBody"); if(!body)return; var data=loadPersona();
+  body.innerHTML='<section class="persona-hero"><h1>你的法律人格</h1><p>每次完成案件推理或模拟法庭，都会沉淀到对应路线。累计 3 次可升级称号，并解锁成长奖励的展示资格。</p></section><div class="persona-grid">'+PERSONAS.map(function(persona){var xp=data[persona.key]||0;var level=Math.min(2,Math.floor(xp/3));var progress=(xp%3)/3*100;return '<section class="persona-card"><header><div><h2>'+escHtml(persona.name)+'</h2><p>'+escHtml(persona.desc)+'</p></div><span class="persona-rank">'+escHtml(persona.levels[level])+'</span></header><div class="persona-bar" aria-label="'+escHtml(persona.name)+'成长进度 '+xp+'"><i style="width:'+progress+'%"></i></div><div class="persona-meta"><span>'+xp+' 次学习沉淀</span><span>'+(level===2?'已达最高称号':'距下一等级 '+(3-xp%3)+' 次')+'</span></div></section>';}).join('')+'</div>';
 }
 
