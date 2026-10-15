@@ -4693,7 +4693,7 @@ function showAbout() {
 // SCREEN MANAGEMENT
 // ============================================================
 function hideAllViews() {
-  ["homeScreen","chatView","dbView","aboutView","settingsView","quizView","docView","caseView","caseDetail","learnCenterView","dailyCaseView","mootCourtView","personaView","materialsView","notebookView","plazaView","lotteryView","skinView","badgeView","noteDetailView","profileView","pointsView","scheduleView","scheduleSettingsView","scheduleAppearanceView","videoView","clockView","storyView","calcView","flashView","debateView","juristView"].forEach(function(id) {
+  ["homeScreen","chatView","dbView","aboutView","settingsView","quizView","docView","caseView","caseDetail","learnCenterView","dailyCaseView","mootCourtView","personaView","mapView","materialsView","notebookView","plazaView","lotteryView","skinView","badgeView","noteDetailView","profileView","pointsView","scheduleView","scheduleSettingsView","scheduleAppearanceView","videoView","clockView","storyView","calcView","flashView","debateView","juristView"].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) { el.classList.remove("show"); el.style.display = "none"; }
   });
@@ -9990,4 +9990,7 @@ function renderPersonaRoutes() {
   var body=document.getElementById("personaBody"); if(!body)return; var data=loadPersona();
   body.innerHTML='<section class="persona-hero"><h1>你的法律人格</h1><p>每次完成案件推理或模拟法庭，都会沉淀到对应路线。累计 3 次可升级称号，并解锁成长奖励的展示资格。</p></section><div class="persona-grid">'+PERSONAS.map(function(persona){var xp=data[persona.key]||0;var level=Math.min(2,Math.floor(xp/3));var progress=(xp%3)/3*100;return '<section class="persona-card"><header><div><h2>'+escHtml(persona.name)+'</h2><p>'+escHtml(persona.desc)+'</p></div><span class="persona-rank">'+escHtml(persona.levels[level])+'</span></header><div class="persona-bar" aria-label="'+escHtml(persona.name)+'成长进度 '+xp+'"><i style="width:'+progress+'%"></i></div><div class="persona-meta"><span>'+xp+' 次学习沉淀</span><span>'+(level===2?'已达最高称号':'距下一等级 '+(3-xp%3)+' 次')+'</span></div></section>';}).join('')+'</div>';
 }
+
+function showKnowledgeMap(){hideAllViews();var v=document.getElementById('mapView');v.style.display='';v.classList.add('show');renderKnowledgeMap();var b=document.getElementById('mapBody');if(b)b.focus();}
+function renderKnowledgeMap(){var b=document.getElementById('mapBody');if(!b)return;var p=loadPersona(), stats=loadLearnStats(), q=stats.totalQ||0;var regions=[{n:'民法城',d:'合同、侵权与人格权益',x:(p.contract||0)+(p.evidence||0),go:'showDailyCase()'},{n:'刑法岛',d:'构成要件与责任判断',x:Math.floor(q/10),go:'showQuizModule()'},{n:'行政法庭',d:'公权力与救济路径',x:(p.procedure||0),go:'showMootCourt()'},{n:'诉讼法港',d:'证据、程序与裁判说理',x:(p.judgment||0)+(p.evidence||0),go:'showMootCourt()'}];b.innerHTML='<section class="map-hero"><h1>法律知识地图</h1><p>学习会点亮区域。完成案件推理、模拟法庭和题库练习后，回到这里查看你的探索路线。</p></section><div class="map-grid">'+regions.map(function(r){var on=r.x>0;return '<button class="map-card '+(on?'on':'')+'" type="button" onclick="'+r.go+'"><b>'+ (on?'已点亮':'待探索') +'</b><h2>'+r.n+'</h2><p>'+r.d+'</p><p style="margin-top:9px">探索值 '+r.x+' · 点击前往</p></button>';}).join('')+'</div>';}
 
