@@ -19,33 +19,9 @@
   <script defer src="https://cdn.bootcdn.net/ajax/libs/marked/11.1.1/marked.min.js"></script>
   <link id="hlTheme" rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css" />
   <script defer src="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-  <link rel="stylesheet" href="law.css?v=144" />
+  <link rel="stylesheet" href="law.css?v=lex-account4" />
 </head>
 <body>
-<!-- ===== 内置键盘 IME ===== -->
-<div id="ime">
-  <div class="ime-cands">
-    <span class="ime-py empty" id="imePy">拼音</span>
-    <div class="ime-cand-list" id="imeCands"></div>
-  </div>
-  <div class="ime-tools">
-    <button class="ime-tool" data-act="done">收起</button>
-    <button class="ime-tool on" id="imeLangBtn" data-act="lang">中</button>
-    <button class="ime-tool" id="imeLayoutBtn" data-act="layout">123</button>
-    <button class="ime-tool" data-act="copy">复制</button>
-    <button class="ime-tool" data-act="paste">粘贴</button>
-    <span class="ime-state" id="imeState"></span>
-  </div>
-  <div class="ime-keys" id="imeKeys"></div>
-  <div class="ime-bottom">
-    <button class="ime-key fn" data-act="done">▼</button>
-    <button class="ime-key fn" id="imeLayoutBtn2" data-act="layout">123</button>
-    <button class="ime-key ime-space fn" data-act="space">空格</button>
-    <button class="ime-key fn" id="imeLangBtn2" data-act="lang">中/英</button>
-    <button class="ime-key ime-enter" data-act="enter">回车</button>
-    <button class="ime-key fn ime-back" data-act="back">⌫</button>
-  </div>
-</div>
 <!-- 全局动态背景层（全页面可见，背景选择后由 applyHomeBg 驱动） -->
 <div class="home-bg" id="globalBg"></div>
 
@@ -295,10 +271,9 @@
         <div class="ph-vip-badge" id="profileVipBadge" style="display:none">VIP</div>
       </div>
       <div class="ph-id-row">
-        <span class="ph-id" id="profileIdChip">ID -----</span>
-        <button class="ph-id-btn" id="prettyIdBtn" onclick="rollPrettyId()">换靓号</button>
+        <span class="ph-id" id="profileIdChip" style="overflow-wrap:anywhere">ID -----</span>
+        <span id="profileAccount" style="font-size:12px;overflow-wrap:anywhere">账号：未登录</span>
       </div>
-      <div class="ph-id-opts" id="prettyOptions" style="display:none"></div>
       <div class="ph-level-badge" id="profileLevelBadge">
         <div class="ph-level-scroll" id="levelScroll"></div>
       </div>
@@ -356,21 +331,6 @@
         <span>设置</span>
         <span class="pm-arrow">›</span>
       </div>
-    </div>
-
-    <div class="profile-menu">
-      <div class="pm-item" onclick="cloudBackup()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        <span>导出本地备份</span>
-        <span class="pm-arrow">›</span>
-      </div>
-      <div class="pm-item" onclick="cloudRestore()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        <span>从备份文件恢复</span>
-        <span class="pm-arrow">›</span>
-      </div>
-      <p id="backupStatus" style="font-size:10px;color:var(--text2);padding:0 16px 8px;min-height:14px"></p>
-      <input type="file" id="restoreFileInput" accept=".json" style="display:none" onchange="handleRestoreFile(this)" />
     </div>
 
     <div class="profile-menu">
@@ -494,9 +454,6 @@
     </div>
     <div class="ss-card">
       <label class="sf-label">数据管理</label>
-      <button class="sf-save" style="width:100%;padding:10px;font-size:13px;margin-bottom:8px;background:#111" onclick="exportScheduleBackup()">💾 导出全部数据备份</button>
-      <button class="sf-save" style="width:100%;padding:10px;font-size:13px;margin-bottom:8px;background:#111" onclick="document.getElementById('ssBackupInput').click()">📥 导入备份文件</button>
-      <input type="file" id="ssBackupInput" accept=".json" style="display:none" onchange="importScheduleBackup(this)" />
       <button class="sf-del" style="width:100%;padding:10px;font-size:13px" onclick="clearAllCourses()">🗑 一键清空当前学期课程</button>
     </div>
     <button class="ss-save" onclick="saveScheduleSettings()">保存设置</button>
@@ -739,11 +696,6 @@
         <span>微信绑定</span>
         <span class="pm-arrow">›</span>
       </div>
-      <div class="pm-item" onclick="deleteAccount()" style="color:#e74c3c">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-        <span style="color:#e74c3c">账号注销（清除本机全部数据）</span>
-      </div>
-      <p class="pm-note">数据保存在本机浏览器中；绑定手机号用于后续多设备同步功能。注销将不可恢复地清空积分、笔记、错题本等全部数据。</p>
     </div>
     </div>
   </div>
@@ -1494,9 +1446,7 @@
 <script src="quiz_data.js?v=1.5.0"></script>
 <script src="case_data.js?v=1.2.6"></script>
 <script src="quiz_extra.js?v=1.0.0"></script>
-<script src="ime_data.js?v=1.0.0"></script>
-<script src="fcitx5-bridge.js?v=login2"></script>
-<script src="law-app.js?v=lex-keyboard3"></script><script src="lex-auth.js?v=cloud2"></script>
+<script src="law-app.js?v=lex-account4"></script><script src="lex-auth.js?v=account4"></script>
 </body>
 </html>
 

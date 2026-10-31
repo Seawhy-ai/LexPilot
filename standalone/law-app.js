@@ -793,92 +793,6 @@ function logoutAccount() {
   }
 }
 
-// ===== CLOUD BACKUP/RESTORE =====
-function getAllUserData() {
-  var data = {
-    username: currentUser,
-    version: "2.1.0",
-    exportedAt: new Date().toISOString(),
-    profile: loadProfile(),
-    settings: {},
-    notes: loadNotes(),
-    points: 0,
-    theme: userTheme
-  };
-  try { data.points = parseInt(localStorage.getItem("ai-points") || "0"); } catch(e) {}
-  try {
-    var savedSettings = JSON.parse(localStorage.getItem("seawhy-lex-config") || "{}");
-    data.settings = { model: savedSettings.model || "deepseek-v4-flash" };
-  } catch(e) {}
-  try {
-    var stats = loadLearnStats();
-    data.learnStats = stats;
-  } catch(e) {}
-  try {
-    var msgs = JSON.parse(localStorage.getItem("seawhy-lex-msgs") || "[]");
-    if (msgs.length > 50) msgs = msgs.slice(-50);
-    data.recentChats = msgs;
-  } catch(e) {}
-  return data;
-}
-
-function restoreAllUserData(data) {
-  if (!data || !data.username) return false;
-  try {
-    if (data.profile) saveProfile(data.profile);
-    if (data.settings && data.settings.model) localStorage.setItem("seawhy-lex-config", JSON.stringify({model:data.settings.model}));
-    if (data.notes) saveNotes(data.notes);
-    if (data.points) localStorage.setItem("ai-points", String(data.points));
-    if (data.learnStats) {
-      localStorage.setItem("seawhy-lex-learn-stats", JSON.stringify(data.learnStats));
-    }
-    return true;
-  } catch(e) { return false; }
-}
-
-function cloudBackup() {
-  var data = getAllUserData();
-  var json = JSON.stringify(data, null, 2);
-  // Download file
-  var blob = new Blob([json], {type: "application/json"});
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement("a");
-  a.href = url;
-  a.download = "seawhy-lex-backup-" + new Date().toISOString().slice(0,10) + ".json";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  document.getElementById("backupStatus").textContent = "备份文件已下载 · " + new Date().toLocaleTimeString();
-  showToast("本地备份已导出");
-}
-
-function cloudRestore() {
-  document.getElementById("restoreFileInput").click();
-}
-
-function handleRestoreFile(input) {
-  var file = input.files[0];
-  if (!file) return;
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      var data = JSON.parse(e.target.result);
-      if (restoreAllUserData(data)) {
-        updateProfileUI();
-        renderNotes();
-        document.getElementById("backupStatus").textContent = "数据已恢复 · " + new Date().toLocaleTimeString();
-        showToast("数据恢复成功！");
-      } else {
-        showToast("恢复失败：数据格式错误");
-      }
-    } catch(err) {
-      showToast("恢复失败：文件损坏");
-    }
-  };
-  reader.readAsText(file);
-}
-
 // ===== INIT: show login on first visit =====
 // 【临时】登录界面已暂时跳过（代码全部保留，恢复时把下面 initApp 换回旧逻辑即可）。
 // 不登录也能进主页；本地备份不依赖账号，也不会影响原有账号数据。
@@ -970,10 +884,8 @@ try { var s = JSON.parse(localStorage.getItem("seawhy-lex-config") || "{}"); SET
 var userTheme = "light";
 try { userTheme = JSON.parse(localStorage.getItem("seawhy-lex-theme") || '"light"'); } catch(e) {}
 
-var options = { deep: true, multi: false, practical: false, compare: false, quoteAuto: true, showNickname: false, homeBg: "default", bubbleStyle: "classic", homeWidget: "todo", imeEngine: "fcitx", kbdMode: "system" };
+var options = { deep: true, multi: false, practical: false, compare: false, quoteAuto: true, showNickname: false, homeBg: "default", bubbleStyle: "classic", homeWidget: "todo" };
 try { var o = JSON.parse(localStorage.getItem("seawhy-lex-opts") || "{}"); Object.keys(options).forEach(function(k){ if(k in o) options[k] = o[k]; }); } catch(e) {}
-// 【临时】停用内置键盘，强制系统键盘：无论本地是否存过 kbdMode=ime，一律走系统键盘（内置键盘实现保留，稳定后可删本行恢复）
-options.kbdMode = "system";
 // 立即应用已保存的背景与气泡样式（不等 DOMContentLoaded，避免外部脚本加载慢导致重开后恢复默认）
 try { applyHomeBg(); } catch(e) {}
 try { applyBubbleStyle(); } catch(e) {}
@@ -1101,7 +1013,9 @@ function updateProfileUI() {
   if (nameEl) nameEl.textContent = p.nickname || "法律人";
   var idChip = document.getElementById("profileIdChip");
   if (idChip) {
-    idChip.textContent = "ID " + (p.id || "-----");
+    idChip.textContent = "ID " + (window.lexAccount ? window.lexAccount.id : "-----");
+    var accountEl = document.getElementById("profileAccount");
+    if (accountEl) accountEl.textContent = "账号：" + (window.lexAccount ? window.lexAccount.username : "未登录");
     idChip.classList.toggle("fancy", !!p.idVip);
   }
   renderHomeAvatar();
@@ -3182,36 +3096,6 @@ function pickScheduleAccent(col) {
 }
 
 // ---- 数据管理 ----
-function exportScheduleJson() {
-  var d = loadSchedule();
-  var courses = d.courses.filter(function(c) { return c.semId === d.currentSem; });
-  var name = (getScheduleSem(d, d.currentSem).name || "课表").replace(/[\\/:*?"<>|]/g, "_");
-  downloadFile("课表_" + name + "_" + new Date().toISOString().slice(0, 10) + ".json", JSON.stringify(courses, null, 2));
-  showToast("已导出 " + courses.length + " 门课程");
-}
-function exportScheduleBackup() {
-  var d = loadSchedule();
-  downloadFile("课表备份_" + new Date().toISOString().slice(0, 10) + ".json", JSON.stringify(d, null, 2));
-  showToast("备份已导出");
-}
-function importScheduleBackup(input) {
-  var file = input.files && input.files[0];
-  if (!file) return;
-  var reader = new FileReader();
-  reader.onload = function() {
-    try {
-      var obj = JSON.parse(reader.result);
-      if (!obj || !Array.isArray(obj.courses)) { showToast("备份文件格式不正确"); return; }
-      if (!confirm("导入备份将覆盖当前全部课表数据，是否继续？")) return;
-      localStorage.setItem(SCHEDULE_KEY, JSON.stringify(obj));
-      loadSchedule();
-      showToast("备份已导入");
-      closeScheduleSettings();
-      showSchedule();
-    } catch (e) { showToast("备份导入失败：" + e.message); }
-  };
-  reader.readAsText(file);
-}
 function clearAllCourses() {
   if (!confirm("确定清空当前学期全部课程？此操作不可恢复。")) return;
   var d = loadSchedule();
@@ -3267,23 +3151,6 @@ function applyImportCourses(courses, overwrite) {
   saveSchedule(d);
   renderScheduleView();
   return courses.length;
-}
-function importScheduleJsonFile(input) {
-  var file = input.files && input.files[0];
-  if (!file) return;
-  var reader = new FileReader();
-  reader.onload = function() {
-    try {
-      var courses = ScheduleImporter.fromJson(reader.result);
-      if (!courses.length) { showToast("未识别到有效课程"); return; }
-      if (!confirm("将覆盖当前学期全部课程，是否继续？")) return;
-      var n = applyImportCourses(courses, true);
-      showToast("已导入 " + n + " 门课程");
-      var ov = document.getElementById("scheduleImportOverlay");
-      if (ov) ov.remove();
-    } catch (e) { showToast("导入失败：" + e.message); }
-  };
-  reader.readAsText(file);
 }
 function importScheduleShareCode() {
   var ta = document.getElementById("impShareCode");
@@ -4142,14 +4009,6 @@ function openScheduleImport() {
     '<button class="sf-save" onclick="importScheduleText()">追加导入</button>' +
     '<button class="sf-cancel" onclick="document.getElementById(\'scheduleImportOverlay\').remove()">取消</button>' +
     '</div>' +
-    '<div style="border-top:1px solid var(--card-border);padding-top:10px">' +
-    '<div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:6px">② JSON 备份文件（覆盖当前学期）</div>' +
-    '<div style="display:flex;gap:8px">' +
-    '<button class="sf-save" onclick="document.getElementById(\'impJsonInput\').click()">导入 .json</button>' +
-    '<button class="sf-cancel" onclick="exportScheduleJson()">导出 JSON</button>' +
-    '</div>' +
-    '<input type="file" id="impJsonInput" accept=".json" style="display:none" />' +
-    '</div>' +
     '<div style="border-top:1px solid var(--card-border);padding-top:10px;margin-top:10px">' +
     '<div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:6px">③ 分享码（Base64 口令，覆盖当前学期）</div>' +
     '<textarea id="impShareCode" placeholder="粘贴分享码…" style="width:100%;box-sizing:border-box;height:64px;padding:10px;border:1px solid var(--card-border);border-radius:10px;background:var(--input-bg);color:var(--text);font-size:13px;font-family:inherit;outline:none;resize:vertical;margin-bottom:8px"></textarea>' +
@@ -4162,8 +4021,6 @@ function openScheduleImport() {
   document.body.appendChild(overlay);
   var inp = document.getElementById("impPdfInput");
   if (inp) inp.onchange = function() { extractPdfText(this); };
-  var jinp = document.getElementById("impJsonInput");
-  if (jinp) jinp.onchange = function() { importScheduleJsonFile(this); };
 }
 
 function parseWeekSpec(line) {
@@ -4940,18 +4797,6 @@ function unbindPhone() {
   showToast("已解绑手机号");
   renderPhoneBind();
 }
-function deleteAccount() {
-  if (!confirm("注销后将不可恢复地清空本机全部数据（积分、等级、笔记、错题本、课表等），确定继续吗？")) return;
-  if (!confirm("再次确认：真的要注销账号并清除全部数据吗？此操作无法撤销！")) return;
-  try {
-    var keys = [];
-    for (var i = 0; i < localStorage.length; i++) keys.push(localStorage.key(i));
-    keys.forEach(function(k) { if (k.indexOf("seawhy-") === 0 || k === "ai-points") localStorage.removeItem(k); });
-  } catch(e) {}
-  showToast("账号已注销，数据已清空");
-  setTimeout(function() { location.reload(); }, 600);
-}
-
 // ============================================================
 // 满级后称号系统（消除等级天花板挫败感）
 // ============================================================
@@ -4979,48 +4824,8 @@ function getTitleInfo(totalPoints) {
 }
 // ===== 用户 ID 与 VIP 靓号 =====
 function ensureProfileId(p) {
-  if (!p.id) {
-    p.id = String(10000 + Math.floor(Math.random() * 90000));
-    p.idVip = false;
-    saveProfile(p);
-  }
+  p.id = window.lexAccount ? window.lexAccount.id : "";
   return p;
-}
-function isPrettyId(id) {
-  if (/([0-9])\1\1/.test(id)) return true;   // 三连号
-  if (id === id.split("").reverse().join("")) return true; // 回文
-  if (/(0123|1234|2345|3456|4567|5678|6789)/.test(id)) return true; // 顺子
-  if (/([0-9][0-9])\1/.test(id)) return true; // ABAB
-  return false;
-}
-function rollPrettyId() {
-  var p = ensureProfileId(loadProfile());
-  if (!isVip()) { showToast("开通 VIP 可选择专属靓号"); return; }
-  var opts = [], guard = 0;
-  while (opts.length < 3 && guard < 800) {
-    guard++;
-    var id = String(10000 + Math.floor(Math.random() * 90000));
-    if (id === p.id || opts.indexOf(id) >= 0 || !isPrettyId(id)) continue;
-    opts.push(id);
-  }
-  var area = document.getElementById("prettyOptions");
-  if (!area) return;
-  if (!opts.length) { showToast("暂时没有合适的靓号，稍后再试"); return; }
-  var h = "";
-  for (var i = 0; i < opts.length; i++) {
-    h += '<button class="ph-id-opt" onclick="applyPrettyId(\'' + opts[i] + '\')">' + opts[i] + '</button>';
-  }
-  h += '<button class="ph-id-opt cancel" onclick="document.getElementById(\'prettyOptions\').style.display=\'none\'">取消</button>';
-  area.innerHTML = h;
-  area.style.display = "flex";
-}
-function applyPrettyId(id) {
-  var p = loadProfile();
-  p.id = id;
-  p.idVip = true;
-  saveProfile(p);
-  updateProfileUI();
-  showToast("已换用靓号 " + id);
 }
 function renderTitleChip() {
   var chip = document.getElementById("profileTitleChip");
@@ -5407,7 +5212,7 @@ function showError(msg) {
 function sendMsg(text) {
   if (streaming) return;
   text = text.trim(); if (!text) return;
-  
+
 
   // v3.5.0：AI 咨询扣积分（VIP 免费），不足则拦截；去掉原来的对话奖励
   if (!isVip()) {
@@ -5526,14 +5331,7 @@ function updateOptUI() {
       if (sEl) sEl.textContent = options[k] ? "开启" : "关闭";
     }
   });
-  // 输入法引擎(非布尔开关,单独处理)
-  var ime = options.imeEngine === "builtin" ? "builtin" : "fcitx";
-  var imeF = document.getElementById("sImeFcitx"), imeB = document.getElementById("sImeBuiltin");
-  if (imeF) {
-    imeF.classList.toggle("active", ime === "fcitx");
-    imeF.disabled = !!(window.FCITX5 && window.FCITX5.state === "failed");
-  }
-  if (imeB) imeB.classList.toggle("active", ime === "builtin");
+
 }
 
 function clearHistory() {
@@ -5657,464 +5455,6 @@ function bindEvents() {
 function escAttr(s) { return s.replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 function escHtml(s) { var d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
 function loadScript(url, cb) { var s = document.createElement("script"); s.src = url; s.onload = function() { cb(null); }; s.onerror = function() { cb(new Error("load failed")); }; document.head.appendChild(s); }
-
-// ============================================================
-// 内置键盘 IME（拼音/英文/数字，输入框只读，避免 iOS 原生键盘导致整页滚动）
-// ============================================================
-var IME = { lang: "cn", layout: "abc", py: "", target: null, shift: false, open: false };
-var IME_WORD_KEYS = null, IME_PREFIX = null;
-function imeInitWords() {
-  try { IME_WORD_KEYS = Object.keys(IME_WORDS).sort(); } catch (e) {}
-  IME_PREFIX = {};
-  for (var k in IME_DATA) { for (var i = 1; i <= k.length; i++) IME_PREFIX[k.slice(0, i)] = 1; }
-  // 词键前缀也纳入：支持跨音节续拼（如 nihao -> 你好）
-  for (var w in IME_WORDS) { for (var j = 1; j <= w.length; j++) IME_PREFIX[w.slice(0, j)] = 1; }
-}
-function imeLeadingSyl(py) {
-  for (var i = Math.min(py.length, 7); i >= 1; i--) { var s = py.slice(0, i); if (IME_DATA[s]) return s; }
-  return "";
-}
-function imeWordCands(py, limit) {
-  var res = [];
-  if (!IME_WORD_KEYS) imeInitWords();
-  var lo = 0, hi = IME_WORD_KEYS.length;
-  while (lo < hi) { var mid = (lo + hi) >> 1; if (IME_WORD_KEYS[mid] < py) lo = mid + 1; else hi = mid; }
-  for (var i = lo; i < IME_WORD_KEYS.length && res.length < limit; i++) {
-    var k = IME_WORD_KEYS[i];
-    if (k.indexOf(py) !== 0) break;
-    var ws = IME_WORDS[k].split("|");
-    for (var j = 0; j < ws.length && res.length < limit; j++) res.push(ws[j]);
-  }
-  return res;
-}
-function imeCands() {
-  var py = IME.py, out = [];
-  if (!py) return out;
-  var seg = imeLeadingSyl(py);
-  if (seg && seg.length === py.length) {
-    var chars = IME_DATA[seg] || "";
-    for (var i = 0; i < Math.min(9, chars.length); i++) out.push({ t: chars[i], w: false });
-    var words = imeWordCands(py, 3);
-    for (var j = 0; j < words.length; j++) out.push({ t: words[j], w: true });
-  } else if (seg) {
-    var chars2 = IME_DATA[seg] || "";
-    for (var i2 = 0; i2 < Math.min(4, chars2.length); i2++) out.push({ t: chars2[i2], w: false });
-    var words2 = imeWordCands(py, 5);
-    for (var j2 = 0; j2 < words2.length; j2++) out.push({ t: words2[j2], w: true });
-  }
-  return out;
-}
-function imeRefresh() {
-  var candEl = document.getElementById("imeCands");
-  var pyEl = document.getElementById("imePy");
-  if (!candEl || !pyEl) return;
-  candEl.innerHTML = "";
-  if (IME.lang === "cn" && IME.py) {
-    var cands = imeCands();
-    for (var i = 0; i < cands.length; i++) {
-      (function (item) {
-        var b = document.createElement("button");
-        b.className = "ime-cand" + (item.w ? " wd" : "");
-        b.textContent = item.t;
-        b.addEventListener("click", function () { imePick(item.t); });
-        candEl.appendChild(b);
-      })(cands[i]);
-    }
-    pyEl.textContent = IME.py;
-    pyEl.className = "ime-py";
-  } else {
-    pyEl.textContent = IME.layout === "123" ? "数字" : (IME.lang === "cn" ? "拼音" : "英文");
-    pyEl.className = "ime-py empty";
-  }
-}
-function imePick(t) {
-  var el = IME.target;
-  try { if (el) { el.focus(); var p = (typeof el.selectionStart === "number") ? el.selectionStart : (el.value || "").length; imeSetCaret(p); } } catch (e) {}
-  imeInsert(t);
-  IME.py = "";
-  imeRefresh();
-}
-function imeLetter(ch) {
-  if (IME.lang === "en") { imeInsert(IME.shift ? ch.toUpperCase() : ch); IME.shift = false; imeRenderKeys(); return; }
-  if (IME.layout === "123") { imeInsert(ch); return; }
-  var next = IME.py + ch;
-  if (IME_PREFIX[next] || IME_DATA[next]) { IME.py = next; }
-  else {
-    // 边界：先提交当前最佳候选（完整词 > 音节首字），再以 ch 开启新音节
-    var t = imeTopCandidate();
-    if (t) imeInsert(t);
-    IME.py = ch;
-  }
-  imeRefresh();
-}
-function imeBack() {
-  if (IME.lang === "cn" && IME.py) { IME.py = IME.py.slice(0, -1); imeRefresh(); return; }
-  imeDelete();
-}
-function imeDelete() {
-  var el = IME.target; if (!el) return;
-  var v = el.value || "", p = (typeof el.selectionStart === "number") ? el.selectionStart : v.length;
-  if (p <= 0) return;
-  el.value = v.slice(0, p - 1) + v.slice(p);
-  imeSetCaret(p - 1);
-  imeAfterEdit();
-}
-function imeInsert(s) {
-  var el = IME.target; if (!el) return;
-  var v = el.value || "", p = (typeof el.selectionStart === "number") ? el.selectionStart : v.length;
-  if (p == null || p < 0) p = v.length;
-  var nv = v.slice(0, p) + s + v.slice(p);
-  // textarea 无 maxlength 时默认 -1(=不限)，必须用 >=0 判断才是真实限制
-  var max = (typeof el.maxLength === "number" && el.maxLength >= 0) ? el.maxLength : 0;
-  if (max && nv.length > max) nv = nv.slice(0, max);
-  el.value = nv;
-  imeSetCaret(Math.min(p + s.length, nv.length));
-  imeAfterEdit();
-}
-function imeTopCandidate() {
-  // 完整词键优先（如 nihao -> 你好），否则取候选第一
-  if (IME_WORDS && IME_WORDS[IME.py]) { var w0 = IME_WORDS[IME.py].split("|")[0]; if (w0) return w0; }
-  var c = imeCands();
-  return c.length ? c[0].t : "";
-}
-function imeSetCaret(p) {
-  var el = IME.target;
-  try { if (el && el.setSelectionRange) el.setSelectionRange(p, p); } catch (e) {}
-}
-function imeAfterEdit() {
-  var el = IME.target;
-  if (!el) return;
-  try { el.dispatchEvent(new Event("input", { bubbles: true })); } catch (e) {}
-}
-function imeSpace() {
-  if (IME.lang === "cn" && IME.py) {
-    var t = imeTopCandidate();
-    if (t) { imePick(t); return; }
-  }
-  imeInsert(" ");
-}
-function imeEnter() {
-  var el = IME.target;
-  if (!el) return;
-  // 先提交拼音组合（第一次回车提交候选，不发送）
-  if (IME.lang === "cn" && IME.py) {
-    var t = imeTopCandidate();
-    if (t) imeInsert(t);
-    IME.py = ""; imeRefresh();
-    if (!t) return;
-  }
-  if (el.id === "userInput") {
-    var t = el.value.trim();
-    if (t && !streaming) {
-      el.value = ""; el.style.height = "auto";
-      try { el.dispatchEvent(new Event("input", { bubbles: true })); } catch (e) {}
-      sendMsg(t);
-    }
-    return;
-  }
-  if (el.tagName === "TEXTAREA") { imeInsert("\n"); return; }
-  if (el.id === "todoInput") {
-    try { el.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true, cancelable: true })); } catch (e) {}
-    return;
-  }
-  imeDone();
-}
-function imeDone() {
-  IME.py = ""; IME.open = false;
-  var el = IME.target; IME.target = null;
-  var ime = document.getElementById("ime");
-  if (ime) ime.classList.remove("show");
-  if (el && el.blur) el.blur();
-  syncKbdOffset();
-}
-function imeOpenFor(el) {
-  if (!el) return;
-  if (options.kbdMode === "system") return;
-  IME.target = el; IME.open = true;
-  try { el.setAttribute("readonly", "readonly"); } catch (e) {}
-  // 数字类输入框自动切到 123 键盘层
-  if (el.inputMode === "numeric" || el.inputMode === "decimal" || el.type === "number") {
-    IME.layout = "123"; IME.py = ""; IME.shift = false;
-  }
-  var ime = document.getElementById("ime");
-  if (ime) ime.classList.add("show");
-  imeRenderKeys(); imeUpdateTools(); imeRefresh();
-  try { el.focus(); } catch (e) {}
-  imeSetCaret((el.value || "").length);
-  __watchKbd(ime);
-  requestAnimationFrame(syncKbdOffset);
-}
-// 内置 #ime / fcitx5 键盘均为 position:fixed overlay,不会缩小 visualViewport,
-// 原生键盘适配(visualViewport resize)对它们无效 -> 主动测高,用 marginBottom 抬升聊天输入框
-var __kbdRO = null, __kbdEl = null;
-function syncKbdOffset() {
-  var bar = document.getElementById("inputBar");
-  if (!bar) return;
-  var h = 0;
-  var ime = document.getElementById("ime");
-  if (ime && ime.classList.contains("show")) {
-    var r = ime.getBoundingClientRect();
-    if (r.height > h) h = r.height;
-  }
-  var fc = document.getElementById("fcitx-virtual-keyboard");
-  if (fc && getComputedStyle(fc).display !== "none") {
-    var r2 = fc.getBoundingClientRect();
-    if (r2.height > 4 && r2.height > h) h = r2.height;
-  }
-  bar.style.marginBottom = h > 0 ? h + "px" : "";
-}
-function __watchKbd(el) {
-  if (!el) return;
-  if (el !== __kbdEl) {
-    __kbdEl = el;
-    if (__kbdRO) { try { __kbdRO.disconnect(); } catch (e) {} }
-    if (typeof ResizeObserver !== "undefined") {
-      __kbdRO = new ResizeObserver(function () { syncKbdOffset(); });
-      __kbdRO.observe(el);
-    }
-  }
-  syncKbdOffset();
-}
-// fcitx5 虚拟键盘 DOM 由 fcitx5-bridge.js 动态插入 -> 监听其出现并跟踪尺寸变化
-(function () {
-  if (typeof MutationObserver === "undefined") return;
-  new MutationObserver(function (muts) {
-    for (var i = 0; i < muts.length; i++) {
-      for (var j = 0; j < muts[i].addedNodes.length; j++) {
-        var n = muts[i].addedNodes[j];
-        if (n && n.id === "fcitx-virtual-keyboard") { __watchKbd(n); return; }
-      }
-    }
-  }).observe(document.body, { childList: true, subtree: true });
-  var ex = document.getElementById("fcitx-virtual-keyboard");
-  if (ex) __watchKbd(ex);
-})();
-function imeSwitchLang() {
-  IME.lang = IME.lang === "cn" ? "en" : "cn";
-  IME.py = ""; IME.shift = false;
-  imeRenderKeys(); imeRefresh(); imeUpdateTools();
-}
-function imeSwitchLayout() {
-  IME.layout = IME.layout === "abc" ? "123" : "abc";
-  IME.py = ""; IME.shift = false;
-  imeRenderKeys(); imeRefresh(); imeUpdateTools();
-}
-function imeToggleShift() { IME.shift = !IME.shift; imeRenderKeys(); }
-function imeUpdateTools() {
-  var lb = document.getElementById("imeLangBtn"), lb2 = document.getElementById("imeLangBtn2");
-  var ly = document.getElementById("imeLayoutBtn"), ly2 = document.getElementById("imeLayoutBtn2");
-  var st = document.getElementById("imeState");
-  if (lb) { lb.textContent = IME.lang === "cn" ? "中" : "英"; lb.className = "ime-tool on"; }
-  if (lb2) lb2.textContent = IME.lang === "cn" ? "中" : "英";
-  if (ly) { ly.textContent = IME.layout === "abc" ? "123" : "ABC"; ly.className = "ime-tool" + (IME.layout === "123" ? " on" : ""); }
-  if (ly2) ly2.textContent = IME.layout === "abc" ? "123" : "ABC";
-  if (st) st.textContent = IME.layout === "123" ? "数字键盘" : (IME.lang === "cn" ? "拼音输入" : "英文输入");
-}
-function imeRenderKeys() {
-  var box = document.getElementById("imeKeys");
-  if (!box) return;
-  box.innerHTML = "";
-  box.className = "ime-keys" + (IME.shift ? " shift-l" : "");
-  function make(label, act, k, cls) {
-    var b = document.createElement("button");
-    b.className = "ime-key" + (cls ? " " + cls : "");
-    b.textContent = label;
-    b.setAttribute("data-act", act);
-    if (act === "letter") b.setAttribute("data-k", k);
-    box.appendChild(b);
-  }
-  if (IME.layout === "123") {
-    ["1","2","3","4","5","6","7","8","9","0"].forEach(function (k) { make(k, "letter", k); });
-    ["-","/",":",";","(",")","¥","@","\"","'"].forEach(function (k) { make(k, "letter", k); });
-    [".",",","?","!","…","·"].forEach(function (k) { make(k, "letter", k); });
-    make("←", "left", null, "fn");
-    make("→", "right", null, "fn");
-    make("⌫", "back", null, "fn");
-  } else {
-    "qwertyuiop".split("").forEach(function (k) { make(IME.shift && IME.lang === "en" ? k.toUpperCase() : k, "letter", k); });
-    "asdfghjkl".split("").forEach(function (k) { make(IME.shift && IME.lang === "en" ? k.toUpperCase() : k, "letter", k); });
-    if (IME.lang === "en") make("⇧", "shift", null, "fn" + (IME.shift ? " on" : ""));
-    "zxcvbnm".split("").forEach(function (k) { make(IME.shift && IME.lang === "en" ? k.toUpperCase() : k, "letter", k); });
-    if (IME.lang === "en") make("⌫", "back", null, "fn");
-    else make("中英", "lang", null, "fn");
-  }
-}
-function imeAct(key) {
-  var a = key.getAttribute("data-act");
-  if (a === "letter") imeLetter(key.getAttribute("data-k"));
-  else if (a === "back") imeBack();
-  else if (a === "enter") imeEnter();
-  else if (a === "space") imeSpace();
-  else if (a === "shift") imeToggleShift();
-  else if (a === "lang") imeSwitchLang();
-  else if (a === "layout") imeSwitchLayout();
-  else if (a === "done") imeDone();
-  else if (a === "left") imeMoveCaret(-1);
-  else if (a === "right") imeMoveCaret(1);
-}
-function imeCopy() {
-  var el = IME.target;
-  if (!el) { showToast("请先点选输入框"); return; }
-  var v = el.value || "";
-  var s = (typeof el.selectionStart === "number") ? el.selectionStart : 0;
-  var e2 = (typeof el.selectionEnd === "number") ? el.selectionEnd : 0;
-  var text = (e2 > s) ? v.slice(s, e2) : v;
-  if (!text) { showToast("没有可复制的内容"); return; }
-  var done = function() { showToast((e2 > s ? "已复制选中内容" : "已复制全部内容") + "（" + text.length + " 字）"); };
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text).then(done).catch(function() { imeCopyFallback(text); done(); });
-  } else { imeCopyFallback(text); done(); }
-}
-function imeCopyFallback(text) {
-  var t = document.createElement("textarea");
-  t.value = text;
-  t.style.cssText = "position:fixed;left:-999px;top:-999px";
-  document.body.appendChild(t);
-  t.select();
-  try { document.execCommand("copy"); } catch (e) {}
-  t.remove();
-}
-function imePaste() {
-  var el = IME.target;
-  if (!el) { showToast("请先点选输入框"); return; }
-  if (!navigator.clipboard || !navigator.clipboard.readText) { showToast("当前环境不支持粘贴"); return; }
-  navigator.clipboard.readText().then(function(t) {
-    if (!t) { showToast("剪贴板是空的"); return; }
-    imeInsertText(t);
-    showToast("已粘贴 " + t.length + " 字");
-  }).catch(function() { showToast("粘贴未授权：可在系统键盘里长按粘贴"); });
-}
-function imeInsertText(t) {
-  var el = IME.target;
-  if (!el) return;
-  var v = el.value || "";
-  var s = (typeof el.selectionStart === "number") ? el.selectionStart : v.length;
-  var e2 = (typeof el.selectionEnd === "number") ? el.selectionEnd : s;
-  el.value = v.slice(0, s) + t + v.slice(e2);
-  try { el.selectionStart = el.selectionEnd = s + t.length; } catch (err) {}
-  try { el.dispatchEvent(new Event("input", { bubbles: true })); } catch (err) {}
-}
-function imeMoveCaret(dir) {
-  // 拼音组合中不移动光标（候选交由候选条处理）
-  if (IME.lang === "cn" && IME.py) return;
-  var el = IME.target;
-  if (!el) return;
-  var v = el.value || "";
-  var p = (typeof el.selectionStart === "number") ? el.selectionStart : v.length;
-  p += dir;
-  if (p < 0) p = 0;
-  if (p > v.length) p = v.length;
-  imeSetCaret(p);
-}
-var _imeBeepCtx = null;
-function imeHaptic() {
-  try { if (navigator.vibrate) { navigator.vibrate(12); return; } } catch (e) {}
-  // iOS 无震动 API：极低声点击音兜底
-  try {
-    _imeBeepCtx = _imeBeepCtx || new (window.AudioContext || window.webkitAudioContext)();
-    var o = _imeBeepCtx.createOscillator(), g = _imeBeepCtx.createGain();
-    o.connect(g); g.connect(_imeBeepCtx.destination);
-    o.frequency.value = 1000;
-    var t0 = _imeBeepCtx.currentTime;
-    g.gain.setValueAtTime(0.02, t0);
-    g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.03);
-    o.start(t0); o.stop(t0 + 0.04);
-  } catch (e) {}
-}
-(function imeBind() {
-  var ime = document.getElementById("ime");
-  if (!ime) return;
-  imeInitWords();
-  // 指针按下即触发，并阻止取焦(保持输入框光标)
-  ime.addEventListener("pointerdown", function (e) {
-    if (e.target.closest(".ime-cands")) return; // 候选条可横向滚动
-    e.preventDefault();
-    imeHaptic(); // 触感：安卓震动 / iOS 提示音
-    var key = e.target.closest(".ime-key");
-    if (key) { imeAct(key); return; }
-    var tool = e.target.closest(".ime-tool");
-    if (tool) {
-      var a = tool.getAttribute("data-act");
-      if (a === "done") imeDone(); else if (a === "lang") imeSwitchLang(); else if (a === "layout") imeSwitchLayout();
-      else if (a === "copy") imeCopy(); else if (a === "paste") imePaste();
-    }
-  });
-  // 任意文本输入框聚焦 -> 打开内置键盘（只读，避免原生键盘）
-  document.addEventListener("focusin", function (e) {
-    var el = e.target;
-    if (!el || !el.tagName) return;
-    if (el.closest && el.closest("#loginScreen")) return;
-    // 系统键盘模式: 不接管输入框
-    if (options.kbdMode === "system") {
-      var wasRO = el.hasAttribute && el.hasAttribute("readonly");
-      try { el.removeAttribute("readonly"); } catch (e2) {}
-      // iOS: 聚焦时才解除只读的输入框, 需要一次 blur+focus 才会唤起原生键盘
-      if (wasRO && !el._sysRefocused) {
-        el._sysRefocused = true;
-        setTimeout(function() {
-          try { if (document.activeElement === el) { el.blur(); el.focus(); } } catch (e3) {}
-        }, 0);
-      }
-      return;
-    }
-    // fcitx5 已接管(就绪且处于 fcitx 模式):内置键盘不弹出,交由 fcitx 引擎/键盘处理
-    if (window.FCITX5 && window.FCITX5.isActive()) return;
-    var tag = el.tagName;
-    var isText = tag === "TEXTAREA" || (tag === "INPUT" && (el.type === "text" || el.type === "search"));
-    if (!isText) return;
-    if (el.id === "apiKeyInput" || el.id === "redeemCodeInput") return;
-    if (el.closest && el.closest(".mat-viewer")) return;
-    imeOpenFor(el);
-  });
-  // 在点按发生前先置只读，杜绝 iOS 原生键盘
-  document.addEventListener("touchstart", function (e) {
-    var el = e.target;
-    if (!el || !el.matches) return;
-    if (el.closest && el.closest("#loginScreen")) return;
-    if (options.kbdMode === "system") return;
-    if (el.matches('input[type="text"], input[type="search"], textarea')) {
-      if (el.id === "apiKeyInput" || el.id === "redeemCodeInput") return;
-      if (el.closest && el.closest(".mat-viewer")) return;
-      try { el.setAttribute("readonly", "readonly"); } catch (err) {}
-    }
-  }, { passive: true, capture: true });
-})();
-
-// ============================================================
-// 键盘模式切换(内置键盘 / 系统键盘)
-// ============================================================
-function setKbdMode(mode) {
-  options.kbdMode = mode === "system" ? "system" : "ime";
-  try { localStorage.setItem("seawhy-lex-opts", JSON.stringify(options)); } catch(e) {}
-  applyKbdMode();
-  showToast(mode === "system" ? "已切换系统键盘（原生输入，支持系统复制粘贴/语音）" : "已切换内置键盘");
-}
-function applyKbdMode() {
-  var system = options.kbdMode === "system";
-  document.body.classList.toggle("kbd-system", system);
-  if (system) {
-    document.querySelectorAll('input[type="text"], input[type="search"], input[type="tel"], input[type="number"], input[type="password"], input[type="date"], textarea').forEach(function(el) { el.removeAttribute("readonly"); });
-  } else {
-    ["userInput","noteTitle","noteContent","noteTags","noteDetailTitleInput","noteDetailContentInput","noteDetailTagsInput","dbSearch","lrSearch","todoInput","globalSearchInput"].forEach(function(id) {
-      var el = document.getElementById(id);
-      if (el) el.setAttribute("readonly", "readonly");
-    });
-  }
-  if (system && typeof imeDone === "function" && IME.open) imeDone();
-  try { if (window.FCITX5) window.FCITX5.configure(system ? "builtin" : (options.imeEngine || "fcitx")); } catch (e5) {}
-  setBtnGroup("kbdModeGroup", options.kbdMode);
-}
-
-// ============================================================
-// 输入法引擎切换(fcitx5 拼音 / 内置键盘)
-// ============================================================
-function setImeEngine(engine, btn) {
-  options.imeEngine = engine === "builtin" ? "builtin" : "fcitx";
-  try { localStorage.setItem("seawhy-lex-opts", JSON.stringify(options)); } catch(e) {}
-  if (window.FCITX5) window.FCITX5.configure(options.imeEngine);
-  updateOptUI();
-  showToast(options.imeEngine === "fcitx" ? "✓ fcitx5 拼音引擎" : "✓ 内置键盘");
-}
 
 // ============================================================
 // 律政人生（剧情式刷题）
@@ -7656,24 +6996,9 @@ function showStoryPoster() {
 (function init() {
   applyTheme();
   applyFontPrefs();
-  applyKbdMode();
   bindEvents();
   renderAllMessages();
   renderDatabase();
-  // fcitx5 引擎:按保存的模式接管/保持内置;状态变化时刷新设置 UI(如加载失败禁用 fcitx5 按钮)
-  if (window.FCITX5) {
-    window.FCITX5.configure(options.imeEngine || "fcitx");
-    window.FCITX5.onState(function () { try { updateOptUI(); } catch(e) {} });
-  }
-  // 内置键盘：静态输入框预置只读（真正输入交给 IME，避免 iOS 原生键盘整页滚动）
-  (function imeInitStatic() {
-    if (options.kbdMode === "system") return;
-    var ids = ["userInput","noteTitle","noteContent","noteTags","noteDetailTitleInput","noteDetailContentInput","noteDetailTagsInput","dbSearch","lrSearch","todoInput","globalSearchInput"];
-    for (var i = 0; i < ids.length; i++) {
-      var el = document.getElementById(ids[i]);
-      if (el && el.tagName) { try { el.setAttribute("readonly", "readonly"); } catch (e) {} }
-    }
-  })();
   // Register service worker for offline/PWA support
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("sw.js").then(function(registration) {

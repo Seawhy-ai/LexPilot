@@ -28,7 +28,7 @@
   window.lexVipGet=function(){return profile.lexPermanentVip?'1':null};
   window.lexVipSet=function(value){const p=window.loadProfile();p.lexPermanentVip=value==='1';window.saveProfile(p)};
   async function loadCloud(u){
-    const r=await request('profile');owner=u.id;version=r.version;profile=r.profile||{};dirty=false;conflict=false;
+    const r=await request('profile');owner=u.id;window.lexAccount={id:u.id,username:u.username};version=r.version;profile=r.profile||{};dirty=false;conflict=false;
     let pending=null;try{pending=JSON.parse(localStorage.getItem('lex-profile-pending-'+owner)||'null')}catch(e){}
     if(pending&&pending.profile){
       if(pending.version===version){profile=pending.profile;dirty=true;status('恢复未同步的个人档案…');timer=setTimeout(flush,400)}
@@ -51,7 +51,7 @@
     submit('register',document.getElementById('regUsername').value.trim(),p,'regMsg');
   };
   window.skipLogin = function(){document.getElementById('loginMsg').textContent='使用前请登录或注册';};
-  window.logoutAccount = async function(){if(dirty){status('有未同步的个人档案，请先保持页面打开');await flush();if(dirty)return}try{await request('logout',{})}finally{owner='';profile={};currentUser=null;location.reload()}};
+  window.logoutAccount = async function(){if(dirty){status('有未同步的个人档案，请先保持页面打开');await flush();if(dirty)return}try{await request('logout',{})}finally{owner='';window.lexAccount=null;profile={};currentUser=null;location.reload()}};
   document.removeEventListener('DOMContentLoaded', initApp);
   async function start(){
     clockStartLoop(); showLoginScreen();

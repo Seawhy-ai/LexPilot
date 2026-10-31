@@ -832,7 +832,6 @@ body.dark .wr-bar{background:linear-gradient(180deg,#3d7fb8,#2565a0)}
 .st-vn-emoji svg{filter:drop-shadow(0 4px 10px rgba(0,0,0,.4))}
 .smt-btn svg{vertical-align:-2px;margin-right:3px}
 .st-dlg-next svg{color:#ffd76a;vertical-align:middle}
-body.kbd-system #ime{display:none!important}
 body.kbd-system #globalBg{pointer-events:none}
 .sc-state svg{vertical-align:-2px}
 .st-tile-num svg,.st-tile-state svg{vertical-align:-2px}
@@ -1613,32 +1612,6 @@ body.dark .af-opt{background:#2a2a2a}
     .pm-toggle.on{background:var(--accent);border-color:var(--accent)}
     .pm-toggle.on::before{left:25px;background:#fff}
 
-    /* ===== 内置键盘 IME ===== */
-    #ime{position:fixed;left:0;right:0;bottom:0;z-index:99999;background:var(--card-bg);border-top:1px solid var(--card-border);padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -6px 24px rgba(0,0,0,.14);font-family:inherit;user-select:none;-webkit-user-select:none;display:none}
-    #ime.show{display:block}
-    .ime-cands{display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid var(--card-border);min-height:42px}
-    .ime-py{font-size:14px;font-weight:700;color:var(--accent);min-width:46px;text-align:center;letter-spacing:1px;flex-shrink:0}
-    .ime-py.empty{color:var(--text2);font-weight:400;font-size:12px}
-    .ime-cand-list{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
-    .ime-cand{flex-shrink:0;padding:4px 12px;font-size:18px;line-height:1.5;background:var(--accent-light);border-radius:9px;color:var(--accent);cursor:pointer;border:none;font-family:inherit;min-width:32px;text-align:center}
-    .ime-cand:active{background:var(--accent);color:#fff}
-    .ime-cand.wd{font-size:15px;padding:4px 11px}
-    .ime-tools{display:flex;align-items:center;gap:8px;padding:5px 10px;border-bottom:1px solid var(--card-border)}
-    .ime-tool{font-size:12px;padding:4px 11px;border:none;border-radius:8px;background:var(--input-bg);color:var(--text2);cursor:pointer;font-family:inherit}
-    .ime-tool.on{background:var(--accent-light);color:var(--accent);font-weight:600}
-    .ime-state{flex:1;font-size:11px;color:var(--text2);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .ime-keys{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;padding:8px 8px 4px}
-    .ime-keys.shift-l .sk{text-transform:uppercase}
-    .ime-key{height:40px;border:none;border-radius:8px;background:var(--input-bg);color:var(--text);font-size:19px;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;padding:0}
-    .ime-key:active{background:var(--accent-light)}
-    .ime-key.fn{font-size:13px;color:var(--text2);background:rgba(127,127,127,.14)}
-    .ime-key.fn.on{background:var(--accent-light);color:var(--accent)}
-    .ime-bottom{display:flex;gap:5px;padding:4px 8px calc(6px + env(safe-area-inset-bottom))}
-    .ime-bottom .ime-key{flex:1;font-size:14px}
-    .ime-bottom .ime-space{flex:4}
-    .ime-bottom .ime-back{flex:1.2}
-    .ime-bottom .ime-enter{flex:1.5;background:var(--accent);color:#fff}
-    body.dark .ime-bottom .ime-enter{color:#fff}
 
     .sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
     :where(button,a,input,select,textarea,[role="button"]):focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 72%,#fff);outline-offset:3px}

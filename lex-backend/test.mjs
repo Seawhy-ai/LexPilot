@@ -13,7 +13,7 @@ test('independent account and AI permission',async()=>{
  try{
   assert.equal((await post('/api/lex/chat',{messages:[{role:'user',content:'你好'}]})).status,401);
   assert.equal((await post('/api/lex/register',{username:'hello',password:'validpassword'},null,'https://bad.example')).status,403);
-  const reg=await post('/api/lex/register',{username:'hello',password:'validpassword'});assert.equal(reg.status,200);const cookie=reg.headers.get('set-cookie').split(';')[0];assert.match(reg.headers.get('set-cookie'),/HttpOnly; Secure; SameSite=Strict/);
+  const reg=await post('/api/lex/register',{username:'hello',password:'validpassword'});assert.equal(reg.status,200);const firstUser=(await reg.json()).user;const cookie=reg.headers.get('set-cookie').split(';')[0];assert.match(reg.headers.get('set-cookie'),/HttpOnly; Secure; SameSite=Strict/);
   assert.equal((await post('/api/lex/register',{username:'hello',password:'validpassword'})).status,409);
   assert.equal((await post('/api/lex/login',{username:'hello',password:'bad'})).status,401);
   assert.equal((await post('/api/lex/chat',{messages:[{role:'user',content:'你好'}]},cookie)).status,503);
@@ -22,7 +22,8 @@ test('independent account and AI permission',async()=>{
   const first=await fetch(base+'/api/lex/profile',{headers:{cookie}});assert.deepEqual(await first.json(),{profile:null,version:0});
   const saved=await post('/api/lex/profile',{profile:{nickname:'甲',points:20,totalPoints:35},version:0},cookie);assert.equal(saved.status,200);
   assert.equal((await post('/api/lex/profile',{profile:{points:0},version:0},cookie)).status,409);
-  const other=await post('/api/lex/register',{username:'other',password:'validpassword'});const otherCookie=other.headers.get('set-cookie').split(';')[0];
+  const other=await post('/api/lex/register',{username:'other',password:'validpassword'});const otherUser=(await other.json()).user;assert.notEqual(firstUser.id,otherUser.id);const otherCookie=other.headers.get('set-cookie').split(';')[0];
+  const reLogin=await post('/api/lex/login',{username:'hello',password:'validpassword'});assert.equal((await reLogin.json()).user.id,firstUser.id);
   assert.equal((await (await fetch(base+'/api/lex/profile',{headers:{cookie:otherCookie}})).json()).profile,null);
   const read=await (await fetch(base+'/api/lex/profile',{headers:{cookie}})).json();assert.equal(read.profile.points,20);assert.equal(read.version,1);
   assert.equal((await post('/api/lex/profile',{profile:{avatarDataUrl:'javascript:alert(1)'},version:1},cookie)).status,400);
