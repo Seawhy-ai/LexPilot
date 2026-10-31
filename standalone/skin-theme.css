@@ -1,0 +1,17 @@
+#skinView .skin-rarity-pill,#skinView .sp-rarity{border-width:1px;border-style:solid;animation:none!important;text-shadow:none;font-weight:800}
+#skinView .rarity-common{background:#f5f7fa!important;border-color:#fff!important;color:#25303d!important}
+#skinView .rarity-brave{background:#176d3d!important;border-color:#4ade80!important;color:#eaffef!important}
+#skinView .rarity-epic{background:#6927a0!important;border-color:#d49aff!important;color:#fff1ff!important}
+#skinView .rarity-legendary{background:#a84e08!important;border-color:#ffae46!important;color:#fff3d8!important}
+#skinView .rarity-collector{background:linear-gradient(120deg,#075c9b,#20b8df,#195aa4)!important;border-color:#a8f3ff!important;color:#f2ffff!important;box-shadow:0 0 8px rgba(85,223,255,.65)}
+#skinView .skin-stage.unowned .skin-art,#skinView .sp-card.unowned .skin-thumb{filter:grayscale(1) brightness(1.05);opacity:.78}
+#skinView .skin-stage.unowned{border-color:#aab3bd}#skinView .sp-card.unowned:not(.selected){border-color:#a4adb5}
+#skinView .skin-not-owned{display:inline-block;margin-top:8px;padding:3px 8px;border-radius:8px;background:rgba(20,25,31,.85);color:#f2f4f6;font-size:10px}
+#skinView .sp-lock{top:auto;bottom:4px;right:4px;color:#fff;background:#39414a;font-size:8px}
+#skinView .skin-stage .skin-sparkle{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;z-index:1;pointer-events:none;mix-blend-mode:screen}
+#skinView .sp-card .skin-sparkle{position:absolute;inset:0;width:100%;height:91px;object-fit:fill;z-index:1;pointer-events:none;mix-blend-mode:screen}
+#skinView .unowned .skin-sparkle{filter:grayscale(1);opacity:.6}
+#skinView .skin-stage-copy,#skinView .skin-actions{z-index:2}
+@media(prefers-reduced-motion:reduce){#skinView .skin-sparkle{display:none}}
+.skin-tier{display:inline-block!important;padding:2px 5px!important;border:1px solid;border-radius:6px;font-size:10px!important;line-height:1.2;font-weight:800}
+.skin-tier.rarity-common{background:#f5f7fa;border-color:#fff;color:#25303d}.skin-tier.rarity-brave{background:#176d3d;border-color:#4ade80;color:#eaffef}.skin-tier.rarity-epic{background:#6927a0;border-color:#d49aff;color:#fff1ff}.skin-tier.rarity-legendary{background:#a84e08;border-color:#ffae46;color:#fff3d8}.skin-tier.rarity-collector{background:linear-gradient(120deg,#075c9b,#20b8df,#195aa4);border-color:#a8f3ff;color:#f2ffff}

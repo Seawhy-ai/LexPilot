@@ -63,6 +63,14 @@ const assert=require('node:assert/strict');
   await page.evaluate(()=>lexExchange(3));assert.equal(await page.evaluate(()=>loadProfile().points),20);assert.equal(await page.evaluate(()=>loadProfile().firmGame.funds),280);
   await page.evaluate(()=>lexShowRanking('points'));await page.waitForSelector('.lr-row',{state:'attached'});assert.match(await page.locator('.lr-row').first().textContent(),/测试用户/);
   await page.evaluate(()=>{const p=loadProfile();p.firmGame.level=9;p.firmGame.funds=20000;p.firmGame.reputation=100;saveProfile(p);firmUpgrade()});assert.equal(await page.evaluate(()=>loadProfile().firmGame.level),10);assert.equal(await page.locator('.fg-level-10').count(),1);
+  await page.evaluate(()=>{const p=loadProfile();p.skinsOwned=['crown'];saveProfile(p);openSkinGallery();selectSkin('crown')});
+  assert.equal(await page.locator('#skinView .skin-stage .skin-sparkle').count(),1);assert.equal(await page.locator('#skinView .skin-stage .rarity-legendary').textContent(),'传说');
+  await page.evaluate(()=>selectSkin('sapphire_oath'));assert.equal(await page.locator('#skinView .skin-stage.unowned').count(),1);assert.equal(await page.locator('#skinView .skin-stage .rarity-collector').textContent(),'典藏');
+  assert.equal(await page.locator('#skinView .sp-card').count(),12);
+  assert.match(await page.locator('#skinView .skin-stage.unowned .skin-art').evaluate(el=>getComputedStyle(el).filter),/grayscale/);
+  await page.evaluate(()=>{const p=loadProfile();p.skinFragments=288;saveProfile(p);selectSkin('jade_oath');applySelectedSkin()});
+  assert.equal(await page.evaluate(()=>loadProfile().activeSkin),'jade_oath');assert.equal(await page.evaluate(()=>loadProfile().skinFragments),0);
+  assert.equal(await page.locator('#skinView .skin-stage .rarity-brave').textContent(),'勇者');await page.waitForTimeout(1000);
   await page.reload();await page.waitForSelector('#homeScreen.show');assert.equal(await page.evaluate(()=>loadProfile().firmGame.casesDone),1);
   console.log('PASS mobile registration and authenticated AI request');
  }finally{await browser.close()}
