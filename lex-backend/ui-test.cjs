@@ -1,0 +1,22 @@
+const { chromium }=require('playwright');
+const assert=require('node:assert/strict');
+(async()=>{
+ const browser=await chromium.launch({executablePath:'/usr/bin/chromium',args:['--no-sandbox']});
+ try{
+  const page=await browser.newPage({viewport:{width:390,height:844},serviceWorkers:'block'});
+  let signedIn=false,chatCalled=false;
+  await page.route('**/api/lex/**',async route=>{const path=new URL(route.request().url()).pathname;
+   if(path.endsWith('/me'))return route.fulfill({status:signedIn?200:401,json:signedIn?{user:{username:'tester'}}:{error:'请先登录'}});
+   if(path.endsWith('/register')){signedIn=true;return route.fulfill({json:{user:{username:'tester'}}})}
+   if(path.endsWith('/chat')){chatCalled=true;return route.fulfill({json:{choices:[{message:{content:'测试回复'}}]}})}
+   if(path.endsWith('/logout')){signedIn=false;return route.fulfill({json:{ok:true}})}
+  });
+  await page.goto('http://127.0.0.1:8767/standalone/law.html');
+  await page.waitForSelector('#loginScreen.show');await page.locator('[onclick="showRegister()"]').click();
+  await page.fill('#regUsername','tester');await page.fill('#regPassword','testpass123');await page.fill('#regPassword2','testpass123');
+  await page.locator('#registerForm button[onclick="doRegister()"]').click();await page.waitForSelector('#homeScreen.show');
+  const result=await page.evaluate(()=>new Promise(resolve=>aiComplete('测试','问题',(err,text)=>resolve({err,text}))));
+  assert.equal(result.text,'测试回复');assert.equal(chatCalled,true);
+  console.log('PASS mobile registration and authenticated AI request');
+ }finally{await browser.close()}
+})().catch(e=>{console.error(e);process.exit(1)});

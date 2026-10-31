@@ -794,11 +794,11 @@
     </div>
 
 
-    <div class="api-config">
+    <p style="font-size:12px">AI 由平台服务提供，无需填写密钥。</p><div class="api-config" style="display:none!important">
       <h5><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>API 配置</h5>
       <p style="font-size:11px;color:var(--text2);margin-bottom:8px">配置DeepSeek API密钥以启用AI法律咨询功能。密钥仅保存在当前标签页会话中，关闭后自动清除，也不会进入备份。</p>
       <label class="sr-only" for="apiKeyInput">DeepSeek API Key</label>
-      <input type="password" id="apiKeyInput" aria-label="DeepSeek API Key" autocomplete="off" placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxx" />
+      <input hidden disabled type="password" id="apiKeyInput" aria-label="DeepSeek API Key" autocomplete="off" placeholder="" />
       <div class="api-row">
         <select id="apiModelSelect" aria-label="AI 模型">
           <option value="deepseek-chat">DeepSeek Pro</option>
@@ -1496,7 +1496,7 @@
 <script src="quiz_extra.js?v=1.0.0"></script>
 <script src="ime_data.js?v=1.0.0"></script>
 <script src="fcitx5-bridge.js?v=1.0.0"></script>
-<script src="law-app.js?v=144"></script>
+<script src="law-app.js?v=lex-auth1"></script><script src="lex-auth.js?v=1"></script>
 </body>
 </html>
 

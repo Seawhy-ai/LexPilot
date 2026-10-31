@@ -963,7 +963,7 @@ if (document.readyState === "loading") {
 // ============================================================
 
 // ----- CONFIG -----
-var DEFAULTS = { apiKey: "sk-1a551106191f4489a031787a3b81b533", model: "deepseek-v4-flash" };
+var DEFAULTS = { apiKey: "", model: "deepseek-v4-flash" };
 var SETTINGS = {};
 try { var s = JSON.parse(localStorage.getItem("seawhy-lex-config") || "{}"); SETTINGS = Object.assign({}, DEFAULTS, s); } catch(e) { SETTINGS = Object.assign({}, DEFAULTS); }
 
@@ -5407,7 +5407,7 @@ function showError(msg) {
 function sendMsg(text) {
   if (streaming) return;
   text = text.trim(); if (!text) return;
-  if (!SETTINGS.apiKey) { showError('API配置错误，请先前往关于我们中完成配置'); return; }
+  
 
   // v3.5.0：AI 咨询扣积分（VIP 免费），不足则拦截；去掉原来的对话奖励
   if (!isVip()) {
@@ -5441,9 +5441,9 @@ function sendMsg(text) {
   var fullContent = "", resolved = false;
   abortController = new AbortController(); var signal = abortController.signal;
 
-  fetch("https://api.deepseek.com/v1/chat/completions", {
+  fetch("/api/lex/chat", {
     method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: "Bearer " + SETTINGS.apiKey },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ model: SETTINGS.model, messages: apiMsgs, stream: true, temperature: 0.2, max_tokens: 4096 }),
     signal: signal
   }).then(function(resp) {
@@ -7270,10 +7270,10 @@ function aiComplete(system, user, cb) {
   var cfg = {};
   try { cfg = JSON.parse(localStorage.getItem("seawhy-lex-config") || "{}"); } catch(e) {}
   var key = SETTINGS.apiKey || sessionStorage.getItem("seawhy-lex-api-key");
-  if (!key) { cb("未配置 AI API Key。请到「AI 咨询」的设置中完成配置后重试。"); return; }
-  fetch("https://api.deepseek.com/v1/chat/completions", {
+
+  fetch("/api/lex/chat", {
     method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: "Bearer " + key },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ model: cfg.model || "deepseek-chat", messages: [{ role: "system", content: system }, { role: "user", content: user }], stream: false, temperature: 0.4, max_tokens: 2500 })
   }).then(function(r) {
     if (!r.ok) return r.text().then(function(t) { throw new Error("API " + r.status + ": " + t.slice(0, 200)); });

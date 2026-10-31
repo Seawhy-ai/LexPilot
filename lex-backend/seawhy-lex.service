@@ -1,0 +1,23 @@
+[Unit]
+Description=SeaWhy Lex independent accounts and AI gateway
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=lvheng
+Group=lvheng
+WorkingDirectory=/opt/seawhy-lex/lex-backend
+Environment=LEX_DB_PATH=/var/lib/seawhy-lex/users.sqlite
+Environment=LEX_ORIGIN=https://lex.lvheng.me
+ExecStart=/usr/bin/node --env-file=/etc/lvheng/backend.env /opt/seawhy-lex/lex-backend/server.mjs
+Restart=on-failure
+RestartSec=5
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/seawhy-lex
+
+[Install]
+WantedBy=multi-user.target
