@@ -47,6 +47,16 @@ const assert=require('node:assert/strict');
   await page.waitForTimeout(1200);
   await Promise.all([page.waitForResponse(r=>r.url().endsWith('/api/lex/profile')&&r.request().method()==='POST'),page.evaluate(()=>saveProfile({nickname:'云端测试',points:23,totalPoints:44}))]);
   assert.equal(profile.points,23);await page.reload();await page.waitForSelector('#homeScreen.show');assert.equal(await page.evaluate(()=>loadProfile().nickname),'云端测试');
+  await page.evaluate(()=>showLawFirm());
+  assert.equal(await page.locator('#firmBody h2').first().textContent(),'律所办公室');
+  await page.evaluate(()=>{firmDaily();firmDaily();firmHire('assistant');firmStart('consult');});
+  let game=await page.evaluate(()=>loadProfile().firmGame);
+  assert.equal(game.funds,180);assert.deepEqual(game.staff,['assistant']);assert.equal(game.current.id,'consult');
+  await page.evaluate(()=>{const p=loadProfile();p.firmGame.current.finish=Date.now()-1000;saveProfile(p);firmCollect();firmCollect();});
+  game=await page.evaluate(()=>loadProfile().firmGame);
+  assert.equal(game.funds,250);assert.equal(game.reputation,2);assert.equal(game.casesDone,1);
+  await page.waitForTimeout(1500);assert.equal(profile.firmGame.casesDone,1);
+  await page.reload();await page.waitForSelector('#homeScreen.show');assert.equal(await page.evaluate(()=>loadProfile().firmGame.casesDone),1);
   console.log('PASS mobile registration and authenticated AI request');
  }finally{await browser.close()}
 })().catch(e=>{console.error(e);process.exit(1)});
