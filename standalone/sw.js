@@ -1,4 +1,4 @@
-var CACHE = "lexpilot-skins-v11";
+var CACHE = "lexpilot-skins-motion-v12";
 var APP_SHELL = ["./", "./law.html", "./law.css?v=lex-account5", "./mobile-dark-fix.css?v=3", "./mobile-gestures.js?v=2", "./law-app.js?v=lex-account6", "./firm-game.css?v=1", "./firm-art.css?v=1", "./firm-levels.css?v=1", "./leaderboard.css?v=1", "./leaderboard.js?v=1", "./firm-game.js?v=2", "./skin-theme.css?v=1", "./skin-theme.js?v=1", "./images/skins/rarity-sparkle.gif", "./law-manifest.json", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png", "./images/firm/firm-levels.png", "./images/firm/firm-team-cases.png"];
 
 self.addEventListener("install", function(event) {
