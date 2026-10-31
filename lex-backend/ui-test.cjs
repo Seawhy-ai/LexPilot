@@ -49,6 +49,7 @@ const assert=require('node:assert/strict');
   assert.equal(profile.points,23);await page.reload();await page.waitForSelector('#homeScreen.show');assert.equal(await page.evaluate(()=>loadProfile().nickname),'云端测试');
   await page.evaluate(()=>showLawFirm());
   assert.equal(await page.locator('#firmBody h2').first().textContent(),'律所办公室');
+  assert.match(await page.locator('.fg-office').evaluate(el=>getComputedStyle(el).backgroundImage),/firm-office-game\.png/);
   await page.evaluate(()=>{firmDaily();firmDaily();firmHire('assistant');firmStart('consult');});
   let game=await page.evaluate(()=>loadProfile().firmGame);
   assert.equal(game.funds,180);assert.deepEqual(game.staff,['assistant']);assert.equal(game.current.id,'consult');
