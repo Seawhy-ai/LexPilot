@@ -13,5 +13,10 @@
 #skinView .unowned .skin-sparkle{filter:grayscale(1);opacity:.6}
 #skinView .skin-stage-copy,#skinView .skin-actions{z-index:2}
 @media(prefers-reduced-motion:reduce){#skinView .skin-sparkle{display:none}}
+#skinView .rarity-legendary,.skin-tier.rarity-legendary{background:linear-gradient(110deg,#984000 15%,#ff8b20 40%,#fff0b4 50%,#ff8b20 60%,#984000 85%)!important;background-size:250% 100%!important;animation:skinOrangeFlow 3s linear infinite!important}
+#skinView .rarity-collector,.skin-tier.rarity-collector{background:linear-gradient(110deg,#075c9b 15%,#20b8df 40%,#eaffff 50%,#20b8df 60%,#195aa4 85%)!important;background-size:250% 100%!important;animation:skinDiamondFlow 3.6s linear infinite!important}
+@keyframes skinOrangeFlow{from{background-position:200% 0}to{background-position:-50% 0}}
+@keyframes skinDiamondFlow{from{background-position:200% 0;box-shadow:0 0 3px #72ddff}50%{box-shadow:0 0 11px #72ddff}to{background-position:-50% 0;box-shadow:0 0 3px #72ddff}}
+@media(prefers-reduced-motion:reduce){#skinView .rarity-legendary,#skinView .rarity-collector,.skin-tier.rarity-legendary,.skin-tier.rarity-collector{animation:none!important}}
 .skin-tier{display:inline-block!important;padding:2px 5px!important;border:1px solid;border-radius:6px;font-size:10px!important;line-height:1.2;font-weight:800}
 .skin-tier.rarity-common{background:#f5f7fa;border-color:#fff;color:#25303d}.skin-tier.rarity-brave{background:#176d3d;border-color:#4ade80;color:#eaffef}.skin-tier.rarity-epic{background:#6927a0;border-color:#d49aff;color:#fff1ff}.skin-tier.rarity-legendary{background:#a84e08;border-color:#ffae46;color:#fff3d8}.skin-tier.rarity-collector{background:linear-gradient(120deg,#075c9b,#20b8df,#195aa4);border-color:#a8f3ff;color:#f2ffff}
