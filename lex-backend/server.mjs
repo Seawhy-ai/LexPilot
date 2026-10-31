@@ -7,7 +7,8 @@ db.exec(`PRAGMA journal_mode=WAL; PRAGMA busy_timeout=5000;
 CREATE TABLE IF NOT EXISTS users (id TEXT PRIMARY KEY, username TEXT NOT NULL UNIQUE, salt TEXT NOT NULL, password_hash TEXT NOT NULL, created_at INTEGER NOT NULL);
 CREATE TABLE IF NOT EXISTS sessions (token_hash TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id),expires_at INTEGER NOT NULL);
 CREATE INDEX IF NOT EXISTS sessions_expiry ON sessions(expires_at);
-CREATE TABLE IF NOT EXISTS ai_usage (user_id TEXT NOT NULL REFERENCES users(id),day TEXT NOT NULL,requests INTEGER NOT NULL,PRIMARY KEY(user_id,day));`);
+CREATE TABLE IF NOT EXISTS ai_usage (user_id TEXT NOT NULL REFERENCES users(id),day TEXT NOT NULL,requests INTEGER NOT NULL,PRIMARY KEY(user_id,day));
+CREATE TABLE IF NOT EXISTS user_profiles (user_id TEXT PRIMARY KEY REFERENCES users(id),profile_json TEXT NOT NULL,version INTEGER NOT NULL,updated_at INTEGER NOT NULL);`);
 db.exec('PRAGMA foreign_keys=ON');
 const hash=s=>createHash('sha256').update(s).digest('hex');
 const allowedOrigin=process.env.LEX_ORIGIN||'https://lex.lvheng.me';
@@ -34,6 +35,22 @@ export const server=createServer(async(req,res)=>{try{
   if(!timingSafeEqual(derived,expected)||!u)return json(res,401,{error:'账号或密码错误'});return loginSession(res,u);
  }
  if(url.pathname==='/api/lex/me'&&req.method==='GET'){const u=user(req);return u?json(res,200,{user:u}):json(res,401,{error:'请先登录'})}
+ if(url.pathname==='/api/lex/profile'&&req.method==='GET'){
+  const u=user(req);if(!u)return json(res,401,{error:'请先登录'});
+  const row=db.prepare('SELECT profile_json,version FROM user_profiles WHERE user_id=?').get(u.id);
+  return json(res,200,{profile:row?JSON.parse(row.profile_json):null,version:row?.version||0});
+ }
+ if(url.pathname==='/api/lex/profile'&&req.method==='POST'){
+  const u=user(req);if(!u)return json(res,401,{error:'请先登录'});
+  const v=await body(req),p=v.profile;
+  if(!p||typeof p!=='object'||Array.isArray(p)||!Number.isSafeInteger(v.version)||v.version<0)return json(res,400,{error:'档案格式错误'});
+  if(p.avatarDataUrl && (typeof p.avatarDataUrl!=='string'||!/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(p.avatarDataUrl)))return json(res,400,{error:'头像格式不支持'});
+  if(JSON.stringify(p).length>110000)return json(res,413,{error:'档案过大，请更换小于80KB的头像'});
+  let changed;
+  if(v.version===0)changed=db.prepare('INSERT OR IGNORE INTO user_profiles VALUES(?,?,1,?)').run(u.id,JSON.stringify(p),Date.now()).changes;
+  else changed=db.prepare('UPDATE user_profiles SET profile_json=?,version=version+1,updated_at=? WHERE user_id=? AND version=?').run(JSON.stringify(p),Date.now(),u.id,v.version).changes;
+  return changed?json(res,200,{version:v.version+1}):json(res,409,{error:'档案已在其他设备更新，请先刷新并核对'});
+ }
  if(url.pathname==='/api/lex/logout'&&req.method==='POST'){const token=cookie(req);if(token)db.prepare('DELETE FROM sessions WHERE token_hash=?').run(hash(token));res.setHeader('Set-Cookie','lex_session=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0');return json(res,200,{ok:true})}
  if(url.pathname==='/api/lex/chat'&&req.method==='POST'){
   const caller=user(req);if(!caller)return json(res,401,{error:'请先登录'});if(!key)return json(res,503,{error:'AI 服务尚未配置'});

@@ -1301,12 +1301,12 @@ function rechargeVip() {
 var VIP_KEY = "seawhy-lex-vip";
 function isVip() {
   try {
-    if (localStorage.getItem(VIP_KEY) === "1") return true; // 永久VIP（兑换码0815）
+    if (lexVipGet() === "1") return true; // 永久VIP（兑换码0815）
     var p = loadProfile();
     return !!(p.vipUntil && p.vipUntil > Date.now());
   } catch(e) { return false; }
 }
-function setVip(v) { try { localStorage.setItem(VIP_KEY, v ? "1" : "0"); } catch(e) {} }
+function setVip(v) { try { lexVipSet(v ? "1" : "0"); } catch(e) {} }
 
 // ===== 等级系统 =====
 var LEVELS = [
@@ -1558,7 +1558,7 @@ function getQuizUnlockRemain() {
 }
 function getVipRemainDays() {
   var p = loadProfile();
-  if (localStorage.getItem(VIP_KEY) === "1") return "永久";
+  if (lexVipGet() === "1") return "永久";
   if (!p.vipUntil || p.vipUntil <= Date.now()) return 0;
   return Math.ceil((p.vipUntil - Date.now()) / 86400000);
 }
@@ -2172,7 +2172,7 @@ function openLotteryExchange() {
   var p = loadProfile();
   var cry = p.soulCrystals || 0;
   if (cry < 1) { showToast("暂无法魂水晶，抽奖可得"); return; }
-  if (localStorage.getItem(VIP_KEY) === "1") { showToast("您已是永久VIP"); return; }
+  if (lexVipGet() === "1") { showToast("您已是永久VIP"); return; }
   if (!confirm("消耗 1 个法魂水晶，兑换永久 VIP？\n（当前水晶 " + cry + " 个）")) return;
   p.soulCrystals = cry - 1;
   saveProfile(p);

@@ -18,6 +18,14 @@ test('independent account and AI permission',async()=>{
   assert.equal((await post('/api/lex/login',{username:'hello',password:'bad'})).status,401);
   assert.equal((await post('/api/lex/chat',{messages:[{role:'user',content:'你好'}]},cookie)).status,503);
   assert.equal((await fetch(base+'/api/lex/me',{headers:{cookie}})).status,200);
+  assert.equal((await fetch(base+'/api/lex/profile')).status,401);
+  const first=await fetch(base+'/api/lex/profile',{headers:{cookie}});assert.deepEqual(await first.json(),{profile:null,version:0});
+  const saved=await post('/api/lex/profile',{profile:{nickname:'甲',points:20,totalPoints:35},version:0},cookie);assert.equal(saved.status,200);
+  assert.equal((await post('/api/lex/profile',{profile:{points:0},version:0},cookie)).status,409);
+  const other=await post('/api/lex/register',{username:'other',password:'validpassword'});const otherCookie=other.headers.get('set-cookie').split(';')[0];
+  assert.equal((await (await fetch(base+'/api/lex/profile',{headers:{cookie:otherCookie}})).json()).profile,null);
+  const read=await (await fetch(base+'/api/lex/profile',{headers:{cookie}})).json();assert.equal(read.profile.points,20);assert.equal(read.version,1);
+  assert.equal((await post('/api/lex/profile',{profile:{avatarDataUrl:'javascript:alert(1)'},version:1},cookie)).status,400);
   assert.equal((await post('/api/lex/logout',{},cookie)).status,200);
   assert.equal((await fetch(base+'/api/lex/me',{headers:{cookie}})).status,401);
  }finally{await new Promise(resolve=>server.close(resolve))}
