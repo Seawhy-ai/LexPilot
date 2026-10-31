@@ -29,6 +29,14 @@
   window.lexVipSet=function(value){const p=window.loadProfile();p.lexPermanentVip=value==='1';window.saveProfile(p)};
   window.lexPrettyOptions=async function(){if(dirty)await flush();if(dirty)throw new Error('请先等待个人档案同步完成');return (await request('pretty-ids')).ids};
   window.lexChoosePrettyId=async function(id){const result=await request('pretty-id',{id});window.lexAccount.publicId=result.publicId;return result.publicId};
+  window.lexLeaderboard=async function(type){return (await request('leaderboard?type='+encodeURIComponent(type))).entries};
+  window.lexExchange=async function(points){
+    if(dirty&&!saving)await flush();if(saving||dirty||conflict)throw new Error('请先等待个人档案同步完成');
+    saving=true;status('正在兑换…');
+    try{const r=await request('firm-exchange',{points,version});version=r.version;profile.points-=points;profile.firmGame.funds+=points*10;profile.transactions=Array.isArray(profile.transactions)?profile.transactions:[];profile.transactions.push({a:-points,t:r.at,m:'律所资金兑换'});profile.transactions=profile.transactions.slice(-300);if(dirty)persistPending();else{localStorage.removeItem('lex-profile-pending-'+owner);status('个人档案已同步')}return r}
+    catch(e){status('兑换未完成，请核对余额');throw e}
+    finally{saving=false;if(dirty&&!conflict){clearTimeout(timer);timer=setTimeout(flush,400)}}
+  };
   async function loadCloud(u){
     const r=await request('profile');owner=u.id;window.lexAccount={id:u.id,publicId:u.publicId,username:u.username};version=r.version;profile=r.profile||{};dirty=false;conflict=false;
     let pending=null;try{pending=JSON.parse(localStorage.getItem('lex-profile-pending-'+owner)||'null')}catch(e){}

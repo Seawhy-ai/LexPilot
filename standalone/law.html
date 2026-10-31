@@ -24,6 +24,8 @@
   <script src="mobile-gestures.js?v=2"></script>
   <link rel="stylesheet" href="firm-game.css?v=1" />
   <link rel="stylesheet" href="firm-art.css?v=1" />
+  <link rel="stylesheet" href="firm-levels.css?v=1" />
+  <link rel="stylesheet" href="leaderboard.css?v=1" />
 </head>
 <body>
 <!-- 全局动态背景层（全页面可见，背景选择后由 applyHomeBg 驱动） -->
@@ -303,6 +305,7 @@
       </div>
     </div>
 
+    <section class="lex-rank-card"><div class="lex-rank-header"><h2>排行榜</h2><button type="button" onclick="lexShowRanking()">查看排行榜</button></div><div id="lexRankPanel" hidden><p class="lex-rank-note">登录用户可查看昵称、ID 和积分或等级；最多展示前 100 名。</p><div class="lex-rank-tabs"><button type="button" data-lex-rank="level" onclick="lexShowRanking('level')">等级排行榜</button><button type="button" data-lex-rank="points" onclick="lexShowRanking('points')">积分排行榜</button><button type="button" onclick="lexHideRanking()">收起</button></div><div id="lexRankList" aria-live="polite"></div></div></section>
     <!-- VIP 特权卡片 -->
     <div class="vip-card" id="vipCard">
       <div class="vc-head">
@@ -1452,8 +1455,9 @@
 <script src="quiz_data.js?v=1.5.0"></script>
 <script src="case_data.js?v=1.2.6"></script>
 <script src="quiz_extra.js?v=1.0.0"></script>
-<script src="law-app.js?v=lex-account6"></script><script src="lex-auth.js?v=account6"></script>
-<script src="firm-game.js?v=1"></script>
+<script src="law-app.js?v=lex-account6"></script><script src="lex-auth.js?v=account7"></script>
+<script src="firm-game.js?v=2"></script>
+<script src="leaderboard.js?v=1"></script>
 </body>
 </html>
 

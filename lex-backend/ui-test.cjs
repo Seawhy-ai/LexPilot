@@ -11,6 +11,8 @@ const assert=require('node:assert/strict');
    if(path.endsWith('/register')){signedIn=true;return route.fulfill({json:{user:{id:'user1',publicId:'100001',username:'tester'}}})}
    if(path.endsWith('/pretty-ids'))return route.fulfill({json:{ids:['111123','122234','133345']}});
    if(path.endsWith('/pretty-id'))return route.fulfill({json:{publicId:route.request().postDataJSON().id}});
+   if(path.endsWith('/leaderboard'))return route.fulfill({json:{entries:[{id:'100001',nickname:'测试用户',points:23,totalPoints:44}]}});
+   if(path.endsWith('/firm-exchange')){const b=route.request().postDataJSON();profile.points-=b.points;profile.firmGame.funds+=b.points*10;version++;return route.fulfill({json:{version,points:profile.points,funds:profile.firmGame.funds}})}
    if(path.endsWith('/profile')){if(route.request().method()==='POST'){const body=route.request().postDataJSON();if(body.version!==version)return route.fulfill({status:409,json:{error:'档案已在其他设备更新'}});profile=body.profile;version++;return route.fulfill({json:{version}})}return route.fulfill({json:{profile,version}})}
    if(path.endsWith('/chat')){chatCalled=true;return route.fulfill({json:{choices:[{message:{content:'测试回复'}}]}})}
    if(path.endsWith('/logout')){signedIn=false;return route.fulfill({json:{ok:true}})}
@@ -49,7 +51,8 @@ const assert=require('node:assert/strict');
   assert.equal(profile.points,23);await page.reload();await page.waitForSelector('#homeScreen.show');assert.equal(await page.evaluate(()=>loadProfile().nickname),'云端测试');
   await page.evaluate(()=>showLawFirm());
   assert.equal(await page.locator('#firmBody h2').first().textContent(),'律所办公室');
-  assert.match(await page.locator('.fg-office').evaluate(el=>getComputedStyle(el).backgroundImage),/firm-office-game\.png/);
+  assert.match(await page.locator('.fg-office').evaluate(el=>getComputedStyle(el).backgroundImage),/firm-levels\.png/);
+  assert.equal(await page.locator('.fg-board-art').count(),1);assert.equal(await page.locator('.fg-staff-assistant').count(),1);
   await page.evaluate(()=>{firmDaily();firmDaily();firmHire('assistant');firmStart('consult');});
   let game=await page.evaluate(()=>loadProfile().firmGame);
   assert.equal(game.funds,180);assert.deepEqual(game.staff,['assistant']);assert.equal(game.current.id,'consult');
@@ -57,6 +60,9 @@ const assert=require('node:assert/strict');
   game=await page.evaluate(()=>loadProfile().firmGame);
   assert.equal(game.funds,250);assert.equal(game.reputation,2);assert.equal(game.casesDone,1);
   await page.waitForTimeout(1500);assert.equal(profile.firmGame.casesDone,1);
+  await page.evaluate(()=>lexExchange(3));assert.equal(await page.evaluate(()=>loadProfile().points),20);assert.equal(await page.evaluate(()=>loadProfile().firmGame.funds),280);
+  await page.evaluate(()=>lexShowRanking('points'));await page.waitForSelector('.lr-row',{state:'attached'});assert.match(await page.locator('.lr-row').first().textContent(),/测试用户/);
+  await page.evaluate(()=>{const p=loadProfile();p.firmGame.level=9;p.firmGame.funds=20000;p.firmGame.reputation=100;saveProfile(p);firmUpgrade()});assert.equal(await page.evaluate(()=>loadProfile().firmGame.level),10);assert.equal(await page.locator('.fg-level-10').count(),1);
   await page.reload();await page.waitForSelector('#homeScreen.show');assert.equal(await page.evaluate(()=>loadProfile().firmGame.casesDone),1);
   console.log('PASS mobile registration and authenticated AI request');
  }finally{await browser.close()}

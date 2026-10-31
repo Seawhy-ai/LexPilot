@@ -39,6 +39,22 @@ export const server=createServer(async(req,res)=>{try{
   if(!timingSafeEqual(derived,expected)||!u)return json(res,401,{error:'账号或密码错误'});return loginSession(res,u);
  }
  if(url.pathname==='/api/lex/me'&&req.method==='GET'){const u=user(req);return u?json(res,200,{user:u}):json(res,401,{error:'请先登录'})}
+ if(url.pathname==='/api/lex/leaderboard'&&req.method==='GET'){
+  if(!user(req))return json(res,401,{error:'请先登录'});const type=url.searchParams.get('type')==='points'?'points':'level',key=type==='points'?'$.points':'$.totalPoints';
+  const rows=db.prepare(`SELECT json_extract(p.profile_json,'$.nickname') AS nickname,json_extract(p.profile_json,'$.points') AS points,json_extract(p.profile_json,'$.totalPoints') AS total,n.number AS number FROM user_profiles p JOIN users u ON u.id=p.user_id JOIN public_user_ids n ON n.user_id=u.id WHERE json_valid(p.profile_json) ORDER BY MAX(0,CAST(COALESCE(json_extract(p.profile_json, ?),0) AS INTEGER)) DESC,n.number ASC LIMIT 100`).all(key);
+  const safe=x=>Number.isSafeInteger(x)&&x>0?Math.min(x,1000000000):0;
+  return json(res,200,{type,entries:rows.map(r=>({id:String(100000+r.number),nickname:typeof r.nickname==='string'?r.nickname.slice(0,32):'法律人',points:safe(r.points),totalPoints:safe(r.total)}))});
+ }
+ if(url.pathname==='/api/lex/firm-exchange'&&req.method==='POST'){
+  const u=user(req);if(!u)return json(res,401,{error:'请先登录'});const v=await body(req);
+  if(!Number.isSafeInteger(v.points)||v.points<1||v.points>100000||!Number.isSafeInteger(v.version))return json(res,400,{error:'请输入有效的兑换积分'});
+  const row=db.prepare('SELECT profile_json,version FROM user_profiles WHERE user_id=?').get(u.id);if(!row||row.version!==v.version)return json(res,409,{error:'档案已在其他设备更新，请先刷新并核对'});
+  const p=JSON.parse(row.profile_json);if(!Number.isSafeInteger(p.points)||p.points<v.points)return json(res,400,{error:'可用积分不足'});
+  if(!p.firmGame||!Number.isSafeInteger(p.firmGame.funds)||p.firmGame.funds<0||p.firmGame.funds>1000000000-v.points*10)return json(res,400,{error:'请先进入律所并同步进度'});
+  p.points-=v.points;p.firmGame.funds+=v.points*10;const at=Date.now();p.transactions=Array.isArray(p.transactions)?p.transactions:[];p.transactions.push({a:-v.points,t:at,m:'律所资金兑换'});p.transactions=p.transactions.slice(-300);
+  const changed=db.prepare('UPDATE user_profiles SET profile_json=?,version=version+1,updated_at=? WHERE user_id=? AND version=?').run(JSON.stringify(p),Date.now(),u.id,v.version).changes;
+  return changed?json(res,200,{version:v.version+1,points:p.points,funds:p.firmGame.funds,at}):json(res,409,{error:'档案已在其他设备更新，请先刷新并核对'});
+ }
  if(url.pathname==='/api/lex/pretty-ids'&&req.method==='GET'){
   const u=user(req);if(!u)return json(res,401,{error:'请先登录'});if(!hasVip(u))return json(res,403,{error:'开通 VIP 可选择专属靓号'});
   const ids=new Set();for(let i=0;i<500&&ids.size<3;i++){const d=String(randomInt(1,10)),tail=String(randomInt(0,100)).padStart(2,'0');const id='1'+d+d+d+tail;if(id!==u.publicId&&!db.prepare('SELECT 1 FROM public_user_ids WHERE number=?').get(Number(id)-100000))ids.add(id)}

@@ -1,5 +1,5 @@
-var CACHE = "lexpilot-firm-art-v9";
-var APP_SHELL = ["./", "./law.html", "./law.css?v=lex-account5", "./mobile-dark-fix.css?v=3", "./mobile-gestures.js?v=2", "./law-app.js?v=lex-account6", "./firm-game.css?v=1", "./firm-art.css?v=1", "./firm-game.js?v=1", "./law-manifest.json", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png", "./images/firm/law-firm-courtyard-v1.png", "./images/firm/firm-office-game.png"];
+var CACHE = "lexpilot-firm-levels-v10";
+var APP_SHELL = ["./", "./law.html", "./law.css?v=lex-account5", "./mobile-dark-fix.css?v=3", "./mobile-gestures.js?v=2", "./law-app.js?v=lex-account6", "./firm-game.css?v=1", "./firm-art.css?v=1", "./firm-levels.css?v=1", "./leaderboard.css?v=1", "./leaderboard.js?v=1", "./firm-game.js?v=2", "./law-manifest.json", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png", "./images/firm/firm-levels.png", "./images/firm/firm-team-cases.png"];
 
 self.addEventListener("install", function(event) {
   event.waitUntil(caches.open(CACHE).then(function(cache) {

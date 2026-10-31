@@ -20,8 +20,13 @@ test('independent account and AI permission',async()=>{
   assert.match(firstUser.publicId,/^\d+$/);const me=await fetch(base+'/api/lex/me',{headers:{cookie}});assert.equal(me.status,200);assert.equal((await me.json()).user.publicId,firstUser.publicId);
   assert.equal((await fetch(base+'/api/lex/profile')).status,401);
   const first=await fetch(base+'/api/lex/profile',{headers:{cookie}});assert.deepEqual(await first.json(),{profile:null,version:0});
-  const saved=await post('/api/lex/profile',{profile:{nickname:'甲',points:20,totalPoints:35,vipUntil:Date.now()+86400000},version:0},cookie);assert.equal(saved.status,200);
+  const saved=await post('/api/lex/profile',{profile:{nickname:'甲',points:20,totalPoints:35,vipUntil:Date.now()+86400000,firmGame:{funds:200}},version:0},cookie);assert.equal(saved.status,200);
   assert.equal((await post('/api/lex/profile',{profile:{points:0},version:0},cookie)).status,409);
+  assert.equal((await post('/api/lex/firm-exchange',{points:5,version:1})).status,401);
+  const exchange=await post('/api/lex/firm-exchange',{points:5,version:1},cookie);assert.equal(exchange.status,200);const exchangeResult=await exchange.json();assert.equal(exchangeResult.version,2);assert.equal(exchangeResult.points,15);assert.equal(exchangeResult.funds,250);assert.ok(exchangeResult.at);
+  assert.equal((await post('/api/lex/firm-exchange',{points:5,version:1},cookie)).status,409);
+  assert.equal((await post('/api/lex/firm-exchange',{points:16,version:2},cookie)).status,400);
+  assert.equal((await fetch(base+'/api/lex/leaderboard')).status,401);
   const other=await post('/api/lex/register',{username:'other',password:'validpassword'});const otherUser=(await other.json()).user;assert.notEqual(firstUser.id,otherUser.id);assert.notEqual(firstUser.publicId,otherUser.publicId);const otherCookie=other.headers.get('set-cookie').split(';')[0];
   assert.equal((await fetch(base+'/api/lex/pretty-ids',{headers:{cookie:otherCookie}})).status,403);
   assert.equal((await post('/api/lex/profile',{profile:{vipUntil:Date.now()+86400000},version:0},otherCookie)).status,200);
@@ -33,7 +38,8 @@ test('independent account and AI permission',async()=>{
   firstUser.publicId=claimed;
   const reLogin=await post('/api/lex/login',{username:'hello',password:'validpassword'});const loggedIn=(await reLogin.json()).user;assert.equal(loggedIn.id,firstUser.id);assert.equal(loggedIn.publicId,firstUser.publicId);
   assert.ok((await (await fetch(base+'/api/lex/profile',{headers:{cookie:otherCookie}})).json()).profile.vipUntil);
-  const read=await (await fetch(base+'/api/lex/profile',{headers:{cookie}})).json();assert.equal(read.profile.points,20);assert.equal(read.version,1);
+  const board=await (await fetch(base+'/api/lex/leaderboard?type=points',{headers:{cookie}})).json();assert.equal(board.entries[0].nickname,'甲');assert.equal(board.entries[0].points,15);assert.equal(board.entries[0].totalPoints,35);assert.equal(board.entries[0].id,claimed);assert.equal('username' in board.entries[0],false);
+  const read=await (await fetch(base+'/api/lex/profile',{headers:{cookie}})).json();assert.equal(read.profile.points,15);assert.equal(read.profile.totalPoints,35);assert.equal(read.profile.firmGame.funds,250);assert.equal(read.profile.transactions[0].a,-5);assert.equal(read.version,2);
   assert.equal((await post('/api/lex/profile',{profile:{avatarDataUrl:'javascript:alert(1)'},version:1},cookie)).status,400);
   assert.equal((await post('/api/lex/logout',{},cookie)).status,200);
   assert.equal((await fetch(base+'/api/lex/me',{headers:{cookie}})).status,401);
