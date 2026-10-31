@@ -1,0 +1,15 @@
+/* Keep scrolling within the visible Safari viewport, including on short screens. */
+@media (max-width: 767px) {
+  html { height: 100%; }
+  body { height: 100vh; height: 100dvh; min-height: 0; }
+  .screen, #profileView, #profileView .about-body { min-height: 0; }
+  #homeScreen { min-height: 0; height: 100%; overflow-y: auto; overflow-x: hidden; justify-content: flex-start; padding-bottom: calc(16px + env(safe-area-inset-bottom)); -webkit-overflow-scrolling: touch; }
+  #homeScreen > :not(.home-bg) { flex-shrink: 0; }
+  #bottomNav { flex-shrink: 0; margin-bottom: 16px; }
+  #profileView .about-body { padding-bottom: calc(40px + env(safe-area-inset-bottom)); }
+}
+body.dark .dash-head .dash-name, body.dark .dash-main, body.dark .quote-text, body.dark .quote-author { color: #f2f5fa; }
+body.dark .dash-head .dash-icon { color: #d8edff; }
+body.dark .todo-preview .tp-empty { color: #c8d3df; opacity: 1; }
+.ph-id-row { flex-direction: column; }
+.ph-id { font-variant-numeric: tabular-nums; }

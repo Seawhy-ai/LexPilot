@@ -28,7 +28,7 @@
   window.lexVipGet=function(){return profile.lexPermanentVip?'1':null};
   window.lexVipSet=function(value){const p=window.loadProfile();p.lexPermanentVip=value==='1';window.saveProfile(p)};
   async function loadCloud(u){
-    const r=await request('profile');owner=u.id;window.lexAccount={id:u.id,username:u.username};version=r.version;profile=r.profile||{};dirty=false;conflict=false;
+    const r=await request('profile');owner=u.id;window.lexAccount={id:u.id,publicId:u.publicId,username:u.username};version=r.version;profile=r.profile||{};dirty=false;conflict=false;
     let pending=null;try{pending=JSON.parse(localStorage.getItem('lex-profile-pending-'+owner)||'null')}catch(e){}
     if(pending&&pending.profile){
       if(pending.version===version){profile=pending.profile;dirty=true;status('恢复未同步的个人档案…');timer=setTimeout(flush,400)}

@@ -8,16 +8,19 @@ CREATE TABLE IF NOT EXISTS users (id TEXT PRIMARY KEY, username TEXT NOT NULL UN
 CREATE TABLE IF NOT EXISTS sessions (token_hash TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id),expires_at INTEGER NOT NULL);
 CREATE INDEX IF NOT EXISTS sessions_expiry ON sessions(expires_at);
 CREATE TABLE IF NOT EXISTS ai_usage (user_id TEXT NOT NULL REFERENCES users(id),day TEXT NOT NULL,requests INTEGER NOT NULL,PRIMARY KEY(user_id,day));
-CREATE TABLE IF NOT EXISTS user_profiles (user_id TEXT PRIMARY KEY REFERENCES users(id),profile_json TEXT NOT NULL,version INTEGER NOT NULL,updated_at INTEGER NOT NULL);`);
+CREATE TABLE IF NOT EXISTS user_profiles (user_id TEXT PRIMARY KEY REFERENCES users(id),profile_json TEXT NOT NULL,version INTEGER NOT NULL,updated_at INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS public_user_ids (number INTEGER PRIMARY KEY AUTOINCREMENT, user_id TEXT NOT NULL UNIQUE REFERENCES users(id));`);
 db.exec('PRAGMA foreign_keys=ON');
+db.exec('INSERT OR IGNORE INTO public_user_ids(user_id) SELECT id FROM users WHERE NOT EXISTS (SELECT 1 FROM public_user_ids WHERE user_id=users.id) ORDER BY created_at,id');
 const hash=s=>createHash('sha256').update(s).digest('hex');
 const allowedOrigin=process.env.LEX_ORIGIN||'https://lex.lvheng.me';
 const key=process.env.DEEPSEEK_API_KEY;
 const json=(res,status,data)=>{res.writeHead(status,{'content-type':'application/json; charset=utf-8','cache-control':'no-store'});res.end(JSON.stringify(data))};
 async function body(req){let chunks=[],size=0;for await(const chunk of req){size+=chunk.length;if(size>131072)throw Object.assign(Error('请求过大'),{status:413});chunks.push(chunk)}let data;try{data=JSON.parse(Buffer.concat(chunks).toString())}catch{throw Object.assign(Error('请求格式错误'),{status:400})}if(!data||typeof data!=='object'||Array.isArray(data))throw Object.assign(Error('请求格式错误'),{status:400});return data}
 function cookie(req){const m=(req.headers.cookie||'').match(/(?:^|;\s*)lex_session=([A-Za-z0-9_-]+)/);return m?.[1]}
-function user(req){const token=cookie(req);return token&&db.prepare('SELECT users.id,users.username FROM sessions JOIN users ON users.id=sessions.user_id WHERE sessions.token_hash=? AND sessions.expires_at>?').get(hash(token),Date.now())}
-function loginSession(res,u){const token=randomBytes(32).toString('base64url'),expires=Date.now()+7*86400000;db.prepare('INSERT INTO sessions VALUES(?,?,?)').run(hash(token),u.id,expires);res.setHeader('Set-Cookie',`lex_session=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=604800`);return json(res,200,{user:{id:u.id,username:u.username}})}
+function publicId(id){let row=db.prepare('SELECT number FROM public_user_ids WHERE user_id=?').get(id);if(!row){db.prepare('INSERT OR IGNORE INTO public_user_ids(user_id) VALUES(?)').run(id);row=db.prepare('SELECT number FROM public_user_ids WHERE user_id=?').get(id)}return String(100000+row.number)}
+function user(req){const token=cookie(req);const row=token&&db.prepare('SELECT users.id,users.username FROM sessions JOIN users ON users.id=sessions.user_id WHERE sessions.token_hash=? AND sessions.expires_at>?').get(hash(token),Date.now());return row?{...row,publicId:publicId(row.id)}:null}
+function loginSession(res,u){const token=randomBytes(32).toString('base64url'),expires=Date.now()+7*86400000;const publicUserId=publicId(u.id);db.prepare('INSERT INTO sessions VALUES(?,?,?)').run(hash(token),u.id,expires);res.setHeader('Set-Cookie',`lex_session=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=604800`);return json(res,200,{user:{id:u.id,username:u.username,publicId:publicUserId}})}
 export const server=createServer(async(req,res)=>{try{
  const url=new URL(req.url,'http://localhost');if(req.headers.origin&&req.headers.origin!==allowedOrigin)return json(res,403,{error:'来源不被允许'});
  if(url.pathname==='/api/lex/health'&&req.method==='GET')return json(res,200,{ok:true});

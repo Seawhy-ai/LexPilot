@@ -4,11 +4,11 @@ const assert=require('node:assert/strict');
  const browser=await chromium.launch({executablePath:'/usr/bin/chromium',args:['--no-sandbox']});
  try{
   const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'block'});
-  await page.addInitScript(()=>localStorage.setItem('seawhy-lex-opts',JSON.stringify({kbdMode:'ime',imeEngine:'fcitx'})));
+  await page.addInitScript(()=>{localStorage.setItem('seawhy-lex-opts',JSON.stringify({kbdMode:'ime',imeEngine:'fcitx'}));});
   let signedIn=false,chatCalled=false,profile=null,version=0;
   await page.route('**/api/lex/**',async route=>{const path=new URL(route.request().url()).pathname;
-   if(path.endsWith('/me'))return route.fulfill({status:signedIn?200:401,json:signedIn?{user:{id:'user1',username:'tester'}}:{error:'请先登录'}});
-   if(path.endsWith('/register')){signedIn=true;return route.fulfill({json:{user:{id:'user1',username:'tester'}}})}
+   if(path.endsWith('/me'))return route.fulfill({status:signedIn?200:401,json:signedIn?{user:{id:'user1',publicId:'100001',username:'tester'}}:{error:'请先登录'}});
+   if(path.endsWith('/register')){signedIn=true;return route.fulfill({json:{user:{id:'user1',publicId:'100001',username:'tester'}}})}
    if(path.endsWith('/profile')){if(route.request().method()==='POST'){const body=route.request().postDataJSON();if(body.version!==version)return route.fulfill({status:409,json:{error:'档案已在其他设备更新'}});profile=body.profile;version++;return route.fulfill({json:{version}})}return route.fulfill({json:{profile,version}})}
    if(path.endsWith('/chat')){chatCalled=true;return route.fulfill({json:{choices:[{message:{content:'测试回复'}}]}})}
    if(path.endsWith('/logout')){signedIn=false;return route.fulfill({json:{ok:true}})}
@@ -22,7 +22,11 @@ const assert=require('node:assert/strict');
   await page.fill('#regUsername','tester');await page.fill('#regPassword','testpass123');await page.fill('#regPassword2','testpass123');
   await page.locator('#registerForm button[onclick="doRegister()"]').click();await page.waitForSelector('#homeScreen.show');
   assert.equal(await page.locator('#profileAccount').textContent(),'账号：tester');
-  assert.equal(await page.locator('#profileIdChip').textContent(),'ID user1');
+  assert.equal(await page.locator('#profileIdChip').textContent(),'ID 100001');
+  await page.evaluate(()=>document.body.classList.add('dark'));
+  assert.equal(await page.locator('.dash-main').first().evaluate(el=>getComputedStyle(el).color),'rgb(242, 245, 250)');
+  await page.locator('#bottomNav').scrollIntoViewIfNeeded();
+  assert.equal(await page.locator('#bottomNav').evaluate(el=>el.getBoundingClientRect().bottom<=window.innerHeight),true);
   assert.equal(await page.locator('[onclick="deleteAccount()"]').count(),0);
   assert.equal(await page.locator('[onclick="cloudBackup()"]').count(),0);
   assert.equal(await page.locator('#ime').count(),0);

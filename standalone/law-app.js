@@ -1013,7 +1013,7 @@ function updateProfileUI() {
   if (nameEl) nameEl.textContent = p.nickname || "法律人";
   var idChip = document.getElementById("profileIdChip");
   if (idChip) {
-    idChip.textContent = "ID " + (window.lexAccount ? window.lexAccount.id : "-----");
+    idChip.textContent = "ID " + (window.lexAccount && window.lexAccount.publicId ? window.lexAccount.publicId : "-----");
     var accountEl = document.getElementById("profileAccount");
     if (accountEl) accountEl.textContent = "账号：" + (window.lexAccount ? window.lexAccount.username : "未登录");
     idChip.classList.toggle("fancy", !!p.idVip);
