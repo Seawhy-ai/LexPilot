@@ -6043,6 +6043,7 @@ function imeHaptic() {
   document.addEventListener("focusin", function (e) {
     var el = e.target;
     if (!el || !el.tagName) return;
+    if (el.closest && el.closest("#loginScreen")) return;
     // 系统键盘模式: 不接管输入框
     if (options.kbdMode === "system") {
       var wasRO = el.hasAttribute && el.hasAttribute("readonly");
@@ -6069,6 +6070,7 @@ function imeHaptic() {
   document.addEventListener("touchstart", function (e) {
     var el = e.target;
     if (!el || !el.matches) return;
+    if (el.closest && el.closest("#loginScreen")) return;
     if (options.kbdMode === "system") return;
     if (el.matches('input[type="text"], input[type="search"], textarea')) {
       if (el.id === "apiKeyInput" || el.id === "redeemCodeInput") return;

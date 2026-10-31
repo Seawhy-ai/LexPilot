@@ -29,6 +29,7 @@
   // ---------- 受管输入框判定(与 law.html 内置 focusin 的排除集一致) ----------
   function isManaged(el) {
     if (!el || !el.tagName) return false;
+    if (el.closest && el.closest('#loginScreen')) return false;
     var tag = el.tagName;
     if (tag !== 'TEXTAREA' && tag !== 'INPUT') return false;
     if (tag === 'INPUT') {

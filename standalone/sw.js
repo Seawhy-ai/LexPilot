@@ -1,5 +1,5 @@
-var CACHE = "lexpilot-profile-cloud-v2";
-var APP_SHELL = ["./", "./law.html", "./law.css?v=143", "./law-app.js?v=lex-cloud2", "./law-manifest.json", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png", "./images/firm/law-firm-courtyard-v1.png"];
+var CACHE = "lexpilot-login-keyboard-v3";
+var APP_SHELL = ["./", "./law.html", "./law.css?v=143", "./law-app.js?v=lex-keyboard3", "./law-manifest.json", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png", "./images/firm/law-firm-courtyard-v1.png"];
 
 self.addEventListener("install", function(event) {
   event.waitUntil(caches.open(CACHE).then(function(cache) {
