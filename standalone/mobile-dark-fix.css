@@ -1,5 +1,6 @@
 /* Keep scrolling within the visible Safari viewport, including on short screens. */
 @media (max-width: 767px) {
+  html, body, .screen, .about-body, .chat-area { overscroll-behavior-y: none; }
   html { height: 100%; }
   body { height: 100vh; height: 100dvh; min-height: 0; }
   .screen, #profileView, #profileView .about-body { min-height: 0; }

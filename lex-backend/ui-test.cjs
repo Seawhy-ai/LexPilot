@@ -14,6 +14,8 @@ const assert=require('node:assert/strict');
    if(path.endsWith('/logout')){signedIn=false;return route.fulfill({json:{ok:true}})}
   });
   await page.goto('http://127.0.0.1:8767/standalone/law.html');
+  assert.equal(await page.evaluate(()=>{const e=new Event('gesturestart',{cancelable:true});document.dispatchEvent(e);return e.defaultPrevented}),true);
+  assert.equal(await page.evaluate(()=>getComputedStyle(document.querySelector('#homeScreen')).overscrollBehaviorY),'none');
   await page.waitForSelector('#loginScreen.show');
   await page.locator('#loginUsername').tap();assert.equal(await page.locator('#loginUsername').getAttribute('readonly'),null);
   await page.keyboard.type('abc');assert.equal(await page.locator('#loginUsername').inputValue(),'abc');
