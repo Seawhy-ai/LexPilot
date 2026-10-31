@@ -11,6 +11,8 @@
 }
 body.dark .dash-head .dash-name, body.dark .dash-main, body.dark .quote-text, body.dark .quote-author { color: #f2f5fa; }
 body.dark .dash-head .dash-icon { color: #d8edff; }
+body.dark #bottomNav .nav-item { color: #eef6ff; }
+body.dark #bottomNav .nav-item:active { color: #80c9ff; }
 body.dark .todo-preview .tp-empty { color: #c8d3df; opacity: 1; }
 .ph-id-row { flex-direction: column; }
 .ph-id { font-variant-numeric: tabular-nums; }

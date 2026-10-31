@@ -1,5 +1,5 @@
-var CACHE = "lexpilot-mobile-v6";
-var APP_SHELL = ["./", "./law.html", "./law.css?v=lex-account5", "./mobile-dark-fix.css?v=2", "./mobile-gestures.js?v=1", "./law-app.js?v=lex-account5", "./law-manifest.json", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png", "./images/firm/law-firm-courtyard-v1.png"];
+var CACHE = "lexpilot-mobile-v7";
+var APP_SHELL = ["./", "./law.html", "./law.css?v=lex-account5", "./mobile-dark-fix.css?v=3", "./mobile-gestures.js?v=2", "./law-app.js?v=lex-account6", "./law-manifest.json", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png", "./images/firm/law-firm-courtyard-v1.png"];
 
 self.addEventListener("install", function(event) {
   event.waitUntil(caches.open(CACHE).then(function(cache) {

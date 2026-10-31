@@ -1,6 +1,6 @@
 import { createServer } from 'node:http';
 import { DatabaseSync } from 'node:sqlite';
-import { randomBytes, scrypt as scryptCallback, timingSafeEqual, createHash, randomUUID } from 'node:crypto';
+import { randomBytes, randomInt, scrypt as scryptCallback, timingSafeEqual, createHash, randomUUID } from 'node:crypto';
 import { promisify } from 'node:util';
 const scrypt=promisify(scryptCallback), db=new DatabaseSync(process.env.LEX_DB_PATH||'/var/lib/seawhy-lex/users.sqlite');
 db.exec(`PRAGMA journal_mode=WAL; PRAGMA busy_timeout=5000;
@@ -21,6 +21,7 @@ function cookie(req){const m=(req.headers.cookie||'').match(/(?:^|;\s*)lex_sessi
 function publicId(id){let row=db.prepare('SELECT number FROM public_user_ids WHERE user_id=?').get(id);if(!row){db.prepare('INSERT OR IGNORE INTO public_user_ids(user_id) VALUES(?)').run(id);row=db.prepare('SELECT number FROM public_user_ids WHERE user_id=?').get(id)}return String(100000+row.number)}
 function user(req){const token=cookie(req);const row=token&&db.prepare('SELECT users.id,users.username FROM sessions JOIN users ON users.id=sessions.user_id WHERE sessions.token_hash=? AND sessions.expires_at>?').get(hash(token),Date.now());return row?{...row,publicId:publicId(row.id)}:null}
 function loginSession(res,u){const token=randomBytes(32).toString('base64url'),expires=Date.now()+7*86400000;const publicUserId=publicId(u.id);db.prepare('INSERT INTO sessions VALUES(?,?,?)').run(hash(token),u.id,expires);res.setHeader('Set-Cookie',`lex_session=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=604800`);return json(res,200,{user:{id:u.id,username:u.username,publicId:publicUserId}})}
+function hasVip(u){const row=db.prepare('SELECT profile_json FROM user_profiles WHERE user_id=?').get(u.id);if(!row)return false;try{const p=JSON.parse(row.profile_json);return p.lexPermanentVip===true||Number(p.vipUntil)>Date.now()}catch{return false}}
 export const server=createServer(async(req,res)=>{try{
  const url=new URL(req.url,'http://localhost');if(req.headers.origin&&req.headers.origin!==allowedOrigin)return json(res,403,{error:'来源不被允许'});
  if(url.pathname==='/api/lex/health'&&req.method==='GET')return json(res,200,{ok:true});
@@ -38,6 +39,17 @@ export const server=createServer(async(req,res)=>{try{
   if(!timingSafeEqual(derived,expected)||!u)return json(res,401,{error:'账号或密码错误'});return loginSession(res,u);
  }
  if(url.pathname==='/api/lex/me'&&req.method==='GET'){const u=user(req);return u?json(res,200,{user:u}):json(res,401,{error:'请先登录'})}
+ if(url.pathname==='/api/lex/pretty-ids'&&req.method==='GET'){
+  const u=user(req);if(!u)return json(res,401,{error:'请先登录'});if(!hasVip(u))return json(res,403,{error:'开通 VIP 可选择专属靓号'});
+  const ids=new Set();for(let i=0;i<500&&ids.size<3;i++){const d=String(randomInt(1,10)),tail=String(randomInt(0,100)).padStart(2,'0');const id='1'+d+d+d+tail;if(id!==u.publicId&&!db.prepare('SELECT 1 FROM public_user_ids WHERE number=?').get(Number(id)-100000))ids.add(id)}
+  return json(res,200,{ids:[...ids]});
+ }
+ if(url.pathname==='/api/lex/pretty-id'&&req.method==='POST'){
+  const u=user(req);if(!u)return json(res,401,{error:'请先登录'});if(!hasVip(u))return json(res,403,{error:'开通 VIP 可选择专属靓号'});const v=await body(req),id=v.id;
+  if(typeof id!=='string'||!/^1(\d)\1\1\d{2}$/.test(id))return json(res,400,{error:'靓号格式不正确'});
+  try{db.prepare('UPDATE public_user_ids SET number=? WHERE user_id=?').run(Number(id)-100000,u.id)}catch(e){if(String(e.message).includes('UNIQUE'))return json(res,409,{error:'该号码已被使用，请重新选择'});throw e}
+  return json(res,200,{publicId:id});
+ }
  if(url.pathname==='/api/lex/profile'&&req.method==='GET'){
   const u=user(req);if(!u)return json(res,401,{error:'请先登录'});
   const row=db.prepare('SELECT profile_json,version FROM user_profiles WHERE user_id=?').get(u.id);

@@ -27,6 +27,8 @@
   window.saveProfile=function(value){if(!owner){status('未登录，个人档案没有保存');return}profile=JSON.parse(JSON.stringify(value));dirty=true;persistPending();clearTimeout(timer);timer=setTimeout(flush,400)};
   window.lexVipGet=function(){return profile.lexPermanentVip?'1':null};
   window.lexVipSet=function(value){const p=window.loadProfile();p.lexPermanentVip=value==='1';window.saveProfile(p)};
+  window.lexPrettyOptions=async function(){if(dirty)await flush();if(dirty)throw new Error('请先等待个人档案同步完成');return (await request('pretty-ids')).ids};
+  window.lexChoosePrettyId=async function(id){const result=await request('pretty-id',{id});window.lexAccount.publicId=result.publicId;return result.publicId};
   async function loadCloud(u){
     const r=await request('profile');owner=u.id;window.lexAccount={id:u.id,publicId:u.publicId,username:u.username};version=r.version;profile=r.profile||{};dirty=false;conflict=false;
     let pending=null;try{pending=JSON.parse(localStorage.getItem('lex-profile-pending-'+owner)||'null')}catch(e){}

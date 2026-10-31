@@ -4827,6 +4827,20 @@ function ensureProfileId(p) {
   p.id = window.lexAccount ? window.lexAccount.id : "";
   return p;
 }
+async function rollPrettyId() {
+  if (!isVip()) { showToast("开通 VIP 可选择专属靓号"); return; }
+  try {
+    var ids = await window.lexPrettyOptions(), area = document.getElementById("prettyOptions");
+    area.replaceChildren();
+    ids.forEach(function(id) { var b=document.createElement("button"); b.className="ph-id-opt"; b.textContent=id; b.onclick=function(){applyPrettyId(id)}; area.appendChild(b); });
+    if (!ids.length) { showToast("暂时没有可用靓号，请稍后再试"); return; }
+    var cancel=document.createElement("button"); cancel.className="ph-id-opt cancel"; cancel.textContent="取消"; cancel.onclick=function(){area.style.display="none"}; area.appendChild(cancel); area.style.display="flex";
+  } catch(e) { showToast(e.message || "获取靓号失败"); }
+}
+async function applyPrettyId(id) {
+  try { await window.lexChoosePrettyId(id); document.getElementById("prettyOptions").style.display="none"; updateProfileUI(); showToast("已换用靓号 " + id); }
+  catch(e) { showToast(e.message || "更换失败，请重试"); }
+}
 function renderTitleChip() {
   var chip = document.getElementById("profileTitleChip");
   var nameEl = document.getElementById("profileTitleName");

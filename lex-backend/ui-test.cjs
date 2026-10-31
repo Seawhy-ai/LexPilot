@@ -9,12 +9,15 @@ const assert=require('node:assert/strict');
   await page.route('**/api/lex/**',async route=>{const path=new URL(route.request().url()).pathname;
    if(path.endsWith('/me'))return route.fulfill({status:signedIn?200:401,json:signedIn?{user:{id:'user1',publicId:'100001',username:'tester'}}:{error:'请先登录'}});
    if(path.endsWith('/register')){signedIn=true;return route.fulfill({json:{user:{id:'user1',publicId:'100001',username:'tester'}}})}
+   if(path.endsWith('/pretty-ids'))return route.fulfill({json:{ids:['111123','122234','133345']}});
+   if(path.endsWith('/pretty-id'))return route.fulfill({json:{publicId:route.request().postDataJSON().id}});
    if(path.endsWith('/profile')){if(route.request().method()==='POST'){const body=route.request().postDataJSON();if(body.version!==version)return route.fulfill({status:409,json:{error:'档案已在其他设备更新'}});profile=body.profile;version++;return route.fulfill({json:{version}})}return route.fulfill({json:{profile,version}})}
    if(path.endsWith('/chat')){chatCalled=true;return route.fulfill({json:{choices:[{message:{content:'测试回复'}}]}})}
    if(path.endsWith('/logout')){signedIn=false;return route.fulfill({json:{ok:true}})}
   });
   await page.goto('http://127.0.0.1:8767/standalone/law.html');
   assert.equal(await page.evaluate(()=>{const e=new Event('gesturestart',{cancelable:true});document.dispatchEvent(e);return e.defaultPrevented}),true);
+  assert.equal(await page.evaluate(()=>{function tap(){const e=new Event('touchend',{cancelable:true});Object.defineProperties(e,{touches:{value:[]},changedTouches:{value:[{clientX:50,clientY:50}]}});document.dispatchEvent(e);return e.defaultPrevented}tap();return tap()}),true);
   assert.equal(await page.evaluate(()=>getComputedStyle(document.querySelector('#homeScreen')).overscrollBehaviorY),'none');
   await page.waitForSelector('#loginScreen.show');
   await page.locator('#loginUsername').tap();assert.equal(await page.locator('#loginUsername').getAttribute('readonly'),null);
@@ -26,7 +29,14 @@ const assert=require('node:assert/strict');
   assert.equal(await page.locator('#profileAccount').textContent(),'账号：tester');
   assert.equal(await page.locator('#profileIdChip').textContent(),'ID 100001');
   await page.evaluate(()=>document.body.classList.add('dark'));
+  await page.waitForTimeout(250);
   assert.equal(await page.locator('.dash-main').first().evaluate(el=>getComputedStyle(el).color),'rgb(242, 245, 250)');
+  assert.equal(await page.locator('#bottomNav .nav-item').first().evaluate(el=>getComputedStyle(el).color),'rgb(238, 246, 255)');
+  await page.evaluate(()=>{window.lexVipGet=()=>"1"});
+  await page.evaluate(()=>rollPrettyId());
+  assert.equal(await page.locator('#prettyOptions .ph-id-opt').count(),4);
+  await page.evaluate(()=>applyPrettyId('111123'));
+  assert.equal(await page.locator('#profileIdChip').textContent(),'ID 111123');
   await page.locator('#bottomNav').scrollIntoViewIfNeeded();
   assert.equal(await page.locator('#bottomNav').evaluate(el=>el.getBoundingClientRect().bottom<=window.innerHeight),true);
   assert.equal(await page.locator('[onclick="deleteAccount()"]').count(),0);
