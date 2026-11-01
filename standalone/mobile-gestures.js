@@ -20,3 +20,6 @@ document.addEventListener('touchend', function (event) {
     lastTap = null;
   } else lastTap = { time: now, x: touch.clientX, y: touch.clientY };
 }, { passive: false });
+
+// Also suppress desktop/WebKit double-click zoom without blocking wheel or keyboard zoom.
+document.addEventListener("dblclick", function(event) { if (!event.target.closest || !event.target.closest("input,textarea,[contenteditable=true]")) { if(event.cancelable)event.preventDefault(); } }, {passive:false});

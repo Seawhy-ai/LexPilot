@@ -1,14 +1,7 @@
 (function(){
-  'use strict';
-  let current='level',sequence=0;
-  async function draw(type){
-    current=type;const body=document.getElementById('lexRankList'),n=++sequence;if(!body)return;
-    document.querySelectorAll('[data-lex-rank]').forEach(b=>{b.classList.toggle('selected',b.dataset.lexRank===type);b.setAttribute('aria-pressed',String(b.dataset.lexRank===type))});
-    body.textContent='正在加载排行榜…';
-    try{const entries=await window.lexLeaderboard(type);if(n!==sequence)return;if(!entries.length){body.textContent='暂时还没有排行数据';return}
-      body.innerHTML=entries.map((e,i)=>'<div class="lr-row"><span class="lr-rank">'+(i+1)+'</span><div class="lr-name"><b>'+escHtml(e.nickname||'法律人')+'</b><small>ID '+escHtml(e.id)+'</small></div><div class="lr-value">'+(type==='level'?'Lv.'+(getLevelInfo(e.totalPoints).index+1)+' · '+escHtml(getLevelInfo(e.totalPoints).name):e.points+' 积分')+'</div></div>').join('');
-    }catch(e){if(n===sequence)body.textContent=e.message||'排行榜暂时无法加载';}
-  }
-  window.lexShowRanking=function(type){document.getElementById('lexRankPanel').hidden=false;draw(type||current)};
-  window.lexHideRanking=function(){sequence++;document.getElementById('lexRankPanel').hidden=true};
+'use strict';let current='level',sequence=0;
+window.lexRankLabel=function(total){const level=getLevelInfo(total);return level.index===LEVELS.length-1?getTitleInfo(total).name:'V'+(level.index+1)+' · '+level.name};
+async function draw(type){current=type;const body=document.getElementById('lexRankList'),n=++sequence;if(!body)return;document.querySelectorAll('[data-lex-rank]').forEach(b=>{b.classList.toggle('selected',b.dataset.lexRank===type);b.setAttribute('aria-pressed',String(b.dataset.lexRank===type))});body.textContent='正在加载排行榜…';try{const entries=await lexLeaderboard(type);if(n!==sequence)return;if(!entries.length){body.textContent='暂时还没有排行数据';return}body.innerHTML=entries.map((e,i)=>'<div class="lr-row"><span class="lr-rank">'+(i+1)+'</span><div class="lr-name"><b>'+escHtml(e.nickname||'法律人')+'</b><small>ID '+escHtml(e.id)+'</small></div><div class="lr-value">'+(type==='level'?escHtml(lexRankLabel(e.totalPoints)):Number(e.points)+' 积分')+'</div></div>').join('')}catch(e){if(n===sequence){body.textContent=e.message||'排行榜暂时无法加载';const retry=document.createElement('button');retry.textContent='重试';retry.onclick=()=>draw(current);body.appendChild(retry)}}}
+window.lexShowRanking=function(type){const body=lexOpenCollectionPage('rankingView','排行榜',()=>{sequence++;goToProfile()});body.innerHTML='<div class="lex-rank-tabs"><button data-lex-rank="level">等级榜</button><button data-lex-rank="points">积分榜</button></div><div id="lexRankList" aria-live="polite"></div>';body.querySelectorAll('[data-lex-rank]').forEach(b=>b.onclick=()=>draw(b.dataset.lexRank));draw(type||current)};
+window.lexHideRanking=function(){sequence++;goToProfile()};
 })();

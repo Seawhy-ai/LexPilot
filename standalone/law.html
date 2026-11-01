@@ -21,13 +21,15 @@
   <script defer src="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <link rel="stylesheet" href="law.css?v=lex-account5" />
   <link rel="stylesheet" href="mobile-dark-fix.css?v=3" />
-  <script src="mobile-gestures.js?v=2"></script>
+  <script src="mobile-gestures.js?v=20261101"></script>
   <link rel="stylesheet" href="firm-game.css?v=1" />
   <link rel="stylesheet" href="firm-art.css?v=1" />
   <link rel="stylesheet" href="firm-levels.css?v=1" />
   <link rel="stylesheet" href="leaderboard.css?v=1" />
   <link rel="stylesheet" href="skin-theme.css?v=1" />
-  <link rel="stylesheet" href="firm-v2.css?v=1" />
+<link rel="stylesheet" href="firm-v2.css?v=1" />
+<link rel="stylesheet" href="collection-pages.css?v=20261101" />
+<link rel="stylesheet" href="skin-redesign.css?v=20261101" />
 </head>
 <body>
 <!-- 全局动态背景层（全页面可见，背景选择后由 applyHomeBg 驱动） -->
@@ -307,7 +309,7 @@
       </div>
     </div>
 
-    <section class="lex-rank-card"><div class="lex-rank-header"><h2>排行榜</h2><button type="button" onclick="lexShowRanking()">查看排行榜</button></div><div id="lexRankPanel" hidden><p class="lex-rank-note">登录用户可查看昵称、ID 和积分或等级；最多展示前 100 名。</p><div class="lex-rank-tabs"><button type="button" data-lex-rank="level" onclick="lexShowRanking('level')">等级排行榜</button><button type="button" data-lex-rank="points" onclick="lexShowRanking('points')">积分排行榜</button><button type="button" onclick="lexHideRanking()">收起</button></div><div id="lexRankList" aria-live="polite"></div></div></section>
+    <section class="lex-rank-card"><div class="lex-rank-header"><h2>排行榜</h2><button type="button" onclick="lexShowRanking()">查看排行榜 →</button></div></section>
     <!-- VIP 特权卡片 -->
     <div class="vip-card" id="vipCard">
       <div class="vc-head">
@@ -1047,10 +1049,7 @@
       <div class="wr-stats" id="wrStats"></div>
     </div>
   </div>
-  <button class="continue-fab" id="continueFab" onclick="continueLastStudy()">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-    <span id="continueFabTxt">继续学习</span>
-  </button>
+  
 </div>
 
 <!-- ===== DAILY CASE VIEW ===== -->
@@ -1459,9 +1458,10 @@
 <script src="quiz_extra.js?v=1.0.0"></script>
 <script src="law-app.js?v=lex-account6"></script><script src="lex-auth.js?v=account7"></script>
 <script src="firm-game.js?v=2"></script>
-<script src="leaderboard.js?v=1"></script>
+<script src="collection-pages.js?v=20261101"></script>
+<script src="leaderboard.js?v=20261101"></script>
 <script src="skin-theme.js?v=1"></script>
-<script src="skin-motion.js?v=1"></script>
+<script src="skin-redesign.js?v=20261101"></script>
 <script src="firm-engine.js?v=1"></script>
 <script src="firm-v2.js?v=1"></script>
 </body>
