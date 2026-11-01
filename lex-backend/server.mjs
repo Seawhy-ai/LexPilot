@@ -40,6 +40,13 @@ export const server=createServer(async(req,res)=>{try{
  }
  if(url.pathname==='/api/lex/me'&&req.method==='GET'){const u=user(req);return u?json(res,200,{user:u}):json(res,401,{error:'请先登录'})}
  if(url.pathname==='/api/lex/leaderboard'&&req.method==='GET'){
+  if(['charity','satisfaction'].includes(url.searchParams.get('type'))){
+   if(!user(req))return json(res,401,{error:'请先登录'});
+   const type=url.searchParams.get('type'),date=new Date();date.setUTCDate(date.getUTCDate()-(date.getUTCDay()+6)%7);const week=date.toISOString().slice(0,10);
+   const rows=db.prepare(`SELECT json_extract(p.profile_json,'$.nickname') AS nickname,json_extract(p.profile_json,'$.firmGame.weekly') AS weekly,n.number FROM user_profiles p JOIN public_user_ids n ON n.user_id=p.user_id WHERE json_valid(p.profile_json) AND json_extract(p.profile_json,'$.firmGame.weekly.key')=?`).all(week);
+   const entries=rows.map(r=>{let w;try{w=JSON.parse(r.weekly)}catch{return null}if(!w||!Number.isFinite(w.count)||w.count<0||!Number.isFinite(w.charity)||!Number.isFinite(w.satisfied))return null;const score=type==='charity'?Math.min(1000000000,Math.max(0,Math.round(w.charity*100)/100)):w.count>0?Math.min(100,Math.max(0,Math.round(w.satisfied/w.count))):0;return {id:String(100000+r.number),nickname:typeof r.nickname==='string'?r.nickname.slice(0,32):'法律人',score,count:w.count}}).filter(e=>e&&e.score>0&&(type!=='satisfaction'||e.count>=3)).sort((a,b)=>b.score-a.score||Number(a.id)-Number(b.id)).slice(0,100);
+   return json(res,200,{type,week,entries});
+  }
   if(!user(req))return json(res,401,{error:'请先登录'});const type=url.searchParams.get('type')==='points'?'points':'level',key=type==='points'?'$.points':'$.totalPoints';
   const rows=db.prepare(`SELECT json_extract(p.profile_json,'$.nickname') AS nickname,json_extract(p.profile_json,'$.points') AS points,json_extract(p.profile_json,'$.totalPoints') AS total,n.number AS number FROM user_profiles p JOIN users u ON u.id=p.user_id JOIN public_user_ids n ON n.user_id=u.id WHERE json_valid(p.profile_json) ORDER BY MAX(0,CAST(COALESCE(json_extract(p.profile_json, ?),0) AS INTEGER)) DESC,n.number ASC LIMIT 100`).all(key);
   const safe=x=>Number.isSafeInteger(x)&&x>0?Math.min(x,1000000000):0;

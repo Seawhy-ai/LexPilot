@@ -36,8 +36,14 @@ test('independent account and AI permission',async()=>{
   assert.equal((await post('/api/lex/pretty-id',{id:claimed},otherCookie)).status,409);
   assert.equal((await (await fetch(base+'/api/lex/me',{headers:{cookie}})).json()).user.publicId,claimed);
   firstUser.publicId=claimed;
+  const date=new Date();date.setUTCDate(date.getUTCDate()-(date.getUTCDay()+6)%7);const week=date.toISOString().slice(0,10);
+  const firmGame={version:2,funds:500,day:4,members:[{id:'lin',level:3}],weekly:{key:week,charity:12,satisfied:270,count:3}};
+  assert.equal((await post('/api/lex/profile',{profile:{nickname:'乙',firmGame},version:1},otherCookie)).status,200);
+  assert.deepEqual((await (await fetch(base+'/api/lex/profile',{headers:{cookie:otherCookie}})).json()).profile.firmGame,firmGame);
+  const charity=await (await fetch(base+'/api/lex/leaderboard?type=charity',{headers:{cookie}})).json();assert.equal(charity.entries[0].score,12);
+  const satisfaction=await (await fetch(base+'/api/lex/leaderboard?type=satisfaction',{headers:{cookie}})).json();assert.equal(satisfaction.entries[0].score,90);
   const reLogin=await post('/api/lex/login',{username:'hello',password:'validpassword'});const loggedIn=(await reLogin.json()).user;assert.equal(loggedIn.id,firstUser.id);assert.equal(loggedIn.publicId,firstUser.publicId);
-  assert.ok((await (await fetch(base+'/api/lex/profile',{headers:{cookie:otherCookie}})).json()).profile.vipUntil);
+  assert.equal((await (await fetch(base+'/api/lex/profile',{headers:{cookie:otherCookie}})).json()).profile.firmGame.day,4);
   const board=await (await fetch(base+'/api/lex/leaderboard?type=points',{headers:{cookie}})).json();assert.equal(board.entries[0].nickname,'甲');assert.equal(board.entries[0].points,15);assert.equal(board.entries[0].totalPoints,35);assert.equal(board.entries[0].id,claimed);assert.equal('username' in board.entries[0],false);
   const read=await (await fetch(base+'/api/lex/profile',{headers:{cookie}})).json();assert.equal(read.profile.points,15);assert.equal(read.profile.totalPoints,35);assert.equal(read.profile.firmGame.funds,250);assert.equal(read.profile.transactions[0].a,-5);assert.equal(read.version,2);
   assert.equal((await post('/api/lex/profile',{profile:{avatarDataUrl:'javascript:alert(1)'},version:1},cookie)).status,400);
