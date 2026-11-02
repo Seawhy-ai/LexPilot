@@ -5,7 +5,7 @@
   const effects = { moon_verdict:'rose_moon', eternal_judge:'rose_eternal', crown: 'starlight', lord: 'sanctuary', amber_scale: 'ember', starlord: 'cosmos', sapphire_oath: 'prism' };
   const colors = { common: '#98a6bc', brave: '#56ba8b', epic: '#b892ee', legendary: '#ffc266', collector: '#80deff' };
   const keys = ['sea','ink','star','tide','jade_oath','gold','aurora','crown','lord','amber_scale','starlord','sapphire_oath'];
-  SKINS.forEach(s => { if (keys.includes(s.key)) s.art = 'images/skins/portraits-v3/' + s.key + '.png'; });
+  SKINS.forEach(s => { if (keys.includes(s.key)) s.art = 'images/skins/portraits-v3/' + s.key + '.webp'; });
   SKINS.sort((a,b) => (order[a.rarity] ?? 99) - (order[b.rarity] ?? 99) || keys.indexOf(a.key) - keys.indexOf(b.key));
   function aura(s) {
     if (!effects[s.key]) return '';
@@ -26,7 +26,7 @@
     html += '<div class="skin-tabs"><span class="on">成套皮肤</span><small>按品质排序</small></div><div class="skin-rail">';
     SKINS.forEach(item => {
       const own = owned.includes(item.key), cls = tiers[item.rarity];
-      html += '<button type="button" class="sp-card ' + (own ? 'owned' : 'unowned') + (item.key === s.key ? ' selected' : '') + '" data-tier="' + cls + '" style="--sc:' + colors[cls] + '" onclick="selectSkin(\'' + item.key + '\')" aria-pressed="' + (item.key === s.key) + '"><img class="skin-thumb" src="' + item.art + '" loading="lazy" decoding="async" alt=""><span class="sp-rarity rarity-' + cls + '">' + item.rarity + '</span><span class="sp-name">' + escHtml(item.name) + '</span><small class="sp-status">' + (own ? '已拥有' : (item.crystal ? '1 水晶' : item.cost + ' 碎片')) + '</small></button>';
+      html += '<button type="button" class="sp-card ' + (own ? 'owned' : 'unowned') + (item.key === s.key ? ' selected' : '') + '" data-tier="' + cls + '" style="--sc:' + colors[cls] + '" onclick="selectSkin(\'' + item.key + '\')" aria-pressed="' + (item.key === s.key) + '"><img class="skin-thumb" src="' + item.art.replace('.webp','-thumb.webp') + '" loading="lazy" decoding="async" alt=""><span class="sp-rarity rarity-' + cls + '">' + item.rarity + '</span><span class="sp-name">' + escHtml(item.name) + '</span><small class="sp-status">' + (own ? '已拥有' : (item.crystal ? '1 水晶' : item.cost + ' 碎片')) + '</small></button>';
     });
     html += '</div><div class="skin-bottom"><div class="skin-currency">皮肤碎片 <b>' + (p.skinFragments || 0) + '</b>　法魂水晶 <b>' + (p.soulCrystals || 0) + '</b></div><button type="button" class="skin-main-btn' + (has || can ? '' : ' off') + '" onclick="applySelectedSkin()">' + (has ? (active === s.key ? '佩戴中' : '穿戴') : (s.crystal ? '1 水晶兑换' : s.cost + ' 碎片合成')) + '</button></div>';
     document.getElementById('skinPage').innerHTML = html;
