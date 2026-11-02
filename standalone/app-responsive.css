@@ -1,0 +1,55 @@
+/* Shared viewport, reading width and touch layout for every application view. */
+body > [id$="View"],.screen{min-width:0;min-height:0}
+.wx-nav{flex-shrink:0}.wx-nav .title{min-width:0}
+:is(.chat-area,.learn-body,.about-body,.db-body,.case-body,.quiz-body,.doc-body,.tool-body,.points-body,.video-body,.mat-body,.notebook-body,.note-detail-body,.daily-case-body,.moot-court-body,.persona-body,.map-body,.firm-body,.lr-body,.story-body,.clock-body){min-width:0;min-height:0;overscroll-behavior:contain;scrollbar-gutter:stable}
+.modal-box{max-height:calc(100dvh - 48px);overflow:auto;overscroll-behavior:contain}
+.toast{white-space:normal;max-width:calc(100vw - 32px);text-align:center}
+.msg-body{overflow-wrap:anywhere}.msg-body pre{max-width:100%;overflow:auto}
+#homeScreen{min-height:0;overflow-y:auto;flex-shrink:1}
+#homeScreen>.welcome-hero{flex-shrink:0;min-height:180px}#homeScreen>.home-dash,#homeScreen>.quote-card,#homeScreen>#bottomNav,#homeScreen>.global-search{flex-shrink:0}
+@media(min-width:768px){
+ :root{--page-width:1120px;--read-width:900px}
+ .wx-nav{padding-left:64px;padding-right:100px}.wx-nav .back,.wx-nav .right-btn{min-width:44px;min-height:44px}
+ .wx-nav .title{font-size:18px}.wx-nav .nav-right{right:20px}
+ :is(.learn-body,.db-body,.case-body,.notebook-body,.persona-body,.map-body){width:100%;max-width:var(--page-width);margin-inline:auto;padding:24px 32px 40px}
+ #profileView .about-body,#settingsView .about-body,#aboutView .about-body,
+ #quizView .quiz-body,#docView .doc-body,.tool-body,.points-body,.video-body,.mat-body,.note-detail-body,.daily-case-body,.moot-court-body{width:100%;max-width:var(--read-width);margin-inline:auto;padding:24px 32px 40px}
+ .chat-area{padding:24px max(32px,calc((100% - 960px)/2))}.quick-prompts{max-width:680px;gap:14px}.welcome{padding:48px 24px}.welcome h2{font-size:24px}.msg{font-size:16px}.msg-body{line-height:1.8}
+ #chatView .input-area{padding-inline:max(24px,calc((100% - 960px)/2))}
+ #homeScreen{justify-content:center;gap:20px;padding:32px 24px 24px}
+ #homeScreen .welcome-hero{flex:0 0 auto;padding:20px;min-height:170px}.whale-icon{margin-bottom:16px}
+ #homeScreen .global-search{max-width:680px;width:100%;margin:0}
+ #homeScreen .home-dash{max-width:900px;width:100%;margin:0;gap:20px}
+ #homeScreen .quote-card{max-width:900px;width:100%;min-height:120px;margin:0;padding:24px 32px}
+ #homeScreen #bottomNav{max-width:680px;width:100%;margin:0;padding:12px 20px}
+ .model-cards{max-width:760px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+ .learn-tools{gap:16px}.learn-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+ .learn-report{padding:24px;margin-bottom:24px}.learn-report-hd h2{font-size:22px}.learn-smart{font-size:14px}.learn-chip{font-size:14px}
+ .quiz-menu-grid,.quiz-subject-grid,.doc-type-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+ .quiz-navbar{max-width:900px;padding-inline:32px}
+ #calcView .tool-body{max-width:1060px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-content:start;align-items:start}
+ #calcView .calc-types{grid-column:1/-1;flex-wrap:wrap;margin:0}#calcForm{grid-column:1;min-width:0}#calcResult{grid-column:2;min-width:0;margin-top:0}
+ .story-body{max-width:1050px;padding:24px 32px}.story-body.map-fit{min-height:0}
+ .modal-box,#helpModal .modal-box{max-width:560px;padding:28px;line-height:1.7}
+ .modal-box input,.modal-box select,.modal-box textarea{max-width:100%;font-size:16px}
+ .collection-body{max-width:1040px;padding:24px 32px}.pretty-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+ #loginScreen #loginForm,#loginScreen #registerForm{max-width:380px!important}
+ button,.lt-card,.lc-card,.model-card{touch-action:manipulation}
+ button:focus-visible,[role=button]:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+}
+@media(min-width:1200px){.learn-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.quiz-subject-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-height:650px){#homeScreen{justify-content:flex-start}#homeScreen .welcome-hero{min-height:130px;padding-top:20px}.modal-box{max-height:calc(100dvh - 24px)}#loginScreen{justify-content:flex-start!important}}
+@media(prefers-reduced-motion:reduce){.screen,.whale-icon{animation:none!important}}
+.firm-entry{display:flex;align-items:center;gap:14px;width:100%;padding:18px;margin:12px 0;border:1px solid var(--card-border);border-radius:18px;background:var(--card-bg);color:var(--text);font:inherit;text-align:left;cursor:pointer}.firm-entry-icon{display:grid;place-items:center;width:48px;height:48px;flex-shrink:0;border-radius:14px;background:var(--accent-light);color:var(--accent)}.firm-entry small{display:block;color:var(--text2);margin-top:5px}
+@media(min-width:768px){
+ #chatView .input-bar{padding-inline:max(24px,calc((100% - 960px)/2))}
+ .learn-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.learn-cards>*{min-width:0;margin:0}
+ .learn-cards .lc-name{font-size:17px}.learn-cards .lc-desc{font-size:13px;line-height:1.6}
+ .schedule-scroll{min-height:0;width:100%;max-width:1440px;margin-inline:auto}.schedule-nav .nav-right button{min-width:44px;min-height:44px}
+ .db-card button,.case-tabs button,.calc-types button,.quiz-mode-btn{min-height:44px}
+ .lr-body{max-width:1000px;width:100%;margin-inline:auto}.lr-content{font-size:17px;line-height:1.9}
+ .case-detail .cd-content{max-width:960px;width:100%;margin-inline:auto}
+}
+@media(min-width:768px){#scheduleAppearanceView{width:min(760px,calc(100% - 48px));left:50%;right:auto;transform:translateX(-50%);height:min(80dvh,760px);max-height:calc(100dvh - 48px);bottom:24px;border-radius:20px}#scheduleAppearanceView .points-body{padding:24px}.clock-body{max-width:700px!important}#clockView .clock-body{justify-content:flex-start}#toast{white-space:normal!important}}
+@media(min-width:768px){#calcView .tool-body:has(#calcResult:empty) #calcForm{grid-column:1/-1;width:100%;max-width:560px;justify-self:center}.calc-card input{min-height:44px;font-size:16px}.calc-card .cr-label{font-size:14px}.lc-card,.lt-card{min-height:76px}.tool-body{font-size:15px}.settings-drop{max-width:calc(100vw - 32px)}}
+@media(min-width:768px){.quiz-menu-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.quiz-menu-grid>*{min-width:0;margin:0}.quiz-subject-grid,.doc-type-grid{display:grid}}
