@@ -1,0 +1,48 @@
+/* Comfortable touch and pointer targets across tablet, split view and desktop. */
+#lotteryView,#skinView,#badgeView{min-width:0;min-height:0}
+#lotteryView .lottery-body,#skinView .skin-page,#badgeView .badge-page{box-sizing:border-box;min-height:0;overscroll-behavior:contain;scrollbar-gutter:stable}
+.s2-draw-panel{min-width:0}
+.s2-rewards,.s2-badge-stage,#skinView .skin-stage{min-width:0}
+#lotteryView .lottery-rules,.s2-reward-head button,.s2-series button,.skin-inspect{min-height:44px}
+#lotteryView button:focus-visible,#skinView button:focus-visible,#badgeView button:focus-visible{outline:2px solid #e6b8db;outline-offset:3px}
+@media(min-width:768px){
+ #lotteryView .lottery-body{max-width:none;margin:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,.95fr);align-content:start;align-items:start;gap:20px;padding:24px max(24px,calc((100% - 1360px)/2)) 32px}
+ #lotteryView .lottery-event-hero{grid-column:1/-1;min-height:150px!important;margin:0!important;box-sizing:border-box;background-position:center 42%!important;padding:24px 30px!important}
+ #lotteryView .s2-rewards{grid-column:1;margin:0;padding:16px;position:sticky;top:0}
+ #lotteryView .s2-skin-rail{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;overflow:visible}
+ #lotteryView .s2-skin-rail button{width:100%;min-width:0}
+ #lotteryView .s2-skin-rail img{height:clamp(125px,17vh,190px);aspect-ratio:auto;object-fit:contain;background:#160f20}
+ #lotteryView .s2-skin-rail span{font-size:12px}#lotteryView .s2-skin-rail small{font-size:10px}
+ #lotteryView .s2-draw-panel{grid-column:2;grid-row:2;align-self:start}
+ #lotteryView .lottery-grid{gap:10px;padding:10px;margin-bottom:16px}
+ #lotteryView .lottery-cell{aspect-ratio:auto;min-height:clamp(90px,11vh,124px);border-radius:14px}
+ #lotteryView .lottery-cell .lc-tx{font-size:12px}
+ #lotteryView .lottery-stats{gap:10px;margin-bottom:16px}#lotteryView .lottery-stat{min-height:62px;padding:10px}
+ #lotteryView .lottery-stat.hero .ls-val,#lotteryView .lottery-stat.sub .ls-val{font-size:18px}#lotteryView .lottery-stat .ls-label{font-size:11px;margin-top:5px}
+ #lotteryView .lottery-draw-row{gap:12px;margin-bottom:16px}#lotteryView .l-draw-btn{min-height:64px;font-size:16px}#lotteryView .l-draw-btn .ld-cost{font-size:11px}
+ #lotteryView .lottery-cta-row{gap:8px}#lotteryView .l-cta{min-height:48px;font-size:11px;padding:9px 4px}#lotteryView .l-cta svg{width:15px;height:15px}
+ #lotteryView .lottery-note{line-height:1.7}
+ #skinView .skin-page{display:grid;grid-template-columns:minmax(0,1fr) minmax(250px,32%);grid-template-rows:auto minmax(0,1fr) auto;gap:16px;padding:24px max(24px,calc((100% - 1400px)/2));overflow:hidden}
+ #skinView .skin-stage{grid-column:1;grid-row:1/4;display:flex;flex-direction:column;align-self:stretch;max-width:none;width:100%;margin:0;min-height:0}
+ #skinView .skin-visual{flex:1;min-height:0;width:100%;display:flex;align-items:center;justify-content:center}
+ #skinView .skin-stage .skin-art{width:100%;height:100%;max-height:100%;aspect-ratio:auto;object-fit:contain;min-height:0}
+ #skinView .skin-stage-copy{flex:0 0 auto;padding:16px 22px;background:#0c1624}#skinView .skin-stage-copy h2{font-size:24px;margin:8px 0}#skinView .skin-stage-copy p{font-size:12px;margin:6px 0}.skin-status{display:inline-block;margin-right:12px}
+ #skinView .skin-tabs{grid-column:2;grid-row:1;margin:0;min-height:40px;padding:0;background:#131e32;border-radius:12px}#skinView .skin-tabs .on{font-size:13px;padding:10px}
+ #skinView .skin-rail{grid-column:2;grid-row:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-content:start;gap:10px;overflow:auto;min-height:0;margin:0;padding:4px 4px 8px;scroll-snap-type:none}
+ #skinView .sp-card{width:100%;min-width:0;flex:none;align-self:start}#skinView .sp-card .skin-thumb{aspect-ratio:2/3;width:100%;height:auto;object-fit:contain}#skinView .sp-card .sp-name{font-size:10px;white-space:normal;line-height:1.4;min-height:28px;padding:6px 2px 0}
+ #skinView .skin-bottom{grid-column:2;grid-row:3;position:static;display:flex;flex-direction:column;gap:12px;margin:0;padding:14px;border:1px solid #38465d;border-radius:14px;background:#101d30}
+ #skinView .skin-currency{font-size:11px;line-height:1.7}#skinView .skin-main-btn{width:100%;min-height:48px;font-size:14px}
+ #badgeView .badge-page{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(300px,1fr);grid-template-rows:auto auto minmax(0,1fr) auto;gap:18px;padding:24px max(24px,calc((100% - 1320px)/2));overflow:auto;align-content:start}
+ #badgeView .s2-series{grid-column:1/-1;grid-row:1;max-width:620px;width:100%;margin:0;justify-self:center}
+ #badgeView .s2-badge-stage{grid-column:1;grid-row:2/5;display:flex;flex-direction:column;padding:22px;gap:16px;text-align:center;align-self:stretch}
+ #badgeView .s2-badge-stage img{width:min(100%,420px);max-height:48vh;aspect-ratio:1;object-fit:contain}#badgeView .s2-badge-stage h2{font-size:26px;margin:8px 0}#badgeView .s2-badge-stage p{font-size:14px;max-width:400px;margin:8px auto}
+ #badgeView .badge-progress{grid-column:2;grid-row:2;padding:8px 0;margin:0}
+ #badgeView .badge-grid-new{grid-column:2;grid-row:3;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;align-content:start;min-width:0}
+ #badgeView .badge-card-new{min-width:0;min-height:64px}#badgeView .badge-footer{grid-column:2;grid-row:4;margin:0}#badgeView .badge-footer button{min-height:48px}
+ .skin-detail{padding:64px 32px 24px}.skin-detail-close{right:24px;top:16px;width:44px;height:44px}
+ #lotteryResultOverlay .lrBox{max-width:520px!important;padding:28px!important}#lotteryResultOverlay .lr-item{min-height:54px}
+}
+@media(min-width:1100px){#skinView .skin-rail{grid-template-columns:repeat(4,minmax(0,1fr))}#skinView .skin-page{grid-template-columns:minmax(0,1fr) minmax(350px,34%)}#lotteryView .lottery-body{gap:24px;grid-template-columns:minmax(0,1.1fr) minmax(390px,.9fr)}}
+@media(min-width:768px) and (max-height:650px){#skinView .skin-page,#badgeView .badge-page{overflow:auto}#skinView .skin-stage{min-height:420px}#skinView .skin-rail{max-height:320px}#badgeView .s2-badge-stage img{max-height:240px}}
+@media(hover:hover){.s2-skin-rail button:hover,#skinView .sp-card:hover,.badge-card-new:hover{border-color:#dab5d6;box-shadow:0 0 14px #b683b433}}
+@media(min-width:768px){#skinView .skin-rail{grid-auto-rows:max-content}#skinView .sp-card{min-height:min-content;height:auto}#skinView .sp-card .skin-thumb{flex:none}#skinView .sp-status{flex:none}}
