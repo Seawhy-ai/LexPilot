@@ -2,7 +2,7 @@
   'use strict';
   const tiers = { '普通': 'common', '勇者': 'brave', '史诗': 'epic', '传说': 'legendary', '典藏': 'collector' };
   const order = { '普通': 0, '勇者': 1, '史诗': 2, '传说': 3, '典藏': 4 };
-  const effects = { crown: 'starlight', lord: 'sanctuary', amber_scale: 'ember', starlord: 'cosmos', sapphire_oath: 'prism' };
+  const effects = { moon_verdict:'rose_moon', eternal_judge:'rose_eternal', crown: 'starlight', lord: 'sanctuary', amber_scale: 'ember', starlord: 'cosmos', sapphire_oath: 'prism' };
   const colors = { common: '#98a6bc', brave: '#56ba8b', epic: '#b892ee', legendary: '#ffc266', collector: '#80deff' };
   const keys = ['sea','ink','star','tide','jade_oath','gold','aurora','crown','lord','amber_scale','starlord','sapphire_oath'];
   SKINS.forEach(s => { if (keys.includes(s.key)) s.art = 'images/skins/portraits-v3/' + s.key + '.png'; });
